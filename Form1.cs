@@ -25,7 +25,10 @@ namespace AndroidSideloader
         }
 
         void runAdbCommand(string command)
-        { 
+        {
+            progressBar1.Value = 0;
+            exit = false;
+            MessageBox.Show("Action Started, may take some time...");
             Process cmd = new Process();
             cmd.StartInfo.FileName = "cmd.exe";
             cmd.StartInfo.RedirectStandardInput = true;
@@ -87,9 +90,6 @@ namespace AndroidSideloader
                 MessageBox.Show("You must select an apk");
             else
             {
-                progressBar1.Value = 0;
-                exit = false;
-                MessageBox.Show("Sideloading Started, may take some time...");
 
                 Thread t1 = new Thread(() =>
                 {
@@ -134,9 +134,6 @@ namespace AndroidSideloader
         {
             if (obbPath.Length>0)
             {
-                progressBar1.Value = 0;
-                exit = false;
-                MessageBox.Show("Sideloading Started, may take some time...");
 
                 Thread t1 = new Thread(() =>
                 {
