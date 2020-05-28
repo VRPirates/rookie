@@ -14,6 +14,7 @@ namespace AndroidSideloader
         string path;
         string obbPath = "";
         string obbFile;
+        string allText;
       
         bool exit = false;
         string debugPath = "debug.log";
@@ -41,17 +42,17 @@ namespace AndroidSideloader
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
             cmd.WaitForExit();
-            var text = cmd.StandardOutput.ReadToEnd();
+            allText = cmd.StandardOutput.ReadToEnd();
             StreamWriter sw = File.AppendText(debugPath);
-            sw.Write(text);
+            sw.Write(allText);
             sw.Write("\n--------------------------------------------------------------------");
             sw.Flush();
             sw.Close();
-            line = text.Split('\n');
+            line = allText.Split('\n');
             exit = true;
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void selectapkbutton_Click(object sender, EventArgs e)
         {
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
@@ -83,7 +84,7 @@ namespace AndroidSideloader
             progressBar1.Value = progressBar1.Maximum;
         }
 
-        private void button2_Click(object sender, EventArgs e)
+        private void startsideloadbutton_Click(object sender, EventArgs e)
         {
             path = textBox1.Text;
             if (path=="" || path.EndsWith(".apk")==false)
@@ -110,7 +111,7 @@ namespace AndroidSideloader
 
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void devicesbutton_Click(object sender, EventArgs e)
         {
             runAdbCommand("adb.exe devices");
             if (line[line.Length - 4].Contains("List of devices attached") == false)
@@ -119,7 +120,7 @@ namespace AndroidSideloader
                 MessageBox.Show("No android device attached");
         }
 
-        private void button4_Click(object sender, EventArgs e)
+        private void instructionsbutton_Click(object sender, EventArgs e)
         {
             string instructions = @"1. Plug in your Oculus Quest
 2. Press adb devices and allow adb to connect from quest headset (one time only)
@@ -130,7 +131,7 @@ namespace AndroidSideloader
             MessageBox.Show(instructions);
         }
 
-        private void button5_Click(object sender, EventArgs e)
+        private void obbcopybutton_Click(object sender, EventArgs e)
         {
             if (obbPath.Length>0)
             {
@@ -152,7 +153,7 @@ namespace AndroidSideloader
             }
         }
 
-        private void button6_Click(object sender, EventArgs e)
+        private void selectobbbutton_Click(object sender, EventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
             {
@@ -176,11 +177,20 @@ namespace AndroidSideloader
                 Environment.Exit(600);
             }
             checkForUpdate();
+            intToolTips();
         }
-
+        void intToolTips()
+        {
+            ToolTip FlashFirmwareToolTip = new ToolTip();
+            FlashFirmwareToolTip.SetToolTip(this.flashfirmwarebutton, "Make sure to put the firmware with the name UPDATE.zip in the software directory");
+            ToolTip SelectAPKToolTip = new ToolTip();
+            SelectAPKToolTip.SetToolTip(this.selectapkbutton, "Here you select the APK you want to be sideloaded");
+            ToolTip SelectOBBToolTip = new ToolTip();
+            SelectOBBToolTip.SetToolTip(this.selectapkbutton, "Here you select the OBB you want to be copied");
+        }
         void checkForUpdate()
         {
-            string localVersion = "0.1";
+            string localVersion = "0.2";
             HttpClient client = new HttpClient();
             string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
             currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -188,5 +198,42 @@ namespace AndroidSideloader
                 MessageBox.Show("Your version is outdated, the latest version is " + currentVersion + " you can download it from https://github.com/nerdunit/", "OUTDATED");
         }
 
+        private void flashfirmwarebutton_Click(object sender, EventArgs e)
+        {
+            const string message =
+    "This is a dangerous action, be sure you know what you are doing! This feature is not tested and the loading bar may bug out Do NOT disconnect the quest, wait for the messagebox to show up first Press yes to continue";
+            const string caption = "WARNING";
+            var result = MessageBox.Show(message, caption,
+                                         MessageBoxButtons.YesNo,
+                                         MessageBoxIcon.Question);
+
+            if (result == DialogResult.No)
+                return;
+
+            string path = Environment.CurrentDirectory + "\\UPDATE.zip";
+
+            if (File.Exists(path)==false)
+            {
+                MessageBox.Show("You need to put the firmware with the name UPDATE.zip in the software directory");
+                return;
+            }
+
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("adb reboot bootloader");
+                Thread.Sleep(1000 * 15);
+                runAdbCommand("fastboot oem reboot-sideload");
+                Thread.Sleep(1000 * 15);
+                runAdbCommand("adb sideload UPDATE.zip");
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            Thread.Sleep(1000 * 30);
+            runLoadingBar(path);
+
+            MessageBox.Show("Let the Quest sit for a bit, it will fully reboot back into Quest Home, then put it on and reboot, (hold power button a bit and select reboot)");
+            MessageBox.Show(allText);
+        }
     }
 }
