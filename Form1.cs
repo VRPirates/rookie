@@ -45,7 +45,7 @@ namespace AndroidSideloader
             allText = cmd.StandardOutput.ReadToEnd();
             StreamWriter sw = File.AppendText(debugPath);
             sw.Write(allText);
-            sw.Write("\n--------------------------------------------------------------------");
+            sw.Write("\n--------------------------------------------------------------------\n");
             sw.Flush();
             sw.Close();
             line = allText.Split('\n');
@@ -190,12 +190,19 @@ namespace AndroidSideloader
         }
         void checkForUpdate()
         {
-            string localVersion = "0.2";
-            HttpClient client = new HttpClient();
-            string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
-            currentVersion = currentVersion.Remove(currentVersion.Length - 1);
-            if (localVersion != currentVersion)
-                MessageBox.Show("Your version is outdated, the latest version is " + currentVersion + " you can download it from https://github.com/nerdunit/", "OUTDATED");
+            try
+            {
+                string localVersion = "0.2";
+                HttpClient client = new HttpClient();
+                string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
+                currentVersion = currentVersion.Remove(currentVersion.Length - 1);
+                if (localVersion != currentVersion)
+                    MessageBox.Show("Your version is outdated, the latest version is " + currentVersion + " you can download it from https://github.com/nerdunit/", "OUTDATED");
+            }
+            catch
+            {
+            //No need for messages, the user has no internet
+            }
         }
 
         private void flashfirmwarebutton_Click(object sender, EventArgs e)
@@ -205,7 +212,7 @@ namespace AndroidSideloader
             const string caption = "WARNING";
             var result = MessageBox.Show(message, caption,
                                          MessageBoxButtons.YesNo,
-                                         MessageBoxIcon.Question);
+                                         MessageBoxIcon.Warning);
 
             if (result == DialogResult.No)
                 return;
