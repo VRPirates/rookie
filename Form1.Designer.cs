@@ -28,47 +28,31 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.selectapkbutton = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.startsideloadbutton = new System.Windows.Forms.Button();
             this.devicesbutton = new System.Windows.Forms.Button();
             this.instructionsbutton = new System.Windows.Forms.Button();
             this.obbcopybutton = new System.Windows.Forms.Button();
-            this.selectobbbutton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.flashfirmwarebutton = new System.Windows.Forms.Button();
+            this.backupbutton = new System.Windows.Forms.Button();
+            this.debugbutton = new System.Windows.Forms.Button();
+            this.restorebutton = new System.Windows.Forms.Button();
+            this.customadbcmdbutton = new System.Windows.Forms.Button();
             this.SuspendLayout();
-            // 
-            // selectapkbutton
-            // 
-            this.selectapkbutton.Location = new System.Drawing.Point(12, 38);
-            this.selectapkbutton.Name = "selectapkbutton";
-            this.selectapkbutton.Size = new System.Drawing.Size(82, 34);
-            this.selectapkbutton.TabIndex = 0;
-            this.selectapkbutton.Text = "Select Apk";
-            this.selectapkbutton.UseVisualStyleBackColor = true;
-            this.selectapkbutton.Click += new System.EventHandler(this.selectapkbutton_Click);
-            // 
-            // textBox1
-            // 
-            this.textBox1.Location = new System.Drawing.Point(12, 12);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(373, 20);
-            this.textBox1.TabIndex = 1;
             // 
             // startsideloadbutton
             // 
-            this.startsideloadbutton.Location = new System.Drawing.Point(298, 39);
+            this.startsideloadbutton.Location = new System.Drawing.Point(100, 13);
             this.startsideloadbutton.Name = "startsideloadbutton";
             this.startsideloadbutton.Size = new System.Drawing.Size(87, 33);
             this.startsideloadbutton.TabIndex = 2;
-            this.startsideloadbutton.Text = "Start Sideload";
+            this.startsideloadbutton.Text = "Sideload APK";
             this.startsideloadbutton.UseVisualStyleBackColor = true;
             this.startsideloadbutton.Click += new System.EventHandler(this.startsideloadbutton_Click);
             // 
             // devicesbutton
             // 
-            this.devicesbutton.Location = new System.Drawing.Point(12, 78);
+            this.devicesbutton.Location = new System.Drawing.Point(12, 12);
             this.devicesbutton.Name = "devicesbutton";
             this.devicesbutton.Size = new System.Drawing.Size(82, 34);
             this.devicesbutton.TabIndex = 3;
@@ -78,9 +62,9 @@
             // 
             // instructionsbutton
             // 
-            this.instructionsbutton.Location = new System.Drawing.Point(298, 79);
+            this.instructionsbutton.Location = new System.Drawing.Point(281, 12);
             this.instructionsbutton.Name = "instructionsbutton";
-            this.instructionsbutton.Size = new System.Drawing.Size(88, 30);
+            this.instructionsbutton.Size = new System.Drawing.Size(88, 34);
             this.instructionsbutton.TabIndex = 4;
             this.instructionsbutton.Text = "Instructions";
             this.instructionsbutton.UseVisualStyleBackColor = true;
@@ -88,7 +72,7 @@
             // 
             // obbcopybutton
             // 
-            this.obbcopybutton.Location = new System.Drawing.Point(145, 75);
+            this.obbcopybutton.Location = new System.Drawing.Point(193, 12);
             this.obbcopybutton.Name = "obbcopybutton";
             this.obbcopybutton.Size = new System.Drawing.Size(82, 34);
             this.obbcopybutton.TabIndex = 5;
@@ -96,26 +80,16 @@
             this.obbcopybutton.UseVisualStyleBackColor = true;
             this.obbcopybutton.Click += new System.EventHandler(this.obbcopybutton_Click);
             // 
-            // selectobbbutton
-            // 
-            this.selectobbbutton.Location = new System.Drawing.Point(145, 39);
-            this.selectobbbutton.Name = "selectobbbutton";
-            this.selectobbbutton.Size = new System.Drawing.Size(82, 34);
-            this.selectobbbutton.TabIndex = 6;
-            this.selectobbbutton.Text = "Select Obb";
-            this.selectobbbutton.UseVisualStyleBackColor = true;
-            this.selectobbbutton.Click += new System.EventHandler(this.selectobbbutton_Click);
-            // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(13, 119);
+            this.progressBar1.Location = new System.Drawing.Point(13, 92);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(373, 20);
+            this.progressBar1.Size = new System.Drawing.Size(356, 20);
             this.progressBar1.TabIndex = 7;
             // 
             // flashfirmwarebutton
             // 
-            this.flashfirmwarebutton.Location = new System.Drawing.Point(12, 145);
+            this.flashfirmwarebutton.Location = new System.Drawing.Point(13, 52);
             this.flashfirmwarebutton.Name = "flashfirmwarebutton";
             this.flashfirmwarebutton.Size = new System.Drawing.Size(82, 34);
             this.flashfirmwarebutton.TabIndex = 8;
@@ -123,39 +97,81 @@
             this.flashfirmwarebutton.UseVisualStyleBackColor = true;
             this.flashfirmwarebutton.Click += new System.EventHandler(this.flashfirmwarebutton_Click);
             // 
+            // backupbutton
+            // 
+            this.backupbutton.Location = new System.Drawing.Point(100, 52);
+            this.backupbutton.Name = "backupbutton";
+            this.backupbutton.Size = new System.Drawing.Size(87, 34);
+            this.backupbutton.TabIndex = 9;
+            this.backupbutton.Text = "Backup Gamedata";
+            this.backupbutton.UseVisualStyleBackColor = true;
+            this.backupbutton.Click += new System.EventHandler(this.backupbutton_Click);
+            // 
+            // debugbutton
+            // 
+            this.debugbutton.Location = new System.Drawing.Point(-4, 107);
+            this.debugbutton.Name = "debugbutton";
+            this.debugbutton.Size = new System.Drawing.Size(75, 23);
+            this.debugbutton.TabIndex = 10;
+            this.debugbutton.Text = "button1";
+            this.debugbutton.UseVisualStyleBackColor = true;
+            this.debugbutton.Click += new System.EventHandler(this.debugbutton_Click);
+            // 
+            // restorebutton
+            // 
+            this.restorebutton.Location = new System.Drawing.Point(193, 52);
+            this.restorebutton.Name = "restorebutton";
+            this.restorebutton.Size = new System.Drawing.Size(82, 34);
+            this.restorebutton.TabIndex = 11;
+            this.restorebutton.Text = "Restore Gamedata";
+            this.restorebutton.UseVisualStyleBackColor = true;
+            this.restorebutton.Click += new System.EventHandler(this.restorebutton_Click);
+            // 
+            // customadbcmdbutton
+            // 
+            this.customadbcmdbutton.Location = new System.Drawing.Point(281, 52);
+            this.customadbcmdbutton.Name = "customadbcmdbutton";
+            this.customadbcmdbutton.Size = new System.Drawing.Size(88, 34);
+            this.customadbcmdbutton.TabIndex = 12;
+            this.customadbcmdbutton.Text = "Run Adb Command";
+            this.customadbcmdbutton.UseVisualStyleBackColor = true;
+            this.customadbcmdbutton.Click += new System.EventHandler(this.customadbcmdbutton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 184);
+            this.ClientSize = new System.Drawing.Size(383, 127);
+            this.Controls.Add(this.customadbcmdbutton);
+            this.Controls.Add(this.restorebutton);
+            this.Controls.Add(this.debugbutton);
+            this.Controls.Add(this.backupbutton);
             this.Controls.Add(this.flashfirmwarebutton);
             this.Controls.Add(this.progressBar1);
-            this.Controls.Add(this.selectobbbutton);
             this.Controls.Add(this.obbcopybutton);
             this.Controls.Add(this.instructionsbutton);
             this.Controls.Add(this.devicesbutton);
             this.Controls.Add(this.startsideloadbutton);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.selectapkbutton);
+            this.MaximumSize = new System.Drawing.Size(399, 166);
+            this.MinimumSize = new System.Drawing.Size(399, 166);
             this.Name = "Form1";
             this.Text = "Rookie SideLoader";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.Button selectapkbutton;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.Button startsideloadbutton;
         private System.Windows.Forms.Button devicesbutton;
         private System.Windows.Forms.Button instructionsbutton;
         private System.Windows.Forms.Button obbcopybutton;
-        private System.Windows.Forms.Button selectobbbutton;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button flashfirmwarebutton;
+        private System.Windows.Forms.Button backupbutton;
+        private System.Windows.Forms.Button debugbutton;
+        private System.Windows.Forms.Button restorebutton;
+        private System.Windows.Forms.Button customadbcmdbutton;
     }
 }
 

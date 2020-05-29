@@ -7,10 +7,18 @@ using System.Windows;
 using System.Net.Http;
 using System.Reflection;
 
+
+
 namespace AndroidSideloader
 {
+
     public partial class Form1 : Form
     {
+        #if DEBUG
+            bool debugMode = true;
+        #else
+            bool debugMode = false;
+        #endif
         string path;
         string obbPath = "";
         string obbFile;
@@ -18,14 +26,14 @@ namespace AndroidSideloader
       
         bool exit = false;
         string debugPath = "debug.log";
-        string adbPath = Environment.CurrentDirectory + "\\adb\\";
+        public string adbPath = Environment.CurrentDirectory + "\\adb\\";
         string[] line;
         public Form1()
         {
             InitializeComponent();
         }
 
-        void runAdbCommand(string command)
+        public void runAdbCommand(string command)
         {
             progressBar1.Value = 0;
             exit = false;
@@ -52,20 +60,6 @@ namespace AndroidSideloader
             exit = true;
         }
 
-        private void selectapkbutton_Click(object sender, EventArgs e)
-        {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Android apps (*.apk)|*.apk";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    textBox1.Text = openFileDialog.FileName;
-            }
-
-        }
-
 
         void runLoadingBar(string filePath)
         {
@@ -86,7 +80,18 @@ namespace AndroidSideloader
 
         private void startsideloadbutton_Click(object sender, EventArgs e)
         {
-            path = textBox1.Text;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Android apps (*.apk)|*.apk";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    path = openFileDialog.FileName;
+                else
+                    return;
+            }
+
             if (path=="" || path.EndsWith(".apk")==false)
                 MessageBox.Show("You must select an apk");
             else
@@ -133,6 +138,20 @@ namespace AndroidSideloader
 
         private void obbcopybutton_Click(object sender, EventArgs e)
         {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    obbFile = files[0];
+                    obbPath = fbd.SelectedPath;
+
+                }
+                else return;
+            }
+
             if (obbPath.Length>0)
             {
 
@@ -153,40 +172,23 @@ namespace AndroidSideloader
             }
         }
 
-        private void selectobbbutton_Click(object sender, EventArgs e)
-        {
-            using (var fbd = new FolderBrowserDialog())
-            {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    obbFile = files[0];
-                    obbPath = fbd.SelectedPath;
-
-                }
-            }
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (debugMode == false)
+                debugbutton.Visible = false;
             if (Directory.Exists(adbPath)==false)
             {
                 MessageBox.Show("You need to have the adb folder in the same folder as this software");
                 Environment.Exit(600);
             }
-            checkForUpdate();
+            if (debugMode==false)
+                checkForUpdate();
             intToolTips();
         }
         void intToolTips()
         {
             ToolTip FlashFirmwareToolTip = new ToolTip();
             FlashFirmwareToolTip.SetToolTip(this.flashfirmwarebutton, "Make sure to put the firmware with the name UPDATE.zip in the software directory");
-            ToolTip SelectAPKToolTip = new ToolTip();
-            SelectAPKToolTip.SetToolTip(this.selectapkbutton, "Here you select the APK you want to be sideloaded");
-            ToolTip SelectOBBToolTip = new ToolTip();
-            SelectOBBToolTip.SetToolTip(this.selectapkbutton, "Here you select the OBB you want to be copied");
         }
         void checkForUpdate()
         {
@@ -217,13 +219,20 @@ namespace AndroidSideloader
             if (result == DialogResult.No)
                 return;
 
-            string path = Environment.CurrentDirectory + "\\UPDATE.zip";
-
-            if (File.Exists(path)==false)
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
-                MessageBox.Show("You need to put the firmware with the name UPDATE.zip in the software directory");
-                return;
+                openFileDialog.Filter = "Android Firmware (*.zip)|*.zip";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    path = openFileDialog.FileName;
+                else
+                    return;
             }
+
+            File.Copy(path, Environment.CurrentDirectory + "\\UPDATE.zip");
+
 
             Thread t1 = new Thread(() =>
             {
@@ -241,6 +250,61 @@ namespace AndroidSideloader
 
             MessageBox.Show("Let the Quest sit for a bit, it will fully reboot back into Quest Home, then put it on and reboot, (hold power button a bit and select reboot)");
             MessageBox.Show(allText);
+        }
+
+        private void backupbutton_Click(object sender, EventArgs e)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("adb pull " + '"' + "/sdcard/Android/data" + '"');
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            while (exit == false)
+                Thread.Sleep(1000);
+
+            Directory.Move(adbPath + "data", Environment.CurrentDirectory + "\\data");
+
+            MessageBox.Show(line[line.Length - 3]);
+        }
+
+        private void debugbutton_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void restorebutton_Click(object sender, EventArgs e)
+        {
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult result = fbd.ShowDialog();
+
+                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    obbPath = fbd.SelectedPath;
+                }
+                else return;
+            }
+
+                Thread t1 = new Thread(() =>
+                {
+                    runAdbCommand("adb push " + '"' + obbPath + '"' + " /sdcard/Android/");
+                });
+                t1.IsBackground = true;
+                t1.Start();
+
+                while (exit == false)
+                    Thread.Sleep(1000);
+
+                MessageBox.Show(line[line.Length - 3]);
+        }
+
+        private void customadbcmdbutton_Click(object sender, EventArgs e)
+        {
+            customAdbCommandForm adbCommandForm = new customAdbCommandForm();
+            adbCommandForm.Show();
         }
     }
 }
