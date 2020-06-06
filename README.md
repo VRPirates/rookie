@@ -2,6 +2,10 @@
 
 Changelog
 
+0.4
+ - Added auto download of adb archive
+ - Added auto extraction of adb archive
+
 0.3
  - Added new form, you can run custom adb commands now
  - Added recover and backup app data
