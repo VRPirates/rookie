@@ -6,6 +6,7 @@ using System.Threading;
 using System.Windows;
 using System.Net.Http;
 using System.Reflection;
+using System.Net;
 
 
 
@@ -14,16 +15,16 @@ namespace AndroidSideloader
 
     public partial class Form1 : Form
     {
-        #if DEBUG
+#if DEBUG
             bool debugMode = true;
-        #else
-            bool debugMode = false;
-        #endif
+#else
+        bool debugMode = false;
+#endif
         string path;
         string obbPath = "";
         string obbFile;
         string allText;
-      
+
         bool exit = false;
         string debugPath = "debug.log";
         public string adbPath = Environment.CurrentDirectory + "\\adb\\";
@@ -66,15 +67,15 @@ namespace AndroidSideloader
             FileInfo fi = new FileInfo(filePath);
             //fi.Length file size in bytes
             PerformanceCounter disk = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_total");
-    
+
             var bytes = 0f;
-            progressBar1.Maximum = (int)(fi.Length/128);
-                while (exit==false)
-                {
-                    bytes += disk.NextValue();
-                    try { progressBar1.Value = (int)(bytes); } catch { progressBar1.Maximum *= 2; }
-                    Thread.Sleep(1000);
-                }
+            progressBar1.Maximum = (int)(fi.Length / 128);
+            while (exit == false)
+            {
+                bytes += disk.NextValue();
+                try { progressBar1.Value = (int)(bytes); } catch { progressBar1.Maximum *= 2; }
+                Thread.Sleep(1000);
+            }
             progressBar1.Value = progressBar1.Maximum;
         }
 
@@ -92,7 +93,7 @@ namespace AndroidSideloader
                     return;
             }
 
-            if (path=="" || path.EndsWith(".apk")==false)
+            if (path == "" || path.EndsWith(".apk") == false)
                 MessageBox.Show("You must select an apk");
             else
             {
@@ -106,7 +107,7 @@ namespace AndroidSideloader
 
                 runLoadingBar(path);
 
-                if (line[line.Length - 3].Contains("Success")==false)
+                if (line[line.Length - 3].Contains("Success") == false)
                 {
                     MessageBox.Show("An error has occured, send the debug.log to rookie.lol");
                 }
@@ -134,6 +135,17 @@ namespace AndroidSideloader
 5. Press Sideload and wait...
 6. If the game has an obb folder, select it by using select obb then press copy obb";
             MessageBox.Show(instructions);
+        }
+
+        public void ExtractFile(string sourceArchive, string destination)
+        {
+            string zPath = "7z.exe"; //add to proj and set CopyToOuputDir
+                ProcessStartInfo pro = new ProcessStartInfo();
+                pro.WindowStyle = ProcessWindowStyle.Hidden;
+                pro.FileName = zPath;
+                pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", sourceArchive, destination);
+                Process x = Process.Start(pro);
+                x.WaitForExit();
         }
 
         private void obbcopybutton_Click(object sender, EventArgs e)
@@ -178,8 +190,34 @@ namespace AndroidSideloader
                 debugbutton.Visible = false;
             if (Directory.Exists(adbPath)==false)
             {
-                MessageBox.Show("You need to have the adb folder in the same folder as this software");
-                Environment.Exit(600);
+                MessageBox.Show("Please wait for the software to download and install the adb");
+                try
+                {
+                    using (var client = new WebClient())
+                    {
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
+                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
+                        client.DownloadFile("http://github.com/nerdunit/androidsideloader/releases/download/v0.3/adb.7z", "adb.7z");
+                    }
+                    ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
+                    File.Delete("adb.7z");
+                    File.Delete("7z.dll");
+                    File.Delete("7z.exe");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Cannot download adb because you are not connected to the internet!");
+                    StreamWriter sw = File.AppendText(debugPath);
+                    sw.Write(allText);
+                    sw.Write("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+                    sw.Write(ex.ToString() + "\n");
+                    sw.Flush();
+                    sw.Close();
+                    Environment.Exit(600);
+                }
+                
             }
             if (debugMode==false)
                 checkForUpdate();
@@ -194,7 +232,7 @@ namespace AndroidSideloader
         {
             try
             {
-                string localVersion = "0.3";
+                string localVersion = "0.4";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
