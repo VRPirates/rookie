@@ -210,7 +210,6 @@ namespace AndroidSideloader
                 {
                     MessageBox.Show("Cannot download adb because you are not connected to the internet!");
                     StreamWriter sw = File.AppendText(debugPath);
-                    sw.Write(allText);
                     sw.Write("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
                     sw.Write(ex.ToString() + "\n");
                     sw.Flush();
