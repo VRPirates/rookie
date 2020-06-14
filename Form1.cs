@@ -349,7 +349,7 @@ namespace AndroidSideloader
             string apkPath = allText.Remove(0, 8); //remove package:
             apkPath = apkPath.Remove(apkPath.Length - 1);
             //MessageBox.Show(adbPath);
-
+            exit = false;
             Thread t2 = new Thread(() =>
             {
                 runAdbCommand("pull " + apkPath);
@@ -363,9 +363,16 @@ namespace AndroidSideloader
             string currApkPath = apkPath;
             while (currApkPath.Contains("/"))
                 currApkPath = currApkPath.Substring(currApkPath.IndexOf("/") + 1);
-            Thread.Sleep(1000);
+
+            if (File.Exists(Environment.CurrentDirectory + "\\" + package + ".apk"))
+                File.Delete(Environment.CurrentDirectory + "\\" + package + ".apk");
+
             File.Copy(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
+
             File.Delete(Environment.CurrentDirectory + "\\adb\\" + currApkPath);
+
+
+            MessageBox.Show("Done");
         }
     }
 }
