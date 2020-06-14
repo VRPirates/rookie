@@ -38,9 +38,10 @@ namespace AndroidSideloader
         {
             progressBar1.Value = 0;
             exit = false;
-            MessageBox.Show("Action Started, may take some time...");
+
             Process cmd = new Process();
-            cmd.StartInfo.FileName = "cmd.exe";
+            cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
+            cmd.StartInfo.Arguments = command;
             cmd.StartInfo.RedirectStandardInput = true;
             cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.CreateNoWindow = true;
@@ -50,9 +51,11 @@ namespace AndroidSideloader
             cmd.StandardInput.WriteLine(command);
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
-            cmd.WaitForExit();
             allText = cmd.StandardOutput.ReadToEnd();
+            cmd.WaitForExit();
+            
             StreamWriter sw = File.AppendText(debugPath);
+            sw.Write("Action name = " + command + '\n');
             sw.Write(allText);
             sw.Write("\n--------------------------------------------------------------------\n");
             sw.Flush();
@@ -81,6 +84,7 @@ namespace AndroidSideloader
 
         private void startsideloadbutton_Click(object sender, EventArgs e)
         {
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Android apps (*.apk)|*.apk";
@@ -97,33 +101,26 @@ namespace AndroidSideloader
                 MessageBox.Show("You must select an apk");
             else
             {
-
+                MessageBox.Show("Action Started, may take some time...");
                 Thread t1 = new Thread(() =>
                 {
-                    runAdbCommand("adb.exe install -r " + '"' + path + '"');
+                    runAdbCommand("install -r " + '"' + path + '"');
                 });
                 t1.IsBackground = true;
                 t1.Start();
 
                 runLoadingBar(path);
 
-                if (line[line.Length - 3].Contains("Success") == false)
-                {
-                    MessageBox.Show("An error has occured, send the debug.log to rookie.lol");
-                }
-                else
-                    MessageBox.Show(line[line.Length - 3]);
+                MessageBox.Show(allText);
             }
 
         }
 
         private void devicesbutton_Click(object sender, EventArgs e)
         {
-            runAdbCommand("adb.exe devices");
-            if (line[line.Length - 4].Contains("List of devices attached") == false)
-                MessageBox.Show(line[line.Length - 4]);
-            else
-                MessageBox.Show("No android device attached");
+            MessageBox.Show("Action Started, may take some time...");
+            runAdbCommand("devices");
+            MessageBox.Show(allText);
         }
 
         private void instructionsbutton_Click(object sender, EventArgs e)
@@ -166,17 +163,17 @@ namespace AndroidSideloader
 
             if (obbPath.Length>0)
             {
-
+                MessageBox.Show("Action Started, may take some time...");
                 Thread t1 = new Thread(() =>
                 {
-                    runAdbCommand("adb push " + '"' + obbPath + '"' + " /sdcard/Android/obb");
+                    runAdbCommand("push " + '"' + obbPath + '"' + " /sdcard/Android/obb");
                 });
                 t1.IsBackground = true;
                 t1.Start();
 
                 runLoadingBar(obbFile);
 
-                MessageBox.Show(line[line.Length - 3]);
+                MessageBox.Show(allText);
             }
             else
             {
@@ -224,14 +221,14 @@ namespace AndroidSideloader
         }
         void intToolTips()
         {
-            ToolTip FlashFirmwareToolTip = new ToolTip();
-            FlashFirmwareToolTip.SetToolTip(this.flashfirmwarebutton, "Make sure to put the firmware with the name UPDATE.zip in the software directory");
+            ToolTip ListAppsToolTip = new ToolTip();
+            ListAppsToolTip.SetToolTip(this.ListApps, "Press this to show what packages you have installed");
         }
         void checkForUpdate()
         {
             try
             {
-                string localVersion = "0.4";
+                string localVersion = "0.5";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -244,56 +241,13 @@ namespace AndroidSideloader
             }
         }
 
-        private void flashfirmwarebutton_Click(object sender, EventArgs e)
-        {
-            const string message =
-    "This is a dangerous action, be sure you know what you are doing! This feature is not tested and the loading bar may bug out Do NOT disconnect the quest, wait for the messagebox to show up first Press yes to continue";
-            const string caption = "WARNING";
-            var result = MessageBox.Show(message, caption,
-                                         MessageBoxButtons.YesNo,
-                                         MessageBoxIcon.Warning);
-
-            if (result == DialogResult.No)
-                return;
-
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Android Firmware (*.zip)|*.zip";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    path = openFileDialog.FileName;
-                else
-                    return;
-            }
-
-            File.Copy(path, Environment.CurrentDirectory + "\\UPDATE.zip");
-
-
-            Thread t1 = new Thread(() =>
-            {
-                runAdbCommand("adb reboot bootloader");
-                Thread.Sleep(1000 * 15);
-                runAdbCommand("fastboot oem reboot-sideload");
-                Thread.Sleep(1000 * 15);
-                runAdbCommand("adb sideload UPDATE.zip");
-            });
-            t1.IsBackground = true;
-            t1.Start();
-
-            Thread.Sleep(1000 * 30);
-            runLoadingBar(path);
-
-            MessageBox.Show("Let the Quest sit for a bit, it will fully reboot back into Quest Home, then put it on and reboot, (hold power button a bit and select reboot)");
-            MessageBox.Show(allText);
-        }
 
         private void backupbutton_Click(object sender, EventArgs e)
         {
+            MessageBox.Show("Action Started, may take some time...");
             Thread t1 = new Thread(() =>
             {
-                runAdbCommand("adb pull " + '"' + "/sdcard/Android/data" + '"');
+                runAdbCommand("pull " + '"' + "/sdcard/Android/data" + '"');
             });
             t1.IsBackground = true;
             t1.Start();
@@ -303,7 +257,7 @@ namespace AndroidSideloader
 
             Directory.Move(adbPath + "data", Environment.CurrentDirectory + "\\data");
 
-            MessageBox.Show(line[line.Length - 3]);
+            MessageBox.Show(allText);
         }
 
         private void debugbutton_Click(object sender, EventArgs e)
@@ -324,10 +278,10 @@ namespace AndroidSideloader
                 }
                 else return;
             }
-
+                MessageBox.Show("Action Started, may take some time...");
                 Thread t1 = new Thread(() =>
                 {
-                    runAdbCommand("adb push " + '"' + obbPath + '"' + " /sdcard/Android/");
+                    runAdbCommand("push " + '"' + obbPath + '"' + " /sdcard/Android/");
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -335,13 +289,83 @@ namespace AndroidSideloader
                 while (exit == false)
                     Thread.Sleep(1000);
 
-                MessageBox.Show(line[line.Length - 3]);
+                MessageBox.Show(allText);
         }
 
         private void customadbcmdbutton_Click(object sender, EventArgs e)
         {
             customAdbCommandForm adbCommandForm = new customAdbCommandForm();
             adbCommandForm.Show();
+        }
+
+        private void ListApps_Click(object sender, EventArgs e)
+        {
+            allText = "";
+
+            comboBox1.Items.Clear();
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell pm list packages");
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            while (exit == false)
+                Thread.Sleep(1000);
+
+            foreach (string obj in line)
+            {
+                comboBox1.Items.Add(obj);
+            }
+
+            if (allText.Length > 0)
+                MessageBox.Show("Fetched apks with success");
+        }
+
+        private void getApkButton_Click(object sender, EventArgs e)
+        {
+            string package;
+            allText = "";
+            try
+            {
+                package = comboBox1.SelectedItem.ToString().Remove(0,8); //remove package:
+                package = package.Remove(package.Length - 1);
+            } catch { MessageBox.Show("You must first run list items"); return; }
+
+            //MessageBox.Show(package);
+            exit = false;
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell pm path " + package);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            while (exit == false)
+                Thread.Sleep(1000);
+            allText = allText.Remove(allText.Length - 1);
+            //MessageBox.Show(allText);
+
+            string apkPath = allText.Remove(0, 8); //remove package:
+            apkPath = apkPath.Remove(apkPath.Length - 1);
+            //MessageBox.Show(adbPath);
+
+            Thread t2 = new Thread(() =>
+            {
+                runAdbCommand("pull " + apkPath);
+            });
+            t2.IsBackground = true;
+            t2.Start();
+
+            while (exit == false)
+                Thread.Sleep(1000);
+
+            string currApkPath = apkPath;
+            while (currApkPath.Contains("/"))
+                currApkPath = currApkPath.Substring(currApkPath.IndexOf("/") + 1);
+            Thread.Sleep(1000);
+            File.Copy(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
+            File.Delete(Environment.CurrentDirectory + "\\adb\\" + currApkPath);
         }
     }
 }

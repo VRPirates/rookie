@@ -48,6 +48,7 @@
             this.richTextBox1.Size = new System.Drawing.Size(775, 365);
             this.richTextBox1.TabIndex = 1;
             this.richTextBox1.Text = "";
+            this.richTextBox1.TextChanged += new System.EventHandler(this.richTextBox1_TextChanged);
             // 
             // runcustomadbcmdbutton
             // 
@@ -69,6 +70,7 @@
             this.Controls.Add(this.textBox1);
             this.Name = "customAdbCommandForm";
             this.Text = "customAdbCommandForm";
+            this.Load += new System.EventHandler(this.customAdbCommandForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
 

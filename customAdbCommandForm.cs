@@ -18,43 +18,49 @@ namespace AndroidSideloader
 
         string output;
 
+        private void runcustomadbcmdbutton_Click(object sender, EventArgs e)
+        {
+            var command = textBox1.Text;
+            if (command.StartsWith("adb "))
+                command = command.Remove(0, 4);
+            runAdbCommand(command);
+        }
+
         public void runAdbCommand(string command)
         {
-            Thread t1 = new Thread(() =>
-            {
-                Process cmd = new Process();
-                cmd.StartInfo.FileName = "cmd.exe";
-                cmd.StartInfo.RedirectStandardInput = true;
-                cmd.StartInfo.RedirectStandardOutput = true;
-                cmd.StartInfo.CreateNoWindow = true;
-                cmd.StartInfo.UseShellExecute = false;
-                cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\adb\\";
-                cmd.Start();
-                cmd.StandardInput.WriteLine(command);
-                cmd.StandardInput.Flush();
-                cmd.StandardInput.Close();
-                cmd.WaitForExit();
-                output = cmd.StandardOutput.ReadToEnd();
-                StreamWriter sw = File.AppendText("debugC.log");
-                sw.Write(output);
-                sw.Write("\n--------------------------------------------------------------------\n");
-                sw.Flush();
-                sw.Close();
-            });
-            t1.IsBackground = true;
-            t1.Start();
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
+            cmd.StartInfo.Arguments = command;
+            cmd.StartInfo.RedirectStandardInput = true;
+            cmd.StartInfo.RedirectStandardOutput = true;
+            cmd.StartInfo.CreateNoWindow = true;
+            cmd.StartInfo.UseShellExecute = false;
+            cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\adb\\";
+            cmd.Start();
+            cmd.StandardInput.WriteLine(command);
+            cmd.StandardInput.Flush();
+            cmd.StandardInput.Close();
+            output = cmd.StandardOutput.ReadToEnd();
+            cmd.WaitForExit();
 
-            t1.Join();
+            StreamWriter sw = File.AppendText("debugC.log");
+            sw.Write("Action name = " + command + '\n');
+            sw.Write(output);
+            sw.Write("\n--------------------------------------------------------------------\n");
+            sw.Flush();
+            sw.Close();
 
             richTextBox1.Text = output;
         }
 
-        private void runcustomadbcmdbutton_Click(object sender, EventArgs e)
+        private void customAdbCommandForm_Load(object sender, EventArgs e)
         {
-            if (textBox1.Text.Split(' ').Length>1)
-                runAdbCommand(textBox1.Text);
-            else
-                MessageBox.Show("You must enter at least 1 argument");
+
+        }
+
+        private void richTextBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
