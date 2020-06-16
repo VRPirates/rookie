@@ -2,6 +2,12 @@
 
 Changelog
 
+0.6
+ - Added List Apk Perms button
+ - Added Change Permissions button
+ - Added dinamically added checkbox for permisssions
+ - The software now downloads adb from master instead of v0.3 release
+
 0.5
  - Removed Flash Firmware
  - Redesigned UI
