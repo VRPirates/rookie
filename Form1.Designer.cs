@@ -40,6 +40,8 @@
             this.ListApps = new System.Windows.Forms.Button();
             this.comboBox1 = new System.Windows.Forms.ComboBox();
             this.getApkButton = new System.Windows.Forms.Button();
+            this.listApkPermsButton = new System.Windows.Forms.Button();
+            this.changePermsBtn = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // startsideloadbutton
@@ -158,11 +160,33 @@
             this.getApkButton.UseVisualStyleBackColor = true;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
             // 
+            // listApkPermsButton
+            // 
+            this.listApkPermsButton.Location = new System.Drawing.Point(193, 92);
+            this.listApkPermsButton.Name = "listApkPermsButton";
+            this.listApkPermsButton.Size = new System.Drawing.Size(87, 34);
+            this.listApkPermsButton.TabIndex = 16;
+            this.listApkPermsButton.Text = "List Apk Perms";
+            this.listApkPermsButton.UseVisualStyleBackColor = true;
+            this.listApkPermsButton.Click += new System.EventHandler(this.listApkPermsButton_Click);
+            // 
+            // changePermsBtn
+            // 
+            this.changePermsBtn.Location = new System.Drawing.Point(286, 92);
+            this.changePermsBtn.Name = "changePermsBtn";
+            this.changePermsBtn.Size = new System.Drawing.Size(87, 34);
+            this.changePermsBtn.TabIndex = 17;
+            this.changePermsBtn.Text = "Change Permissions";
+            this.changePermsBtn.UseVisualStyleBackColor = true;
+            this.changePermsBtn.Click += new System.EventHandler(this.changePermsBtn_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(447, 193);
+            this.ClientSize = new System.Drawing.Size(450, 411);
+            this.Controls.Add(this.changePermsBtn);
+            this.Controls.Add(this.listApkPermsButton);
             this.Controls.Add(this.getApkButton);
             this.Controls.Add(this.comboBox1);
             this.Controls.Add(this.ListApps);
@@ -175,8 +199,8 @@
             this.Controls.Add(this.instructionsbutton);
             this.Controls.Add(this.devicesbutton);
             this.Controls.Add(this.startsideloadbutton);
-            this.MaximumSize = new System.Drawing.Size(463, 232);
-            this.MinimumSize = new System.Drawing.Size(463, 232);
+            this.MaximumSize = new System.Drawing.Size(466, 1000);
+            this.MinimumSize = new System.Drawing.Size(466, 450);
             this.Name = "Form1";
             this.Text = "Rookie SideLoader";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -197,6 +221,8 @@
         private System.Windows.Forms.Button ListApps;
         private System.Windows.Forms.ComboBox comboBox1;
         private System.Windows.Forms.Button getApkButton;
+        private System.Windows.Forms.Button listApkPermsButton;
+        private System.Windows.Forms.Button changePermsBtn;
     }
 }
 

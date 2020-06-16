@@ -183,6 +183,8 @@ namespace AndroidSideloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            if (File.Exists(debugPath))
+                File.Delete(debugPath);
             if (debugMode == false)
                 debugbutton.Visible = false;
             if (Directory.Exists(adbPath)==false)
@@ -228,7 +230,7 @@ namespace AndroidSideloader
         {
             try
             {
-                string localVersion = "0.5";
+                string localVersion = "0.6";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -374,5 +376,120 @@ namespace AndroidSideloader
 
             MessageBox.Show("Done");
         }
+
+        private void listApkPermsButton_Click(object sender, EventArgs e)
+        {
+            string package;
+            allText = "";
+            try
+            {
+                package = comboBox1.SelectedItem.ToString().Remove(0, 8); //remove package:
+                package = package.Remove(package.Length - 1);
+            }
+            catch { MessageBox.Show("You must first run list items"); return; }
+
+            exit = false;
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell dumpsys package " + package);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            while (exit == false)
+                Thread.Sleep(1000);
+
+            var grantedPerms = allText.Substring(allText.LastIndexOf("install permissions:") + 22);
+            grantedPerms.Substring(0, grantedPerms.IndexOf("User 0:"));
+
+            line = grantedPerms.Split('\n');
+
+            int pos1 = 12;
+            int pos2 = 187;
+
+
+            for (int i=0; i< line.Length; i++)
+            {
+                if (line[i].Contains("android.permission."))
+                {
+                    CheckBox chk = new CheckBox();
+                    if (line[i].Contains("true"))
+                        chk.Checked = true;
+                    else
+                        chk.Checked = false;
+                    line[i] = line[i].Substring(0, line[i].IndexOf(": granted"));
+                    line[i] = line[i].Substring(line[i].LastIndexOf(" "));
+
+
+                    chk.Location = new System.Drawing.Point(pos1, pos2);
+                    chk.Width = 420;
+                    chk.Height = 17;
+                    chk.Text = line[i];
+                    chk.CheckedChanged += new EventHandler(CheckBox_Checked);
+                    Controls.Add(chk);
+                    pos2 += 20;
+                }
+            }
+
+            
+
+        }
+
+        private void CheckBox_Checked(object sender, EventArgs e)
+        {
+
+        }
+
+        private void changePermsBtn_Click(object sender, EventArgs e)
+        {
+            string package;
+            allText = "";
+            try
+            {
+                package = comboBox1.SelectedItem.ToString().Remove(0, 8); //remove package:
+                package = package.Remove(package.Length - 1);
+            }
+            catch { MessageBox.Show("You must first run list items"); return; }
+
+            foreach (Control c in Controls)
+            {
+                if ((c is CheckBox))
+                {
+                    if (((CheckBox)c).Checked==true)
+                    {
+                        exit = false;
+                        Thread t1 = new Thread(() =>
+                        {
+                            File.AppendAllText("output.txt", "shell pm grant " + package + " " + c.Text);
+                            runAdbCommand("shell pm grant " + package + " " + c.Text);
+                        });
+                        t1.IsBackground = true;
+                        t1.Start();
+                        while (exit == false)
+                            Thread.Sleep(10);
+                    }
+                    else
+                    {
+                        exit = false;
+                        //MessageBox.Show("Checkbox " + c.Text + " is not checked");
+                        Thread t1 = new Thread(() =>
+                        {
+                            File.AppendAllText("output.txt", "shell pm grant " + package + " " + c.Text);
+                            //MessageBox.Show("shell pm revoke " + package + " " + c.Text);
+                            runAdbCommand("shell pm revoke " + package + " " + c.Text);
+                        });
+                        t1.IsBackground = true;
+                        t1.Start();
+                        while (exit == false)
+                            Thread.Sleep(10);
+                    }
+                }
+                
+            }
+
+            MessageBox.Show("Done!");
+
+        }
     }
+
 }
