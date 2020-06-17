@@ -2,6 +2,12 @@
 
 Changelog
 
+0.7
+ - Fixed UI Freezes
+ - Added Uninstall APK Button
+ - Added Launch package Button
+ - Removed loading bar
+
 0.6
  - Added List Apk Perms button
  - Added Change Permissions button
