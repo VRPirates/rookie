@@ -220,7 +220,7 @@ namespace AndroidSideloader
         {
             try
             {
-                string localVersion = "0.6";
+                string localVersion = "0.7";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
