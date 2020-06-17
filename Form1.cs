@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.Threading.Tasks;
 using System.Net.Http;
 using System.Reflection;
 using System.Net;
@@ -35,8 +36,8 @@ namespace AndroidSideloader
         }
 
         public void runAdbCommand(string command)
-        {
-            progressBar1.Value = 0;
+        {  
+
             exit = false;
 
             Process cmd = new Process();
@@ -64,25 +65,18 @@ namespace AndroidSideloader
             exit = true;
         }
 
-
-        void runLoadingBar(string filePath)
+        private void sideload(string path)
         {
-            FileInfo fi = new FileInfo(filePath);
-            //fi.Length file size in bytes
-            PerformanceCounter disk = new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_total");
-
-            var bytes = 0f;
-            progressBar1.Maximum = (int)(fi.Length / 128);
-            while (exit == false)
+            Thread t1 = new Thread(() =>
             {
-                bytes += disk.NextValue();
-                try { progressBar1.Value = (int)(bytes); } catch { progressBar1.Maximum *= 2; }
-                Thread.Sleep(1000);
-            }
-            progressBar1.Value = progressBar1.Maximum;
+                runAdbCommand("install -r " + '"' + path + '"');
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
         }
 
-        private void startsideloadbutton_Click(object sender, EventArgs e)
+        private async void startsideloadbutton_Click(object sender, EventArgs e)
         {
 
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
@@ -101,15 +95,8 @@ namespace AndroidSideloader
                 MessageBox.Show("You must select an apk");
             else
             {
-                MessageBox.Show("Action Started, may take some time...");
-                Thread t1 = new Thread(() =>
-                {
-                    runAdbCommand("install -r " + '"' + path + '"');
-                });
-                t1.IsBackground = true;
-                t1.Start();
 
-                runLoadingBar(path);
+                await Task.Run(() => sideload(path));
 
                 MessageBox.Show(allText);
             }
@@ -145,7 +132,18 @@ namespace AndroidSideloader
                 x.WaitForExit();
         }
 
-        private void obbcopybutton_Click(object sender, EventArgs e)
+        private void obbcopy(string obbPath)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("push " + '"' + obbPath + '"' + " /sdcard/Android/obb");
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
+        }
+
+        private async void obbcopybutton_Click(object sender, EventArgs e)
         {
             using (var fbd = new FolderBrowserDialog())
             {
@@ -163,16 +161,8 @@ namespace AndroidSideloader
 
             if (obbPath.Length>0)
             {
-                MessageBox.Show("Action Started, may take some time...");
-                Thread t1 = new Thread(() =>
-                {
-                    runAdbCommand("push " + '"' + obbPath + '"' + " /sdcard/Android/obb");
-                });
-                t1.IsBackground = true;
-                t1.Start();
-
-                runLoadingBar(obbFile);
-
+                await Task.Run(() => obbcopy(obbPath));
+                
                 MessageBox.Show(allText);
             }
             else
@@ -198,7 +188,7 @@ namespace AndroidSideloader
                         ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                         client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
                         client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
-                        client.DownloadFile("http://github.com/nerdunit/androidsideloader/releases/download/v0.3/adb.7z", "adb.7z");
+                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
                     }
                     ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
                     File.Delete("adb.7z");
@@ -243,8 +233,7 @@ namespace AndroidSideloader
             }
         }
 
-
-        private void backupbutton_Click(object sender, EventArgs e)
+        private async void backup()
         {
             MessageBox.Show("Action Started, may take some time...");
             Thread t1 = new Thread(() =>
@@ -253,11 +242,27 @@ namespace AndroidSideloader
             });
             t1.IsBackground = true;
             t1.Start();
+            t1.Join();
+        }
 
-            while (exit == false)
-                Thread.Sleep(1000);
+        private async void backupbutton_Click(object sender, EventArgs e)
+        {
+            if (exit==false)
+            {
+                MessageBox.Show("Finish Previous action first!");
+                return;
+            }
 
-            Directory.Move(adbPath + "data", Environment.CurrentDirectory + "\\data");
+            await Task.Run(() => backup()); //we use async and await to not freeze the ui
+
+            try
+            {
+                Directory.Move(adbPath + "data", Environment.CurrentDirectory + "\\data");
+            }
+            catch (Exception ex)
+            {
+                File.AppendAllText(debugPath, ex.ToString());
+            }
 
             MessageBox.Show(allText);
         }
@@ -267,8 +272,25 @@ namespace AndroidSideloader
             
         }
 
-        private void restorebutton_Click(object sender, EventArgs e)
+        private async void restore()
         {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("push " + '"' + obbPath + '"' + " /sdcard/Android/");
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
+        }
+
+        private async void restorebutton_Click(object sender, EventArgs e)
+        {
+            if (exit == false)
+            {
+                MessageBox.Show("Finish Previous action first!");
+                return;
+            }
+
             using (var fbd = new FolderBrowserDialog())
             {
                 DialogResult result = fbd.ShowDialog();
@@ -280,16 +302,7 @@ namespace AndroidSideloader
                 }
                 else return;
             }
-                MessageBox.Show("Action Started, may take some time...");
-                Thread t1 = new Thread(() =>
-                {
-                    runAdbCommand("push " + '"' + obbPath + '"' + " /sdcard/Android/");
-                });
-                t1.IsBackground = true;
-                t1.Start();
-
-                while (exit == false)
-                    Thread.Sleep(1000);
+                await Task.Run(() => restore());
 
                 MessageBox.Show(allText);
         }
@@ -300,22 +313,26 @@ namespace AndroidSideloader
             adbCommandForm.Show();
         }
 
-        private void ListApps_Click(object sender, EventArgs e)
+        private async void listapps()
         {
-            allText = "";
-
-            comboBox1.Items.Clear();
             Thread t1 = new Thread(() =>
             {
                 runAdbCommand("shell pm list packages");
             });
             t1.IsBackground = true;
             t1.Start();
+            t1.Join();
+        }
 
-            while (exit == false)
-                Thread.Sleep(1000);
+        private async void ListApps_Click(object sender, EventArgs e)
+        {
+            allText = "";
 
-            foreach (string obj in line)
+            comboBox1.Items.Clear();
+
+            await Task.Run(() => listapps());
+
+            foreach(string obj in line)
             {
                 comboBox1.Items.Add(obj);
             }
@@ -324,7 +341,28 @@ namespace AndroidSideloader
                 MessageBox.Show("Fetched apks with success");
         }
 
-        private void getApkButton_Click(object sender, EventArgs e)
+        private async void getapk(string package)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell pm path " + package);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
+        }
+
+        private async void pullapk(string apkPath)
+        {
+            Thread t2 = new Thread(() =>
+            {
+                runAdbCommand("pull " + apkPath);
+            });
+            t2.IsBackground = true;
+            t2.Start();
+        }
+
+        private async void getApkButton_Click(object sender, EventArgs e)
         {
             string package;
             allText = "";
@@ -336,15 +374,10 @@ namespace AndroidSideloader
 
             //MessageBox.Show(package);
             exit = false;
-            Thread t1 = new Thread(() =>
-            {
-                runAdbCommand("shell pm path " + package);
-            });
-            t1.IsBackground = true;
-            t1.Start();
 
-            while (exit == false)
-                Thread.Sleep(1000);
+
+            await Task.Run(() => getapk(package));
+
             allText = allText.Remove(allText.Length - 1);
             //MessageBox.Show(allText);
 
@@ -352,15 +385,8 @@ namespace AndroidSideloader
             apkPath = apkPath.Remove(apkPath.Length - 1);
             //MessageBox.Show(adbPath);
             exit = false;
-            Thread t2 = new Thread(() =>
-            {
-                runAdbCommand("pull " + apkPath);
-            });
-            t2.IsBackground = true;
-            t2.Start();
 
-            while (exit == false)
-                Thread.Sleep(1000);
+            await Task.Run(() => pullapk(apkPath));
 
             string currApkPath = apkPath;
             while (currApkPath.Contains("/"))
@@ -369,15 +395,26 @@ namespace AndroidSideloader
             if (File.Exists(Environment.CurrentDirectory + "\\" + package + ".apk"))
                 File.Delete(Environment.CurrentDirectory + "\\" + package + ".apk");
 
-            File.Copy(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
+            File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
 
-            File.Delete(Environment.CurrentDirectory + "\\adb\\" + currApkPath);
+            //File.Delete(Environment.CurrentDirectory + "\\adb\\" + currApkPath);
 
 
             MessageBox.Show("Done");
         }
 
-        private void listApkPermsButton_Click(object sender, EventArgs e)
+        private async void listappperms(string package)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell dumpsys package " + package);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
+        }
+
+        private async void listApkPermsButton_Click(object sender, EventArgs e)
         {
             string package;
             allText = "";
@@ -389,15 +426,8 @@ namespace AndroidSideloader
             catch { MessageBox.Show("You must first run list items"); return; }
 
             exit = false;
-            Thread t1 = new Thread(() =>
-            {
-                runAdbCommand("shell dumpsys package " + package);
-            });
-            t1.IsBackground = true;
-            t1.Start();
 
-            while (exit == false)
-                Thread.Sleep(1000);
+            await Task.Run(() => listappperms(package));
 
             var grantedPerms = allText.Substring(allText.LastIndexOf("install permissions:") + 22);
             grantedPerms.Substring(0, grantedPerms.IndexOf("User 0:"));
@@ -440,7 +470,7 @@ namespace AndroidSideloader
 
         }
 
-        private void changePermsBtn_Click(object sender, EventArgs e)
+        private async void changePermsBtn_Click(object sender, EventArgs e)
         {
             string package;
             allText = "";
@@ -455,33 +485,14 @@ namespace AndroidSideloader
             {
                 if ((c is CheckBox))
                 {
+                    exit = false;
                     if (((CheckBox)c).Checked==true)
                     {
-                        exit = false;
-                        Thread t1 = new Thread(() =>
-                        {
-                            File.AppendAllText("output.txt", "shell pm grant " + package + " " + c.Text);
-                            runAdbCommand("shell pm grant " + package + " " + c.Text);
-                        });
-                        t1.IsBackground = true;
-                        t1.Start();
-                        while (exit == false)
-                            Thread.Sleep(10);
+                        await Task.Run(() => changePerms(c, package, "grant"));
                     }
                     else
                     {
-                        exit = false;
-                        //MessageBox.Show("Checkbox " + c.Text + " is not checked");
-                        Thread t1 = new Thread(() =>
-                        {
-                            File.AppendAllText("output.txt", "shell pm grant " + package + " " + c.Text);
-                            //MessageBox.Show("shell pm revoke " + package + " " + c.Text);
-                            runAdbCommand("shell pm revoke " + package + " " + c.Text);
-                        });
-                        t1.IsBackground = true;
-                        t1.Start();
-                        while (exit == false)
-                            Thread.Sleep(10);
+                        await Task.Run(() => changePerms(c, package, "revoke"));
                     }
                 }
                 
@@ -489,6 +500,56 @@ namespace AndroidSideloader
 
             MessageBox.Show("Done!");
 
+        }
+
+
+        private async void changePerms(Control c, string package, string grant)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell pm " + grant + " " + package + " " + c.Text);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
+        }
+
+        private void launchApkButton_Click(object sender, EventArgs e)
+        {
+            exit = false;
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell am start -n " + launchPackageTextBox.Text);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+        }
+
+        private void uninstallAppButton_Click(object sender, EventArgs e)
+        {
+            string package;
+            allText = "";
+            try
+            {
+                package = comboBox1.SelectedItem.ToString().Remove(0, 8); //remove package:
+                package = package.Remove(package.Length - 1);
+            }
+            catch { MessageBox.Show("You must first run list items"); return; }
+
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to uninstall " + package + " this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            if (dialogResult != DialogResult.Yes)
+                return;
+
+            exit = false;
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell pm uninstall -k --user 0 " + package);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            MessageBox.Show(allText);
         }
     }
 

@@ -32,7 +32,6 @@
             this.devicesbutton = new System.Windows.Forms.Button();
             this.instructionsbutton = new System.Windows.Forms.Button();
             this.obbcopybutton = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.backupbutton = new System.Windows.Forms.Button();
             this.debugbutton = new System.Windows.Forms.Button();
             this.restorebutton = new System.Windows.Forms.Button();
@@ -42,6 +41,9 @@
             this.getApkButton = new System.Windows.Forms.Button();
             this.listApkPermsButton = new System.Windows.Forms.Button();
             this.changePermsBtn = new System.Windows.Forms.Button();
+            this.launchPackageTextBox = new System.Windows.Forms.TextBox();
+            this.launchApkButton = new System.Windows.Forms.Button();
+            this.uninstallAppButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // startsideloadbutton
@@ -66,9 +68,9 @@
             // 
             // instructionsbutton
             // 
-            this.instructionsbutton.Location = new System.Drawing.Point(281, 12);
+            this.instructionsbutton.Location = new System.Drawing.Point(282, 12);
             this.instructionsbutton.Name = "instructionsbutton";
-            this.instructionsbutton.Size = new System.Drawing.Size(88, 34);
+            this.instructionsbutton.Size = new System.Drawing.Size(87, 34);
             this.instructionsbutton.TabIndex = 4;
             this.instructionsbutton.Text = "Instructions";
             this.instructionsbutton.UseVisualStyleBackColor = true;
@@ -78,18 +80,11 @@
             // 
             this.obbcopybutton.Location = new System.Drawing.Point(193, 12);
             this.obbcopybutton.Name = "obbcopybutton";
-            this.obbcopybutton.Size = new System.Drawing.Size(82, 34);
+            this.obbcopybutton.Size = new System.Drawing.Size(87, 34);
             this.obbcopybutton.TabIndex = 5;
             this.obbcopybutton.Text = "Copy Obb";
             this.obbcopybutton.UseVisualStyleBackColor = true;
             this.obbcopybutton.Click += new System.EventHandler(this.obbcopybutton_Click);
-            // 
-            // progressBar1
-            // 
-            this.progressBar1.Location = new System.Drawing.Point(13, 161);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(426, 20);
-            this.progressBar1.TabIndex = 7;
             // 
             // backupbutton
             // 
@@ -125,7 +120,7 @@
             // 
             this.customadbcmdbutton.Location = new System.Drawing.Point(193, 52);
             this.customadbcmdbutton.Name = "customadbcmdbutton";
-            this.customadbcmdbutton.Size = new System.Drawing.Size(82, 34);
+            this.customadbcmdbutton.Size = new System.Drawing.Size(87, 34);
             this.customadbcmdbutton.TabIndex = 12;
             this.customadbcmdbutton.Text = "Run Adb Command";
             this.customadbcmdbutton.UseVisualStyleBackColor = true;
@@ -172,7 +167,7 @@
             // 
             // changePermsBtn
             // 
-            this.changePermsBtn.Location = new System.Drawing.Point(286, 92);
+            this.changePermsBtn.Location = new System.Drawing.Point(282, 92);
             this.changePermsBtn.Name = "changePermsBtn";
             this.changePermsBtn.Size = new System.Drawing.Size(87, 34);
             this.changePermsBtn.TabIndex = 17;
@@ -180,11 +175,42 @@
             this.changePermsBtn.UseVisualStyleBackColor = true;
             this.changePermsBtn.Click += new System.EventHandler(this.changePermsBtn_Click);
             // 
+            // launchPackageTextBox
+            // 
+            this.launchPackageTextBox.Location = new System.Drawing.Point(446, 134);
+            this.launchPackageTextBox.Name = "launchPackageTextBox";
+            this.launchPackageTextBox.Size = new System.Drawing.Size(192, 20);
+            this.launchPackageTextBox.TabIndex = 18;
+            this.launchPackageTextBox.Text = "de.eye_interactive.atvl.settings";
+            // 
+            // launchApkButton
+            // 
+            this.launchApkButton.Location = new System.Drawing.Point(446, 161);
+            this.launchApkButton.Name = "launchApkButton";
+            this.launchApkButton.Size = new System.Drawing.Size(192, 20);
+            this.launchApkButton.TabIndex = 19;
+            this.launchApkButton.Text = "Launch Apk By Package Name";
+            this.launchApkButton.UseVisualStyleBackColor = true;
+            this.launchApkButton.Click += new System.EventHandler(this.launchApkButton_Click);
+            // 
+            // uninstallAppButton
+            // 
+            this.uninstallAppButton.Location = new System.Drawing.Point(375, 92);
+            this.uninstallAppButton.Name = "uninstallAppButton";
+            this.uninstallAppButton.Size = new System.Drawing.Size(64, 34);
+            this.uninstallAppButton.TabIndex = 20;
+            this.uninstallAppButton.Text = "Uninstall app";
+            this.uninstallAppButton.UseVisualStyleBackColor = true;
+            this.uninstallAppButton.Click += new System.EventHandler(this.uninstallAppButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(450, 411);
+            this.ClientSize = new System.Drawing.Size(650, 411);
+            this.Controls.Add(this.uninstallAppButton);
+            this.Controls.Add(this.launchApkButton);
+            this.Controls.Add(this.launchPackageTextBox);
             this.Controls.Add(this.changePermsBtn);
             this.Controls.Add(this.listApkPermsButton);
             this.Controls.Add(this.getApkButton);
@@ -194,17 +220,17 @@
             this.Controls.Add(this.restorebutton);
             this.Controls.Add(this.debugbutton);
             this.Controls.Add(this.backupbutton);
-            this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.obbcopybutton);
             this.Controls.Add(this.instructionsbutton);
             this.Controls.Add(this.devicesbutton);
             this.Controls.Add(this.startsideloadbutton);
-            this.MaximumSize = new System.Drawing.Size(466, 1000);
+            this.MaximumSize = new System.Drawing.Size(666, 1000);
             this.MinimumSize = new System.Drawing.Size(466, 450);
             this.Name = "Form1";
             this.Text = "Rookie SideLoader";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -213,7 +239,6 @@
         private System.Windows.Forms.Button devicesbutton;
         private System.Windows.Forms.Button instructionsbutton;
         private System.Windows.Forms.Button obbcopybutton;
-        private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button backupbutton;
         private System.Windows.Forms.Button debugbutton;
         private System.Windows.Forms.Button restorebutton;
@@ -223,6 +248,9 @@
         private System.Windows.Forms.Button getApkButton;
         private System.Windows.Forms.Button listApkPermsButton;
         private System.Windows.Forms.Button changePermsBtn;
+        private System.Windows.Forms.TextBox launchPackageTextBox;
+        private System.Windows.Forms.Button launchApkButton;
+        private System.Windows.Forms.Button uninstallAppButton;
     }
 }
 
