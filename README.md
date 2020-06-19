@@ -2,6 +2,10 @@
 
 Changelog
 
+0.8.5
+ - Added auto update download
+ - Fixed a bug where if you didn't have the adb folder it would crash
+
 0.8
  - Every command now shows progress on title bar
  - Automatically run Adb Devices and List Apps on form startup
