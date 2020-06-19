@@ -198,8 +198,7 @@ namespace AndroidSideloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            runAdbCommand("devices");
-            changeTitlebarToDevice();
+            
             //comboBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend; //can remove if u want to not show the box 2 times
 
             //comboBox1.AutoCompleteSource = AutoCompleteSource.ListItems;
@@ -236,6 +235,9 @@ namespace AndroidSideloader
                 }
                 
             }
+            runAdbCommand("devices");
+            changeTitlebarToDevice();
+
             if (debugMode==false)
                 checkForUpdate();
             intToolTips();
@@ -250,18 +252,35 @@ namespace AndroidSideloader
         }
         void checkForUpdate()
         {
-            try
+            string localVersion = "0.8.5";
+            HttpClient client = new HttpClient();
+            string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
+            currentVersion = currentVersion.Remove(currentVersion.Length - 1);
+
+            if (localVersion != currentVersion)
             {
-                string localVersion = "0.8";
-                HttpClient client = new HttpClient();
-                string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
-                currentVersion = currentVersion.Remove(currentVersion.Length - 1);
-                if (localVersion != currentVersion)
-                    MessageBox.Show("Your version is outdated, the latest version is " + currentVersion + " you can download it from https://github.com/nerdunit/", "OUTDATED");
-            }
-            catch
-            {
-            //No need for messages, the user has no internet
+                DialogResult dialogResult = MessageBox.Show("There is a new update, do you want to update?", "New version " + currentVersion + " available", MessageBoxButtons.YesNo);
+                if (dialogResult != DialogResult.Yes)
+                    return;
+                using (var fileClient = new WebClient())
+                {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    fileClient.DownloadFile("https://github.com/nerdunit/androidsideloader/releases/download/v" + currentVersion + "/AndroidSideloader.exe", "Android Sideloader v" + currentVersion + ".exe");
+                }
+
+                Process.Start(new ProcessStartInfo()
+                {
+                    Arguments = "/C choice /C Y /N /D Y /T 5 & Del \"" + Application.ExecutablePath + "\"",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe"
+                });
+
+                Process.Start(Environment.CurrentDirectory + "\\Android Sideloader v" + currentVersion + ".exe");
+
+                Environment.Exit(0);
+                //MessageBox.Show("Your version is outdated, the latest version is " + currentVersion + " you can download it from https://github.com/nerdunit/", "OUTDATED");
             }
         }
 
