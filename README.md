@@ -2,6 +2,12 @@
 
 Changelog
 
+0.8
+ - Every command now shows progress on title bar
+ - Automatically run Adb Devices and List Apps on form startup
+ - You can now search the App List Combo Box
+ - Cleaned some code
+
 0.7
  - Fixed UI Freezes
  - Added Uninstall APK Button
