@@ -8,11 +8,13 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Reflection;
 using System.Net;
-
+using SergeUtils;
 
 
 namespace AndroidSideloader
 {
+
+
 
     public partial class Form1 : Form
     {
@@ -35,9 +37,19 @@ namespace AndroidSideloader
             InitializeComponent();
         }
 
-        public void runAdbCommand(string command)
-        {  
+        public void changeTitle(string txt)
+        {
+            if (this.InvokeRequired)
+                this.Invoke(new Action(() => this.Text = txt));
+            else
+                this.Text = txt;
+        }
 
+        public void runAdbCommand(string command)
+        {
+            string oldTitle = this.Text;
+            changeTitle("Rookie's Sideloader | Running command " + command);
+            
             exit = false;
 
             Process cmd = new Process();
@@ -63,10 +75,13 @@ namespace AndroidSideloader
             sw.Close();
             line = allText.Split('\n');
             exit = true;
+
+            changeTitle(oldTitle);
         }
 
         private void sideload(string path)
         {
+
             Thread t1 = new Thread(() =>
             {
                 runAdbCommand("install -r " + '"' + path + '"');
@@ -74,6 +89,8 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
             t1.Join();
+
+
         }
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
@@ -105,8 +122,8 @@ namespace AndroidSideloader
 
         private void devicesbutton_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Action Started, may take some time...");
             runAdbCommand("devices");
+            changeTitlebarToDevice();
             MessageBox.Show(allText);
         }
 
@@ -171,12 +188,24 @@ namespace AndroidSideloader
             }
         }
 
+        private void changeTitlebarToDevice()
+        {
+            if (line[1].Length > 1)
+                this.Text = "Rookie Sideloader | Device Connected with ID | " + line[1].Replace("device", "");
+            else
+                this.Text = "Rookie Sideloader | No Device Connected";
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            runAdbCommand("devices");
+            changeTitlebarToDevice();
+            //comboBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend; //can remove if u want to not show the box 2 times
+
+            //comboBox1.AutoCompleteSource = AutoCompleteSource.ListItems;
+
             if (File.Exists(debugPath))
                 File.Delete(debugPath);
-            if (debugMode == false)
-                debugbutton.Visible = false;
             if (Directory.Exists(adbPath)==false)
             {
                 MessageBox.Show("Please wait for the software to download and install the adb");
@@ -210,6 +239,9 @@ namespace AndroidSideloader
             if (debugMode==false)
                 checkForUpdate();
             intToolTips();
+
+            listappsBtn();
+
         }
         void intToolTips()
         {
@@ -233,7 +265,7 @@ namespace AndroidSideloader
             }
         }
 
-        private async void backup()
+        private void backup()
         {
             MessageBox.Show("Action Started, may take some time...");
             Thread t1 = new Thread(() =>
@@ -272,7 +304,7 @@ namespace AndroidSideloader
             
         }
 
-        private async void restore()
+        private void restore()
         {
             Thread t1 = new Thread(() =>
             {
@@ -313,7 +345,7 @@ namespace AndroidSideloader
             adbCommandForm.Show();
         }
 
-        private async void listapps()
+        private void listapps()
         {
             Thread t1 = new Thread(() =>
             {
@@ -324,24 +356,30 @@ namespace AndroidSideloader
             t1.Join();
         }
 
-        private async void ListApps_Click(object sender, EventArgs e)
+        private void ListApps_Click(object sender, EventArgs e)
+        {
+            listappsBtn();
+        }
+
+        private async void listappsBtn()
         {
             allText = "";
 
-            comboBox1.Items.Clear();
+            m_combo.Items.Clear();
 
             await Task.Run(() => listapps());
-
-            foreach(string obj in line)
+            
+            foreach (string obj in line)
             {
-                comboBox1.Items.Add(obj);
+                if (obj.Length>9)
+                    m_combo.Items.Add(obj.Remove(0, 8));
             }
-
-            if (allText.Length > 0)
-                MessageBox.Show("Fetched apks with success");
+            m_combo.MatchingMethod = StringMatchingMethod.NoWildcards;
+            //if (allText.Length > 0)
+            //    MessageBox.Show("Fetched apks with success");
         }
 
-        private async void getapk(string package)
+        private void getapk(string package)
         {
             Thread t1 = new Thread(() =>
             {
@@ -352,7 +390,7 @@ namespace AndroidSideloader
             t1.Join();
         }
 
-        private async void pullapk(string apkPath)
+        private void pullapk(string apkPath)
         {
             Thread t2 = new Thread(() =>
             {
@@ -360,21 +398,12 @@ namespace AndroidSideloader
             });
             t2.IsBackground = true;
             t2.Start();
+            t2.Join();
         }
 
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-            string package;
-            allText = "";
-            try
-            {
-                package = comboBox1.SelectedItem.ToString().Remove(0,8); //remove package:
-                package = package.Remove(package.Length - 1);
-            } catch { MessageBox.Show("You must first run list items"); return; }
-
-            //MessageBox.Show(package);
-            exit = false;
-
+            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             await Task.Run(() => getapk(package));
 
@@ -383,8 +412,6 @@ namespace AndroidSideloader
 
             string apkPath = allText.Remove(0, 8); //remove package:
             apkPath = apkPath.Remove(apkPath.Length - 1);
-            //MessageBox.Show(adbPath);
-            exit = false;
 
             await Task.Run(() => pullapk(apkPath));
 
@@ -395,15 +422,13 @@ namespace AndroidSideloader
             if (File.Exists(Environment.CurrentDirectory + "\\" + package + ".apk"))
                 File.Delete(Environment.CurrentDirectory + "\\" + package + ".apk");
 
+
             File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
-
-            //File.Delete(Environment.CurrentDirectory + "\\adb\\" + currApkPath);
-
 
             MessageBox.Show("Done");
         }
 
-        private async void listappperms(string package)
+        private void listappperms(string package)
         {
             Thread t1 = new Thread(() =>
             {
@@ -416,16 +441,7 @@ namespace AndroidSideloader
 
         private async void listApkPermsButton_Click(object sender, EventArgs e)
         {
-            string package;
-            allText = "";
-            try
-            {
-                package = comboBox1.SelectedItem.ToString().Remove(0, 8); //remove package:
-                package = package.Remove(package.Length - 1);
-            }
-            catch { MessageBox.Show("You must first run list items"); return; }
-
-            exit = false;
+            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             await Task.Run(() => listappperms(package));
 
@@ -472,14 +488,7 @@ namespace AndroidSideloader
 
         private async void changePermsBtn_Click(object sender, EventArgs e)
         {
-            string package;
-            allText = "";
-            try
-            {
-                package = comboBox1.SelectedItem.ToString().Remove(0, 8); //remove package:
-                package = package.Remove(package.Length - 1);
-            }
-            catch { MessageBox.Show("You must first run list items"); return; }
+            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             foreach (Control c in Controls)
             {
@@ -503,7 +512,7 @@ namespace AndroidSideloader
         }
 
 
-        private async void changePerms(Control c, string package, string grant)
+        private void changePerms(Control c, string package, string grant)
         {
             Thread t1 = new Thread(() =>
             {
@@ -526,31 +535,41 @@ namespace AndroidSideloader
 
         }
 
-        private void uninstallAppButton_Click(object sender, EventArgs e)
+        private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
-            string package;
             allText = "";
-            try
-            {
-                package = comboBox1.SelectedItem.ToString().Remove(0, 8); //remove package:
-                package = package.Remove(package.Length - 1);
-            }
-            catch { MessageBox.Show("You must first run list items"); return; }
+            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             DialogResult dialogResult = MessageBox.Show("Are you sure you want to uninstall " + package + " this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
                 return;
 
-            exit = false;
+            await Task.Run(() => uninstallPackage(package));
+
+            MessageBox.Show(allText);
+        }
+
+        private void uninstallPackage(string package)
+        {
             Thread t1 = new Thread(() =>
             {
                 runAdbCommand("shell pm uninstall -k --user 0 " + package);
             });
             t1.IsBackground = true;
             t1.Start();
+            t1.Join();
+        }
 
-            MessageBox.Show(allText);
+        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
+        {
+            MethodItem mi = (MethodItem)m_combo.SelectedItem;
+            m_combo.MatchingMethod = mi.Value;
         }
     }
 
+    public class MethodItem
+    {
+        public string Name { get; set; }
+        public StringMatchingMethod Value { get; set; }
+    }
 }
