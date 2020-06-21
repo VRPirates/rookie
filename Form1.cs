@@ -6,14 +6,19 @@ using System.Threading;
 using System.Windows;
 using System.Threading.Tasks;
 using System.Net.Http;
+using System.Timers;
 using System.Reflection;
+using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
 
 
+/* <a target="_blank" href="https://icons8.com/icons/set/van">Van icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
+ * The icon of the app contains an icon made by icon8.com
+ */
+
 namespace AndroidSideloader
 {
-
 
 
     public partial class Form1 : Form
@@ -26,15 +31,21 @@ namespace AndroidSideloader
         string path;
         string obbPath = "";
         string obbFile;
+        int size;
         string allText;
 
         bool exit = false;
-        string debugPath = "debug.log";
-        public string adbPath = Environment.CurrentDirectory + "\\adb\\";
+        public static string debugPath = "debug.log";
+        public static string adbPath = Environment.CurrentDirectory + "\\adb\\";
         string[] line;
         public Form1()
         {
             InitializeComponent();
+
+            Timer99.Tick += Timer99_Tick; // don't freeze the ui
+            Timer99.Interval = new TimeSpan(0, 0, 0, 0, 1024);
+            Timer99.IsEnabled = true;
+            Timer99.Stop();
         }
 
         public void changeTitle(string txt)
@@ -95,7 +106,6 @@ namespace AndroidSideloader
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
         {
-
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Android apps (*.apk)|*.apk";
@@ -107,24 +117,42 @@ namespace AndroidSideloader
                 else
                     return;
             }
+            progressBar.Value = 0;
+            FileInfo fi = new FileInfo(path);
+            size = (int)fi.Length / 1024;
+            progressBar.Maximum = size;
 
-            if (path == "" || path.EndsWith(".apk") == false)
-                MessageBox.Show("You must select an apk");
-            else
-            {
+            Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
+            await Task.Run(() => sideload(path));
+            Timer99.Stop();
+            progressBar.Value = size;
 
-                await Task.Run(() => sideload(path));
-
-                MessageBox.Show(allText);
-            }
+            notify(allText);
 
         }
 
         private void devicesbutton_Click(object sender, EventArgs e)
         {
             runAdbCommand("devices");
+
             changeTitlebarToDevice();
-            MessageBox.Show(allText);
+
+            notify(allText);
+        }
+
+        public static void notify(string message)
+        {
+            var notifyIcon = new System.Windows.Forms.NotifyIcon();
+            //notifyIcon.Icon = System.Drawing.SystemIcons.Application;
+            notifyIcon.Icon = System.Drawing.SystemIcons.Asterisk;
+            notifyIcon.BalloonTipTitle = "AndroidSideloader";
+            notifyIcon.BalloonTipText = message;
+            notifyIcon.Visible = true;
+            notifyIcon.BalloonTipClicked += (sender, e) => {
+                Clipboard.SetText(message);
+            };
+            notifyIcon.ShowBalloonTip(3000);
+            Task.Delay(5000).ContinueWith(t => notifyIcon.Dispose()); //Delete notification after 5 seconds
         }
 
         private void instructionsbutton_Click(object sender, EventArgs e)
@@ -162,30 +190,29 @@ namespace AndroidSideloader
 
         private async void obbcopybutton_Click(object sender, EventArgs e)
         {
-            using (var fbd = new FolderBrowserDialog())
+            var dialog = new FolderSelectDialog
             {
-                DialogResult result = fbd.ShowDialog();
-
-                if (result == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
-                {
-                    string[] files = Directory.GetFiles(fbd.SelectedPath);
-                    obbFile = files[0];
-                    obbPath = fbd.SelectedPath;
-
-                }
-                else return;
-            }
-
-            if (obbPath.Length>0)
+                Title = "Select your obb folder"
+            };
+            if (dialog.Show(Handle))
             {
-                await Task.Run(() => obbcopy(obbPath));
-                
-                MessageBox.Show(allText);
+                string[] files = Directory.GetFiles(dialog.FileName);
+                obbFile = files[0];
+                obbPath = dialog.FileName;
             }
-            else
-            {
-                MessageBox.Show("You forgot to select the obb folder");
-            }
+            else return;
+
+            progressBar.Value = 0;
+            FileInfo fi = new FileInfo(obbFile);
+            size = (int)fi.Length / 1024;
+            progressBar.Maximum = size;
+
+            Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
+            await Task.Run(() => obbcopy(obbPath));
+            Timer99.Stop();
+            progressBar.Value = size;
+
+            notify(allText);
         }
 
         private void changeTitlebarToDevice()
@@ -198,11 +225,11 @@ namespace AndroidSideloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            
-            //comboBox1.AutoCompleteMode = AutoCompleteMode.SuggestAppend; //can remove if u want to not show the box 2 times
-
-            //comboBox1.AutoCompleteSource = AutoCompleteSource.ListItems;
-
+            if (debugMode==true)
+            {
+                label.Visible = true;
+                label1.Visible = true;
+            }
             if (File.Exists(debugPath))
                 File.Delete(debugPath);
             if (Directory.Exists(adbPath)==false)
@@ -248,11 +275,27 @@ namespace AndroidSideloader
         void intToolTips()
         {
             ToolTip ListAppsToolTip = new ToolTip();
-            ListAppsToolTip.SetToolTip(this.ListApps, "Press this to show what packages you have installed");
+            ListAppsToolTip.SetToolTip(this.ListApps, "Shows what apps are installed in the list below (in the combo box)");
+            ToolTip ListDevicesToolTip = new ToolTip();
+            ListDevicesToolTip.SetToolTip(this.devicesbutton, "Lists the devices in a message box, also updates title bar");
+            ToolTip SideloadAPKToolTip = new ToolTip();
+            SideloadAPKToolTip.SetToolTip(this.startsideloadbutton, "Sideloads/Installs one apk on the android device");
+            ToolTip OBBToolTip = new ToolTip();
+            OBBToolTip.SetToolTip(this.obbcopybutton, "Copies an obb folder to the Android/Obb folder from the device, some games/apps need this");
+            ToolTip BackupGameDataToolTip = new ToolTip();
+            BackupGameDataToolTip.SetToolTip(this.backupbutton, "Saves the game and apps data to the sideloader folder, does not save apk's and obb's");
+            ToolTip RestoreGameDataToolTip = new ToolTip();
+            RestoreGameDataToolTip.SetToolTip(this.restorebutton, "Restores the game and apps data to the device, first use Backup Game Data button");
+            ToolTip GetAPKToolTip = new ToolTip();
+            GetAPKToolTip.SetToolTip(this.getApkButton, "Saves the selected apk to the folder where the sideloader is");
+            ToolTip ListAppPermsToolTip = new ToolTip();
+            ListAppPermsToolTip.SetToolTip(this.listApkPermsButton, "Lists the permissions for the selected apk");
+            ToolTip ChangeAppPermsToolTip = new ToolTip();
+            ChangeAppPermsToolTip.SetToolTip(this.changePermsBtn, "Applies the permissions for the apk, first press list app perms");
         }
         void checkForUpdate()
         {
-            string localVersion = "0.8.5";
+            string localVersion = "0.9";
             HttpClient client = new HttpClient();
             string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
             currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -315,12 +358,7 @@ namespace AndroidSideloader
                 File.AppendAllText(debugPath, ex.ToString());
             }
 
-            MessageBox.Show(allText);
-        }
-
-        private void debugbutton_Click(object sender, EventArgs e)
-        {
-            
+            notify(allText);
         }
 
         private void restore()
@@ -355,7 +393,7 @@ namespace AndroidSideloader
             }
                 await Task.Run(() => restore());
 
-                MessageBox.Show(allText);
+            notify(allText);
         }
 
         private void customadbcmdbutton_Click(object sender, EventArgs e)
@@ -422,6 +460,12 @@ namespace AndroidSideloader
 
         private async void getApkButton_Click(object sender, EventArgs e)
         {
+            if (m_combo.Items.Count == 0)
+            {
+                MessageBox.Show("Please select an app first");
+                return;
+            }
+
             string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             await Task.Run(() => getapk(package));
@@ -444,7 +488,7 @@ namespace AndroidSideloader
 
             File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
 
-            MessageBox.Show("Done");
+            notify(allText);
         }
 
         private void listappperms(string package)
@@ -460,6 +504,12 @@ namespace AndroidSideloader
 
         private async void listApkPermsButton_Click(object sender, EventArgs e)
         {
+            if(m_combo.Items.Count == 0)
+            {
+                MessageBox.Show("Please select an app first");
+                return;
+            }
+
             string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             await Task.Run(() => listappperms(package));
@@ -507,6 +557,12 @@ namespace AndroidSideloader
 
         private async void changePermsBtn_Click(object sender, EventArgs e)
         {
+            if (m_combo.Items.Count == 0)
+            {
+                MessageBox.Show("Please select an app first");
+                return;
+            }
+
             string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
             foreach (Control c in Controls)
@@ -526,7 +582,7 @@ namespace AndroidSideloader
                 
             }
 
-            MessageBox.Show("Done!");
+            notify("Changed Permissions");
 
         }
 
@@ -554,8 +610,19 @@ namespace AndroidSideloader
 
         }
 
+        private bool checkForDevice()
+        {
+            return true;
+        }
+
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
+            if (m_combo.Items.Count == 0)
+            {
+                MessageBox.Show("Please select an app first");
+                return;
+            }
+
             allText = "";
             string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
@@ -565,7 +632,7 @@ namespace AndroidSideloader
 
             await Task.Run(() => uninstallPackage(package));
 
-            MessageBox.Show(allText);
+            notify(allText);
         }
 
         private void uninstallPackage(string package)
@@ -583,6 +650,70 @@ namespace AndroidSideloader
         {
             MethodItem mi = (MethodItem)m_combo.SelectedItem;
             m_combo.MatchingMethod = mi.Value;
+        }
+
+        private async void sideloadFolderButton_Click(object sender, EventArgs e)
+        {
+            var dialog = new FolderSelectDialog
+            {
+                Title = "Select your folder with APKs"
+            };
+            if (dialog.Show(Handle))
+            {
+                string[] files = Directory.GetFiles(dialog.FileName);
+                foreach (string file in files)
+                {
+                    await Task.Run(() => sideload(file));
+                }
+            }
+            else return;
+
+            notify("Done Mass Sideloading");
+        }
+
+        private void aboutBtn_Click(object sender, EventArgs e)
+        {
+            string about = @" - The icon of the app contains an icon made by icon8.com
+ - Software orignally coded by rookie.lol#7897
+ - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
+ - Thanks to Serge Weinstock for developing SergeUtils, it is used to search the combo box";
+            MessageBox.Show(about);
+        }
+
+
+        /*Progress bar stuff
+         * 
+         */
+
+        DispatcherTimer Timer99 = new DispatcherTimer();
+
+        public PerformanceCounter myCounter =
+            new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
+        public PerformanceCounter myCounter2 =
+    new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
+
+        public Int32 j = 0;
+        public Int32 k = 0;
+        public void Timer99_Tick(System.Object sender, System.EventArgs e)
+
+        {
+            //Console.Clear();
+            j = Convert.ToInt32(myCounter.NextValue());
+            j = j / 1024;
+            k = Convert.ToInt32(myCounter2.NextValue());
+            k = k / 1024;
+
+            try { progressBar.Value += k*10; } catch { progressBar.Maximum = 100; progressBar.Value = 90; Timer99.Stop(); } //fake progress bar, for some reason performance counters are retarded or i am
+            //Console.WriteLine(j);
+            label.Text = "Read " + j.ToString();
+            label1.Text = "Write " + k.ToString();
+            
+        }
+
+        private void userjsonButton_Click(object sender, EventArgs e)
+        {
+            usernameForm usernameForm1 = new usernameForm();
+            usernameForm1.Show();
         }
     }
 

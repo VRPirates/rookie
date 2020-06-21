@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.m_combo = new SergeUtils.EasyCompletionComboBox();
             this.startsideloadbutton = new System.Windows.Forms.Button();
             this.devicesbutton = new System.Windows.Forms.Button();
@@ -43,18 +44,24 @@
             this.launchPackageTextBox = new System.Windows.Forms.TextBox();
             this.launchApkButton = new System.Windows.Forms.Button();
             this.uninstallAppButton = new System.Windows.Forms.Button();
+            this.sideloadFolderButton = new System.Windows.Forms.Button();
+            this.aboutBtn = new System.Windows.Forms.Button();
+            this.label = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.userjsonButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // m_combo
             // 
             this.m_combo.Location = new System.Drawing.Point(12, 134);
             this.m_combo.Name = "m_combo";
-            this.m_combo.Size = new System.Drawing.Size(426, 21);
+            this.m_combo.Size = new System.Drawing.Size(427, 21);
             this.m_combo.TabIndex = 16;
             // 
             // startsideloadbutton
             // 
-            this.startsideloadbutton.Location = new System.Drawing.Point(100, 13);
+            this.startsideloadbutton.Location = new System.Drawing.Point(100, 12);
             this.startsideloadbutton.Name = "startsideloadbutton";
             this.startsideloadbutton.Size = new System.Drawing.Size(87, 33);
             this.startsideloadbutton.TabIndex = 2;
@@ -94,9 +101,9 @@
             // 
             // backupbutton
             // 
-            this.backupbutton.Location = new System.Drawing.Point(13, 52);
+            this.backupbutton.Location = new System.Drawing.Point(12, 52);
             this.backupbutton.Name = "backupbutton";
-            this.backupbutton.Size = new System.Drawing.Size(81, 34);
+            this.backupbutton.Size = new System.Drawing.Size(82, 34);
             this.backupbutton.TabIndex = 5;
             this.backupbutton.Text = "Backup Gamedata";
             this.backupbutton.UseVisualStyleBackColor = true;
@@ -190,11 +197,74 @@
             this.uninstallAppButton.UseVisualStyleBackColor = true;
             this.uninstallAppButton.Click += new System.EventHandler(this.uninstallAppButton_Click);
             // 
+            // sideloadFolderButton
+            // 
+            this.sideloadFolderButton.Location = new System.Drawing.Point(375, 12);
+            this.sideloadFolderButton.Name = "sideloadFolderButton";
+            this.sideloadFolderButton.Size = new System.Drawing.Size(92, 33);
+            this.sideloadFolderButton.TabIndex = 17;
+            this.sideloadFolderButton.Text = "Sideload Folder";
+            this.sideloadFolderButton.UseVisualStyleBackColor = true;
+            this.sideloadFolderButton.Click += new System.EventHandler(this.sideloadFolderButton_Click);
+            // 
+            // aboutBtn
+            // 
+            this.aboutBtn.Location = new System.Drawing.Point(574, 94);
+            this.aboutBtn.Name = "aboutBtn";
+            this.aboutBtn.Size = new System.Drawing.Size(64, 34);
+            this.aboutBtn.TabIndex = 18;
+            this.aboutBtn.Text = "About";
+            this.aboutBtn.UseVisualStyleBackColor = true;
+            this.aboutBtn.Click += new System.EventHandler(this.aboutBtn_Click);
+            // 
+            // label
+            // 
+            this.label.AutoSize = true;
+            this.label.Location = new System.Drawing.Point(27, 363);
+            this.label.Name = "label";
+            this.label.Size = new System.Drawing.Size(35, 13);
+            this.label.TabIndex = 19;
+            this.label.Text = "label1";
+            this.label.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(27, 389);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(35, 13);
+            this.label1.TabIndex = 20;
+            this.label1.Text = "label1";
+            this.label1.Visible = false;
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(12, 157);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(427, 23);
+            this.progressBar.TabIndex = 21;
+            // 
+            // userjsonButton
+            // 
+            this.userjsonButton.Location = new System.Drawing.Point(473, 13);
+            this.userjsonButton.Name = "userjsonButton";
+            this.userjsonButton.Size = new System.Drawing.Size(92, 33);
+            this.userjsonButton.TabIndex = 22;
+            this.userjsonButton.Text = "Create user.json";
+            this.userjsonButton.UseVisualStyleBackColor = true;
+            this.userjsonButton.Click += new System.EventHandler(this.userjsonButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 411);
+            this.Controls.Add(this.userjsonButton);
+            this.Controls.Add(this.progressBar);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.label);
+            this.Controls.Add(this.aboutBtn);
+            this.Controls.Add(this.sideloadFolderButton);
             this.Controls.Add(this.uninstallAppButton);
             this.Controls.Add(this.launchApkButton);
             this.Controls.Add(this.launchPackageTextBox);
@@ -210,6 +280,8 @@
             this.Controls.Add(this.instructionsbutton);
             this.Controls.Add(this.devicesbutton);
             this.Controls.Add(this.startsideloadbutton);
+            this.HelpButton = true;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(666, 1000);
             this.MinimumSize = new System.Drawing.Size(466, 450);
             this.Name = "Form1";
@@ -236,6 +308,12 @@
         private System.Windows.Forms.TextBox launchPackageTextBox;
         private System.Windows.Forms.Button launchApkButton;
         private System.Windows.Forms.Button uninstallAppButton;
+        private System.Windows.Forms.Button sideloadFolderButton;
+        private System.Windows.Forms.Button aboutBtn;
+        private System.Windows.Forms.Label label;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ProgressBar progressBar;
+        private System.Windows.Forms.Button userjsonButton;
     }
 }
 
