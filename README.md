@@ -2,6 +2,13 @@
 
 Changelog
 
+0.10
+ = Obb copy and Sideload progress bar problems should be fixed
+ = Fixed user.json not working if the any of folder had spaces
+ + Added few tooltips
+ + Sideload folder now works for all apks (recursive search)
+ = Switched back to Message Boxes
+
 0.9
  + Added the buggy progress bar back, uses different "logic"
  + Added an icon (Increased the exe size by like 300% just with that)
