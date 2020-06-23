@@ -30,7 +30,7 @@ namespace AndroidSideloader
 
             File.WriteAllText("user.json", "{\"username\":\"" + textBox1.Text + "\"}");
 
-            string command = "push " + Environment.CurrentDirectory + "\\user.json " + " /sdcard/";
+            string command = "push \"" + Environment.CurrentDirectory + "\\user.json\" " + " /sdcard/";
 
 
             Process cmd = new Process();

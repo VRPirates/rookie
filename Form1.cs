@@ -20,13 +20,12 @@ using SergeUtils;
 namespace AndroidSideloader
 {
 
-
     public partial class Form1 : Form
     {
 #if DEBUG
-            bool debugMode = true;
+            public static bool debugMode = true;
 #else
-        bool debugMode = false;
+        public static bool debugMode = false;
 #endif
         string path;
         string obbPath = "";
@@ -117,9 +116,16 @@ namespace AndroidSideloader
                 else
                     return;
             }
+
+
+            //please don't read this trash about progressbar
             progressBar.Value = 0;
             FileInfo fi = new FileInfo(path);
-            size = (int)fi.Length / 1024;
+            size = (int)(fi.Length / 1024);
+
+            if (size < 0)
+                size = size * -1;
+
             progressBar.Maximum = size;
 
             Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
@@ -142,17 +148,24 @@ namespace AndroidSideloader
 
         public static void notify(string message)
         {
-            var notifyIcon = new System.Windows.Forms.NotifyIcon();
-            //notifyIcon.Icon = System.Drawing.SystemIcons.Application;
-            notifyIcon.Icon = System.Drawing.SystemIcons.Asterisk;
-            notifyIcon.BalloonTipTitle = "AndroidSideloader";
-            notifyIcon.BalloonTipText = message;
-            notifyIcon.Visible = true;
-            notifyIcon.BalloonTipClicked += (sender, e) => {
-                Clipboard.SetText(message);
-            };
-            notifyIcon.ShowBalloonTip(3000);
-            Task.Delay(5000).ContinueWith(t => notifyIcon.Dispose()); //Delete notification after 5 seconds
+            if (debugMode==true)
+            {
+                var notifyIcon = new System.Windows.Forms.NotifyIcon();
+                //notifyIcon.Icon = System.Drawing.SystemIcons.Application;
+                notifyIcon.Icon = System.Drawing.SystemIcons.Asterisk;
+                notifyIcon.BalloonTipTitle = "AndroidSideloader";
+                notifyIcon.BalloonTipText = message;
+                notifyIcon.Visible = true;
+                notifyIcon.BalloonTipClicked += (sender, e) => {
+                    Clipboard.SetText(message);
+                };
+                notifyIcon.ShowBalloonTip(3000);
+                Task.Delay(5000).ContinueWith(t => notifyIcon.Dispose()); //Delete notification after 5 seconds
+            }
+            else
+            {
+                MessageBox.Show(message);
+            }
         }
 
         private void instructionsbutton_Click(object sender, EventArgs e)
@@ -204,7 +217,9 @@ namespace AndroidSideloader
 
             progressBar.Value = 0;
             FileInfo fi = new FileInfo(obbFile);
-            size = (int)fi.Length / 1024;
+            size = (int)(fi.Length / 1024);
+            if (size < 0)
+                size = size * -1;
             progressBar.Maximum = size;
 
             Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
@@ -266,7 +281,8 @@ namespace AndroidSideloader
             changeTitlebarToDevice();
 
             if (debugMode==false)
-                checkForUpdate();
+                if (File.Exists(Environment.CurrentDirectory + "\\disableUpdates")==false)
+                    checkForUpdate();
             intToolTips();
 
             listappsBtn();
@@ -292,10 +308,17 @@ namespace AndroidSideloader
             ListAppPermsToolTip.SetToolTip(this.listApkPermsButton, "Lists the permissions for the selected apk");
             ToolTip ChangeAppPermsToolTip = new ToolTip();
             ChangeAppPermsToolTip.SetToolTip(this.changePermsBtn, "Applies the permissions for the apk, first press list app perms");
+            ToolTip sideloadFolderToolTip = new ToolTip();
+            sideloadFolderToolTip.SetToolTip(this.sideloadFolderButton, "Sideloads every apk from a folder");
+            ToolTip uninstallAppToolTip = new ToolTip();
+            uninstallAppToolTip.SetToolTip(this.uninstallAppButton, "Uninstalls selected app");
+            ToolTip userjsonToolTip = new ToolTip();
+            userjsonToolTip.SetToolTip(this.userjsonButton, "After you enter your username it will create an user.json file needed for some games");
+
         }
         void checkForUpdate()
         {
-            string localVersion = "0.9";
+            string localVersion = "0.10";
             HttpClient client = new HttpClient();
             string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
             currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -540,18 +563,13 @@ namespace AndroidSideloader
                     chk.Width = 420;
                     chk.Height = 17;
                     chk.Text = line[i];
-                    chk.CheckedChanged += new EventHandler(CheckBox_Checked);
+                    //chk.CheckedChanged += new EventHandler(CheckBox_Checked);
                     Controls.Add(chk);
                     pos2 += 20;
                 }
             }
 
             
-
-        }
-
-        private void CheckBox_Checked(object sender, EventArgs e)
-        {
 
         }
 
@@ -610,11 +628,6 @@ namespace AndroidSideloader
 
         }
 
-        private bool checkForDevice()
-        {
-            return true;
-        }
-
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
             if (m_combo.Items.Count == 0)
@@ -660,15 +673,29 @@ namespace AndroidSideloader
             };
             if (dialog.Show(Handle))
             {
-                string[] files = Directory.GetFiles(dialog.FileName);
-                foreach (string file in files)
-                {
-                    await Task.Run(() => sideload(file));
-                }
+                recursiveSideload(dialog.FileName);
             }
             else return;
 
-            notify("Done Mass Sideloading");
+            notify("Done bulk sideloading");
+        }
+
+        private async void recursiveSideload(string location)
+        {
+            string[] files = Directory.GetFiles(location);
+            string[] childDirectories = Directory.GetDirectories(location);
+            for (int i = 0; i < files.Length; i++)
+            {
+                string extension = Path.GetExtension(files[i]);
+                if (extension == ".apk")
+                {
+                    await Task.Run(() => sideload(files[i]));
+                }
+            }
+            for (int i = 0; i < childDirectories.Length; i++)
+            {
+                recursiveSideload(childDirectories[i]);
+            }
         }
 
         private void aboutBtn_Click(object sender, EventArgs e)
