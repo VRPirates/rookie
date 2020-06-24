@@ -8,9 +8,11 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Timers;
 using System.Reflection;
+using System.Text;//
 using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
+using JR.Utils.GUI.Forms;
 
 
 /* <a target="_blank" href="https://icons8.com/icons/set/van">Van icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -30,7 +32,6 @@ namespace AndroidSideloader
         string path;
         string obbPath = "";
         string obbFile;
-        int size;
         string allText;
 
         bool exit = false;
@@ -117,21 +118,8 @@ namespace AndroidSideloader
                     return;
             }
 
-
-            //please don't read this trash about progressbar
-            progressBar.Value = 0;
-            FileInfo fi = new FileInfo(path);
-            size = (int)(fi.Length / 1024);
-
-            if (size < 0)
-                size = size * -1;
-
-            progressBar.Maximum = size;
-
-            Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
+            //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
             await Task.Run(() => sideload(path));
-            Timer99.Stop();
-            progressBar.Value = size;
 
             notify(allText);
 
@@ -164,7 +152,7 @@ namespace AndroidSideloader
             }
             else
             {
-                MessageBox.Show(message);
+                FlexibleMessageBox.Show(message);
             }
         }
 
@@ -176,7 +164,7 @@ namespace AndroidSideloader
 4. Select your apk with select apk button.
 5. Press Sideload and wait...
 6. If the game has an obb folder, select it by using select obb then press copy obb";
-            MessageBox.Show(instructions);
+            FlexibleMessageBox.Show(instructions);
         }
 
         public void ExtractFile(string sourceArchive, string destination)
@@ -215,17 +203,8 @@ namespace AndroidSideloader
             }
             else return;
 
-            progressBar.Value = 0;
-            FileInfo fi = new FileInfo(obbFile);
-            size = (int)(fi.Length / 1024);
-            if (size < 0)
-                size = size * -1;
-            progressBar.Maximum = size;
-
-            Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
+            //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
             await Task.Run(() => obbcopy(obbPath));
-            Timer99.Stop();
-            progressBar.Value = size;
 
             notify(allText);
         }
@@ -238,8 +217,32 @@ namespace AndroidSideloader
                 this.Text = "Rookie Sideloader | No Device Connected";
         }
 
+        private static String GetBatchOperationResults()
+        {
+            var builder = new StringBuilder("Batch operation report:\n\n");
+            var random = new Random();
+            var result = 0;
+
+            for (int i = 0; i < 200; i++)
+            {
+                result = random.Next(1000);
+
+                if (result < 950)
+                {
+                    builder.AppendFormat(" - Task {0}: Operation completed sucessfully.\n", i);
+                }
+                else
+                {
+                    builder.AppendFormat(" - Task {0}: Operation failed! A very very very very very very very very very very very very serious error has occured during this sub-operation. The errorcode is: {1}).\n", i, result);
+                }
+            }
+
+            return builder.ToString();
+        }
+
         private void Form1_Load(object sender, EventArgs e)
         {
+
             if (debugMode==true)
             {
                 label.Visible = true;
@@ -249,7 +252,7 @@ namespace AndroidSideloader
                 File.Delete(debugPath);
             if (Directory.Exists(adbPath)==false)
             {
-                MessageBox.Show("Please wait for the software to download and install the adb");
+                FlexibleMessageBox.Show("Please wait for the software to download and install the adb");
                 try
                 {
                     using (var client = new WebClient())
@@ -267,7 +270,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Cannot download adb because you are not connected to the internet!");
+                    FlexibleMessageBox.Show("Cannot download adb because you are not connected to the internet!");
                     StreamWriter sw = File.AppendText(debugPath);
                     sw.Write("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
                     sw.Write(ex.ToString() + "\n");
@@ -318,23 +321,27 @@ namespace AndroidSideloader
         }
         void checkForUpdate()
         {
-            string localVersion = "0.10";
+            string localVersion = "0.11";
             HttpClient client = new HttpClient();
             string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
             currentVersion = currentVersion.Remove(currentVersion.Length - 1);
 
             if (localVersion != currentVersion)
             {
-                DialogResult dialogResult = MessageBox.Show("There is a new update, do you want to update?", "New version " + currentVersion + " available", MessageBoxButtons.YesNo);
+                string changelog = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/changelog.txt").Result;
+                DialogResult dialogResult = FlexibleMessageBox.Show("There is a new update you have version " + localVersion + ", do you want to update?\nCHANGELOG\n" + changelog, "New version " + currentVersion + " available", MessageBoxButtons.YesNo);
                 if (dialogResult != DialogResult.Yes)
                     return;
+
+                //download updated version
                 using (var fileClient = new WebClient())
                 {
                     ServicePointManager.Expect100Continue = true;
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    fileClient.DownloadFile("https://github.com/nerdunit/androidsideloader/releases/download/v" + currentVersion + "/AndroidSideloader.exe", "Android Sideloader v" + currentVersion + ".exe");
+                    fileClient.DownloadFile("https://github.com/nerdunit/androidsideloader/releases/download/v" + currentVersion + "/AndroidSideloader.exe", "AndroidSideloader v" + currentVersion + ".exe");
                 }
 
+                //melt
                 Process.Start(new ProcessStartInfo()
                 {
                     Arguments = "/C choice /C Y /N /D Y /T 5 & Del \"" + Application.ExecutablePath + "\"",
@@ -346,7 +353,6 @@ namespace AndroidSideloader
                 Process.Start(Environment.CurrentDirectory + "\\Android Sideloader v" + currentVersion + ".exe");
 
                 Environment.Exit(0);
-                //MessageBox.Show("Your version is outdated, the latest version is " + currentVersion + " you can download it from https://github.com/nerdunit/", "OUTDATED");
             }
         }
 
@@ -455,8 +461,6 @@ namespace AndroidSideloader
                     m_combo.Items.Add(obj.Remove(0, 8));
             }
             m_combo.MatchingMethod = StringMatchingMethod.NoWildcards;
-            //if (allText.Length > 0)
-            //    MessageBox.Show("Fetched apks with success");
         }
 
         private void getapk(string package)
@@ -665,7 +669,7 @@ namespace AndroidSideloader
             m_combo.MatchingMethod = mi.Value;
         }
 
-        private async void sideloadFolderButton_Click(object sender, EventArgs e)
+        private void sideloadFolderButton_Click(object sender, EventArgs e)
         {
             var dialog = new FolderSelectDialog
             {
@@ -703,8 +707,9 @@ namespace AndroidSideloader
             string about = @" - The icon of the app contains an icon made by icon8.com
  - Software orignally coded by rookie.lol#7897
  - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
- - Thanks to Serge Weinstock for developing SergeUtils, it is used to search the combo box";
-            MessageBox.Show(about);
+ - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
+ - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box";
+            FlexibleMessageBox.Show(about);
         }
 
 
@@ -730,7 +735,6 @@ namespace AndroidSideloader
             k = Convert.ToInt32(myCounter2.NextValue());
             k = k / 1024;
 
-            try { progressBar.Value += k*10; } catch { progressBar.Maximum = 100; progressBar.Value = 90; Timer99.Stop(); } //fake progress bar, for some reason performance counters are retarded or i am
             //Console.WriteLine(j);
             label.Text = "Read " + j.ToString();
             label1.Text = "Write " + k.ToString();

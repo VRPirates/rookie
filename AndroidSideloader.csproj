@@ -66,6 +66,7 @@
     <Compile Include="customAdbCommandForm.Designer.cs">
       <DependentUpon>customAdbCommandForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>

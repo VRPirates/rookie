@@ -48,7 +48,6 @@
             this.aboutBtn = new System.Windows.Forms.Button();
             this.label = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.userjsonButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
@@ -237,13 +236,6 @@
             this.label1.Text = "label1";
             this.label1.Visible = false;
             // 
-            // progressBar
-            // 
-            this.progressBar.Location = new System.Drawing.Point(12, 157);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(427, 23);
-            this.progressBar.TabIndex = 21;
-            // 
             // userjsonButton
             // 
             this.userjsonButton.Location = new System.Drawing.Point(473, 13);
@@ -260,7 +252,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 411);
             this.Controls.Add(this.userjsonButton);
-            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.label);
             this.Controls.Add(this.aboutBtn);
@@ -312,7 +303,6 @@
         private System.Windows.Forms.Button aboutBtn;
         private System.Windows.Forms.Label label;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button userjsonButton;
     }
 }
