@@ -1,3 +1,11 @@
+0.12
+ + Added settings form
+ + Added progress bar (again)
+ + Added a new user.json
+ = Fixed crash on some systems (PerformanceCounter)
+ = Fixed crash because of file name inconsistency
+ - Removed performance counters because they made the software not work for some people
+
 0.11
  + Changed normal message boxes to flexible ones
  + Added changelog to update message
