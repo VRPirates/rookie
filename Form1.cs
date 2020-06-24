@@ -8,7 +8,6 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Timers;
 using System.Reflection;
-using System.Text;//
 using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
@@ -58,11 +57,11 @@ namespace AndroidSideloader
 
         public void runAdbCommand(string command)
         {
+
             string oldTitle = this.Text;
             changeTitle("Rookie's Sideloader | Running command " + command);
             
             exit = false;
-
             Process cmd = new Process();
             cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
             cmd.StartInfo.Arguments = command;
@@ -101,7 +100,6 @@ namespace AndroidSideloader
             t1.Start();
             t1.Join();
 
-
         }
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
@@ -119,7 +117,9 @@ namespace AndroidSideloader
             }
 
             //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
+            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => sideload(path));
+            progressBar1.Style = ProgressBarStyle.Continuous;
 
             notify(allText);
 
@@ -136,24 +136,13 @@ namespace AndroidSideloader
 
         public static void notify(string message)
         {
-            if (debugMode==true)
-            {
-                var notifyIcon = new System.Windows.Forms.NotifyIcon();
-                //notifyIcon.Icon = System.Drawing.SystemIcons.Application;
-                notifyIcon.Icon = System.Drawing.SystemIcons.Asterisk;
-                notifyIcon.BalloonTipTitle = "AndroidSideloader";
-                notifyIcon.BalloonTipText = message;
-                notifyIcon.Visible = true;
-                notifyIcon.BalloonTipClicked += (sender, e) => {
-                    Clipboard.SetText(message);
-                };
-                notifyIcon.ShowBalloonTip(3000);
-                Task.Delay(5000).ContinueWith(t => notifyIcon.Dispose()); //Delete notification after 5 seconds
-            }
-            else
+            if (Properties.Settings.Default.enableMessageBoxes == true)
             {
                 FlexibleMessageBox.Show(message);
+                if (Properties.Settings.Default.copyMessageToClipboard == true)
+                    Clipboard.SetText(message);
             }
+
         }
 
         private void instructionsbutton_Click(object sender, EventArgs e)
@@ -204,7 +193,9 @@ namespace AndroidSideloader
             else return;
 
             //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
+            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => obbcopy(obbPath));
+            progressBar1.Style = ProgressBarStyle.Continuous;
 
             notify(allText);
         }
@@ -217,37 +208,11 @@ namespace AndroidSideloader
                 this.Text = "Rookie Sideloader | No Device Connected";
         }
 
-        private static String GetBatchOperationResults()
-        {
-            var builder = new StringBuilder("Batch operation report:\n\n");
-            var random = new Random();
-            var result = 0;
-
-            for (int i = 0; i < 200; i++)
-            {
-                result = random.Next(1000);
-
-                if (result < 950)
-                {
-                    builder.AppendFormat(" - Task {0}: Operation completed sucessfully.\n", i);
-                }
-                else
-                {
-                    builder.AppendFormat(" - Task {0}: Operation failed! A very very very very very very very very very very very very serious error has occured during this sub-operation. The errorcode is: {1}).\n", i, result);
-                }
-            }
-
-            return builder.ToString();
-        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            this.CenterToScreen();
 
-            if (debugMode==true)
-            {
-                label.Visible = true;
-                label1.Visible = true;
-            }
             if (File.Exists(debugPath))
                 File.Delete(debugPath);
             if (Directory.Exists(adbPath)==false)
@@ -280,12 +245,14 @@ namespace AndroidSideloader
                 }
                 
             }
+
             runAdbCommand("devices");
             changeTitlebarToDevice();
 
             if (debugMode==false)
-                if (File.Exists(Environment.CurrentDirectory + "\\disableUpdates")==false)
+                if (Properties.Settings.Default.checkForUpdates==true)
                     checkForUpdate();
+
             intToolTips();
 
             listappsBtn();
@@ -321,7 +288,7 @@ namespace AndroidSideloader
         }
         void checkForUpdate()
         {
-            string localVersion = "0.11";
+            string localVersion = "0.12";
             HttpClient client = new HttpClient();
             string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
             currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -350,7 +317,7 @@ namespace AndroidSideloader
                     FileName = "cmd.exe"
                 });
 
-                Process.Start(Environment.CurrentDirectory + "\\Android Sideloader v" + currentVersion + ".exe");
+                Process.Start(Environment.CurrentDirectory + "\\AndroidSideloader v" + currentVersion + ".exe");
 
                 Environment.Exit(0);
             }
@@ -495,7 +462,9 @@ namespace AndroidSideloader
 
             string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
+            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => getapk(package));
+            progressBar1.Style = ProgressBarStyle.Continuous;
 
             allText = allText.Remove(allText.Length - 1);
             //MessageBox.Show(allText);
@@ -592,6 +561,7 @@ namespace AndroidSideloader
                 if ((c is CheckBox))
                 {
                     exit = false;
+                    progressBar1.Style = ProgressBarStyle.Marquee;
                     if (((CheckBox)c).Checked==true)
                     {
                         await Task.Run(() => changePerms(c, package, "grant"));
@@ -600,6 +570,7 @@ namespace AndroidSideloader
                     {
                         await Task.Run(() => changePerms(c, package, "revoke"));
                     }
+                    progressBar1.Style = ProgressBarStyle.Continuous;
                 }
                 
             }
@@ -647,7 +618,9 @@ namespace AndroidSideloader
             if (dialogResult != DialogResult.Yes)
                 return;
 
+            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => uninstallPackage(package));
+            progressBar1.Style = ProgressBarStyle.Continuous;
 
             notify(allText);
         }
@@ -719,25 +692,9 @@ namespace AndroidSideloader
 
         DispatcherTimer Timer99 = new DispatcherTimer();
 
-        public PerformanceCounter myCounter =
-            new PerformanceCounter("PhysicalDisk", "Disk Read Bytes/sec", "_Total");
-        public PerformanceCounter myCounter2 =
-    new PerformanceCounter("PhysicalDisk", "Disk Write Bytes/sec", "_Total");
-
-        public Int32 j = 0;
-        public Int32 k = 0;
         public void Timer99_Tick(System.Object sender, System.EventArgs e)
 
         {
-            //Console.Clear();
-            j = Convert.ToInt32(myCounter.NextValue());
-            j = j / 1024;
-            k = Convert.ToInt32(myCounter2.NextValue());
-            k = k / 1024;
-
-            //Console.WriteLine(j);
-            label.Text = "Read " + j.ToString();
-            label1.Text = "Write " + k.ToString();
             
         }
 
@@ -745,6 +702,12 @@ namespace AndroidSideloader
         {
             usernameForm usernameForm1 = new usernameForm();
             usernameForm1.Show();
+        }
+
+        private void settingsButton_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm();
+            settingsForm.Show();
         }
     }
 
