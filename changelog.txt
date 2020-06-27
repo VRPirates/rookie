@@ -1,3 +1,8 @@
+0.13
+ + Added vrmoo.cn.json
+ + Added bulk obb copy
+ = Message Box now top most
+
 0.12
  + Added settings form
  + Added progress bar (again)

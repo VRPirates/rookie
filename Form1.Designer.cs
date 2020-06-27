@@ -49,6 +49,7 @@
             this.userjsonButton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.settingsButton = new System.Windows.Forms.Button();
+            this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // m_combo
@@ -243,11 +244,22 @@
             this.settingsButton.UseVisualStyleBackColor = true;
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
             // 
+            // copyBulkObbButton
+            // 
+            this.copyBulkObbButton.Location = new System.Drawing.Point(375, 51);
+            this.copyBulkObbButton.Name = "copyBulkObbButton";
+            this.copyBulkObbButton.Size = new System.Drawing.Size(92, 33);
+            this.copyBulkObbButton.TabIndex = 25;
+            this.copyBulkObbButton.Text = "Copy Bulk Obb";
+            this.copyBulkObbButton.UseVisualStyleBackColor = true;
+            this.copyBulkObbButton.Click += new System.EventHandler(this.copyBulkObbButton_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 411);
+            this.Controls.Add(this.copyBulkObbButton);
             this.Controls.Add(this.settingsButton);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.userjsonButton);
@@ -301,6 +313,7 @@
         private System.Windows.Forms.Button userjsonButton;
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button settingsButton;
+        private System.Windows.Forms.Button copyBulkObbButton;
     }
 }
 

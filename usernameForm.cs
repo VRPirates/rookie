@@ -22,7 +22,7 @@ namespace AndroidSideloader
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (textBox1.Text==defaultText || textBox1.Text.Length==0)
+            if (textBox1.Text == defaultText || textBox1.Text.Length == 0)
             {
                 MessageBox.Show("Please enter your username first");
                 return;
@@ -30,9 +30,29 @@ namespace AndroidSideloader
 
             File.WriteAllText("user.json", "{\"username\":\"" + textBox1.Text + "\"}");
 
-            string command = "push \"" + Environment.CurrentDirectory + "\\user.json\" " + " /sdcard/";
+            runAdbCommand("push \"" + Environment.CurrentDirectory + "\\user.json\" " + " /sdcard/");
+
+            File.Delete("user.json");
+
+            File.WriteAllText("vrmoo.cn.json", "{\"username\":\"" + textBox1.Text + "\"}");
+
+            runAdbCommand("push \"" + Environment.CurrentDirectory + "\\vrmoo.cn.json\" " + " /sdcard/");
+
+            File.Delete("vrmoo.cn.json");
 
 
+            File.WriteAllText("qq1091481055.json", "{\n	\"username\":\"" + textBox1.Text + "\"\n	}");
+
+            runAdbCommand("push \"" + Environment.CurrentDirectory + "\\qq1091481055.json\" " + " /sdcard/");
+
+            File.Delete("qq1091481055.json");
+
+            Form1.notify("Done");
+
+        }
+
+        private void runAdbCommand(string command)
+        {
             Process cmd = new Process();
             cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
             cmd.StartInfo.Arguments = command;
@@ -48,7 +68,6 @@ namespace AndroidSideloader
             string allText = cmd.StandardOutput.ReadToEnd();
             cmd.WaitForExit();
 
-            File.Delete("user.json");
 
             StreamWriter sw = File.AppendText(Form1.debugPath);
             sw.Write("Action name = " + command + '\n');
@@ -56,9 +75,6 @@ namespace AndroidSideloader
             sw.Write("\n--------------------------------------------------------------------\n");
             sw.Flush();
             sw.Close();
-
-
-            Form1.notify(allText);
         }
     }
 }

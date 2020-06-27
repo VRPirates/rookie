@@ -134,11 +134,19 @@ namespace AndroidSideloader
             notify(allText);
         }
 
+        public bool experimentalFeatureAccept(string message)
+        {
+            DialogResult dialogResult = FlexibleMessageBox.Show(new Form { TopMost = true }, message, "EXPERIMENTAL FEATURE", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+                return true;
+            else return false;
+        }
+
         public static void notify(string message)
         {
             if (Properties.Settings.Default.enableMessageBoxes == true)
             {
-                FlexibleMessageBox.Show(message);
+                FlexibleMessageBox.Show(new Form { TopMost = true }, message);
                 if (Properties.Settings.Default.copyMessageToClipboard == true)
                     Clipboard.SetText(message);
             }
@@ -187,12 +195,11 @@ namespace AndroidSideloader
             if (dialog.Show(Handle))
             {
                 string[] files = Directory.GetFiles(dialog.FileName);
-                obbFile = files[0];
+
                 obbPath = dialog.FileName;
             }
             else return;
 
-            //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
             progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => obbcopy(obbPath));
             progressBar1.Style = ProgressBarStyle.Continuous;
@@ -288,7 +295,7 @@ namespace AndroidSideloader
         }
         void checkForUpdate()
         {
-            string localVersion = "0.12";
+            string localVersion = "0.13";
             HttpClient client = new HttpClient();
             string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
             currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -296,7 +303,7 @@ namespace AndroidSideloader
             if (localVersion != currentVersion)
             {
                 string changelog = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/changelog.txt").Result;
-                DialogResult dialogResult = FlexibleMessageBox.Show("There is a new update you have version " + localVersion + ", do you want to update?\nCHANGELOG\n" + changelog, "New version " + currentVersion + " available", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show("There is a new update you have version " + localVersion + ", do you want to update?\nCHANGELOG\n" + changelog, "Version " + currentVersion + " is available", MessageBoxButtons.YesNo);
                 if (dialogResult != DialogResult.Yes)
                     return;
 
@@ -708,6 +715,46 @@ namespace AndroidSideloader
         {
             SettingsForm settingsForm = new SettingsForm();
             settingsForm.Show();
+        }
+
+        private void copyBulkObbButton_Click(object sender, EventArgs e)
+        {
+            bool result = experimentalFeatureAccept("THIS IS AN EXPERIMENTAL FEATURE AND MIGHT NOT WORK, DO YOU WANT TO CONTINUE?");
+            if (result == false)
+                return;
+
+            var dialog = new FolderSelectDialog
+            {
+                Title = "Select your folder with APKs"
+            };
+            if (dialog.Show(Handle))
+            {
+                recursiveCopy(dialog.FileName);
+            }
+            else return;
+        }
+
+        async void recursiveCopy(string location)
+        {
+            string[] files = Directory.GetFiles(location);
+            string[] childDirectories = Directory.GetDirectories(location);
+            for (int i = 0; i < files.Length; i++)
+            {
+                string extension = Path.GetExtension(files[i]);
+                
+                if (extension == ".obb")
+                {
+                    int index = files[i].LastIndexOf("\\");
+                    if (index > 0)
+                        files[i] = files[i].Substring(0, index);
+                    if (Directory.Exists(files[i])) //if it's a folder
+                        await Task.Run(() => obbcopy(files[i]));
+                }
+            }
+            for (int i = 0; i < childDirectories.Length; i++)
+            {
+                recursiveCopy(childDirectories[i]);
+            }
         }
     }
 
