@@ -1,3 +1,12 @@
+0.14
+ + Check file hash button
+ + Added first run check (will maybe be used to create user.json files)
+ + Added drag and drop for apk and obb files
+ + Progress bar now works for every adb command
+ = Moved buttons
+ - Instructions button
+ - Removed run custom adb command button and form
+
 0.13
  + Added vrmoo.cn.json
  + Added bulk obb copy

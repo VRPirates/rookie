@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Timers;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
@@ -24,16 +25,15 @@ namespace AndroidSideloader
     public partial class Form1 : Form
     {
 #if DEBUG
-            public static bool debugMode = true;
+        public static bool debugMode = true;
 #else
         public static bool debugMode = false;
 #endif
         string path;
+        string result;
         string obbPath = "";
-        string obbFile;
         string allText;
 
-        bool exit = false;
         public static string debugPath = "debug.log";
         public static string adbPath = Environment.CurrentDirectory + "\\adb\\";
         string[] line;
@@ -55,13 +55,30 @@ namespace AndroidSideloader
                 this.Text = txt;
         }
 
-        public void runAdbCommand(string command)
+        public void changeStyle(int style)
         {
 
-            string oldTitle = this.Text;
+            if (progressBar1.InvokeRequired)
+            {
+                if (style == 1)
+                    progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                else if (style == 0)
+                    progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Continuous));
+            }
+            else if (style == 1)
+                progressBar1.Style = ProgressBarStyle.Marquee;
+            else
+                progressBar1.Style = ProgressBarStyle.Continuous;
+
+
+        }
+
+        public void runAdbCommand(string command)
+        {
+            changeStyle(1);
+            oldTitle = this.Text;
             changeTitle("Rookie's Sideloader | Running command " + command);
             
-            exit = false;
             Process cmd = new Process();
             cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
             cmd.StartInfo.Arguments = command;
@@ -84,14 +101,13 @@ namespace AndroidSideloader
             sw.Flush();
             sw.Close();
             line = allText.Split('\n');
-            exit = true;
 
             changeTitle(oldTitle);
+            changeStyle(0);
         }
 
         private void sideload(string path)
         {
-
             Thread t1 = new Thread(() =>
             {
                 runAdbCommand("install -r " + '"' + path + '"');
@@ -99,7 +115,6 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
             t1.Join();
-
         }
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
@@ -117,9 +132,7 @@ namespace AndroidSideloader
             }
 
             //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
-            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => sideload(path));
-            progressBar1.Style = ProgressBarStyle.Continuous;
 
             notify(allText);
 
@@ -146,22 +159,11 @@ namespace AndroidSideloader
         {
             if (Properties.Settings.Default.enableMessageBoxes == true)
             {
-                FlexibleMessageBox.Show(new Form { TopMost = true }, message);
+                FlexibleMessageBox.Show(new Form { TopMost = true, StartPosition = FormStartPosition.CenterScreen }, message);
                 if (Properties.Settings.Default.copyMessageToClipboard == true)
                     Clipboard.SetText(message);
             }
 
-        }
-
-        private void instructionsbutton_Click(object sender, EventArgs e)
-        {
-            string instructions = @"1. Plug in your Oculus Quest
-2. Press adb devices and allow adb to connect from quest headset (one time only)
-3. Press adb devices again and you should see a code and then 'device' (optional)
-4. Select your apk with select apk button.
-5. Press Sideload and wait...
-6. If the game has an obb folder, select it by using select obb then press copy obb";
-            FlexibleMessageBox.Show(instructions);
         }
 
         public void ExtractFile(string sourceArchive, string destination)
@@ -200,9 +202,7 @@ namespace AndroidSideloader
             }
             else return;
 
-            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => obbcopy(obbPath));
-            progressBar1.Style = ProgressBarStyle.Continuous;
 
             notify(allText);
         }
@@ -215,14 +215,14 @@ namespace AndroidSideloader
                 this.Text = "Rookie Sideloader | No Device Connected";
         }
 
-
+        //A lot of stuff to do when the form loads, centers the program, 
         private void Form1_Load(object sender, EventArgs e)
         {
             this.CenterToScreen();
 
             if (File.Exists(debugPath))
-                File.Delete(debugPath);
-            if (Directory.Exists(adbPath)==false)
+                File.Delete(debugPath); //clear debug.log each start
+            if (Directory.Exists(adbPath)==false) //if there is no adb folder, download and extract
             {
                 FlexibleMessageBox.Show("Please wait for the software to download and install the adb");
                 try
@@ -242,7 +242,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    FlexibleMessageBox.Show("Cannot download adb because you are not connected to the internet!");
+                    FlexibleMessageBox.Show("Cannot download adb because you are not connected to the internet! You can manually download the zip here https://github.com/nerdunit/androidsideloader/raw/master/adb.7z after downloading move it to " + Environment.CurrentDirectory + " and unarchive it");
                     StreamWriter sw = File.AppendText(debugPath);
                     sw.Write("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
                     sw.Write(ex.ToString() + "\n");
@@ -253,18 +253,26 @@ namespace AndroidSideloader
                 
             }
 
-            runAdbCommand("devices");
-            changeTitlebarToDevice();
-
             if (debugMode==false)
                 if (Properties.Settings.Default.checkForUpdates==true)
                     checkForUpdate();
 
+            runAdbCommand("devices"); //check if there is any device connected
+            changeTitlebarToDevice();
+
+            if (line[1].Length > 1) //check for device connected
+                if (Properties.Settings.Default.firstRun == true)
+                {
+                    MessageBox.Show("YOU CAN NOW DRAG AND DROP TO INSTALL APK'S AND OBB FOLDERS!");
+                    Properties.Settings.Default.firstRun = false;
+                    Properties.Settings.Default.Save();
+                }
+
             intToolTips();
 
             listappsBtn();
-
         }
+
         void intToolTips()
         {
             ToolTip ListAppsToolTip = new ToolTip();
@@ -295,38 +303,45 @@ namespace AndroidSideloader
         }
         void checkForUpdate()
         {
-            string localVersion = "0.13";
-            HttpClient client = new HttpClient();
-            string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
-            currentVersion = currentVersion.Remove(currentVersion.Length - 1);
-
-            if (localVersion != currentVersion)
+        try
             {
-                string changelog = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/changelog.txt").Result;
-                DialogResult dialogResult = FlexibleMessageBox.Show("There is a new update you have version " + localVersion + ", do you want to update?\nCHANGELOG\n" + changelog, "Version " + currentVersion + " is available", MessageBoxButtons.YesNo);
-                if (dialogResult != DialogResult.Yes)
-                    return;
+                string localVersion = "0.14";
+                HttpClient client = new HttpClient();
+                string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
+                currentVersion = currentVersion.Remove(currentVersion.Length - 1);
 
-                //download updated version
-                using (var fileClient = new WebClient())
+                if (localVersion != currentVersion)
                 {
-                    ServicePointManager.Expect100Continue = true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    fileClient.DownloadFile("https://github.com/nerdunit/androidsideloader/releases/download/v" + currentVersion + "/AndroidSideloader.exe", "AndroidSideloader v" + currentVersion + ".exe");
+                    string changelog = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/changelog.txt").Result;
+                    DialogResult dialogResult = FlexibleMessageBox.Show("There is a new update you have version " + localVersion + ", do you want to update?\nCHANGELOG\n" + changelog, "Version " + currentVersion + " is available", MessageBoxButtons.YesNo);
+                    if (dialogResult != DialogResult.Yes)
+                        return;
+
+                    //download updated version
+                    using (var fileClient = new WebClient())
+                    {
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                        fileClient.DownloadFile("https://github.com/nerdunit/androidsideloader/releases/download/v" + currentVersion + "/AndroidSideloader.exe", "AndroidSideloader v" + currentVersion + ".exe");
+                    }
+
+                    //melt
+                    Process.Start(new ProcessStartInfo()
+                    {
+                        Arguments = "/C choice /C Y /N /D Y /T 5 & Del \"" + Application.ExecutablePath + "\"",
+                        WindowStyle = ProcessWindowStyle.Hidden,
+                        CreateNoWindow = true,
+                        FileName = "cmd.exe"
+                    });
+
+                    Process.Start(Environment.CurrentDirectory + "\\AndroidSideloader v" + currentVersion + ".exe");
+
+                    Environment.Exit(0);
                 }
+            }
+        catch
+            {
 
-                //melt
-                Process.Start(new ProcessStartInfo()
-                {
-                    Arguments = "/C choice /C Y /N /D Y /T 5 & Del \"" + Application.ExecutablePath + "\"",
-                    WindowStyle = ProcessWindowStyle.Hidden,
-                    CreateNoWindow = true,
-                    FileName = "cmd.exe"
-                });
-
-                Process.Start(Environment.CurrentDirectory + "\\AndroidSideloader v" + currentVersion + ".exe");
-
-                Environment.Exit(0);
             }
         }
 
@@ -344,11 +359,6 @@ namespace AndroidSideloader
 
         private async void backupbutton_Click(object sender, EventArgs e)
         {
-            if (exit==false)
-            {
-                MessageBox.Show("Finish Previous action first!");
-                return;
-            }
 
             await Task.Run(() => backup()); //we use async and await to not freeze the ui
 
@@ -377,11 +387,6 @@ namespace AndroidSideloader
 
         private async void restorebutton_Click(object sender, EventArgs e)
         {
-            if (exit == false)
-            {
-                MessageBox.Show("Finish Previous action first!");
-                return;
-            }
 
             using (var fbd = new FolderBrowserDialog())
             {
@@ -397,12 +402,6 @@ namespace AndroidSideloader
                 await Task.Run(() => restore());
 
             notify(allText);
-        }
-
-        private void customadbcmdbutton_Click(object sender, EventArgs e)
-        {
-            customAdbCommandForm adbCommandForm = new customAdbCommandForm();
-            adbCommandForm.Show();
         }
 
         private void listapps()
@@ -463,15 +462,13 @@ namespace AndroidSideloader
         {
             if (m_combo.Items.Count == 0)
             {
-                MessageBox.Show("Please select an app first");
+                notify("Please select an app first");
                 return;
             }
 
             string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
 
-            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => getapk(package));
-            progressBar1.Style = ProgressBarStyle.Continuous;
 
             allText = allText.Remove(allText.Length - 1);
             //MessageBox.Show(allText);
@@ -567,8 +564,6 @@ namespace AndroidSideloader
             {
                 if ((c is CheckBox))
                 {
-                    exit = false;
-                    progressBar1.Style = ProgressBarStyle.Marquee;
                     if (((CheckBox)c).Checked==true)
                     {
                         await Task.Run(() => changePerms(c, package, "grant"));
@@ -577,7 +572,6 @@ namespace AndroidSideloader
                     {
                         await Task.Run(() => changePerms(c, package, "revoke"));
                     }
-                    progressBar1.Style = ProgressBarStyle.Continuous;
                 }
                 
             }
@@ -600,14 +594,12 @@ namespace AndroidSideloader
 
         private void launchApkButton_Click(object sender, EventArgs e)
         {
-            exit = false;
             Thread t1 = new Thread(() =>
             {
                 runAdbCommand("shell am start -n " + launchPackageTextBox.Text);
             });
             t1.IsBackground = true;
             t1.Start();
-
         }
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
@@ -625,9 +617,7 @@ namespace AndroidSideloader
             if (dialogResult != DialogResult.Yes)
                 return;
 
-            progressBar1.Style = ProgressBarStyle.Marquee;
             await Task.Run(() => uninstallPackage(package));
-            progressBar1.Style = ProgressBarStyle.Continuous;
 
             notify(allText);
         }
@@ -755,6 +745,81 @@ namespace AndroidSideloader
             {
                 recursiveCopy(childDirectories[i]);
             }
+        }
+
+        private async void checkHashButton_Click(object sender, EventArgs e)
+        {
+            string file;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    file = openFileDialog.FileName;
+                else
+                    return;
+            }
+            oldTitle = this.Text;
+            changeTitle("Checking hash of file " + file);
+            changeStyle(1);
+
+            await Task.Run(() => checkHashFunc(file));
+            Clipboard.SetText(result);
+
+            changeStyle(0);
+            changeTitle(oldTitle);
+            FlexibleMessageBox.Show("The selected file hash is " + result + " and it was copied to clipboard");
+        }
+
+        public async void checkHashFunc(string file)
+        {
+            using (FileStream stream = File.OpenRead(file))
+            {
+                SHA256Managed sha = new SHA256Managed();
+                byte[] checksum = sha.ComputeHash(stream);
+                result = BitConverter.ToString(checksum).Replace("-", String.Empty);
+            }
+        }
+
+        private async void Form1_DragDrop(object sender, DragEventArgs e)
+        {
+            bool ok = false;
+            string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string file in files)
+            {
+                Console.WriteLine(file);
+                string extension = Path.GetExtension(file);
+                if (extension == ".apk")
+                {
+                    ok = true;
+                    await Task.Run(() => sideload(file));
+                }
+                else if (Directory.Exists(file))
+                {
+                    ok = true;
+                    await Task.Run(() => obbcopy(file));
+                }
+            }
+            DragDropLbl.Visible = false;
+            if (ok)
+                notify("Done");
+        }
+        string oldTitle;
+        private void Form1_DragEnter(object sender, DragEventArgs e)
+        {
+            if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
+            oldTitle = this.Text;
+            DragDropLbl.Visible = true;
+            DragDropLbl.Text = "Drag apk or obb";
+            changeTitle(DragDropLbl.Text);
+        }
+
+        private void Form1_DragLeave(object sender, EventArgs e)
+        {
+            changeTitle(oldTitle);
+            DragDropLbl.Visible = false;
         }
     }
 
