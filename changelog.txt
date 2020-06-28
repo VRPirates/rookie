@@ -1,3 +1,8 @@
+0.14HF1
+ + Added donate button
+ = Fixed ui order
+ - Removed warning from bulk obb sideload button
+
 0.14
  + Check file hash button
  + Added first run check (will maybe be used to create user.json files)

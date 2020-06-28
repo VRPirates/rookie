@@ -50,6 +50,7 @@
             this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.checkHashButton = new System.Windows.Forms.Button();
             this.DragDropLbl = new System.Windows.Forms.Label();
+            this.donateButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // m_combo
@@ -64,7 +65,7 @@
             this.startsideloadbutton.Location = new System.Drawing.Point(100, 12);
             this.startsideloadbutton.Name = "startsideloadbutton";
             this.startsideloadbutton.Size = new System.Drawing.Size(87, 33);
-            this.startsideloadbutton.TabIndex = 2;
+            this.startsideloadbutton.TabIndex = 4;
             this.startsideloadbutton.Text = "Sideload APK";
             this.startsideloadbutton.UseVisualStyleBackColor = true;
             this.startsideloadbutton.Click += new System.EventHandler(this.startsideloadbutton_Click);
@@ -84,7 +85,7 @@
             this.obbcopybutton.Location = new System.Drawing.Point(100, 50);
             this.obbcopybutton.Name = "obbcopybutton";
             this.obbcopybutton.Size = new System.Drawing.Size(87, 34);
-            this.obbcopybutton.TabIndex = 3;
+            this.obbcopybutton.TabIndex = 5;
             this.obbcopybutton.Text = "Copy Obb";
             this.obbcopybutton.UseVisualStyleBackColor = true;
             this.obbcopybutton.Click += new System.EventHandler(this.obbcopybutton_Click);
@@ -94,7 +95,7 @@
             this.backupbutton.Location = new System.Drawing.Point(291, 13);
             this.backupbutton.Name = "backupbutton";
             this.backupbutton.Size = new System.Drawing.Size(80, 34);
-            this.backupbutton.TabIndex = 5;
+            this.backupbutton.TabIndex = 9;
             this.backupbutton.Text = "Backup Gamedata";
             this.backupbutton.UseVisualStyleBackColor = true;
             this.backupbutton.Click += new System.EventHandler(this.backupbutton_Click);
@@ -104,7 +105,7 @@
             this.restorebutton.Location = new System.Drawing.Point(291, 50);
             this.restorebutton.Name = "restorebutton";
             this.restorebutton.Size = new System.Drawing.Size(80, 42);
-            this.restorebutton.TabIndex = 6;
+            this.restorebutton.TabIndex = 10;
             this.restorebutton.Text = "Restore Gamedata";
             this.restorebutton.UseVisualStyleBackColor = true;
             this.restorebutton.Click += new System.EventHandler(this.restorebutton_Click);
@@ -114,7 +115,7 @@
             this.ListApps.Location = new System.Drawing.Point(12, 50);
             this.ListApps.Name = "ListApps";
             this.ListApps.Size = new System.Drawing.Size(82, 34);
-            this.ListApps.TabIndex = 8;
+            this.ListApps.TabIndex = 2;
             this.ListApps.Text = "Refresh Apps";
             this.ListApps.UseVisualStyleBackColor = true;
             this.ListApps.Click += new System.EventHandler(this.ListApps_Click);
@@ -124,7 +125,7 @@
             this.getApkButton.Location = new System.Drawing.Point(465, 12);
             this.getApkButton.Name = "getApkButton";
             this.getApkButton.Size = new System.Drawing.Size(87, 34);
-            this.getApkButton.TabIndex = 9;
+            this.getApkButton.TabIndex = 13;
             this.getApkButton.Text = "Get Apk";
             this.getApkButton.UseVisualStyleBackColor = true;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
@@ -134,7 +135,7 @@
             this.listApkPermsButton.Location = new System.Drawing.Point(372, 13);
             this.listApkPermsButton.Name = "listApkPermsButton";
             this.listApkPermsButton.Size = new System.Drawing.Size(87, 34);
-            this.listApkPermsButton.TabIndex = 10;
+            this.listApkPermsButton.TabIndex = 11;
             this.listApkPermsButton.Text = "List Apk Perms";
             this.listApkPermsButton.UseVisualStyleBackColor = true;
             this.listApkPermsButton.Click += new System.EventHandler(this.listApkPermsButton_Click);
@@ -144,7 +145,7 @@
             this.changePermsBtn.Location = new System.Drawing.Point(372, 50);
             this.changePermsBtn.Name = "changePermsBtn";
             this.changePermsBtn.Size = new System.Drawing.Size(87, 34);
-            this.changePermsBtn.TabIndex = 11;
+            this.changePermsBtn.TabIndex = 12;
             this.changePermsBtn.Text = "Change Permissions";
             this.changePermsBtn.UseVisualStyleBackColor = true;
             this.changePermsBtn.Click += new System.EventHandler(this.changePermsBtn_Click);
@@ -154,7 +155,7 @@
             this.launchPackageTextBox.Location = new System.Drawing.Point(446, 134);
             this.launchPackageTextBox.Name = "launchPackageTextBox";
             this.launchPackageTextBox.Size = new System.Drawing.Size(192, 20);
-            this.launchPackageTextBox.TabIndex = 15;
+            this.launchPackageTextBox.TabIndex = 68;
             this.launchPackageTextBox.Text = "de.eye_interactive.atvl.settings";
             // 
             // launchApkButton
@@ -162,7 +163,7 @@
             this.launchApkButton.Location = new System.Drawing.Point(446, 161);
             this.launchApkButton.Name = "launchApkButton";
             this.launchApkButton.Size = new System.Drawing.Size(192, 20);
-            this.launchApkButton.TabIndex = 13;
+            this.launchApkButton.TabIndex = 69;
             this.launchApkButton.Text = "Launch Apk By Package Name";
             this.launchApkButton.UseVisualStyleBackColor = true;
             this.launchApkButton.Click += new System.EventHandler(this.launchApkButton_Click);
@@ -172,7 +173,7 @@
             this.uninstallAppButton.Location = new System.Drawing.Point(465, 50);
             this.uninstallAppButton.Name = "uninstallAppButton";
             this.uninstallAppButton.Size = new System.Drawing.Size(87, 34);
-            this.uninstallAppButton.TabIndex = 12;
+            this.uninstallAppButton.TabIndex = 14;
             this.uninstallAppButton.Text = "Uninstall app";
             this.uninstallAppButton.UseVisualStyleBackColor = true;
             this.uninstallAppButton.Click += new System.EventHandler(this.uninstallAppButton_Click);
@@ -182,7 +183,7 @@
             this.sideloadFolderButton.Location = new System.Drawing.Point(193, 12);
             this.sideloadFolderButton.Name = "sideloadFolderButton";
             this.sideloadFolderButton.Size = new System.Drawing.Size(92, 33);
-            this.sideloadFolderButton.TabIndex = 17;
+            this.sideloadFolderButton.TabIndex = 7;
             this.sideloadFolderButton.Text = "Sideload Folder";
             this.sideloadFolderButton.UseVisualStyleBackColor = true;
             this.sideloadFolderButton.Click += new System.EventHandler(this.sideloadFolderButton_Click);
@@ -192,7 +193,7 @@
             this.aboutBtn.Location = new System.Drawing.Point(574, 94);
             this.aboutBtn.Name = "aboutBtn";
             this.aboutBtn.Size = new System.Drawing.Size(64, 34);
-            this.aboutBtn.TabIndex = 18;
+            this.aboutBtn.TabIndex = 16;
             this.aboutBtn.Text = "About";
             this.aboutBtn.UseVisualStyleBackColor = true;
             this.aboutBtn.Click += new System.EventHandler(this.aboutBtn_Click);
@@ -202,7 +203,7 @@
             this.userjsonButton.Location = new System.Drawing.Point(100, 90);
             this.userjsonButton.Name = "userjsonButton";
             this.userjsonButton.Size = new System.Drawing.Size(87, 38);
-            this.userjsonButton.TabIndex = 22;
+            this.userjsonButton.TabIndex = 6;
             this.userjsonButton.Text = "Create user.json";
             this.userjsonButton.UseVisualStyleBackColor = true;
             this.userjsonButton.Click += new System.EventHandler(this.userjsonButton_Click);
@@ -219,7 +220,7 @@
             this.settingsButton.Location = new System.Drawing.Point(506, 94);
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(62, 34);
-            this.settingsButton.TabIndex = 24;
+            this.settingsButton.TabIndex = 15;
             this.settingsButton.Text = "Settings";
             this.settingsButton.UseVisualStyleBackColor = true;
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
@@ -229,7 +230,7 @@
             this.copyBulkObbButton.Location = new System.Drawing.Point(193, 50);
             this.copyBulkObbButton.Name = "copyBulkObbButton";
             this.copyBulkObbButton.Size = new System.Drawing.Size(92, 34);
-            this.copyBulkObbButton.TabIndex = 25;
+            this.copyBulkObbButton.TabIndex = 8;
             this.copyBulkObbButton.Text = "Copy Bulk Obb";
             this.copyBulkObbButton.UseVisualStyleBackColor = true;
             this.copyBulkObbButton.Click += new System.EventHandler(this.copyBulkObbButton_Click);
@@ -239,7 +240,7 @@
             this.checkHashButton.Location = new System.Drawing.Point(12, 90);
             this.checkHashButton.Name = "checkHashButton";
             this.checkHashButton.Size = new System.Drawing.Size(82, 31);
-            this.checkHashButton.TabIndex = 26;
+            this.checkHashButton.TabIndex = 3;
             this.checkHashButton.Text = "Check Hash";
             this.checkHashButton.UseVisualStyleBackColor = true;
             this.checkHashButton.Click += new System.EventHandler(this.checkHashButton_Click);
@@ -255,12 +256,23 @@
             this.DragDropLbl.Text = "DragDropLBL";
             this.DragDropLbl.Visible = false;
             // 
+            // donateButton
+            // 
+            this.donateButton.Location = new System.Drawing.Point(574, 352);
+            this.donateButton.Name = "donateButton";
+            this.donateButton.Size = new System.Drawing.Size(64, 47);
+            this.donateButton.TabIndex = 70;
+            this.donateButton.Text = "Donate";
+            this.donateButton.UseVisualStyleBackColor = true;
+            this.donateButton.Click += new System.EventHandler(this.donateButton_Click);
+            // 
             // Form1
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(650, 411);
+            this.Controls.Add(this.donateButton);
             this.Controls.Add(this.DragDropLbl);
             this.Controls.Add(this.checkHashButton);
             this.Controls.Add(this.copyBulkObbButton);
@@ -284,11 +296,12 @@
             this.Controls.Add(this.startsideloadbutton);
             this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.MaximumSize = new System.Drawing.Size(666, 1000);
-            this.MinimumSize = new System.Drawing.Size(466, 450);
+            this.MaximumSize = new System.Drawing.Size(666, 450);
+            this.MinimumSize = new System.Drawing.Size(666, 450);
             this.Name = "Form1";
             this.Text = "Rookie SideLoader";
             this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
@@ -319,6 +332,7 @@
         private System.Windows.Forms.Button copyBulkObbButton;
         private System.Windows.Forms.Button checkHashButton;
         private System.Windows.Forms.Label DragDropLbl;
+        private System.Windows.Forms.Button donateButton;
     }
 }
 

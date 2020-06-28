@@ -115,6 +115,8 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
             t1.Join();
+            if (allText.Length == 0)
+                notify("Install Failed, apk may be corrupt");
         }
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
@@ -305,7 +307,7 @@ namespace AndroidSideloader
         {
         try
             {
-                string localVersion = "0.14";
+                string localVersion = "0.14HF1";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -690,9 +692,10 @@ namespace AndroidSideloader
         DispatcherTimer Timer99 = new DispatcherTimer();
 
         public void Timer99_Tick(System.Object sender, System.EventArgs e)
-
         {
-            
+            var rnd = new Random();
+            var redColor = System.Drawing.Color.FromArgb(rnd.Next(0,256), rnd.Next(0, 256), rnd.Next(0, 256));
+            donateButton.BackColor = redColor;
         }
 
         private void userjsonButton_Click(object sender, EventArgs e)
@@ -709,9 +712,9 @@ namespace AndroidSideloader
 
         private void copyBulkObbButton_Click(object sender, EventArgs e)
         {
-            bool result = experimentalFeatureAccept("THIS IS AN EXPERIMENTAL FEATURE AND MIGHT NOT WORK, DO YOU WANT TO CONTINUE?");
-            if (result == false)
-                return;
+            //bool result = experimentalFeatureAccept("THIS IS AN EXPERIMENTAL FEATURE AND MIGHT NOT WORK, DO YOU WANT TO CONTINUE?");
+            //if (result == false)
+            //    return;
 
             var dialog = new FolderSelectDialog
             {
@@ -820,6 +823,17 @@ namespace AndroidSideloader
         {
             changeTitle(oldTitle);
             DragDropLbl.Visible = false;
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+            Timer99.Start();
+        }
+
+        private void donateButton_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText("https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
+            notify("Donate steam stuff to me if you want, my trade link has been copied to your clipboard");
         }
     }
 
