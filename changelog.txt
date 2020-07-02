@@ -1,3 +1,7 @@
+0.15HF1
+ + Added list apps button back
+ = Fixed Uninstall apk and get apk
+
 0.15
  = MASSIVE UI REDESIGN
  + Added toggle for tor/clearnet

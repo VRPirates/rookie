@@ -11,6 +11,7 @@ using System.Timers;
 using System.Security.Cryptography;
 using System.Windows.Threading;
 using System.Net;
+using System.Runtime.InteropServices;
 using SergeUtils;
 using System.Drawing.Text;
 using JR.Utils.GUI.Forms;
@@ -32,6 +33,7 @@ namespace AndroidSideloader
         public static bool debugMode = false;
 #endif
         string path;
+
         string result;
         string obbPath = "";
         string allText;
@@ -183,14 +185,6 @@ namespace AndroidSideloader
             changeTitlebarToDevice();
 
             notify(allText);
-        }
-
-        public bool experimentalFeatureAccept(string message)
-        {
-            DialogResult dialogResult = FlexibleMessageBox.Show(new Form { TopMost = true }, message, "EXPERIMENTAL FEATURE", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.Yes)
-                return true;
-            else return false;
         }
 
         public static void notify(string message)
@@ -356,7 +350,7 @@ namespace AndroidSideloader
         {
         try
             {
-                string localVersion = "0.15";
+                string localVersion = "0.15HF1";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -466,11 +460,6 @@ namespace AndroidSideloader
             t1.Join();
         }
 
-        private void ListApps_Click(object sender, EventArgs e)
-        {
-            listappsBtn();
-        }
-
         private async void listappsBtn()
         {
             allText = "";
@@ -511,7 +500,7 @@ namespace AndroidSideloader
 
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-            if (m_combo.Items.Count == 0 || m_combo.SelectedText.Length == 0)
+            if (m_combo.Items.Count == 0 || m_combo.SelectedItem.ToString().Length == 0)
             {
                 notify("Please select an app first");
                 return;
@@ -542,42 +531,6 @@ namespace AndroidSideloader
             notify(allText);
         }
 
-        private void listappperms(string package)
-        {
-            Thread t1 = new Thread(() =>
-            {
-                runAdbCommand("shell dumpsys package " + package);
-            });
-            t1.IsBackground = true;
-            t1.Start();
-            t1.Join();
-        }
-
-        private void removeAllCheckboxes()
-        {
-            foreach (Control c in Controls)
-            {
-                if ((c is CheckBox))
-                {
-                    if (c.InvokeRequired)
-                        c.Invoke(new Action(() => c.Dispose()));
-                    else
-                        c.Dispose();
-                }
-            }
-        }
-
-        private void changePerms(Control c, string package, string grant)
-        {
-            Thread t1 = new Thread(() =>
-            {
-                runAdbCommand("shell pm " + grant + " " + package + " " + c.Text);
-            });
-            t1.IsBackground = true;
-            t1.Start();
-            t1.Join();
-        }
-
         private void launchApkButton_Click(object sender, EventArgs e)
         {
             Thread t1 = new Thread(() =>
@@ -590,7 +543,7 @@ namespace AndroidSideloader
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
-            if (m_combo.Items.Count == 0 || m_combo.SelectedText.Length == 0)
+            if (m_combo.Items.Count == 0 || m_combo.SelectedItem.ToString().Length == 0)
             {
                 MessageBox.Show("Please select an app first");
                 return;
@@ -650,19 +603,6 @@ namespace AndroidSideloader
             {
                 recursiveSideload(childDirectories[i]);
             }
-        }
-
-        async void testfunc()
-        {
-
-            await Task.Run(() => listapps());
-
-            foreach (string obj in line)
-            {
-                if (obj.Length > 9)
-                    gamesComboBox.Items.Add(obj.Remove(0, 8));
-            }
-            gamesComboBox.MatchingMethod = StringMatchingMethod.NoWildcards;
         }
 
         /*Progress bar stuff
@@ -859,11 +799,6 @@ namespace AndroidSideloader
             showSubMenu(sideloadContainer);
         }
 
-        private void panel4_Paint(object sender, PaintEventArgs e)
-        {
-
-        }
-
         private void backupDrop_Click(object sender, EventArgs e)
         {
             showSubMenu(backupContainer);
@@ -923,13 +858,11 @@ namespace AndroidSideloader
             Clipboard.SetText("https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
             notify("Donate steam stuff to me if you want, my trade link has been copied to your clipboard also here's the link https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
         }
+
+        private void listApkButton_Click(object sender, EventArgs e)
+        {
+            listappsBtn();
+        }
     }
 
-
-
-    public class MethodItem
-    {
-        public string Name { get; set; }
-        public StringMatchingMethod Value { get; set; }
-    }
 }

@@ -54,6 +54,7 @@
             this.backupContainer = new System.Windows.Forms.Panel();
             this.backupDrop = new System.Windows.Forms.Button();
             this.sideloadContainer = new System.Windows.Forms.Panel();
+            this.listApkButton = new System.Windows.Forms.Button();
             this.sideloadDrop = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.backupContainer.SuspendLayout();
@@ -329,7 +330,7 @@
             this.donateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.donateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.donateButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.donateButton.Location = new System.Drawing.Point(0, 556);
+            this.donateButton.Location = new System.Drawing.Point(0, 573);
             this.donateButton.Margin = new System.Windows.Forms.Padding(4);
             this.donateButton.Name = "donateButton";
             this.donateButton.Size = new System.Drawing.Size(267, 58);
@@ -346,7 +347,7 @@
             this.aboutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aboutBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.aboutBtn.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.aboutBtn.Location = new System.Drawing.Point(0, 521);
+            this.aboutBtn.Location = new System.Drawing.Point(0, 538);
             this.aboutBtn.Margin = new System.Windows.Forms.Padding(4);
             this.aboutBtn.Name = "aboutBtn";
             this.aboutBtn.Size = new System.Drawing.Size(267, 35);
@@ -363,7 +364,7 @@
             this.settingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.settingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settingsButton.ForeColor = System.Drawing.SystemColors.MenuBar;
-            this.settingsButton.Location = new System.Drawing.Point(0, 486);
+            this.settingsButton.Location = new System.Drawing.Point(0, 503);
             this.settingsButton.Margin = new System.Windows.Forms.Padding(4);
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(267, 35);
@@ -380,7 +381,7 @@
             this.checkHashButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.checkHashButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.checkHashButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.checkHashButton.Location = new System.Drawing.Point(0, 451);
+            this.checkHashButton.Location = new System.Drawing.Point(0, 468);
             this.checkHashButton.Margin = new System.Windows.Forms.Padding(4);
             this.checkHashButton.Name = "checkHashButton";
             this.checkHashButton.Size = new System.Drawing.Size(267, 35);
@@ -397,7 +398,7 @@
             this.userjsonButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.userjsonButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.userjsonButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.userjsonButton.Location = new System.Drawing.Point(0, 416);
+            this.userjsonButton.Location = new System.Drawing.Point(0, 433);
             this.userjsonButton.Margin = new System.Windows.Forms.Padding(4);
             this.userjsonButton.Name = "userjsonButton";
             this.userjsonButton.Size = new System.Drawing.Size(267, 35);
@@ -413,10 +414,10 @@
             this.backupContainer.Controls.Add(this.backupbutton);
             this.backupContainer.Controls.Add(this.restorebutton);
             this.backupContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.backupContainer.Location = new System.Drawing.Point(0, 333);
+            this.backupContainer.Location = new System.Drawing.Point(0, 356);
             this.backupContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.backupContainer.Name = "backupContainer";
-            this.backupContainer.Size = new System.Drawing.Size(267, 83);
+            this.backupContainer.Size = new System.Drawing.Size(267, 77);
             this.backupContainer.TabIndex = 76;
             // 
             // backupDrop
@@ -426,7 +427,7 @@
             this.backupDrop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.backupDrop.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.backupDrop.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.backupDrop.Location = new System.Drawing.Point(0, 298);
+            this.backupDrop.Location = new System.Drawing.Point(0, 321);
             this.backupDrop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.backupDrop.Name = "backupDrop";
             this.backupDrop.Padding = new System.Windows.Forms.Padding(9, 0, 0, 0);
@@ -440,6 +441,7 @@
             // sideloadContainer
             // 
             this.sideloadContainer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.sideloadContainer.Controls.Add(this.listApkButton);
             this.sideloadContainer.Controls.Add(this.startsideloadbutton);
             this.sideloadContainer.Controls.Add(this.sideloadFolderButton);
             this.sideloadContainer.Controls.Add(this.uninstallAppButton);
@@ -450,8 +452,26 @@
             this.sideloadContainer.Location = new System.Drawing.Point(0, 70);
             this.sideloadContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.sideloadContainer.Name = "sideloadContainer";
-            this.sideloadContainer.Size = new System.Drawing.Size(267, 228);
+            this.sideloadContainer.Size = new System.Drawing.Size(267, 251);
             this.sideloadContainer.TabIndex = 74;
+            // 
+            // listApkButton
+            // 
+            this.listApkButton.Dock = System.Windows.Forms.DockStyle.Top;
+            this.listApkButton.FlatAppearance.BorderSize = 0;
+            this.listApkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.listApkButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.listApkButton.ForeColor = System.Drawing.Color.White;
+            this.listApkButton.Location = new System.Drawing.Point(0, 210);
+            this.listApkButton.Margin = new System.Windows.Forms.Padding(4);
+            this.listApkButton.Name = "listApkButton";
+            this.listApkButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.listApkButton.Size = new System.Drawing.Size(267, 35);
+            this.listApkButton.TabIndex = 15;
+            this.listApkButton.Text = "Refresh Apk List";
+            this.listApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.listApkButton.UseVisualStyleBackColor = true;
+            this.listApkButton.Click += new System.EventHandler(this.listApkButton_Click);
             // 
             // sideloadDrop
             // 
@@ -533,6 +553,7 @@
         private System.Windows.Forms.Button backupDrop;
         private System.Windows.Forms.Panel sideloadContainer;
         private System.Windows.Forms.Button sideloadDrop;
+        private System.Windows.Forms.Button listApkButton;
     }
 }
 
