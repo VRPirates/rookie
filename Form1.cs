@@ -4,15 +4,17 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.Windows;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Timers;
-using System.Reflection;
 using System.Security.Cryptography;
 using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
+using System.Drawing.Text;
 using JR.Utils.GUI.Forms;
+using System.Drawing;
 
 
 /* <a target="_blank" href="https://icons8.com/icons/set/van">Van icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
@@ -37,9 +39,12 @@ namespace AndroidSideloader
         public static string debugPath = "debug.log";
         public static string adbPath = Environment.CurrentDirectory + "\\adb\\";
         string[] line;
+
         public Form1()
         {
             InitializeComponent();
+            //calling the design to hide the pannels until onclick
+            customizeDesign();
 
             Timer99.Tick += Timer99_Tick; // don't freeze the ui
             Timer99.Interval = new TimeSpan(0, 0, 0, 0, 1024);
@@ -54,6 +59,39 @@ namespace AndroidSideloader
             else
                 this.Text = txt;
         }
+
+        //adding the styling to the form
+        private void customizeDesign()
+        {
+            sideloadContainer.Visible = false;
+            backupContainer.Visible = false;
+        }
+
+        private void hideSubMenu()
+        {
+            if(sideloadContainer.Visible == true)
+            {
+                sideloadContainer.Visible = false;
+            }
+            if(backupContainer.Visible == true)
+            {
+                backupContainer.Visible = false;
+            }
+        }
+        //does the fancy stuff
+        private void showSubMenu(Panel subMenu)
+        {
+            if (subMenu.Visible == false)
+            {
+                hideSubMenu();
+                subMenu.Visible = true;
+            }
+            else
+            {
+                subMenu.Visible = false;
+            }
+        }
+
 
         public void changeStyle(int style)
         {
@@ -110,7 +148,7 @@ namespace AndroidSideloader
         {
             Thread t1 = new Thread(() =>
             {
-                runAdbCommand("install -r " + '"' + path + '"');
+                runAdbCommand("install -d -r " + '"' + path + '"');
             });
             t1.IsBackground = true;
             t1.Start();
@@ -133,11 +171,9 @@ namespace AndroidSideloader
                     return;
             }
 
-            //Task.Delay(100).ContinueWith(t => Timer99.Start()); //Delete notification after 5 seconds
             await Task.Run(() => sideload(path));
 
             notify(allText);
-
         }
 
         private void devicesbutton_Click(object sender, EventArgs e)
@@ -170,6 +206,9 @@ namespace AndroidSideloader
 
         public void ExtractFile(string sourceArchive, string destination)
         {
+            changeStyle(1);
+            oldTitle = this.Text;
+            changeTitle("Rookie Sideloader | Extracting archive " + sourceArchive);
             string zPath = "7z.exe"; //add to proj and set CopyToOuputDir
                 ProcessStartInfo pro = new ProcessStartInfo();
                 pro.WindowStyle = ProcessWindowStyle.Hidden;
@@ -177,6 +216,8 @@ namespace AndroidSideloader
                 pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", sourceArchive, destination);
                 Process x = Process.Start(pro);
                 x.WaitForExit();
+            changeStyle(0);
+            changeTitle(oldTitle);
         }
 
         private void obbcopy(string obbPath)
@@ -224,6 +265,16 @@ namespace AndroidSideloader
 
             if (File.Exists(debugPath))
                 File.Delete(debugPath); //clear debug.log each start
+            if (File.Exists(Environment.CurrentDirectory + "\\7z.exe") == false)
+            {
+                using (var client = new WebClient())
+                {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
+                }
+            }
             if (Directory.Exists(adbPath)==false) //if there is no adb folder, download and extract
             {
                 FlexibleMessageBox.Show("Please wait for the software to download and install the adb");
@@ -239,8 +290,6 @@ namespace AndroidSideloader
                     }
                     ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
                     File.Delete("adb.7z");
-                    File.Delete("7z.dll");
-                    File.Delete("7z.exe");
                 }
                 catch (Exception ex)
                 {
@@ -258,6 +307,12 @@ namespace AndroidSideloader
             if (debugMode==false)
                 if (Properties.Settings.Default.checkForUpdates==true)
                     checkForUpdate();
+
+            if (debugMode == true)
+            {
+                button1.Visible = true;
+                gamesComboBox.Visible = true;
+            }
 
             runAdbCommand("devices"); //check if there is any device connected
             changeTitlebarToDevice();
@@ -277,8 +332,6 @@ namespace AndroidSideloader
 
         void intToolTips()
         {
-            ToolTip ListAppsToolTip = new ToolTip();
-            ListAppsToolTip.SetToolTip(this.ListApps, "Shows what apps are installed in the list below (in the combo box)");
             ToolTip ListDevicesToolTip = new ToolTip();
             ListDevicesToolTip.SetToolTip(this.devicesbutton, "Lists the devices in a message box, also updates title bar");
             ToolTip SideloadAPKToolTip = new ToolTip();
@@ -291,10 +344,6 @@ namespace AndroidSideloader
             RestoreGameDataToolTip.SetToolTip(this.restorebutton, "Restores the game and apps data to the device, first use Backup Game Data button");
             ToolTip GetAPKToolTip = new ToolTip();
             GetAPKToolTip.SetToolTip(this.getApkButton, "Saves the selected apk to the folder where the sideloader is");
-            ToolTip ListAppPermsToolTip = new ToolTip();
-            ListAppPermsToolTip.SetToolTip(this.listApkPermsButton, "Lists the permissions for the selected apk");
-            ToolTip ChangeAppPermsToolTip = new ToolTip();
-            ChangeAppPermsToolTip.SetToolTip(this.changePermsBtn, "Applies the permissions for the apk, first press list app perms");
             ToolTip sideloadFolderToolTip = new ToolTip();
             sideloadFolderToolTip.SetToolTip(this.sideloadFolderButton, "Sideloads every apk from a folder");
             ToolTip uninstallAppToolTip = new ToolTip();
@@ -307,7 +356,7 @@ namespace AndroidSideloader
         {
         try
             {
-                string localVersion = "0.14HF1";
+                string localVersion = "0.15";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -462,7 +511,7 @@ namespace AndroidSideloader
 
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-            if (m_combo.Items.Count == 0)
+            if (m_combo.Items.Count == 0 || m_combo.SelectedText.Length == 0)
             {
                 notify("Please select an app first");
                 return;
@@ -504,84 +553,19 @@ namespace AndroidSideloader
             t1.Join();
         }
 
-        private async void listApkPermsButton_Click(object sender, EventArgs e)
+        private void removeAllCheckboxes()
         {
-            if(m_combo.Items.Count == 0)
-            {
-                MessageBox.Show("Please select an app first");
-                return;
-            }
-
-            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
-
-            await Task.Run(() => listappperms(package));
-
-            var grantedPerms = allText.Substring(allText.LastIndexOf("install permissions:") + 22);
-            grantedPerms.Substring(0, grantedPerms.IndexOf("User 0:"));
-
-            line = grantedPerms.Split('\n');
-
-            int pos1 = 12;
-            int pos2 = 187;
-
-
-            for (int i=0; i< line.Length; i++)
-            {
-                if (line[i].Contains("android.permission."))
-                {
-                    CheckBox chk = new CheckBox();
-                    if (line[i].Contains("true"))
-                        chk.Checked = true;
-                    else
-                        chk.Checked = false;
-                    line[i] = line[i].Substring(0, line[i].IndexOf(": granted"));
-                    line[i] = line[i].Substring(line[i].LastIndexOf(" "));
-
-
-                    chk.Location = new System.Drawing.Point(pos1, pos2);
-                    chk.Width = 420;
-                    chk.Height = 17;
-                    chk.Text = line[i];
-                    //chk.CheckedChanged += new EventHandler(CheckBox_Checked);
-                    Controls.Add(chk);
-                    pos2 += 20;
-                }
-            }
-
-            
-
-        }
-
-        private async void changePermsBtn_Click(object sender, EventArgs e)
-        {
-            if (m_combo.Items.Count == 0)
-            {
-                MessageBox.Show("Please select an app first");
-                return;
-            }
-
-            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
-
             foreach (Control c in Controls)
             {
                 if ((c is CheckBox))
                 {
-                    if (((CheckBox)c).Checked==true)
-                    {
-                        await Task.Run(() => changePerms(c, package, "grant"));
-                    }
+                    if (c.InvokeRequired)
+                        c.Invoke(new Action(() => c.Dispose()));
                     else
-                    {
-                        await Task.Run(() => changePerms(c, package, "revoke"));
-                    }
+                        c.Dispose();
                 }
-                
             }
-
-            notify("Changed Permissions");
-
         }
-
 
         private void changePerms(Control c, string package, string grant)
         {
@@ -606,7 +590,7 @@ namespace AndroidSideloader
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
-            if (m_combo.Items.Count == 0)
+            if (m_combo.Items.Count == 0 || m_combo.SelectedText.Length == 0)
             {
                 MessageBox.Show("Please select an app first");
                 return;
@@ -633,12 +617,6 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
             t1.Join();
-        }
-
-        private void comboBox1_SelectionChangeCommitted(object sender, EventArgs e)
-        {
-            MethodItem mi = (MethodItem)m_combo.SelectedItem;
-            m_combo.MatchingMethod = mi.Value;
         }
 
         private void sideloadFolderButton_Click(object sender, EventArgs e)
@@ -674,16 +652,18 @@ namespace AndroidSideloader
             }
         }
 
-        private void aboutBtn_Click(object sender, EventArgs e)
+        async void testfunc()
         {
-            string about = @" - The icon of the app contains an icon made by icon8.com
- - Software orignally coded by rookie.lol#7897
- - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
- - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
- - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box";
-            FlexibleMessageBox.Show(about);
-        }
 
+            await Task.Run(() => listapps());
+
+            foreach (string obj in line)
+            {
+                if (obj.Length > 9)
+                    gamesComboBox.Items.Add(obj.Remove(0, 8));
+            }
+            gamesComboBox.MatchingMethod = StringMatchingMethod.NoWildcards;
+        }
 
         /*Progress bar stuff
          * 
@@ -696,18 +676,6 @@ namespace AndroidSideloader
             var rnd = new Random();
             var redColor = System.Drawing.Color.FromArgb(rnd.Next(0,256), rnd.Next(0, 256), rnd.Next(0, 256));
             donateButton.BackColor = redColor;
-        }
-
-        private void userjsonButton_Click(object sender, EventArgs e)
-        {
-            usernameForm usernameForm1 = new usernameForm();
-            usernameForm1.Show();
-        }
-
-        private void settingsButton_Click(object sender, EventArgs e)
-        {
-            SettingsForm settingsForm = new SettingsForm();
-            settingsForm.Show();
         }
 
         private void copyBulkObbButton_Click(object sender, EventArgs e)
@@ -750,33 +718,7 @@ namespace AndroidSideloader
             }
         }
 
-        private async void checkHashButton_Click(object sender, EventArgs e)
-        {
-            string file;
-
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    file = openFileDialog.FileName;
-                else
-                    return;
-            }
-            oldTitle = this.Text;
-            changeTitle("Checking hash of file " + file);
-            changeStyle(1);
-
-            await Task.Run(() => checkHashFunc(file));
-            Clipboard.SetText(result);
-
-            changeStyle(0);
-            changeTitle(oldTitle);
-            FlexibleMessageBox.Show("The selected file hash is " + result + " and it was copied to clipboard");
-        }
-
-        public async void checkHashFunc(string file)
+        public void checkHashFunc(string file)
         {
             using (FileStream stream = File.OpenRead(file))
             {
@@ -830,12 +772,160 @@ namespace AndroidSideloader
             Timer99.Start();
         }
 
+        private void downloadOverTor(string url, string path)
+        {
+            WebProxy oWebProxy = new WebProxy(IPAddress.Loopback.ToString(), 4711);
+            WebClient oWebClient = new WebClient();
+            oWebClient.Proxy = oWebProxy;
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            oWebClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+            oWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+            oWebClient.DownloadFileAsync(new Uri(url), path);
+        }
+
+        bool isInDownload = false;
+        private async void button1_Click(object sender, EventArgs e)
+        {
+            string gameName = "game.zip"; //get selected game name instead
+            string url = "";
+            string path = Environment.CurrentDirectory + "\\game.zip";
+            string gamePath = Environment.CurrentDirectory + "\\" + gameName;
+
+            isInDownload = true;
+            changeStyle(1);
+            if (Properties.Settings.Default.useTor == true)
+            {
+                if (Directory.Exists(Environment.CurrentDirectory + "\\Tor") == false)
+                {
+                    DialogResult dialogResult = FlexibleMessageBox.Show(new Form { TopMost = true }, "You have download over tor enabled in settings, do you want to download tor?", "Download", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.No)
+                        return;
+                    using (var client = new WebClient())
+                    {
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Tor.7z", "Tor.7z");
+                    }
+                    ExtractFile(Environment.CurrentDirectory + "\\Tor.7z", Environment.CurrentDirectory);
+                    File.Delete(Environment.CurrentDirectory + "\\Tor.7z");
+                }
+                string filename = Path.Combine(Environment.CurrentDirectory + "\\Tor", "tor.exe");
+                var proc = System.Diagnostics.Process.Start(filename, "--HTTPTunnelPort 4711");
+                downloadOverTor(url, path);
+            }
+            else
+                startDownload(url, path);
+
+            while (isInDownload == true)
+            {
+                await Task.Delay(25);
+            }
+            changeStyle(0);
+
+            //Extract the game
+            await Task.Run(() => ExtractFile(gamePath, Environment.CurrentDirectory));
+
+            recursiveSideload(gamePath); //in case there are multiple apk's
+
+            string[] filesindirectory = Directory.GetDirectories(gamePath + "\\obb"); //in case there are multiple obb's
+            foreach (string dir in filesindirectory)
+                await Task.Run(() => obbcopy(dir));
+
+            notify("Game installed");
+        }
+
+        private void startDownload(string url, string path)
+        {
+            WebClient client = new WebClient();
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
+            client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
+            client.DownloadFileAsync(new Uri(url), path);
+        }
+        void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
+        {
+            changeTitle("Rookie's Sideloader | Downloaded " + e.BytesReceived + " of " + e.TotalBytesToReceive);
+        }
+        void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
+        {
+            changeStyle(0);
+            isInDownload = false;
+        }
+
+        private void sideloadContainer_Click(object sender, EventArgs e)
+        {
+            showSubMenu(sideloadContainer);
+        }
+
+        private void panel4_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void backupDrop_Click(object sender, EventArgs e)
+        {
+            showSubMenu(backupContainer);
+        }
+
+        private void settingsButton_Click(object sender, EventArgs e)
+        {
+            SettingsForm settingsForm = new SettingsForm();
+            settingsForm.Show();
+        }
+
+        private void aboutBtn_Click(object sender, EventArgs e)
+        {
+            string about = @" - The icon of the app contains an icon made by icon8.com
+ - Software orignally coded by rookie.lol#7897
+ - Thanks to badcoder5000#4598 for redesigning the UI
+ - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
+ - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
+ - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box";
+            FlexibleMessageBox.Show(about);
+        }
+
+        private async void checkHashButton_Click(object sender, EventArgs e)
+        {
+            string file;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    file = openFileDialog.FileName;
+                else
+                    return;
+            }
+            oldTitle = this.Text;
+            changeTitle("Checking hash of file " + file);
+            changeStyle(1);
+
+            await Task.Run(() => checkHashFunc(file));
+            Clipboard.SetText(result);
+
+            changeStyle(0);
+            changeTitle(oldTitle);
+            FlexibleMessageBox.Show("The selected file hash is " + result + " and it was copied to clipboard");
+        }
+
+        private void userjsonButton_Click(object sender, EventArgs e)
+        {
+            usernameForm usernameForm1 = new usernameForm();
+            usernameForm1.Show();
+        }
+
         private void donateButton_Click(object sender, EventArgs e)
         {
             Clipboard.SetText("https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
-            notify("Donate steam stuff to me if you want, my trade link has been copied to your clipboard");
+            notify("Donate steam stuff to me if you want, my trade link has been copied to your clipboard also here's the link https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
         }
     }
+
+
 
     public class MethodItem
     {

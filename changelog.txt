@@ -1,3 +1,11 @@
+0.15
+ = MASSIVE UI REDESIGN
+ + Added toggle for tor/clearnet
+ + Added download games through tor but still waiting for someone to help me host the files
+ + Added download with progress
+ = Changed adb sideload command to allow downgrades too
+ - Removed perms stuff, was too buggy
+
 0.14HF1
  + Added donate button
  = Fixed ui order

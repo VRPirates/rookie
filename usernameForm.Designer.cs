@@ -34,32 +34,42 @@
             // 
             // textBox1
             // 
-            this.textBox1.Location = new System.Drawing.Point(13, 13);
+            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.textBox1.ForeColor = System.Drawing.Color.White;
+            this.textBox1.Location = new System.Drawing.Point(17, 16);
+            this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(400, 20);
+            this.textBox1.Size = new System.Drawing.Size(532, 22);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = "Enter your username here";
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(13, 39);
+            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.button1.ForeColor = System.Drawing.Color.White;
+            this.button1.Location = new System.Drawing.Point(17, 48);
+            this.button1.Margin = new System.Windows.Forms.Padding(0);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(400, 23);
+            this.button1.Size = new System.Drawing.Size(533, 28);
             this.button1.TabIndex = 1;
             this.button1.Text = "Create User.Json";
-            this.button1.UseVisualStyleBackColor = true;
+            this.button1.UseVisualStyleBackColor = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // usernameForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(425, 74);
+            this.BackColor = System.Drawing.Color.Black;
+            this.ClientSize = new System.Drawing.Size(564, 81);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.textBox1);
-            this.MaximumSize = new System.Drawing.Size(441, 113);
-            this.MinimumSize = new System.Drawing.Size(441, 113);
+            this.ForeColor = System.Drawing.Color.White;
+            this.Margin = new System.Windows.Forms.Padding(4);
+            this.MaximumSize = new System.Drawing.Size(582, 128);
+            this.MinimumSize = new System.Drawing.Size(582, 128);
             this.Name = "usernameForm";
+            this.ShowIcon = false;
             this.Text = "USER.JSON";
             this.Load += new System.EventHandler(this.usernameForm_Load);
             this.ResumeLayout(false);
