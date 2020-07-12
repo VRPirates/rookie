@@ -1,0 +1,63 @@
+Main Form
+=========
+ - Adb Devices Button
+	Notifies the user every device returned by adb
+	Changes Form1 Titlebar to "Rookie Sideloader | Device Connected with ID | {DEVICEID}"
+ - Sideload Drop Button
+	Shows/Hides the rest of sideload buttons
+ - Copy Obb Button
+	Opens a new folder select dialog where the user selects an folder, that folder will be copied to Android/Obb
+ - Copy Bulk Obb Button
+	Opens a new folder select dialog where the user selects an folder, that folder will be searched and every obb folder will be copied to Android/Obb
+ - Get Apk Button
+	After the user selects an package from m_combo (first combobox) the apk will be pulled to the current directory
+ - Uninstall App Button
+	After the user selects an package from m_combo (first combobox) and he accepts the warning given, the apk selected will be uninstalled from the device
+ - Sideload Folder Button
+	Opens a new folder select dialog where the user selects an folder, that folder will be searched and every apk from it will be sideloaded
+ - Sideload Apk Button
+	Opens a new file select dialog where the user selects a file, that file will be sideloaded
+ - Refresh Apk List Button
+	Refreshes the apks/packages listed in m_combo
+ - Backup Drop Button
+	Shows/Hides the rest of backup buttons
+ - Backup Gamedata Button
+	Saves every folder from Android/data to a folder in the current directory
+ - Restore Gamedata Button
+	Pushes every folder form current dirctory/data to Android/data
+ - User.Json button
+	Opens a new UsernameForm
+ - Sideload Apk Button
+	Opens a new file select dialog where the user selects a file, that file's sha256 hash will be copied to clipboard and the user will be notified
+ - Troublshoot Button
+	Opens a new TroubleshootForm
+ - Settings Button
+	Opens a new SettingsForm
+ - About Button
+	Shows the credits
+ - Donate Button
+	Sets clipboard text to rookie's steam inventory trade link and sends the user a message
+Settings Form
+=============
+ - Check for Updates checkbox
+	If enabled the software checks for updates every startup (default:enabled)
+ - Enable Message Boxes on task completed checkbox
+	If enabled the software will notify the user on every completed task via a Flexible MessageBox (default:enabled)
+ - Copy message to clipboard checkbox
+	If enabled the software copy every message called by the notify function to clipboard (default:disabled)
+ - Delete games after download and install checkbox
+	If enabled the software will delete every file downloaded by the Download and Install Game Button
+ - Json TextBox
+	Here should be the link to custom games json
+ - Reset Settings Button
+	Restores settings to default values, you still need to press apply
+ - Apply Button
+	Applies settings
+Troubleshoot Form
+=================
+ - Ask the software button
+	Depending on the input from the textbox, the software might respond with a good answer, still WIP
+User.Json Form
+==============
+ - Creat User.Json
+	Creates all 3 user.json (at the moment) with the username from the textbox then pushes them to the root folder on the quest

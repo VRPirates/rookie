@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
-using System.Windows;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Net.Http;
@@ -11,12 +10,8 @@ using System.Timers;
 using System.Security.Cryptography;
 using System.Windows.Threading;
 using System.Net;
-using System.Runtime.InteropServices;
 using SergeUtils;
-using System.Drawing.Text;
 using JR.Utils.GUI.Forms;
-using System.Drawing;
-
 
 /* <a target="_blank" href="https://icons8.com/icons/set/van">Van icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
  * The icon of the app contains an icon made by icon8.com
@@ -71,11 +66,11 @@ namespace AndroidSideloader
 
         private void hideSubMenu()
         {
-            if(sideloadContainer.Visible == true)
+            if (sideloadContainer.Visible == true)
             {
                 sideloadContainer.Visible = false;
             }
-            if(backupContainer.Visible == true)
+            if (backupContainer.Visible == true)
             {
                 backupContainer.Visible = false;
             }
@@ -118,7 +113,7 @@ namespace AndroidSideloader
             changeStyle(1);
             oldTitle = this.Text;
             changeTitle("Rookie's Sideloader | Running command " + command);
-            
+
             Process cmd = new Process();
             cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
             cmd.StartInfo.Arguments = command;
@@ -133,7 +128,7 @@ namespace AndroidSideloader
             cmd.StandardInput.Close();
             allText = cmd.StandardOutput.ReadToEnd();
             cmd.WaitForExit();
-            
+
             StreamWriter sw = File.AppendText(debugPath);
             sw.Write("Action name = " + command + '\n');
             sw.Write(allText);
@@ -150,7 +145,7 @@ namespace AndroidSideloader
         {
             Thread t1 = new Thread(() =>
             {
-                runAdbCommand("install -d -r " + '"' + path + '"');
+                runAdbCommand("install -g -d -r " + '"' + path + '"');
             });
             t1.IsBackground = true;
             t1.Start();
@@ -202,14 +197,14 @@ namespace AndroidSideloader
         {
             changeStyle(1);
             oldTitle = this.Text;
-            changeTitle("Rookie Sideloader | Extracting archive " + sourceArchive);
+            changeTitle("Rookie's Sideloader | Extracting archive " + sourceArchive);
             string zPath = "7z.exe"; //add to proj and set CopyToOuputDir
-                ProcessStartInfo pro = new ProcessStartInfo();
-                pro.WindowStyle = ProcessWindowStyle.Hidden;
-                pro.FileName = zPath;
-                pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", sourceArchive, destination);
-                Process x = Process.Start(pro);
-                x.WaitForExit();
+            ProcessStartInfo pro = new ProcessStartInfo();
+            pro.WindowStyle = ProcessWindowStyle.Hidden;
+            pro.FileName = zPath;
+            pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", sourceArchive, destination);
+            Process x = Process.Start(pro);
+            x.WaitForExit();
             changeStyle(0);
             changeTitle(oldTitle);
         }
@@ -247,9 +242,71 @@ namespace AndroidSideloader
         private void changeTitlebarToDevice()
         {
             if (line[1].Length > 1)
-                this.Text = "Rookie Sideloader | Device Connected with ID | " + line[1].Replace("device", "");
+                this.Text = "Rookie's Sideloader | Device Connected with ID | " + line[1].Replace("device", "");
             else
-                this.Text = "Rookie Sideloader | No Device Connected";
+                this.Text = "Rookie's Sideloader | No Device Connected";
+        }
+
+
+        void downloadFiles()
+        {
+            using (var client = new WebClient())
+            {
+                ServicePointManager.Expect100Continue = true;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+                if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe"))
+                {
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
+                }
+
+                if (!Directory.Exists(adbPath)) //if there is no adb folder, download and extract
+                {
+                    try
+                    {
+                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
+                        ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
+                        File.Delete("adb.7z");
+                    }
+                    catch (Exception ex)
+                    {
+                        FlexibleMessageBox.Show("Cannot download adb because you are not connected to the internet! You can manually download the zip here https://github.com/nerdunit/androidsideloader/raw/master/adb.7z after downloading move it to " + Environment.CurrentDirectory + " and unarchive it");
+                        StreamWriter sw = File.AppendText(debugPath);
+                        sw.Write("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
+                        sw.Write(ex.ToString() + "\n");
+                        sw.Flush();
+                        sw.Close();
+                        Environment.Exit(600);
+                    }
+
+                }
+
+                if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
+                {
+                    string url;
+                    if (Environment.Is64BitOperatingSystem)
+                        url = "https://downloads.rclone.org/v1.52.2/rclone-v1.52.2-windows-amd64.zip";
+                    else
+                        url = "https://downloads.rclone.org/v1.52.2/rclone-v1.52.2-windows-386.zip";
+
+                    client.DownloadFile(url, "rclone.zip");
+
+                    ExtractFile(Environment.CurrentDirectory + "\\rclone.zip", Environment.CurrentDirectory);
+
+                    File.Delete("rclone.zip");
+
+                    string[] folders = Directory.GetDirectories(Environment.CurrentDirectory);
+                    foreach (string folder in folders)
+                    {
+                        if (folder.Contains("rclone"))
+                        {
+                            Directory.Move(folder, "rclone");
+                            break;
+                        }
+                    }
+                }
+            }
         }
 
         //A lot of stuff to do when the form loads, centers the program, 
@@ -259,54 +316,12 @@ namespace AndroidSideloader
 
             if (File.Exists(debugPath))
                 File.Delete(debugPath); //clear debug.log each start
-            if (File.Exists(Environment.CurrentDirectory + "\\7z.exe") == false)
-            {
-                using (var client = new WebClient())
-                {
-                    ServicePointManager.Expect100Continue = true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
-                }
-            }
-            if (Directory.Exists(adbPath)==false) //if there is no adb folder, download and extract
-            {
-                FlexibleMessageBox.Show("Please wait for the software to download and install the adb");
-                try
-                {
-                    using (var client = new WebClient())
-                    {
-                        ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
-                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
-                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
-                    }
-                    ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
-                    File.Delete("adb.7z");
-                }
-                catch (Exception ex)
-                {
-                    FlexibleMessageBox.Show("Cannot download adb because you are not connected to the internet! You can manually download the zip here https://github.com/nerdunit/androidsideloader/raw/master/adb.7z after downloading move it to " + Environment.CurrentDirectory + " and unarchive it");
-                    StreamWriter sw = File.AppendText(debugPath);
-                    sw.Write("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n");
-                    sw.Write(ex.ToString() + "\n");
-                    sw.Flush();
-                    sw.Close();
-                    Environment.Exit(600);
-                }
-                
-            }
 
-            if (debugMode==false)
-                if (Properties.Settings.Default.checkForUpdates==true)
+            try { downloadFiles(); } catch { notify("You must have internet access for initial downloads, you can try:\n1. Disabling the firewall and antivirus\n2. Delete every file from the sideloader besides the .exe\n3. Try a vpn\n"); }
+
+            if (debugMode == false)
+                if (Properties.Settings.Default.checkForUpdates == true)
                     checkForUpdate();
-
-            if (debugMode == true)
-            {
-                button1.Visible = true;
-                gamesComboBox.Visible = true;
-            }
 
             runAdbCommand("devices"); //check if there is any device connected
             changeTitlebarToDevice();
@@ -315,6 +330,7 @@ namespace AndroidSideloader
                 if (Properties.Settings.Default.firstRun == true)
                 {
                     MessageBox.Show("YOU CAN NOW DRAG AND DROP TO INSTALL APK'S AND OBB FOLDERS!");
+                    FlexibleMessageBox.Show("For one click download and install games you need an rclone config");
                     Properties.Settings.Default.firstRun = false;
                     Properties.Settings.Default.Save();
                 }
@@ -344,13 +360,12 @@ namespace AndroidSideloader
             uninstallAppToolTip.SetToolTip(this.uninstallAppButton, "Uninstalls selected app");
             ToolTip userjsonToolTip = new ToolTip();
             userjsonToolTip.SetToolTip(this.userjsonButton, "After you enter your username it will create an user.json file needed for some games");
-
         }
         void checkForUpdate()
         {
-        try
+            try
             {
-                string localVersion = "0.15HF1";
+                string localVersion = "1.0";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -384,7 +399,7 @@ namespace AndroidSideloader
                     Environment.Exit(0);
                 }
             }
-        catch
+            catch
             {
 
             }
@@ -444,7 +459,7 @@ namespace AndroidSideloader
                 }
                 else return;
             }
-                await Task.Run(() => restore());
+            await Task.Run(() => restore());
 
             notify(allText);
         }
@@ -460,18 +475,54 @@ namespace AndroidSideloader
             t1.Join();
         }
 
+        public string[] getGames()
+        {
+            string command = "cat \"VRP:Quest Games/APK_packagenames.txt\" --config .\\a";
+
+
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            cmd.StartInfo.Arguments = command;
+            cmd.StartInfo.RedirectStandardInput = true;
+            cmd.StartInfo.RedirectStandardOutput = true;
+            cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            cmd.StartInfo.CreateNoWindow = true;
+            cmd.StartInfo.UseShellExecute = false;
+            cmd.Start();
+            cmd.StandardInput.WriteLine(command);
+            cmd.StandardInput.Flush();
+            cmd.StandardInput.Close();
+            var games = cmd.StandardOutput.ReadToEnd().Split('\n');
+            cmd.WaitForExit();
+            return games;
+        }
+
         private async void listappsBtn()
         {
+            var games = getGames();
+
             allText = "";
 
             m_combo.Items.Clear();
 
             await Task.Run(() => listapps());
-            
+
             foreach (string obj in line)
             {
-                if (obj.Length>9)
-                    m_combo.Items.Add(obj.Remove(0, 8));
+                if (obj.Length > 9)
+                {
+                    string packageName = obj.Remove(0, 8);
+                    packageName = packageName.Remove(packageName.Length - 1);
+                    foreach (string game in games)
+                    {
+                        if (packageName.Length > 0 && game.Contains(packageName))
+                        {
+                            var foo = game.Split(';');
+                            packageName = foo[0];
+                        }
+                    }
+                    m_combo.Items.Add(packageName);
+                }
             }
             m_combo.MatchingMethod = StringMatchingMethod.NoWildcards;
         }
@@ -500,15 +551,28 @@ namespace AndroidSideloader
 
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-            if (m_combo.Items.Count == 0 || m_combo.SelectedItem.ToString().Length == 0)
+
+
+            if (m_combo.SelectedIndex == -1)
             {
                 notify("Please select an app first");
                 return;
             }
 
-            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
+            string[] games = getGames();
 
-            await Task.Run(() => getapk(package));
+            string packageName = m_combo.SelectedItem.ToString();
+
+            foreach (string game in games)
+            {
+                if (packageName.Length > 0 && game.Contains(packageName))
+                {
+                    var foo = game.Split(';');
+                    packageName = foo[2];
+                }
+            }
+
+            await Task.Run(() => getapk(packageName));
 
             allText = allText.Remove(allText.Length - 1);
             //MessageBox.Show(allText);
@@ -522,11 +586,11 @@ namespace AndroidSideloader
             while (currApkPath.Contains("/"))
                 currApkPath = currApkPath.Substring(currApkPath.IndexOf("/") + 1);
 
-            if (File.Exists(Environment.CurrentDirectory + "\\" + package + ".apk"))
-                File.Delete(Environment.CurrentDirectory + "\\" + package + ".apk");
+            if (File.Exists(Environment.CurrentDirectory + "\\" + packageName + ".apk"))
+                File.Delete(Environment.CurrentDirectory + "\\" + packageName + ".apk");
 
 
-            File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + package + ".apk");
+            File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + packageName + ".apk");
 
             notify(allText);
         }
@@ -541,24 +605,61 @@ namespace AndroidSideloader
             t1.Start();
         }
 
+        async Task<string> getpackagename()
+        {
+            string[] games = getGames();
+
+            string packageName = m_combo.SelectedItem.ToString();
+
+            foreach (string game in games)
+            {
+                if (packageName.Length > 0 && game.Contains(packageName))
+                {
+                    packageName = game;
+                    break;
+                }
+            }
+
+            return packageName;
+
+        }
+
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
-            if (m_combo.Items.Count == 0 || m_combo.SelectedItem.ToString().Length == 0)
+            if (m_combo.SelectedIndex == -1)
             {
                 MessageBox.Show("Please select an app first");
                 return;
             }
 
-            allText = "";
-            string package = m_combo.SelectedItem.ToString().Remove(m_combo.SelectedItem.ToString().Length - 1);
+            string packageName = await getpackagename();
 
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to uninstall " + package + " this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            packageName = packageName.Split(';')[2];
+
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to uninstall " + packageName + " this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
                 return;
 
-            await Task.Run(() => uninstallPackage(package));
+            await Task.Run(() => uninstallPackage(packageName));
 
-            notify(allText);
+            var uninstallText = allText;
+
+            await Task.Run(() => removeFolder("/sdcard/Android/obb/" + packageName));
+
+            await Task.Run(() => removeFolder("/sdcard/Android/obb/" + packageName + "/"));
+
+            notify(uninstallText);
+        }
+
+        void removeFolder(string path)
+        {
+            Thread t1 = new Thread(() =>
+            {
+                runAdbCommand("shell rm -r " + path);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+            t1.Join();
         }
 
         private void uninstallPackage(string package)
@@ -662,9 +763,13 @@ namespace AndroidSideloader
         {
             using (FileStream stream = File.OpenRead(file))
             {
-                SHA256Managed sha = new SHA256Managed();
-                byte[] checksum = sha.ComputeHash(stream);
-                result = BitConverter.ToString(checksum).Replace("-", String.Empty);
+                using (var md5 = MD5.Create())
+                {
+                    using (var hashStream = File.OpenRead(file))
+                    {
+                        result = BitConverter.ToString(md5.ComputeHash(hashStream)).Replace("-", "").ToLowerInvariant();
+                    }
+                }
             }
         }
 
@@ -710,88 +815,44 @@ namespace AndroidSideloader
         private void Form1_Shown(object sender, EventArgs e)
         {
             Timer99.Start();
+
+            initGames();
         }
-
-        private void downloadOverTor(string url, string path)
+        void initGames()
         {
-            WebProxy oWebProxy = new WebProxy(IPAddress.Loopback.ToString(), 4711);
-            WebClient oWebClient = new WebClient();
-            oWebClient.Proxy = oWebProxy;
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            oWebClient.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-            oWebClient.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
-            oWebClient.DownloadFileAsync(new Uri(url), path);
-        }
 
-        bool isInDownload = false;
-        private async void button1_Click(object sender, EventArgs e)
-        {
-            string gameName = "game.zip"; //get selected game name instead
-            string url = "";
-            string path = Environment.CurrentDirectory + "\\game.zip";
-            string gamePath = Environment.CurrentDirectory + "\\" + gameName;
+            gamesComboBox.Invoke(() => { gamesComboBox.Items.Clear(); });
 
-            isInDownload = true;
-            changeStyle(1);
-            if (Properties.Settings.Default.useTor == true)
+            string command = "lsf --config .\\a --dirs-only \"VRP:Quest Games\" --drive-acknowledge-abuse";
+
+            Console.WriteLine(command);
+
+            Process cmd = new Process();
+            cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            cmd.StartInfo.Arguments = command;
+            cmd.StartInfo.RedirectStandardInput = true;
+            cmd.StartInfo.RedirectStandardOutput = true;
+            cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            cmd.StartInfo.CreateNoWindow = true;
+            cmd.StartInfo.UseShellExecute = false;
+            cmd.Start();
+            cmd.StandardInput.WriteLine(command);
+            cmd.StandardInput.Flush();
+            cmd.StandardInput.Close();
+            var games = cmd.StandardOutput.ReadToEnd().Split('\n');
+            cmd.WaitForExit();
+
+            foreach (string game in games)
             {
-                if (Directory.Exists(Environment.CurrentDirectory + "\\Tor") == false)
+                if (!game.StartsWith("."))
                 {
-                    DialogResult dialogResult = FlexibleMessageBox.Show(new Form { TopMost = true }, "You have download over tor enabled in settings, do you want to download tor?", "Download", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.No)
-                        return;
-                    using (var client = new WebClient())
-                    {
-                        ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Tor.7z", "Tor.7z");
-                    }
-                    ExtractFile(Environment.CurrentDirectory + "\\Tor.7z", Environment.CurrentDirectory);
-                    File.Delete(Environment.CurrentDirectory + "\\Tor.7z");
+                    string currGame = game;
+                    if (currGame.Length > 0)
+                        currGame = currGame.Remove(currGame.Length - 1);
+
+                    gamesComboBox.Invoke(() => { gamesComboBox.Items.Add(currGame); });
                 }
-                string filename = Path.Combine(Environment.CurrentDirectory + "\\Tor", "tor.exe");
-                var proc = System.Diagnostics.Process.Start(filename, "--HTTPTunnelPort 4711");
-                downloadOverTor(url, path);
             }
-            else
-                startDownload(url, path);
-
-            while (isInDownload == true)
-            {
-                await Task.Delay(25);
-            }
-            changeStyle(0);
-
-            //Extract the game
-            await Task.Run(() => ExtractFile(gamePath, Environment.CurrentDirectory));
-
-            recursiveSideload(gamePath); //in case there are multiple apk's
-
-            string[] filesindirectory = Directory.GetDirectories(gamePath + "\\obb"); //in case there are multiple obb's
-            foreach (string dir in filesindirectory)
-                await Task.Run(() => obbcopy(dir));
-
-            notify("Game installed");
-        }
-
-        private void startDownload(string url, string path)
-        {
-            WebClient client = new WebClient();
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            client.DownloadProgressChanged += new DownloadProgressChangedEventHandler(client_DownloadProgressChanged);
-            client.DownloadFileCompleted += new AsyncCompletedEventHandler(client_DownloadFileCompleted);
-            client.DownloadFileAsync(new Uri(url), path);
-        }
-        void client_DownloadProgressChanged(object sender, DownloadProgressChangedEventArgs e)
-        {
-            changeTitle("Rookie's Sideloader | Downloaded " + e.BytesReceived + " of " + e.TotalBytesToReceive);
-        }
-        void client_DownloadFileCompleted(object sender, AsyncCompletedEventArgs e)
-        {
-            changeStyle(0);
-            isInDownload = false;
         }
 
         private void sideloadContainer_Click(object sender, EventArgs e)
@@ -812,14 +873,22 @@ namespace AndroidSideloader
 
         private void aboutBtn_Click(object sender, EventArgs e)
         {
-            string about = @" - The icon of the app contains an icon made by icon8.com
- - Software orignally coded by rookie.lol#7897
- - Thanks to badcoder5000#4598 for redesigning the UI
+            string about = @"Finally 1.0
+ - Software orignally coded by rookie.lol
+ - Thanks to pmow for all of his work, including rclone, wonka and other projects
+ - Thanks to flow for being friendly and helping every one
+ - Thanks to succ for creating and maintaining the server
+ - Thanks to badcoder5000 for redesigning the UI
+ - Thanks to 7zip team for 7zip :)
+ - Thanks to rclone team for rclone :D
  - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
- - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box";
+ - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
+ - The icon of the app contains an icon made by icon8.com";
             FlexibleMessageBox.Show(about);
         }
+
+        bool wait = false;
 
         private async void checkHashButton_Click(object sender, EventArgs e)
         {
@@ -849,20 +918,136 @@ namespace AndroidSideloader
 
         private void userjsonButton_Click(object sender, EventArgs e)
         {
-            usernameForm usernameForm1 = new usernameForm();
+            UsernameForm usernameForm1 = new UsernameForm();
             usernameForm1.Show();
         }
 
         private void donateButton_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText("https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
-            notify("Donate steam stuff to me if you want, my trade link has been copied to your clipboard also here's the link https://steamcommunity.com/tradeoffer/new/?partner=189719028&token=qCee3jwp");
+            Clipboard.SetText("rookie.lol#0001");
+            notify("Ask rookie.lol#0001 or pmow#1706 where you can donate");
         }
 
-        private void listApkButton_Click(object sender, EventArgs e)
+        private async void listApkButton_Click(object sender, EventArgs e)
         {
+            changeStyle(1);
+            await Task.Run(() => initGames());
+            changeStyle(0);
+
             listappsBtn();
+        }
+
+        private void troubleshootButton_Click(object sender, EventArgs e)
+        {
+            TroubleshootForm form = new TroubleshootForm();
+            form.Show();
+        }
+
+        private async void downloadInstallGameButton_Click(object sender, EventArgs e)
+        {
+            int apkNumber = 0;
+            int obbNumber = 0;
+
+            string gameName = gamesComboBox.SelectedItem.ToString();
+
+            changeTitle("Rookie's Sideloader | Downloading game " + gameName);
+
+            Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + gameName);
+            string command = "copy --config .\\a \"VRP:Quest Games/" + gamesComboBox.SelectedItem.ToString() + "\" \"" + Environment.CurrentDirectory + "\\" + gameName + "\" --progress --drive-acknowledge-abuse";
+
+            Thread t1 = new Thread(() =>
+            {
+                changeStyle(1);
+                wait = true;
+                Process cmd = new Process();
+                cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+                cmd.StartInfo.Arguments = command;
+                cmd.StartInfo.RedirectStandardInput = true;
+                cmd.StartInfo.RedirectStandardOutput = true;
+                cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+                cmd.StartInfo.CreateNoWindow = true;
+                cmd.StartInfo.UseShellExecute = false;
+                cmd.Start();
+                cmd.StandardInput.WriteLine(command);
+                cmd.StandardInput.Flush();
+                cmd.StandardInput.Close();
+                var games = cmd.StandardOutput.ReadToEnd().Split('\n');
+                cmd.WaitForExit();
+                wait = false;
+                changeStyle(0);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            await Task.Delay(500);
+            while (wait)
+            {
+                await Task.Delay(25);
+            }
+
+            string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
+
+            foreach (string file in files)
+            {
+                string extension = Path.GetExtension(file);
+                if (extension == ".apk")
+                {
+                    changeStyle(1);
+                    apkNumber++;
+                    await Task.Run(() => sideload(file));
+                    changeStyle(0);
+                }
+            }
+
+            string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
+
+            foreach (string folder in folders)
+            {
+                string[] obbs = Directory.GetFiles(folder);
+
+                bool isObb = false;
+                foreach (string currObb in obbs)
+                {
+                    string extension = Path.GetExtension(currObb);
+
+                    if (extension == ".obb")
+                    {
+                        isObb = true;
+                    }
+                }
+
+                if (isObb == true)
+                {
+                    changeStyle(1);
+                    obbNumber++;
+                    await Task.Run(() => obbcopy(folder));
+                    changeStyle(0);
+                }
+            }
+
+            if (Properties.Settings.Default.deleteAllAfterInstall)
+            {
+                Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
+            }
+
+            notify("Game downloaded and installed " + apkNumber + " apks and " + obbNumber + " obb folders");
+            //Environment.CurrentDirectory + "\\" + gameName
+
         }
     }
 
+    public static class ControlExtensions
+    {
+        public static void Invoke(this Control control, Action action)
+        {
+            if (control.InvokeRequired)
+            {
+                control.Invoke(new MethodInvoker(action), null);
+            }
+            else
+            {
+                action.Invoke();
+            }
+        }
+    }
 }

@@ -33,7 +33,7 @@
             this.enableMessageBoxesCheckBox = new System.Windows.Forms.CheckBox();
             this.copyMessageToClipboardCheckBox = new System.Windows.Forms.CheckBox();
             this.resetSettingsButton = new System.Windows.Forms.Button();
-            this.useTorCheckBox = new System.Windows.Forms.CheckBox();
+            this.deleteAfterInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -98,17 +98,17 @@
             this.resetSettingsButton.UseVisualStyleBackColor = false;
             this.resetSettingsButton.Click += new System.EventHandler(this.resetSettingsButton_Click);
             // 
-            // useTorCheckBox
+            // deleteAfterInstallCheckBox
             // 
-            this.useTorCheckBox.AutoSize = true;
-            this.useTorCheckBox.Location = new System.Drawing.Point(17, 102);
-            this.useTorCheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.useTorCheckBox.Name = "useTorCheckBox";
-            this.useTorCheckBox.Size = new System.Drawing.Size(212, 21);
-            this.useTorCheckBox.TabIndex = 5;
-            this.useTorCheckBox.Text = "Download games through tor";
-            this.useTorCheckBox.UseVisualStyleBackColor = true;
-            this.useTorCheckBox.CheckedChanged += new System.EventHandler(this.useTorCheckBox_CheckedChanged);
+            this.deleteAfterInstallCheckBox.AutoSize = true;
+            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(17, 102);
+            this.deleteAfterInstallCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
+            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(282, 21);
+            this.deleteAfterInstallCheckBox.TabIndex = 6;
+            this.deleteAfterInstallCheckBox.Text = "Delete games after download and install";
+            this.deleteAfterInstallCheckBox.UseVisualStyleBackColor = true;
+            this.deleteAfterInstallCheckBox.CheckedChanged += new System.EventHandler(this.deleteAfterInstallCheckBox_CheckedChanged);
             // 
             // SettingsForm
             // 
@@ -116,7 +116,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
             this.ClientSize = new System.Drawing.Size(592, 268);
-            this.Controls.Add(this.useTorCheckBox);
+            this.Controls.Add(this.deleteAfterInstallCheckBox);
             this.Controls.Add(this.resetSettingsButton);
             this.Controls.Add(this.copyMessageToClipboardCheckBox);
             this.Controls.Add(this.enableMessageBoxesCheckBox);
@@ -141,6 +141,6 @@
         private System.Windows.Forms.CheckBox enableMessageBoxesCheckBox;
         private System.Windows.Forms.CheckBox copyMessageToClipboardCheckBox;
         private System.Windows.Forms.Button resetSettingsButton;
-        private System.Windows.Forms.CheckBox useTorCheckBox;
+        private System.Windows.Forms.CheckBox deleteAfterInstallCheckBox;
     }
 }

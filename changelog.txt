@@ -1,3 +1,14 @@
+1.0HF1
+ + Fixed a problem when deleting an app
+
+1.0
+ + Added games auto download
+ + Added auto troubleshoot
+ + Every app installed will have all perms granted
+ + Displays apps for games instead of package names if you have rclone set up
+ + Uninstall app now will also delete its obb folder
+ //For auto download you need an rclone config and rclone to be set up correctly, VRP:Quest Games
+
 0.15HF1
  + Added list apps button back
  = Fixed Uninstall apk and get apk

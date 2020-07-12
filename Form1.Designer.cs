@@ -43,12 +43,13 @@
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.DragDropLbl = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
+            this.downloadInstallGameButton = new System.Windows.Forms.Button();
             this.gamesComboBox = new SergeUtils.EasyCompletionComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.donateButton = new System.Windows.Forms.Button();
             this.aboutBtn = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
+            this.troubleshootButton = new System.Windows.Forms.Button();
             this.checkHashButton = new System.Windows.Forms.Button();
             this.userjsonButton = new System.Windows.Forms.Button();
             this.backupContainer = new System.Windows.Forms.Panel();
@@ -71,6 +72,7 @@
             this.m_combo.Name = "m_combo";
             this.m_combo.Size = new System.Drawing.Size(568, 24);
             this.m_combo.TabIndex = 16;
+            this.m_combo.Text = "Select an app from here...";
             // 
             // startsideloadbutton
             // 
@@ -183,7 +185,7 @@
             // 
             this.launchPackageTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.launchPackageTextBox.ForeColor = System.Drawing.Color.White;
-            this.launchPackageTextBox.Location = new System.Drawing.Point(597, 113);
+            this.launchPackageTextBox.Location = new System.Drawing.Point(597, 148);
             this.launchPackageTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.launchPackageTextBox.Name = "launchPackageTextBox";
             this.launchPackageTextBox.Size = new System.Drawing.Size(255, 22);
@@ -192,7 +194,7 @@
             // 
             // launchApkButton
             // 
-            this.launchApkButton.Location = new System.Drawing.Point(597, 140);
+            this.launchApkButton.Location = new System.Drawing.Point(597, 175);
             this.launchApkButton.Margin = new System.Windows.Forms.Padding(4);
             this.launchApkButton.Name = "launchApkButton";
             this.launchApkButton.Size = new System.Drawing.Size(255, 25);
@@ -241,10 +243,10 @@
             // 
             this.progressBar1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.progressBar1.ForeColor = System.Drawing.Color.Purple;
-            this.progressBar1.Location = new System.Drawing.Point(286, 45);
+            this.progressBar1.Location = new System.Drawing.Point(284, 45);
             this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(565, 25);
+            this.progressBar1.Size = new System.Drawing.Size(568, 25);
             this.progressBar1.TabIndex = 23;
             // 
             // copyBulkObbButton
@@ -268,27 +270,26 @@
             // DragDropLbl
             // 
             this.DragDropLbl.AutoSize = true;
-            this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 48F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DragDropLbl.ForeColor = System.Drawing.Color.White;
             this.DragDropLbl.Location = new System.Drawing.Point(275, 486);
             this.DragDropLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.DragDropLbl.Name = "DragDropLbl";
-            this.DragDropLbl.Size = new System.Drawing.Size(526, 91);
+            this.DragDropLbl.Size = new System.Drawing.Size(394, 69);
             this.DragDropLbl.TabIndex = 27;
             this.DragDropLbl.Text = "DragDropLBL";
             this.DragDropLbl.Visible = false;
             // 
-            // button1
+            // downloadInstallGameButton
             // 
-            this.button1.Location = new System.Drawing.Point(284, 113);
-            this.button1.Margin = new System.Windows.Forms.Padding(4);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(256, 28);
-            this.button1.TabIndex = 71;
-            this.button1.Text = "Download Game";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Visible = false;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.downloadInstallGameButton.Location = new System.Drawing.Point(284, 113);
+            this.downloadInstallGameButton.Margin = new System.Windows.Forms.Padding(4);
+            this.downloadInstallGameButton.Name = "downloadInstallGameButton";
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(568, 28);
+            this.downloadInstallGameButton.TabIndex = 71;
+            this.downloadInstallGameButton.Text = "Download and Install Game";
+            this.downloadInstallGameButton.UseVisualStyleBackColor = true;
+            this.downloadInstallGameButton.Click += new System.EventHandler(this.downloadInstallGameButton_Click);
             // 
             // gamesComboBox
             // 
@@ -300,7 +301,7 @@
             this.gamesComboBox.Name = "gamesComboBox";
             this.gamesComboBox.Size = new System.Drawing.Size(568, 24);
             this.gamesComboBox.TabIndex = 72;
-            this.gamesComboBox.Visible = false;
+            this.gamesComboBox.Text = "Select a game from here...";
             // 
             // panel1
             // 
@@ -309,6 +310,7 @@
             this.panel1.Controls.Add(this.donateButton);
             this.panel1.Controls.Add(this.aboutBtn);
             this.panel1.Controls.Add(this.settingsButton);
+            this.panel1.Controls.Add(this.troubleshootButton);
             this.panel1.Controls.Add(this.checkHashButton);
             this.panel1.Controls.Add(this.userjsonButton);
             this.panel1.Controls.Add(this.backupContainer);
@@ -330,11 +332,11 @@
             this.donateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.donateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.donateButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.donateButton.Location = new System.Drawing.Point(0, 573);
+            this.donateButton.Location = new System.Drawing.Point(0, 608);
             this.donateButton.Margin = new System.Windows.Forms.Padding(4);
             this.donateButton.Name = "donateButton";
             this.donateButton.Size = new System.Drawing.Size(267, 58);
-            this.donateButton.TabIndex = 85;
+            this.donateButton.TabIndex = 89;
             this.donateButton.Text = "DONATE";
             this.donateButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.donateButton.UseVisualStyleBackColor = true;
@@ -347,11 +349,11 @@
             this.aboutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aboutBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.aboutBtn.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.aboutBtn.Location = new System.Drawing.Point(0, 538);
+            this.aboutBtn.Location = new System.Drawing.Point(0, 573);
             this.aboutBtn.Margin = new System.Windows.Forms.Padding(4);
             this.aboutBtn.Name = "aboutBtn";
             this.aboutBtn.Size = new System.Drawing.Size(267, 35);
-            this.aboutBtn.TabIndex = 84;
+            this.aboutBtn.TabIndex = 88;
             this.aboutBtn.Text = "ABOUT";
             this.aboutBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.aboutBtn.UseVisualStyleBackColor = true;
@@ -364,15 +366,32 @@
             this.settingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.settingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.settingsButton.ForeColor = System.Drawing.SystemColors.MenuBar;
-            this.settingsButton.Location = new System.Drawing.Point(0, 503);
+            this.settingsButton.Location = new System.Drawing.Point(0, 538);
             this.settingsButton.Margin = new System.Windows.Forms.Padding(4);
             this.settingsButton.Name = "settingsButton";
             this.settingsButton.Size = new System.Drawing.Size(267, 35);
-            this.settingsButton.TabIndex = 83;
+            this.settingsButton.TabIndex = 87;
             this.settingsButton.Text = "SETTINGS";
             this.settingsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.settingsButton.UseVisualStyleBackColor = true;
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+            // 
+            // troubleshootButton
+            // 
+            this.troubleshootButton.Dock = System.Windows.Forms.DockStyle.Top;
+            this.troubleshootButton.FlatAppearance.BorderSize = 0;
+            this.troubleshootButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.troubleshootButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.troubleshootButton.ForeColor = System.Drawing.SystemColors.ButtonFace;
+            this.troubleshootButton.Location = new System.Drawing.Point(0, 503);
+            this.troubleshootButton.Margin = new System.Windows.Forms.Padding(4);
+            this.troubleshootButton.Name = "troubleshootButton";
+            this.troubleshootButton.Size = new System.Drawing.Size(267, 35);
+            this.troubleshootButton.TabIndex = 86;
+            this.troubleshootButton.Text = "TROUBLESHOOT";
+            this.troubleshootButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.troubleshootButton.UseVisualStyleBackColor = true;
+            this.troubleshootButton.Click += new System.EventHandler(this.troubleshootButton_Click);
             // 
             // checkHashButton
             // 
@@ -468,7 +487,7 @@
             this.listApkButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
             this.listApkButton.Size = new System.Drawing.Size(267, 35);
             this.listApkButton.TabIndex = 15;
-            this.listApkButton.Text = "Refresh Apk List";
+            this.listApkButton.Text = "Refresh Apk, Games";
             this.listApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.listApkButton.UseVisualStyleBackColor = true;
             this.listApkButton.Click += new System.EventHandler(this.listApkButton_Click);
@@ -500,7 +519,7 @@
             this.ClientSize = new System.Drawing.Size(862, 786);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.gamesComboBox);
-            this.Controls.Add(this.button1);
+            this.Controls.Add(this.downloadInstallGameButton);
             this.Controls.Add(this.DragDropLbl);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.launchApkButton);
@@ -541,19 +560,20 @@
         private System.Windows.Forms.ProgressBar progressBar1;
         private System.Windows.Forms.Button copyBulkObbButton;
         private System.Windows.Forms.Label DragDropLbl;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button downloadInstallGameButton;
         private SergeUtils.EasyCompletionComboBox gamesComboBox;
         private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Button donateButton;
-        private System.Windows.Forms.Button aboutBtn;
-        private System.Windows.Forms.Button settingsButton;
-        private System.Windows.Forms.Button checkHashButton;
         private System.Windows.Forms.Button userjsonButton;
         private System.Windows.Forms.Panel backupContainer;
         private System.Windows.Forms.Button backupDrop;
         private System.Windows.Forms.Panel sideloadContainer;
         private System.Windows.Forms.Button sideloadDrop;
         private System.Windows.Forms.Button listApkButton;
+        private System.Windows.Forms.Button checkHashButton;
+        private System.Windows.Forms.Button troubleshootButton;
+        private System.Windows.Forms.Button donateButton;
+        private System.Windows.Forms.Button aboutBtn;
+        private System.Windows.Forms.Button settingsButton;
     }
 }
 

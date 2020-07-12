@@ -31,7 +31,7 @@ namespace AndroidSideloader
             checkForUpdatesCheckBox.Checked = Properties.Settings.Default.checkForUpdates;
             enableMessageBoxesCheckBox.Checked = Properties.Settings.Default.enableMessageBoxes;
             copyMessageToClipboardCheckBox.Checked = Properties.Settings.Default.copyMessageToClipboard;
-            useTorCheckBox.Checked = Properties.Settings.Default.useTor;
+            deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
         }
 
         void intToolTips()
@@ -42,8 +42,8 @@ namespace AndroidSideloader
             enableMessageBoxesToolTip.SetToolTip(this.enableMessageBoxesCheckBox, "If this is checked, the software will display message boxes after every completed task");
             ToolTip copyMessageToClipboardToolTip = new ToolTip();
             copyMessageToClipboardToolTip.SetToolTip(this.copyMessageToClipboardCheckBox, "If this is checked, after each task the software will set the result message to your clipboard");
-            ToolTip useTorToolTip = new ToolTip();
-            useTorToolTip.SetToolTip(this.useTorCheckBox, "If this is checked, the software will use tor to download the games");
+            ToolTip deleteAfterInstallToolTip = new ToolTip();
+            deleteAfterInstallToolTip.SetToolTip(this.deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
         }
 
         private void applyButton_Click(object sender, EventArgs e)
@@ -77,9 +77,9 @@ namespace AndroidSideloader
             intSettings();
         }
 
-        private void useTorCheckBox_CheckedChanged(object sender, EventArgs e)
+        private void deleteAfterInstallCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.useTor = useTorCheckBox.Checked;
+            Properties.Settings.Default.deleteAllAfterInstall = deleteAfterInstallCheckBox.Checked;
         }
     }
 }
