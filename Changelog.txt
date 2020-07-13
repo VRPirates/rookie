@@ -1,3 +1,47 @@
+= Fixed infinite update message
+
+1.0HF1
+ = Fixed a problem when deleting an app
+
+1.0
+ + Added games auto download
+ + Added auto troubleshoot
+ + Every app installed will have all perms granted
+ + Displays apps for games instead of package names if you have rclone set up
+ + Uninstall app now will also delete its obb folder
+ //For auto download you need an rclone config and rclone to be set up correctly, VRP:Quest Games
+
+0.15HF1
+ + Added list apps button back
+ = Fixed Uninstall apk and get apk
+
+0.15
+ = MASSIVE UI REDESIGN
+ + Added toggle for tor/clearnet
+ + Added download games through tor but still waiting for someone to help me host the files
+ + Added download with progress
+ = Changed adb sideload command to allow downgrades too
+ - Removed perms stuff, was too buggy
+
+0.14HF1
+ + Added donate button
+ = Fixed ui order
+ - Removed warning from bulk obb sideload button
+
+0.14
+ + Check file hash button
+ + Added first run check (will maybe be used to create user.json files)
+ + Added drag and drop for apk and obb files
+ + Progress bar now works for every adb command
+ = Moved buttons
+ - Instructions button
+ - Removed run custom adb command button and form
+
+0.13
+ + Added vrmoo.cn.json
+ + Added bulk obb copy
+ = Message Box now top most
+
 0.12
  + Added settings form
  + Added progress bar (again)
