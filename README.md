@@ -7,6 +7,7 @@ Special thanks to
  - flow for being friendly and helping every one
  - succ for creating and maintaining the server
  - badcoder5000 for redesigning the UI
+ - gotard for the theme changer
  - 7zip team for 7zip :)
  - rclone team for rclone :D
  - https://stackoverflow.com/users/57611/erike for the folder browser dialog code
