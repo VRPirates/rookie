@@ -70,6 +70,7 @@
             this.m_combo.BackColor = global::AndroidSideloader.Properties.Settings.Default.ComboBoxColor;
             this.m_combo.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ComboBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.m_combo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.m_combo.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.m_combo.ForeColor = System.Drawing.Color.White;
             this.m_combo.Location = new System.Drawing.Point(284, 14);
             this.m_combo.Margin = new System.Windows.Forms.Padding(4);
@@ -337,6 +338,7 @@
             this.gamesComboBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.ComboBoxColor;
             this.gamesComboBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ComboBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.gamesComboBox.Font = new System.Drawing.Font("Arial", 7.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gamesComboBox.ForeColor = System.Drawing.Color.White;
             this.gamesComboBox.Location = new System.Drawing.Point(284, 81);
             this.gamesComboBox.Margin = new System.Windows.Forms.Padding(4);

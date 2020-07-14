@@ -34,7 +34,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.SubButtonColor = Color.FromArgb(64, 64, 64);
             Properties.Settings.Default.PanelColor = SystemColors.ActiveCaptionText;
             Properties.Settings.Default.BackPicturePath = "";
-            Properties.Settings.Default.FontStyle = new Font("Microsoft Sans Serif", 11, FontStyle.Regular);
+            Properties.Settings.Default.FontStyle = new Font("Arial", 11, FontStyle.Regular);
             Properties.Settings.Default.FontColor = Color.White;
             Properties.Settings.Default.Save();
         }

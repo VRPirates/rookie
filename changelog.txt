@@ -1,3 +1,8 @@
+1.1HF1
+ + Added unicode support for rclone
+ + Added some delay on game installation
+ = Fixed stuff
+
 1.1
  + Added Themes
  + Added dollarvr user.json

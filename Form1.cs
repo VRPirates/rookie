@@ -14,6 +14,8 @@ using System.Net;
 using SergeUtils;
 using JR.Utils.GUI.Forms;
 
+
+
 /* <a target="_blank" href="https://icons8.com/icons/set/van">Van icon</a> icon by <a target="_blank" href="https://icons8.com">Icons8</a>
  * The icon of the app contains an icon made by icon8.com
  */
@@ -89,21 +91,30 @@ namespace AndroidSideloader
             }
         }
 
-
         public void changeStyle(int style)
         {
-
-            if (progressBar1.InvokeRequired)
+            if (style==1)
             {
-                if (style == 1)
+                if (progressBar1.InvokeRequired)
+                {
                     progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Marquee));
-                else if (style == 0)
-                    progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Continuous));
+                }
+                else
+                {
+                    progressBar1.Style = ProgressBarStyle.Marquee;
+                }
             }
-            else if (style == 1)
-                progressBar1.Style = ProgressBarStyle.Marquee;
             else
-                progressBar1.Style = ProgressBarStyle.Continuous;
+            {
+                if (progressBar1.InvokeRequired)
+                {
+                    progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Continuous));
+                }
+                else
+                {
+                    progressBar1.Style = ProgressBarStyle.Continuous;
+                }
+            }
 
 
         }
@@ -341,7 +352,7 @@ namespace AndroidSideloader
 
             listappsBtn();
         }
-
+        string localVersion;
         void intToolTips()
         {
             ToolTip ListDevicesToolTip = new ToolTip();
@@ -367,7 +378,7 @@ namespace AndroidSideloader
         {
             try
             {
-                string localVersion = "1.1";
+                localVersion = "1.2";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -783,7 +794,6 @@ namespace AndroidSideloader
             string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
             foreach (string file in files)
             {
-                Console.WriteLine(file);
                 string extension = Path.GetExtension(file);
                 if (extension == ".apk")
                 {
@@ -829,9 +839,8 @@ namespace AndroidSideloader
 
             string command = "lsf --config .\\a --dirs-only \"VRP:Quest Games\" --drive-acknowledge-abuse";
 
-            Console.WriteLine(command);
-
             Process cmd = new Process();
+            cmd.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
             cmd.StartInfo.Arguments = command;
             cmd.StartInfo.RedirectStandardInput = true;
@@ -840,14 +849,17 @@ namespace AndroidSideloader
             cmd.StartInfo.CreateNoWindow = true;
             cmd.StartInfo.UseShellExecute = false;
             cmd.Start();
+            //cmd.StandardInput.WriteLine("chcp 65001");
             cmd.StandardInput.WriteLine(command);
             cmd.StandardInput.Flush();
             cmd.StandardInput.Close();
             var games = cmd.StandardOutput.ReadToEnd().Split('\n');
             cmd.WaitForExit();
 
+            Console.WriteLine("Loaded following games: ");
             foreach (string game in games)
             {
+                Console.WriteLine(game);
                 if (!game.StartsWith("."))
                 {
                     string currGame = game;
@@ -857,8 +869,9 @@ namespace AndroidSideloader
                     gamesComboBox.Invoke(() => { gamesComboBox.Items.Add(currGame); });
                 }
             }
+            Console.WriteLine(wrDelimiter);
         }
-
+        string wrDelimiter = "-------";
         private void sideloadContainer_Click(object sender, EventArgs e)
         {
             showSubMenu(sideloadContainer);
@@ -877,12 +890,13 @@ namespace AndroidSideloader
 
         private void aboutBtn_Click(object sender, EventArgs e)
         {
-            string about = @"Finally 1.0
+            string about = $@"Finally {localVersion}
  - Software orignally coded by rookie.lol
  - Thanks to pmow for all of his work, including rclone, wonka and other projects
  - Thanks to flow for being friendly and helping every one
  - Thanks to succ for creating and maintaining the server
  - Thanks to badcoder5000 for redesigning the UI
+ - Thanks to gotard for the theme changer
  - Thanks to 7zip team for 7zip :)
  - Thanks to rclone team for rclone :D
  - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
@@ -892,7 +906,7 @@ namespace AndroidSideloader
             FlexibleMessageBox.Show(about);
         }
 
-        bool wait = false;
+        bool wait;
 
         private async void checkHashButton_Click(object sender, EventArgs e)
         {
@@ -947,7 +961,7 @@ namespace AndroidSideloader
             form.Show();
         }
 
-        public string randomString(int length)
+        public string randomString(int length) //this is code from hidden tear lmao
         {
             string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
             StringBuilder res = new StringBuilder();
@@ -1003,6 +1017,7 @@ namespace AndroidSideloader
 
             UsernameForm.deleteUserJson();
 
+            await Task.Delay(1000);
             while (wait)
             {
                 await Task.Delay(25);
@@ -1010,8 +1025,12 @@ namespace AndroidSideloader
 
             string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
+            Console.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
+
+            Console.WriteLine("FILES IN GAME FOLDER: ");
             foreach (string file in files)
             {
+                Console.WriteLine(file);
                 string extension = Path.GetExtension(file);
                 if (extension == ".apk")
                 {
@@ -1021,6 +1040,8 @@ namespace AndroidSideloader
                     changeStyle(0);
                 }
             }
+
+            Console.WriteLine(wrDelimiter);
 
             string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
