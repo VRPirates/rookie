@@ -139,6 +139,12 @@
     <Compile Include="SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="ThemeForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ThemeForm.Designer.cs">
+      <DependentUpon>ThemeForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="TroubleshootForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -170,6 +176,9 @@
     </Compile>
     <EmbeddedResource Include="SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ThemeForm.resx">
+      <DependentUpon>ThemeForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="TroubleshootForm.resx">
       <DependentUpon>TroubleshootForm.cs</DependentUpon>

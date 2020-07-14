@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.IO;
 using System.Threading;
 using System.ComponentModel;
+using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Timers;
@@ -80,7 +81,6 @@ namespace AndroidSideloader
         {
             if (subMenu.Visible == false)
             {
-                hideSubMenu();
                 subMenu.Visible = true;
             }
             else
@@ -312,6 +312,7 @@ namespace AndroidSideloader
         //A lot of stuff to do when the form loads, centers the program, 
         private void Form1_Load(object sender, EventArgs e)
         {
+
             this.CenterToScreen();
 
             if (File.Exists(debugPath))
@@ -329,8 +330,9 @@ namespace AndroidSideloader
             if (line[1].Length > 1) //check for device connected
                 if (Properties.Settings.Default.firstRun == true)
                 {
-                    MessageBox.Show("YOU CAN NOW DRAG AND DROP TO INSTALL APK'S AND OBB FOLDERS!");
-                    FlexibleMessageBox.Show("For one click download and install games you need an rclone config");
+                    UsernameForm.createUserJson(randomString(16));
+                    UsernameForm.pushUserJson();
+                    UsernameForm.deleteUserJson();
                     Properties.Settings.Default.firstRun = false;
                     Properties.Settings.Default.Save();
                 }
@@ -365,7 +367,7 @@ namespace AndroidSideloader
         {
             try
             {
-                string localVersion = "1.0";
+                string localVersion = "1.1";
                 HttpClient client = new HttpClient();
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
@@ -605,7 +607,9 @@ namespace AndroidSideloader
             t1.Start();
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         async Task<string> getpackagename()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             string[] games = getGames();
 
@@ -918,8 +922,8 @@ namespace AndroidSideloader
 
         private void userjsonButton_Click(object sender, EventArgs e)
         {
-            UsernameForm usernameForm1 = new UsernameForm();
-            usernameForm1.Show();
+            UsernameForm form = new UsernameForm();
+            form.Show();
         }
 
         private void donateButton_Click(object sender, EventArgs e)
@@ -941,6 +945,20 @@ namespace AndroidSideloader
         {
             TroubleshootForm form = new TroubleshootForm();
             form.Show();
+        }
+
+        public string randomString(int length)
+        {
+            string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+            StringBuilder res = new StringBuilder();
+            Random rnd = new Random();
+            int randomInteger = rnd.Next(0, valid.Length);
+            while (0 < length--)
+            {
+                res.Append(valid[randomInteger]);
+                randomInteger = rnd.Next(0, valid.Length);
+            }
+            return res.ToString();
         }
 
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
@@ -979,7 +997,12 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
 
-            await Task.Delay(500);
+            UsernameForm.createUserJson(randomString(16));
+
+            UsernameForm.pushUserJson();
+
+            UsernameForm.deleteUserJson();
+
             while (wait)
             {
                 await Task.Delay(25);
@@ -1033,6 +1056,12 @@ namespace AndroidSideloader
             notify("Game downloaded and installed " + apkNumber + " apks and " + obbNumber + " obb folders");
             //Environment.CurrentDirectory + "\\" + gameName
 
+        }
+
+        private void themesbutton_Click(object sender, EventArgs e)
+        {
+            ThemeForm themeform1 = new ThemeForm();
+            themeform1.Show();
         }
     }
 

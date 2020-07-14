@@ -1,5 +1,13 @@
+1.1
+ + Added Themes
+ + Added dollarvr user.json
+ + Added user.json transfer on game download
+ + Added user.json transfer on first run
+ = Fixed tab indexes
+ = Now both drop downs can be visible at the same time
+
 1.0HF1
- + Fixed a problem when deleting an app
+ = Fixed a problem when deleting an app
 
 1.0
  + Added games auto download

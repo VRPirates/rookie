@@ -40,7 +40,7 @@
             // 
             this.checkForUpdatesCheckBox.AutoSize = true;
             this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(17, 16);
-            this.checkForUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.checkForUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.checkForUpdatesCheckBox.Name = "checkForUpdatesCheckBox";
             this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(145, 21);
             this.checkForUpdatesCheckBox.TabIndex = 0;
@@ -53,10 +53,10 @@
             this.applyButton.BackColor = System.Drawing.Color.White;
             this.applyButton.ForeColor = System.Drawing.Color.Black;
             this.applyButton.Location = new System.Drawing.Point(476, 225);
-            this.applyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.applyButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(100, 28);
-            this.applyButton.TabIndex = 1;
+            this.applyButton.TabIndex = 5;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = false;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
@@ -65,10 +65,10 @@
             // 
             this.enableMessageBoxesCheckBox.AutoSize = true;
             this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(17, 44);
-            this.enableMessageBoxesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.enableMessageBoxesCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.enableMessageBoxesCheckBox.Name = "enableMessageBoxesCheckBox";
             this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(296, 21);
-            this.enableMessageBoxesCheckBox.TabIndex = 2;
+            this.enableMessageBoxesCheckBox.TabIndex = 1;
             this.enableMessageBoxesCheckBox.Text = "Enable Message Boxes on task completed";
             this.enableMessageBoxesCheckBox.UseVisualStyleBackColor = true;
             this.enableMessageBoxesCheckBox.CheckedChanged += new System.EventHandler(this.enableMessageBoxesCheckBox_CheckedChanged);
@@ -77,10 +77,10 @@
             // 
             this.copyMessageToClipboardCheckBox.AutoSize = true;
             this.copyMessageToClipboardCheckBox.Location = new System.Drawing.Point(17, 73);
-            this.copyMessageToClipboardCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.copyMessageToClipboardCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.copyMessageToClipboardCheckBox.Name = "copyMessageToClipboardCheckBox";
             this.copyMessageToClipboardCheckBox.Size = new System.Drawing.Size(201, 21);
-            this.copyMessageToClipboardCheckBox.TabIndex = 3;
+            this.copyMessageToClipboardCheckBox.TabIndex = 2;
             this.copyMessageToClipboardCheckBox.Text = "Copy message to clipboard";
             this.copyMessageToClipboardCheckBox.UseVisualStyleBackColor = true;
             this.copyMessageToClipboardCheckBox.CheckedChanged += new System.EventHandler(this.copyMessageToClipboardCheckBox_CheckedChanged);
@@ -90,7 +90,7 @@
             this.resetSettingsButton.BackColor = System.Drawing.Color.White;
             this.resetSettingsButton.ForeColor = System.Drawing.Color.Black;
             this.resetSettingsButton.Location = new System.Drawing.Point(341, 225);
-            this.resetSettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.resetSettingsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Size = new System.Drawing.Size(127, 28);
             this.resetSettingsButton.TabIndex = 4;
@@ -102,10 +102,10 @@
             // 
             this.deleteAfterInstallCheckBox.AutoSize = true;
             this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(17, 102);
-            this.deleteAfterInstallCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteAfterInstallCheckBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
             this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(282, 21);
-            this.deleteAfterInstallCheckBox.TabIndex = 6;
+            this.deleteAfterInstallCheckBox.TabIndex = 3;
             this.deleteAfterInstallCheckBox.Text = "Delete games after download and install";
             this.deleteAfterInstallCheckBox.UseVisualStyleBackColor = true;
             this.deleteAfterInstallCheckBox.CheckedChanged += new System.EventHandler(this.deleteAfterInstallCheckBox_CheckedChanged);
@@ -114,7 +114,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.ClientSize = new System.Drawing.Size(592, 268);
             this.Controls.Add(this.deleteAfterInstallCheckBox);
             this.Controls.Add(this.resetSettingsButton);
@@ -122,8 +122,9 @@
             this.Controls.Add(this.enableMessageBoxesCheckBox);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.checkForUpdatesCheckBox);
+            this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.ForeColor = System.Drawing.Color.White;
-            this.Margin = new System.Windows.Forms.Padding(4);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "SettingsForm";
