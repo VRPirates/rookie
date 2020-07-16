@@ -13,6 +13,7 @@ using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
 using JR.Utils.GUI.Forms;
+using Newtonsoft.Json;
 
 
 
@@ -95,24 +96,24 @@ namespace AndroidSideloader
         {
             if (style==1)
             {
-                if (progressBar1.InvokeRequired)
+                if (progressBar.InvokeRequired)
                 {
-                    progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Marquee));
+                    progressBar.Invoke(new Action(() => progressBar.Style = ProgressBarStyle.Marquee));
                 }
                 else
                 {
-                    progressBar1.Style = ProgressBarStyle.Marquee;
+                    progressBar.Style = ProgressBarStyle.Marquee;
                 }
             }
             else
             {
-                if (progressBar1.InvokeRequired)
+                if (progressBar.InvokeRequired)
                 {
-                    progressBar1.Invoke(new Action(() => progressBar1.Style = ProgressBarStyle.Continuous));
+                    progressBar.Invoke(new Action(() => progressBar.Style = ProgressBarStyle.Continuous));
                 }
                 else
                 {
-                    progressBar1.Style = ProgressBarStyle.Continuous;
+                    progressBar.Style = ProgressBarStyle.Continuous;
                 }
             }
 
@@ -161,8 +162,6 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
             t1.Join();
-            if (allText.Length == 0)
-                notify("Install Failed, apk may be corrupt");
         }
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
@@ -352,7 +351,7 @@ namespace AndroidSideloader
 
             listappsBtn();
         }
-        string localVersion;
+        string localVersion = "1.3";
         void intToolTips()
         {
             ToolTip ListDevicesToolTip = new ToolTip();
@@ -378,8 +377,7 @@ namespace AndroidSideloader
         {
             try
             {
-                localVersion = "1.2";
-                HttpClient client = new HttpClient();
+
                 string currentVersion = client.GetStringAsync("https://raw.githubusercontent.com/nerdunit/androidsideloader/master/version").Result;
                 currentVersion = currentVersion.Remove(currentVersion.Length - 1);
 
@@ -520,23 +518,32 @@ namespace AndroidSideloader
 
             await Task.Run(() => listapps());
 
-            foreach (string obj in line)
+            for (int  i= 0; i < line.Length; i++)
             {
-                if (obj.Length > 9)
+                if (line[i].Length > 9)
                 {
-                    string packageName = obj.Remove(0, 8);
-                    packageName = packageName.Remove(packageName.Length - 1);
+                    line[i] = line[i].Remove(0, 8);
+                    line[i] = line[i].Remove(line[i].Length - 1);
+
                     foreach (string game in games)
                     {
-                        if (packageName.Length > 0 && game.Contains(packageName))
+                        if (line[i].Length > 0 && game.Contains(line[i]))
                         {
                             var foo = game.Split(';');
-                            packageName = foo[0];
+                            line[i] = foo[0];
                         }
                     }
-                    m_combo.Items.Add(packageName);
                 }
             }
+
+            Array.Sort(line);
+
+            foreach (string game in line)
+            {
+                if (game.Length > 0)
+                    m_combo.Items.Add(game);
+            }
+
             m_combo.MatchingMethod = StringMatchingMethod.NoWildcards;
         }
 
@@ -649,9 +656,12 @@ namespace AndroidSideloader
 
             string packageName = await getpackagename();
 
-            packageName = packageName.Split(';')[2];
+            try
+            {
+                packageName = packageName.Split(';')[2];
+            } catch { }
 
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to uninstall " + packageName + " this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = MessageBox.Show("Are you sure you want to uninstall " + packageName + ", this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
                 return;
 
@@ -662,6 +672,15 @@ namespace AndroidSideloader
             await Task.Run(() => removeFolder("/sdcard/Android/obb/" + packageName));
 
             await Task.Run(() => removeFolder("/sdcard/Android/obb/" + packageName + "/"));
+
+            uninstallText += allText;
+
+            dialogResult = MessageBox.Show("Do you want to remove savedata for " + packageName + ", this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.Yes)
+            {
+                await Task.Run(() => removeFolder("/sdcard/Android/data/" + packageName + "/"));
+                await Task.Run(() => removeFolder("/sdcard/Android/data/" + packageName));
+            }
 
             notify(uninstallText);
         }
@@ -856,20 +875,16 @@ namespace AndroidSideloader
             var games = cmd.StandardOutput.ReadToEnd().Split('\n');
             cmd.WaitForExit();
 
-            Console.WriteLine("Loaded following games: ");
+            Debug.WriteLine("Loaded following games: ");
             foreach (string game in games)
             {
-                Console.WriteLine(game);
-                if (!game.StartsWith("."))
+                if (!game.StartsWith(".") && game.Length>1)
                 {
-                    string currGame = game;
-                    if (currGame.Length > 0)
-                        currGame = currGame.Remove(currGame.Length - 1);
-
-                    gamesComboBox.Invoke(() => { gamesComboBox.Items.Add(currGame); });
+                    Debug.WriteLine(game);
+                    gamesComboBox.Invoke(() => { gamesComboBox.Items.Add(game.Remove(game.Length - 1)); });
                 }
             }
-            Console.WriteLine(wrDelimiter);
+            Debug.WriteLine(wrDelimiter);
         }
         string wrDelimiter = "-------";
         private void sideloadContainer_Click(object sender, EventArgs e)
@@ -975,8 +990,11 @@ namespace AndroidSideloader
             return res.ToString();
         }
 
+        private static readonly HttpClient client = new HttpClient();
+
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
+
             int apkNumber = 0;
             int obbNumber = 0;
 
@@ -985,28 +1003,32 @@ namespace AndroidSideloader
             changeTitle("Rookie's Sideloader | Downloading game " + gameName);
 
             Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + gameName);
-            string command = "copy --config .\\a \"VRP:Quest Games/" + gamesComboBox.SelectedItem.ToString() + "\" \"" + Environment.CurrentDirectory + "\\" + gameName + "\" --progress --drive-acknowledge-abuse";
+            string command = "copy --config .\\a \"VRP:Quest Games/" + gamesComboBox.SelectedItem.ToString() + "\" \"" + Environment.CurrentDirectory + "\\" + gameName + "\" --progress --drive-acknowledge-abuse --rc";
+
+            Process cmd = new Process();
 
             Thread t1 = new Thread(() =>
             {
-                changeStyle(1);
                 wait = true;
-                Process cmd = new Process();
+                
                 cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
                 cmd.StartInfo.Arguments = command;
                 cmd.StartInfo.RedirectStandardInput = true;
                 cmd.StartInfo.RedirectStandardOutput = true;
                 cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
                 cmd.StartInfo.CreateNoWindow = true;
+                if (debugMode == true)
+                    cmd.StartInfo.CreateNoWindow = false;
                 cmd.StartInfo.UseShellExecute = false;
                 cmd.Start();
+
                 cmd.StandardInput.WriteLine(command);
                 cmd.StandardInput.Flush();
                 cmd.StandardInput.Close();
+
                 var games = cmd.StandardOutput.ReadToEnd().Split('\n');
                 cmd.WaitForExit();
                 wait = false;
-                changeStyle(0);
             });
             t1.IsBackground = true;
             t1.Start();
@@ -1017,20 +1039,51 @@ namespace AndroidSideloader
 
             UsernameForm.deleteUserJson();
 
-            await Task.Delay(1000);
+            await Task.Delay(5000);
+
             while (wait)
             {
-                await Task.Delay(25);
+                HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
+
+                string foo = await response.Content.ReadAsStringAsync();
+
+                //Debug.WriteLine("RESP CONTENT " + foo);
+                dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
+
+                float downloadSpeed = results.speed.ToObject<float>();
+
+                long allSize = 0;
+
+                long downloaded = 0;
+
+                try
+                {
+                    foreach (var obj in results.transferring)
+                    {
+                        allSize += obj["size"].ToObject<long>();
+                        downloaded += obj["bytes"].ToObject<long>();
+                    }
+                    allSize /= 1000;
+                    downloaded /= 1000;
+                    Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (((double)downloaded / (double)allSize) * 100));
+                    try { progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100)); } catch { }
+                }
+                catch { }
+                changeTitle("Rookie's Sideloader | Downloading " + gameName + " | Speed " + String.Format("{0:0.00}", downloadSpeed / 1000000) + " mbps");
+                await Task.Delay(1000);
             }
+
+            progressBar.Value = 0;
+            changeTitle("Rookie's Sideloader | Installing game apk " + gameName);
 
             string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
-            Console.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
+            Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
 
-            Console.WriteLine("FILES IN GAME FOLDER: ");
+            Debug.WriteLine("FILES IN GAME FOLDER: ");
             foreach (string file in files)
             {
-                Console.WriteLine(file);
+                Debug.WriteLine(file);
                 string extension = Path.GetExtension(file);
                 if (extension == ".apk")
                 {
@@ -1041,7 +1094,9 @@ namespace AndroidSideloader
                 }
             }
 
-            Console.WriteLine(wrDelimiter);
+            Debug.WriteLine(wrDelimiter);
+
+            changeTitle("Rookie's Sideloader | Installing game obb " + gameName);
 
             string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
@@ -1071,18 +1126,26 @@ namespace AndroidSideloader
 
             if (Properties.Settings.Default.deleteAllAfterInstall)
             {
+                string oldTitle = this.Text;
+                changeTitle("Rookie's Sideloader | Deleting game files");
                 Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
+                changeTitle(oldTitle);
             }
 
             notify("Game downloaded and installed " + apkNumber + " apks and " + obbNumber + " obb folders");
             //Environment.CurrentDirectory + "\\" + gameName
-
+            
         }
 
         private void themesbutton_Click(object sender, EventArgs e)
         {
             ThemeForm themeform1 = new ThemeForm();
             themeform1.Show();
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 

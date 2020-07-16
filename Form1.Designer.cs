@@ -40,7 +40,7 @@
             this.launchApkButton = new System.Windows.Forms.Button();
             this.uninstallAppButton = new System.Windows.Forms.Button();
             this.sideloadFolderButton = new System.Windows.Forms.Button();
-            this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.DragDropLbl = new System.Windows.Forms.Label();
             this.downloadInstallGameButton = new System.Windows.Forms.Button();
@@ -75,7 +75,7 @@
             this.m_combo.Location = new System.Drawing.Point(284, 14);
             this.m_combo.Margin = new System.Windows.Forms.Padding(4);
             this.m_combo.Name = "m_combo";
-            this.m_combo.Size = new System.Drawing.Size(568, 24);
+            this.m_combo.Size = new System.Drawing.Size(685, 24);
             this.m_combo.TabIndex = 19;
             this.m_combo.Text = "Select an app from here...";
             // 
@@ -215,7 +215,7 @@
             this.launchPackageTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
             this.launchPackageTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.launchPackageTextBox.ForeColor = System.Drawing.Color.White;
-            this.launchPackageTextBox.Location = new System.Drawing.Point(597, 148);
+            this.launchPackageTextBox.Location = new System.Drawing.Point(714, 150);
             this.launchPackageTextBox.Margin = new System.Windows.Forms.Padding(4);
             this.launchPackageTextBox.Name = "launchPackageTextBox";
             this.launchPackageTextBox.Size = new System.Drawing.Size(255, 22);
@@ -224,7 +224,7 @@
             // 
             // launchApkButton
             // 
-            this.launchApkButton.Location = new System.Drawing.Point(597, 175);
+            this.launchApkButton.Location = new System.Drawing.Point(714, 177);
             this.launchApkButton.Margin = new System.Windows.Forms.Padding(4);
             this.launchApkButton.Name = "launchApkButton";
             this.launchApkButton.Size = new System.Drawing.Size(255, 25);
@@ -277,15 +277,15 @@
             this.sideloadFolderButton.UseVisualStyleBackColor = false;
             this.sideloadFolderButton.Click += new System.EventHandler(this.sideloadFolderButton_Click);
             // 
-            // progressBar1
+            // progressBar
             // 
-            this.progressBar1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.progressBar1.ForeColor = System.Drawing.Color.Purple;
-            this.progressBar1.Location = new System.Drawing.Point(284, 46);
-            this.progressBar1.Margin = new System.Windows.Forms.Padding(4);
-            this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(568, 25);
-            this.progressBar1.TabIndex = 20;
+            this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.progressBar.ForeColor = System.Drawing.Color.Purple;
+            this.progressBar.Location = new System.Drawing.Point(284, 46);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(685, 25);
+            this.progressBar.TabIndex = 20;
             // 
             // copyBulkObbButton
             // 
@@ -327,7 +327,7 @@
             this.downloadInstallGameButton.Location = new System.Drawing.Point(284, 113);
             this.downloadInstallGameButton.Margin = new System.Windows.Forms.Padding(4);
             this.downloadInstallGameButton.Name = "downloadInstallGameButton";
-            this.downloadInstallGameButton.Size = new System.Drawing.Size(568, 28);
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(685, 28);
             this.downloadInstallGameButton.TabIndex = 22;
             this.downloadInstallGameButton.Text = "Download and Install Game";
             this.downloadInstallGameButton.UseVisualStyleBackColor = true;
@@ -343,7 +343,8 @@
             this.gamesComboBox.Location = new System.Drawing.Point(284, 81);
             this.gamesComboBox.Margin = new System.Windows.Forms.Padding(4);
             this.gamesComboBox.Name = "gamesComboBox";
-            this.gamesComboBox.Size = new System.Drawing.Size(568, 24);
+            this.gamesComboBox.Size = new System.Drawing.Size(685, 24);
+            this.gamesComboBox.Sorted = true;
             this.gamesComboBox.TabIndex = 21;
             this.gamesComboBox.Text = "Select a game from here...";
             // 
@@ -616,13 +617,14 @@
             this.pictureBox1.ErrorImage = null;
             this.pictureBox1.ImageLocation = global::AndroidSideloader.Properties.Settings.Default.BackPicturePath;
             this.pictureBox1.InitialImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(263, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(264, 0);
             this.pictureBox1.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(604, 788);
+            this.pictureBox1.Size = new System.Drawing.Size(718, 788);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
+            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // Form1
             // 
@@ -630,22 +632,22 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(861, 786);
+            this.ClientSize = new System.Drawing.Size(982, 786);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.gamesComboBox);
             this.Controls.Add(this.downloadInstallGameButton);
             this.Controls.Add(this.DragDropLbl);
-            this.Controls.Add(this.progressBar1);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.launchApkButton);
             this.Controls.Add(this.launchPackageTextBox);
             this.Controls.Add(this.m_combo);
             this.Controls.Add(this.pictureBox1);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.HelpButton = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(4);
-            this.MaximumSize = new System.Drawing.Size(879, 1214);
-            this.MinimumSize = new System.Drawing.Size(879, 537);
+            this.MaximizeBox = false;
+            this.MaximumSize = new System.Drawing.Size(1000, 833);
+            this.MinimumSize = new System.Drawing.Size(879, 833);
             this.Name = "Form1";
             this.Text = "Rookie SideLoader";
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -674,7 +676,7 @@
         private System.Windows.Forms.Button launchApkButton;
         private System.Windows.Forms.Button uninstallAppButton;
         private System.Windows.Forms.Button sideloadFolderButton;
-        private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button copyBulkObbButton;
         private System.Windows.Forms.Label DragDropLbl;
         private System.Windows.Forms.Button downloadInstallGameButton;
