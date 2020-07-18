@@ -1,3 +1,8 @@
+1.4
+ + Donators can now change the speed of the donate button color change (even disable)
+ + Auto update for the rclone config
+ + Theme export and import buttons (by gotard)
+
 1.3
  + Added progress bar logic for game downloading with rclone
  + Uninstalling apps now asks the user if it should also remove game data

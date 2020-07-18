@@ -32,6 +32,7 @@ namespace AndroidSideloader
             enableMessageBoxesCheckBox.Checked = Properties.Settings.Default.enableMessageBoxes;
             copyMessageToClipboardCheckBox.Checked = Properties.Settings.Default.copyMessageToClipboard;
             deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
+            updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
         }
 
         void intToolTips()
@@ -80,6 +81,11 @@ namespace AndroidSideloader
         private void deleteAfterInstallCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.deleteAllAfterInstall = deleteAfterInstallCheckBox.Checked;
+        }
+
+        private void updateConfigCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.autoUpdateConfig = updateConfigCheckBox.Checked;
         }
     }
 }
