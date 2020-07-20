@@ -59,6 +59,8 @@
             this.listApkButton = new System.Windows.Forms.Button();
             this.sideloadDrop = new System.Windows.Forms.Button();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.etaLabel = new System.Windows.Forms.Label();
+            this.speedLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.backupContainer.SuspendLayout();
             this.sideloadContainer.SuspendLayout();
@@ -624,7 +626,28 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            // 
+            // etaLabel
+            // 
+            this.etaLabel.AutoSize = true;
+            this.etaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.etaLabel.ForeColor = System.Drawing.Color.White;
+            this.etaLabel.Location = new System.Drawing.Point(281, 186);
+            this.etaLabel.Name = "etaLabel";
+            this.etaLabel.Size = new System.Drawing.Size(295, 36);
+            this.etaLabel.TabIndex = 75;
+            this.etaLabel.Text = "ETA: HH:MM:SS Left";
+            // 
+            // speedLabel
+            // 
+            this.speedLabel.AutoSize = true;
+            this.speedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.speedLabel.ForeColor = System.Drawing.Color.White;
+            this.speedLabel.Location = new System.Drawing.Point(281, 150);
+            this.speedLabel.Name = "speedLabel";
+            this.speedLabel.Size = new System.Drawing.Size(300, 36);
+            this.speedLabel.TabIndex = 76;
+            this.speedLabel.Text = "DLS: Speed in MBPS";
             // 
             // Form1
             // 
@@ -633,6 +656,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.ClientSize = new System.Drawing.Size(982, 786);
+            this.Controls.Add(this.speedLabel);
+            this.Controls.Add(this.etaLabel);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.gamesComboBox);
             this.Controls.Add(this.downloadInstallGameButton);
@@ -695,6 +720,8 @@
         private System.Windows.Forms.Button themesbutton;
         private System.Windows.Forms.Button donateButton;
         private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.Label etaLabel;
+        private System.Windows.Forms.Label speedLabel;
     }
 }
 

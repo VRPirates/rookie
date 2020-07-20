@@ -355,6 +355,9 @@ namespace AndroidSideloader
 
             SetTimerSpeed();
 
+            etaLabel.Text = "";
+            speedLabel.Text = "";
+
             if (File.Exists(debugPath))
                 File.Delete(debugPath); //clear debug.log each start
 
@@ -381,7 +384,7 @@ namespace AndroidSideloader
 
             listappsBtn();
         }
-        readonly string localVersion = "1.4";
+        readonly string localVersion = "1.5";
         void intToolTips()
         {
             ToolTip ListDevicesToolTip = new ToolTip();
@@ -402,6 +405,11 @@ namespace AndroidSideloader
             uninstallAppToolTip.SetToolTip(this.uninstallAppButton, "Uninstalls selected app");
             ToolTip userjsonToolTip = new ToolTip();
             userjsonToolTip.SetToolTip(this.userjsonButton, "After you enter your username it will create an user.json file needed for some games");
+            ToolTip etaToolTip = new ToolTip();
+            etaToolTip.SetToolTip(this.etaLabel, "Estimated time when game will finish download, updates every 5 seconds, format is HH:MM:SS");
+            ToolTip dlsToolTip = new ToolTip();
+            dlsToolTip.SetToolTip(this.speedLabel, "Current download speed, updates every second, in mbps");
+
         }
         void checkForUpdate()
         {
@@ -516,7 +524,7 @@ namespace AndroidSideloader
             t1.Join();
         }
 
-        public string[] getGames()
+        public async Task<string[]> getGames()
         {
             string command = "cat \"VRP:Quest Games/APK_packagenames.txt\" --config .\\a";
 
@@ -536,11 +544,12 @@ namespace AndroidSideloader
             var games = cmd.StandardOutput.ReadToEnd().Split('\n');
             cmd.WaitForExit();
             return games;
+
         }
 
         private async void listappsBtn()
         {
-            var games = getGames();
+            var games =  getGames().Result;
 
             allText = "";
 
@@ -609,7 +618,7 @@ namespace AndroidSideloader
                 return;
             }
 
-            string[] games = getGames();
+            var games = getGames().Result;
 
             string packageName = m_combo.SelectedItem.ToString();
 
@@ -658,7 +667,7 @@ namespace AndroidSideloader
         async Task<string> getpackagename()
 #pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-            string[] games = getGames();
+            var games = getGames().Result;
 
             string packageName = m_combo.SelectedItem.ToString();
 
@@ -1060,6 +1069,7 @@ namespace AndroidSideloader
         {
             if (updatedConfig == false && Properties.Settings.Default.autoUpdateConfig == true) //check for config only once per program open and if setting enabled
             {
+                ChangeTitle("Rookie's Sideloader | Updating rclone config");
                 await Task.Run(() => updateConfig());
             }
 
@@ -1068,7 +1078,6 @@ namespace AndroidSideloader
 
             string gameName = gamesComboBox.SelectedItem.ToString();
 
-            ChangeTitle("Rookie's Sideloader | Downloading game " + gameName);
 
             Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + gameName);
 
@@ -1081,48 +1090,71 @@ namespace AndroidSideloader
             t1.IsBackground = true;
             t1.Start();
 
+            ChangeTitle("Rookie's Sideloader | Pushing user.json");
+
             UsernameForm.createUserJson(randomString(16));
 
             UsernameForm.pushUserJson();
 
             UsernameForm.deleteUserJson();
 
+            ChangeTitle("Rookie's Sideloader | Downloading game " + gameName);
+
             await Task.Delay(5000);
 
+            int i = 0;
             while (wait)
             {
-                HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
-
-                string foo = await response.Content.ReadAsStringAsync();
-
-                //Debug.WriteLine("RESP CONTENT " + foo);
-                dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
-
-                float downloadSpeed = results.speed.ToObject<float>();
-
-                long allSize = 0;
-
-                long downloaded = 0;
-
                 try
                 {
+                    HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
+
+                    string foo = await response.Content.ReadAsStringAsync();
+
+                    Debug.WriteLine("RESP CONTENT " + foo);
+                    dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
+
+                    float downloadSpeed = results.speed.ToObject<float>();
+
+                    long allSize = 0;
+
+                    long downloaded = 0;
+
+
                     foreach (var obj in results.transferring)
                     {
                         allSize += obj["size"].ToObject<long>();
                         downloaded += obj["bytes"].ToObject<long>();
                     }
-                    allSize /= 1000;
-                    downloaded /= 1000;
+                    allSize /= 1000000;
+                    downloaded /= 1000000;
                     Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (((double)downloaded / (double)allSize) * 100));
                     try { progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100)); } catch { }
+
+                    i++;
+                    downloadSpeed /= 1000000;
+                    if (i == 4)
+                    {
+                        i = 0;
+                        float seconds = (allSize - downloaded) / downloadSpeed;
+
+                        TimeSpan time = TimeSpan.FromSeconds(seconds);
+
+                        etaLabel.Text = "ETA: " + time.ToString(@"hh\:mm\:ss") + " left";
+                    }
+
+                    speedLabel.Text = "DLS: " + String.Format("{0:0.00}", downloadSpeed) + " mbps";
                 }
                 catch { }
-                ChangeTitle("Rookie's Sideloader | Downloading " + gameName + " | Speed " + String.Format("{0:0.00}", downloadSpeed / 1000000) + " mbps");
+                
                 await Task.Delay(1000);
             }
 
             progressBar.Value = 0;
             ChangeTitle("Rookie's Sideloader | Installing game apk " + gameName);
+            etaLabel.Text = "ETA: Done";
+            speedLabel.Text = "DLS: Done";
+            
             AprilPrank();
             string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
@@ -1184,12 +1216,6 @@ namespace AndroidSideloader
             themeForm themeform1 = new themeForm();
             themeform1.Show();
         }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
 
     }
 

@@ -39,7 +39,22 @@ https://t.me/questgameclub/thxdonate
 https://t.me/questgameclub/play
 https://t.me/questgameclub/love
 https://t.me/questgameclub/vip
-https://t.me/questgameclub/thxdonatetome");
+https://t.me/questgameclub/thxdonatetome
+NEW PASSWORDS
+t.me/questgameclub/thx/donate/pass
+t.me/questgameclub/donate
+t.me/questgameclub/thxdonatevip
+t.me/questgameclub/thxdonatetome
+https://t.me/questgameclub/thxdonate
+t.me/questgameclub/thxdonate
+t.me/questgameclub/thxdonateclub
+t.me/questgameclub/thx/donate/vip
+t.me/questgameclub/donate/thx
+t.me/questgameclub/thx/donate
+t.me/questgameclub/donateclub
+t.me/questgameclub/donatevip
+t.me/questgameclub/thx/donate/vip
+t.me/questgameclub/thx/donate/quest");
             else
                 Form1.notify("Sorry I'm too dumb to answer that right now, please ask flow, if flow can't figure it out nobody can");
 

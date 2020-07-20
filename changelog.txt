@@ -1,3 +1,9 @@
+1.5
+ + Added ETA, based on CURRENT DOWNLOAD SPEED NOT DELTA OF IT
+ + Added DLS label instead of showing it in the toolbar
+ + Added more indication of what the software is doing, in the toolbar
+ + Added some tooltips
+
 1.4
  + Donators can now change the speed of the donate button color change (even disable)
  + Auto update for the rclone config
