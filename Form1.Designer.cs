@@ -36,8 +36,6 @@
             this.backupbutton = new System.Windows.Forms.Button();
             this.restorebutton = new System.Windows.Forms.Button();
             this.getApkButton = new System.Windows.Forms.Button();
-            this.launchPackageTextBox = new System.Windows.Forms.TextBox();
-            this.launchApkButton = new System.Windows.Forms.Button();
             this.uninstallAppButton = new System.Windows.Forms.Button();
             this.sideloadFolderButton = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
@@ -61,6 +59,7 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.etaLabel = new System.Windows.Forms.Label();
             this.speedLabel = new System.Windows.Forms.Label();
+            this.diskLabel = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.backupContainer.SuspendLayout();
             this.sideloadContainer.SuspendLayout();
@@ -211,29 +210,6 @@
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.getApkButton.UseVisualStyleBackColor = false;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
-            // 
-            // launchPackageTextBox
-            // 
-            this.launchPackageTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
-            this.launchPackageTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.launchPackageTextBox.ForeColor = System.Drawing.Color.White;
-            this.launchPackageTextBox.Location = new System.Drawing.Point(714, 150);
-            this.launchPackageTextBox.Margin = new System.Windows.Forms.Padding(4);
-            this.launchPackageTextBox.Name = "launchPackageTextBox";
-            this.launchPackageTextBox.Size = new System.Drawing.Size(255, 22);
-            this.launchPackageTextBox.TabIndex = 23;
-            this.launchPackageTextBox.Text = "de.eye_interactive.atvl.settings";
-            // 
-            // launchApkButton
-            // 
-            this.launchApkButton.Location = new System.Drawing.Point(714, 177);
-            this.launchApkButton.Margin = new System.Windows.Forms.Padding(4);
-            this.launchApkButton.Name = "launchApkButton";
-            this.launchApkButton.Size = new System.Drawing.Size(255, 25);
-            this.launchApkButton.TabIndex = 24;
-            this.launchApkButton.Text = "Launch Apk By Package Name";
-            this.launchApkButton.UseVisualStyleBackColor = true;
-            this.launchApkButton.Click += new System.EventHandler(this.launchApkButton_Click);
             // 
             // uninstallAppButton
             // 
@@ -632,7 +608,7 @@
             this.etaLabel.AutoSize = true;
             this.etaLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.etaLabel.ForeColor = System.Drawing.Color.White;
-            this.etaLabel.Location = new System.Drawing.Point(281, 186);
+            this.etaLabel.Location = new System.Drawing.Point(278, 204);
             this.etaLabel.Name = "etaLabel";
             this.etaLabel.Size = new System.Drawing.Size(295, 36);
             this.etaLabel.TabIndex = 75;
@@ -643,11 +619,22 @@
             this.speedLabel.AutoSize = true;
             this.speedLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.speedLabel.ForeColor = System.Drawing.Color.White;
-            this.speedLabel.Location = new System.Drawing.Point(281, 150);
+            this.speedLabel.Location = new System.Drawing.Point(278, 170);
             this.speedLabel.Name = "speedLabel";
             this.speedLabel.Size = new System.Drawing.Size(300, 36);
             this.speedLabel.TabIndex = 76;
             this.speedLabel.Text = "DLS: Speed in MBPS";
+            // 
+            // diskLabel
+            // 
+            this.diskLabel.AutoSize = true;
+            this.diskLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.diskLabel.ForeColor = System.Drawing.Color.White;
+            this.diskLabel.Location = new System.Drawing.Point(282, 145);
+            this.diskLabel.Name = "diskLabel";
+            this.diskLabel.Size = new System.Drawing.Size(103, 25);
+            this.diskLabel.TabIndex = 77;
+            this.diskLabel.Text = "Disk Label";
             // 
             // Form1
             // 
@@ -656,6 +643,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.ClientSize = new System.Drawing.Size(982, 786);
+            this.Controls.Add(this.diskLabel);
             this.Controls.Add(this.speedLabel);
             this.Controls.Add(this.etaLabel);
             this.Controls.Add(this.panel1);
@@ -663,8 +651,6 @@
             this.Controls.Add(this.downloadInstallGameButton);
             this.Controls.Add(this.DragDropLbl);
             this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.launchApkButton);
-            this.Controls.Add(this.launchPackageTextBox);
             this.Controls.Add(this.m_combo);
             this.Controls.Add(this.pictureBox1);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -697,8 +683,6 @@
         private System.Windows.Forms.Button restorebutton;
         private System.Windows.Forms.Button getApkButton;
         private SergeUtils.EasyCompletionComboBox m_combo;
-        private System.Windows.Forms.TextBox launchPackageTextBox;
-        private System.Windows.Forms.Button launchApkButton;
         private System.Windows.Forms.Button uninstallAppButton;
         private System.Windows.Forms.Button sideloadFolderButton;
         private System.Windows.Forms.ProgressBar progressBar;
@@ -722,6 +706,7 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label etaLabel;
         private System.Windows.Forms.Label speedLabel;
+        private System.Windows.Forms.Label diskLabel;
     }
 }
 

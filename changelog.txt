@@ -1,3 +1,9 @@
+1.6
+ + Disk space label and check
+ + Checks game size before download
+ = Download and install game button outputs adb log now
+ - Launch package name button and textbox
+
 1.5
  + Added ETA, based on CURRENT DOWNLOAD SPEED NOT DELTA OF IT
  + Added DLS label instead of showing it in the toolbar
