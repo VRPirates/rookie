@@ -2,7 +2,8 @@
 
 The icon of the app contains an icon made by icon8.com
 
-Special thanks to 
+Special thanks to
+ - Everyone who donated!
  - pmow for all of his work, including rclone, wonka and other projects
  - flow for being friendly and helping every one
  - succ for creating and maintaining the server
