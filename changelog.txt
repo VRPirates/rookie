@@ -1,3 +1,9 @@
+1.7
+ + Removed some freezes
+ + Sideloader kills rclone on start and on close if it's open so you dont waste bandwith
+ + Updating rclone config now does a hash check first
+ + Refresh storage after game install and on game uninstall
+
 1.6
  + Disk space label and check
  + Checks game size before download
