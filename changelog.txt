@@ -1,3 +1,13 @@
+1.8
+ + Disk info updates every command that changes disk space
+ = Rclone now logs commands and output
+ = Changed backup button
+
+1.7.5
+ + Made sideloader even faster when opening
+ + Added some chiptune music and the setting to stop it
+ = Fixed donator button broken in 1.7
+
 1.7
  + Removed some freezes
  + Sideloader kills rclone on start and on close if it's open so you dont waste bandwith
