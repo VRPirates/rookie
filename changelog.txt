@@ -1,3 +1,6 @@
+1.8SU2
+ = Install game now won't throw an exception when a game isn't selected
+
 1.8SU1
  + Added debug logs for rclone
 
