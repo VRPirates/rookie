@@ -1,3 +1,6 @@
+1.8SU1
+ + Added debug logs for rclone
+
 1.8
  + Disk info updates every command that changes disk space
  = Rclone now logs commands and output
