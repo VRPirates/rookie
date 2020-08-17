@@ -1,3 +1,6 @@
+1.9SU1
+ - Removed some code I forgot to remove when debugging
+
 1.9
  + Added a queue for downloading games
  + Added a setting for disabling user.json push
