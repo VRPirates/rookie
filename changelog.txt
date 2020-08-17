@@ -1,3 +1,7 @@
+1.9
+ + Added a queue for downloading games
+ + Added a setting for disabling user.json push
+
 1.8SU2
  = Install game now won't throw an exception when a game isn't selected
 
