@@ -1,3 +1,6 @@
+1.9SU2
+ + Clicking a game on the listbox will now remove it from the list
+
 1.9SU1
  - Removed some code I forgot to remove when debugging
 
