@@ -1,3 +1,10 @@
+1.10
+ + Added back the game size messagebox
+ + Added support for unicode in adb
+ = Fixed restore gamedata
+ = Clicking the first game won't remove it since it causes problems
+ = Changed the sideloader icon
+
 1.9SU2
  + Clicking a game on the listbox will now remove it from the list
 
