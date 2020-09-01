@@ -1,3 +1,7 @@
+1.10SU1
+ + Settings should now persist through updates
+ - Removed download button and hwid stuff
+
 1.10
  + Added back the game size messagebox
  + Added support for unicode in adb
