@@ -3,7 +3,7 @@
 The icon of the app contains an icon made by icon8.com
 
 Special thanks to
- - Everyone who donated!
+ - [Everyone who donated!](https://raw.githubusercontent.com/nerdunit/androidsideloader/master/donators.txt)
  - pmow for all of his work, including rclone, wonka and other projects
  - flow for being friendly and helping every one
  - succ for creating and maintaining the server
