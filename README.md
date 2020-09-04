@@ -9,7 +9,7 @@ Special thanks to
  - succ for creating and maintaining the server
  - badcoder5000 for redesigning the UI
  - gotard for the theme changer
- - 7zip team for 7zip :)
+ - [7zip](https://www.7-zip.org/) team for [7zip](https://www.7-zip.org/) :)
  - rclone team for rclone :D
  - https://stackoverflow.com/users/57611/erike for the folder browser dialog code
  - Serge Weinstock for developing SergeUtils, which is used to search the combo box
