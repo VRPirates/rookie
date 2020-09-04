@@ -11,6 +11,6 @@ Special thanks to
  - gotard for the theme changer
  - [7zip](https://www.7-zip.org/) team for [7zip](https://www.7-zip.org/) :)
  - [rclone](https://rclone.org/) team for [rclone](https://rclone.org/) :D
- - https://stackoverflow.com/users/57611/erike for the folder browser dialog code
+ - [erike](https://stackoverflow.com/users/57611/erike) for the folder browser dialog code
  - Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
