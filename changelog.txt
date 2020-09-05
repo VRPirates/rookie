@@ -1,3 +1,6 @@
+1.11HF1
+ = Fixed some crashes that occured when a unauthorized device was used with the sideloader
+
 1.11
  + Added support for multiple devices
 
