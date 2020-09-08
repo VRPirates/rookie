@@ -1,3 +1,6 @@
+1.12HF1
+ = Fixed a small crash
+
 1.12
  = Fixed bugs
  - Removed music
