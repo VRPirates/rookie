@@ -1,3 +1,40 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+New version v1.13 Released
+
+Changes
+ + Pgp messages will be available now for every update, so you can verify updates easily
+ = Fixed some bugs like the rclone suicide
+ - Removed china detection
+
+Date 9/10/2020
+
+MD5 Checksum: 3834485C5AF611523460E639969284F3
+SHA-1 Checksum: DAF556D34F80FDE6A6A3D8F338381030B2B19E44
+SHA-256 Checksum: 063FABA6A76A98AB862BBBF6F3348F176F66FD4932075E761A5FCAA85785EE4B
+SHA-512 Checksum: CC743BD95826664535239BB665934E88A25CC948B95E4A3E8B34379C1E8DEB8FED05EAD87428F4B85D5841ED9101F38E4E3DAFB0EAF3CD2F2E4314B62356104D
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl9aBpMACgkQvrtJUNxE
+TxOJcA/+LEzXQtyBhZ0oj22PEk0yMLQYOBLYDB96jf39IqLQAzrIUL339jRcRKMv
+yhFWXpvND1wrQl3/LNtFpBSkSnvqUXtxHWg6US+Ov3nnrEvYiwK8D9f1eC5Mt3Wy
+4HZIyTh9HcrLsfbnP2kDlLOaMQSIH4rChezF79xZMcx7kRmQ0/hyXlmGAPyWs8t8
+5aLxk5YUcfq1Pu+ncqeX+ihYVzQHi2eXaOAIR1rSCEXfHEg9tkRzWcma8tY29gQv
+IgGwxF/YnAPOdBtzuakaT88a1MsP+tAcWxmsyvTQHrv1m0h3QPU1DxMFUfAlBjLM
+5tHgTTjkXedRpR+Kga5CDuK7L5p1zVMRDINcUOf9MXV2fRurZ+OIHefAd+zbrd0n
+vHi1D1sFzb/lT5LCa/vrfO9crRnLdK1EI/5HNeSj9iIdD2jEMbjSjo9yv7LA2MHi
+4wnvguRpK5YUGqGc2yyCRxtyKAgXXxLBFNb5K453vdLtDukZIkhLuQVchsk4PutZ
+1uIg7/ZmAIPxlEHaLckaV7QEFbq9h2hFWOsSjWAATyvnkp4nxyvAavW4zNQCbd3V
+XJhimZkE+3SNAuZGw10nikVz7DFMlI0dyL+jmwIuODcFMZZwkEtBr3J/Ad9V1k+G
+DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
+=xp7X
+-----END PGP SIGNATURE-----
+
+
 MUST UPDATE 1.12
  READ THIS -> https://pastebin.com/raw/K7eJe3F9
 
