@@ -1,9 +1,5 @@
-1.12HF1
- = Fixed a small crash
-
-1.12
- = Fixed bugs
- - Removed music
+MUST UPDATE 1.12
+ READ THIS -> https://pastebin.com/raw/K7eJe3F9
 
 1.11HF1
  = Fixed some crashes that occured when a unauthorized device was used with the sideloader
