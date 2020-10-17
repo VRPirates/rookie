@@ -1,6 +1,46 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+v1.14
+
+Changes
+ + Added the ability to change remotes (mirrors)
+ + Rclone errors are now reported properly
+ = Fixed some bugs
+// Will fix device storage when I get my quest 2 and can debug adb
+
+Date 10/17/2020
+
+VT: https://bit.ly/3j8kCm8
+
+MD5 Checksum: B862B807462CE35CC930C2B1118D5692
+SHA-1 Checksum: F52C8630C89CAEDB2E90A857E494DE00B137712D
+SHA-256 Checksum: 3DDFA2B4CCFC0E9F6F86E8A74E6D3511B9C643F4C4AF19D3878B8704FA360558
+SHA-512 Checksum: 16A022D8A4D235D7C537D9F01FE7C5F964A67A3A8CD68B3DC17AF08D94837DAC6CE0C20557D029DC169E5616B36C2A4C36B1647CE0DF930C7694F3FEC3430E70
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+KrhQACgkQvrtJUNxE
+TxP9MRAAjZbYWkbZPK+QMqzNqsgEARs6buzrwc24dth6QEod9Fgmdg5wdinZdG8X
+MK467pd9u0JqM3u8DeKSUD0GEzJZStNKsbHfjvNAF3m8toaXLncWy7MYNN9loAra
+17MvUBBwB1QgsXtQ3EXT1cBbS3YkQPg5E+ayvY9ZgyiOpDK6fs1tA24NZUWc53kY
+TIl5IL3mZNfJck8Xc/QkZJmkBOA89oDToLOjNmZRXXEHNT/eTS6pEkMZonWQjGqF
+D2dEfQTOuIAD93JzwcP5wVJFh7z6o65/7tfguDqBsTgoRWODaY+kQJDAxoWN9w/n
+nagXg/y30EmE1mWQFUYa1n0V65OzT5+J8VF53DCHkgaejYLfi0lhy8TlWQZpmzen
+WJOsP1Oj3ZZ9sErO8waajDBzDZ3kU9NvAOeOblE491w0713MYZYs5BVgoyHi24xO
+obcp1gpLi326fkPqajgIFpDHJ014OnaXmoY9ynW9rlZJ4rwJ7WytRDzcpfyk9LV1
+G1tlcCS4c/RmuVfZi4Jh0guvOOIpJSqdG4KUtvd548sslTMdHytt+YugbKqcBAto
+nWroKcsmg0swAm7YgYmQXqcpM17JC21eUgm3Bc4ZZSDtP4g3Pm7vRO1+hwUNYBE9
+QeEMXYDPRsTxdpuEFsbmS/EfnndvJvl9BL92Zt4+T4ruL+II50s=
+=r+0B
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 New version v1.13 Released
 
 Changes
