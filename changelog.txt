@@ -1,6 +1,45 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+v1.14SU1
+
+Changes
+ + Quota errors now will try to redownload the game from another mirror
+ = Only showing mirror remotes for apps
+// Will fix device storage when I get my quest 2 and can debug adb
+
+Date 10/18/2020
+
+VT: https://bit.ly/3kcG62A
+
+MD5 Checksum: 2A30E5F3DB785DC8104A2AA55A83CF53
+SHA-1 Checksum: 8376E5971FC4F60995A1125DD9344E52135DB4F7
+SHA-256 Checksum: FD5C74067BA00561A540DE5A4F49FA63B99C9520435A51487F997AEC569E9659
+SHA-512 Checksum: 6188D6306CA2A3F25DE08E19D1F20046774F7AA30BD745ED24FC7E53126DF3950211B599E3D774F540A6C1DEC177A895FAE70FB564B6AE96F5F10ABDCB9021C1
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+MCbMACgkQvrtJUNxE
+TxNMVxAAlIkoTuGTDwXRBFNanulPiYmus9UazHoVFxtG2BELk1/JLPm7dwT29FiZ
+oacUhhxLAEfDm169FoPNFCH/6q74xqjACkm8FjwCoas53DekguIvrhJKA3SiBUtZ
+m7+hrT3WWGxXoE3+avSFmdBWWvKVA9pNR/DHprHSoinDUvgSfwBHrWD8PtuSIlwU
+/jNpzyDnmBfdT4LROq93hcfFXM+POLWs5f3rXFdT+zTZexxlRiG5h7yMmsYdwdov
+4jMUSzrBpRXbmmHwDi4KLzsdOJ/5okJgRdPTZm/L1rAoJT0F7QVi2shvkoN7SIH/
+Fg+k0ZrNOnlpdAJwLmJD4PkQmxv5zpGSh8w7nbQJ41HgBtTQTh3OCpRRamPzAmfo
+A2n/NsYpR8J8u7kGzT1MUnUn2RL+igutSrnQl8R6yR8jFjaTt+F90pBXZ1nnY6mS
+8YE9mBBK3365cYVqQzOW1TUSCSzQqwTbfKDHkKrzHQWrpQ8VNMLcJBLZwU8di+4p
+u8lt1uT5MRZ+9I80YBXhwzBKkiNYOt5vHpGgt0Ib4WDS7rt/7UnzEAfl8P3VEEfX
+6w1HctI2zAVWYutBMv6HL3v23cO+UT8H6Wdgxq36mlMSNiqjLIntfIRrySUOy7JV
+D6LE34gzpDGsBIzrpW/Hlz4wGTi6nnY0Ke6DkA1H0UOoDN9ItI4=
+=ARa/
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 v1.14
 
 Changes
