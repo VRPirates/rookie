@@ -31,19 +31,20 @@
             this.checkForUpdatesCheckBox = new System.Windows.Forms.CheckBox();
             this.applyButton = new System.Windows.Forms.Button();
             this.enableMessageBoxesCheckBox = new System.Windows.Forms.CheckBox();
-            this.copyMessageToClipboardCheckBox = new System.Windows.Forms.CheckBox();
             this.resetSettingsButton = new System.Windows.Forms.Button();
             this.deleteAfterInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.updateConfigCheckBox = new System.Windows.Forms.CheckBox();
+            this.debugRcloneCheckBox = new System.Windows.Forms.CheckBox();
+            this.userJsonOnGameInstall = new System.Windows.Forms.CheckBox();
+            this.spoofGamesCheckbox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
             // 
             this.checkForUpdatesCheckBox.AutoSize = true;
-            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(17, 16);
-            this.checkForUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(13, 13);
             this.checkForUpdatesCheckBox.Name = "checkForUpdatesCheckBox";
-            this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(145, 21);
+            this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(113, 17);
             this.checkForUpdatesCheckBox.TabIndex = 0;
             this.checkForUpdatesCheckBox.Text = "Check for updates";
             this.checkForUpdatesCheckBox.UseVisualStyleBackColor = true;
@@ -53,10 +54,9 @@
             // 
             this.applyButton.BackColor = System.Drawing.Color.White;
             this.applyButton.ForeColor = System.Drawing.Color.Black;
-            this.applyButton.Location = new System.Drawing.Point(476, 225);
-            this.applyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.applyButton.Location = new System.Drawing.Point(357, 183);
             this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(100, 28);
+            this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 5;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = false;
@@ -65,35 +65,21 @@
             // enableMessageBoxesCheckBox
             // 
             this.enableMessageBoxesCheckBox.AutoSize = true;
-            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(17, 44);
-            this.enableMessageBoxesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(13, 36);
             this.enableMessageBoxesCheckBox.Name = "enableMessageBoxesCheckBox";
-            this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(296, 21);
+            this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(227, 17);
             this.enableMessageBoxesCheckBox.TabIndex = 1;
             this.enableMessageBoxesCheckBox.Text = "Enable Message Boxes on task completed";
             this.enableMessageBoxesCheckBox.UseVisualStyleBackColor = true;
             this.enableMessageBoxesCheckBox.CheckedChanged += new System.EventHandler(this.enableMessageBoxesCheckBox_CheckedChanged);
             // 
-            // copyMessageToClipboardCheckBox
-            // 
-            this.copyMessageToClipboardCheckBox.AutoSize = true;
-            this.copyMessageToClipboardCheckBox.Location = new System.Drawing.Point(17, 73);
-            this.copyMessageToClipboardCheckBox.Margin = new System.Windows.Forms.Padding(4);
-            this.copyMessageToClipboardCheckBox.Name = "copyMessageToClipboardCheckBox";
-            this.copyMessageToClipboardCheckBox.Size = new System.Drawing.Size(201, 21);
-            this.copyMessageToClipboardCheckBox.TabIndex = 2;
-            this.copyMessageToClipboardCheckBox.Text = "Copy message to clipboard";
-            this.copyMessageToClipboardCheckBox.UseVisualStyleBackColor = true;
-            this.copyMessageToClipboardCheckBox.CheckedChanged += new System.EventHandler(this.copyMessageToClipboardCheckBox_CheckedChanged);
-            // 
             // resetSettingsButton
             // 
             this.resetSettingsButton.BackColor = System.Drawing.Color.White;
             this.resetSettingsButton.ForeColor = System.Drawing.Color.Black;
-            this.resetSettingsButton.Location = new System.Drawing.Point(341, 225);
-            this.resetSettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.resetSettingsButton.Location = new System.Drawing.Point(256, 183);
             this.resetSettingsButton.Name = "resetSettingsButton";
-            this.resetSettingsButton.Size = new System.Drawing.Size(127, 28);
+            this.resetSettingsButton.Size = new System.Drawing.Size(95, 23);
             this.resetSettingsButton.TabIndex = 4;
             this.resetSettingsButton.Text = "Reset Settings";
             this.resetSettingsButton.UseVisualStyleBackColor = false;
@@ -102,10 +88,9 @@
             // deleteAfterInstallCheckBox
             // 
             this.deleteAfterInstallCheckBox.AutoSize = true;
-            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(17, 102);
-            this.deleteAfterInstallCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(13, 59);
             this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
-            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(282, 21);
+            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(214, 17);
             this.deleteAfterInstallCheckBox.TabIndex = 3;
             this.deleteAfterInstallCheckBox.Text = "Delete games after download and install";
             this.deleteAfterInstallCheckBox.UseVisualStyleBackColor = true;
@@ -114,31 +99,64 @@
             // updateConfigCheckBox
             // 
             this.updateConfigCheckBox.AutoSize = true;
-            this.updateConfigCheckBox.Location = new System.Drawing.Point(17, 131);
-            this.updateConfigCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.updateConfigCheckBox.Location = new System.Drawing.Point(13, 83);
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
-            this.updateConfigCheckBox.Size = new System.Drawing.Size(204, 21);
+            this.updateConfigCheckBox.Size = new System.Drawing.Size(157, 17);
             this.updateConfigCheckBox.TabIndex = 6;
             this.updateConfigCheckBox.Text = "Update config automatically";
             this.updateConfigCheckBox.UseVisualStyleBackColor = true;
             this.updateConfigCheckBox.CheckedChanged += new System.EventHandler(this.updateConfigCheckBox_CheckedChanged);
             // 
+            // debugRcloneCheckBox
+            // 
+            this.debugRcloneCheckBox.AutoSize = true;
+            this.debugRcloneCheckBox.Location = new System.Drawing.Point(13, 106);
+            this.debugRcloneCheckBox.Name = "debugRcloneCheckBox";
+            this.debugRcloneCheckBox.Size = new System.Drawing.Size(95, 17);
+            this.debugRcloneCheckBox.TabIndex = 8;
+            this.debugRcloneCheckBox.Text = "Debug Rclone";
+            this.debugRcloneCheckBox.UseVisualStyleBackColor = true;
+            this.debugRcloneCheckBox.CheckedChanged += new System.EventHandler(this.debugRcloneCheckBox_CheckedChanged);
+            // 
+            // userJsonOnGameInstall
+            // 
+            this.userJsonOnGameInstall.AutoSize = true;
+            this.userJsonOnGameInstall.Location = new System.Drawing.Point(13, 130);
+            this.userJsonOnGameInstall.Name = "userJsonOnGameInstall";
+            this.userJsonOnGameInstall.Size = new System.Drawing.Size(177, 17);
+            this.userJsonOnGameInstall.TabIndex = 9;
+            this.userJsonOnGameInstall.Text = "Push random user.json on install";
+            this.userJsonOnGameInstall.UseVisualStyleBackColor = true;
+            this.userJsonOnGameInstall.CheckedChanged += new System.EventHandler(this.userJsonOnGameInstall_CheckedChanged);
+            // 
+            // spoofGamesCheckbox
+            // 
+            this.spoofGamesCheckbox.AutoSize = true;
+            this.spoofGamesCheckbox.Location = new System.Drawing.Point(13, 153);
+            this.spoofGamesCheckbox.Name = "spoofGamesCheckbox";
+            this.spoofGamesCheckbox.Size = new System.Drawing.Size(184, 17);
+            this.spoofGamesCheckbox.TabIndex = 10;
+            this.spoofGamesCheckbox.Text = "Spoof games installed from rclone";
+            this.spoofGamesCheckbox.UseVisualStyleBackColor = true;
+            this.spoofGamesCheckbox.CheckedChanged += new System.EventHandler(this.spoofGamesCheckbox_CheckedChanged);
+            // 
             // SettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(592, 268);
+            this.ClientSize = new System.Drawing.Size(444, 218);
+            this.Controls.Add(this.spoofGamesCheckbox);
+            this.Controls.Add(this.userJsonOnGameInstall);
+            this.Controls.Add(this.debugRcloneCheckBox);
             this.Controls.Add(this.updateConfigCheckBox);
             this.Controls.Add(this.deleteAfterInstallCheckBox);
             this.Controls.Add(this.resetSettingsButton);
-            this.Controls.Add(this.copyMessageToClipboardCheckBox);
             this.Controls.Add(this.enableMessageBoxesCheckBox);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.checkForUpdatesCheckBox);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.ForeColor = System.Drawing.Color.White;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "SettingsForm";
@@ -154,9 +172,11 @@
         private System.Windows.Forms.CheckBox checkForUpdatesCheckBox;
         private System.Windows.Forms.Button applyButton;
         private System.Windows.Forms.CheckBox enableMessageBoxesCheckBox;
-        private System.Windows.Forms.CheckBox copyMessageToClipboardCheckBox;
         private System.Windows.Forms.Button resetSettingsButton;
         private System.Windows.Forms.CheckBox deleteAfterInstallCheckBox;
         private System.Windows.Forms.CheckBox updateConfigCheckBox;
+        private System.Windows.Forms.CheckBox debugRcloneCheckBox;
+        private System.Windows.Forms.CheckBox userJsonOnGameInstall;
+        private System.Windows.Forms.CheckBox spoofGamesCheckbox;
     }
 }
