@@ -1,6 +1,48 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+v1.15
+
+Changes
+ + Added a spoofer
+ + Added option to auto spoof games with random package name
+ + Added new username support for quest 2
+ = Updated drag and drop sideloading
+ = Fixed storage label
+ - Removed troubleshoot form and theme form
+
+Date 11/04/2020
+
+VT: https://bit.ly/3kYCQsb
+
+MD5 Checksum: 39BAB4CEE3D0E387E770BA35F4488C2F
+SHA-1 Checksum: C6F311411408BCF5A55034E7A926EA385819F348
+SHA-256 Checksum: 64640374EF39DD9CFC4A613A49888E3194994AA934C5E952174A2FCF533E2D19
+SHA-512 Checksum: 22769280B732821539100BFA77C67141F271DB401DB3AFB28EF285E352659F9F45A90C8ABE1C0B829770C5AE580CA76A9208505888443C22EE82AAAE7035C6F7
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+jJScACgkQvrtJUNxE
+TxMTag//f570tZ4zxL1x1rdajdoYzPD6oaGIabRVPrqVogsFPuVF1Q3AOzr+nzQN
+Tiq7yRPmByu/dtBGby2mqL1acQ/9TLYDtmnOAxQJqj4h0KhYlnzdCfqJJbTghtZX
+cy44ZqgPW47P608+zC/NfePNt7Fq1rFKN3Bpo/ISoyi5/IVGqGq1Ix/D0SlhiM5X
+5VkiY+w5S0rXuAyQ4g6/03AiI9fdNVkREhUh/tYvb7IkxaN9IDlltHByeuvekMjZ
+KU+mwZ9habfthB31hp+bAXz82tbIzB4LJ1P8MNadIT8ZXG19zHEY/KlaDp2NjniV
+h+V9AnxPHlcZk63yVPOywxpZcv81LflMgs9XItX+zKH7ibniBEu8jxc/2uAjrDF/
+JuvnOUKTuH7S2iIzHhKLYZYHiOu8sIuwGC96Ep172PGCAkVVR6CtfNPMmVZRllsY
+JG3Pxdrw526SAy3Vqixbbm79Fs1o77resqGM2zl6L7Sr6sH3VnDxabVXxALgo1pH
++LSu5rCLIIsCP1a4MAyy6UgO/+ZLrC1QazR4yY7SRQHAIM48XG4d6CznFCOjczhW
+VvYL6gZD7X4xlNBqNMtih8JDHIQ1y7n1f075oCxfWwt02kXhDL/cn8+UZ17IS6EZ
+zr/SLm1464/htCZgsUZgQrov6CpHX/xNqAubowkAVOdDREbwh2w=
+=QKlt
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 v1.14SU1
 
 Changes
