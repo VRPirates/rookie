@@ -33,7 +33,6 @@ namespace AndroidSideloader
             if (DeviceID.Length > 1)
                 command = $" -s {DeviceID} {command}";
 
-
             Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
             adb.StartInfo.Arguments = command;
@@ -57,7 +56,7 @@ namespace AndroidSideloader
 
             adb.WaitForExit();
             IsRunningCommand = false;
-            Logger.Log($"Output {output}");
+            Logger.Log(output);
             return output;
         }
 

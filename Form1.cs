@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
+using System.Reflection;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
@@ -31,11 +32,9 @@ namespace AndroidSideloader
 #endif
         string path;
 
-        string allText;
-
         bool is1April = false;
 
-        string rclonepw = "";
+        string rclonepw = "0aE0$D61#avO";
 
         public Form1()
         {
@@ -77,6 +76,7 @@ namespace AndroidSideloader
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
         {
+            string output = string.Empty;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Android apps (*.apk)|*.apk";
@@ -92,7 +92,7 @@ namespace AndroidSideloader
             ADB.DeviceID = GetDeviceID();
             Thread t1 = new Thread(() =>
             {
-                ADB.Sideload(path);
+                output += ADB.Sideload(path);
             });
             t1.IsBackground = true;
             t1.Start();
@@ -101,9 +101,6 @@ namespace AndroidSideloader
                 await Task.Delay(100);
 
             showAvailableSpace();
-
-            if (!is1April)
-                notify(allText);
         }
         List<string> Devices = new List<string>();
         async Task<int> CheckForDevice()
@@ -164,6 +161,7 @@ namespace AndroidSideloader
 
         private async void obbcopybutton_Click(object sender, EventArgs e)
         {
+            string output = string.Empty;
             var dialog = new FolderSelectDialog
             {
                 Title = "Select your obb folder"
@@ -174,7 +172,7 @@ namespace AndroidSideloader
 
                 Thread t1 = new Thread(() =>
                 {
-                    ADB.CopyOBB(dialog.FileName);
+                    output += ADB.CopyOBB(dialog.FileName);
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -186,12 +184,12 @@ namespace AndroidSideloader
             }
             else return;
 
-            notify(allText);
+            notify(output);
         }
 
         private async void ChangeTitlebarToDevice()
         {
-            if (Devices.Count > 1 && !Devices.Contains("unauthorized"))
+            if (!Devices.Contains("unauthorized"))
             {
                 if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
                     this.Invoke(() => { this.Text = "Rookie's Sideloader | Device Not Authorized"; });
@@ -308,14 +306,13 @@ namespace AndroidSideloader
 
             this.CenterToScreen();
 
-            try { downloadFiles(); } catch { notify("You must have internet access for initial downloads, you can try:\n1. Disabling the firewall and antivirus\n2. Delete every file from the sideloader besides the .exe\n3. Try a vpn\n"); }
-
-
             etaLabel.Text = "";
             speedLabel.Text = "";
             diskLabel.Text = "";
 
-            this.Activate();
+            downloadFiles(); await Task.Delay(100);
+
+            //this.Activate();
 
             await CheckForDevice();
 
@@ -325,14 +322,14 @@ namespace AndroidSideloader
             {
                 Environment.SetEnvironmentVariable("RCLONE_CRYPT_REMOTE", rclonepw);
                 Environment.SetEnvironmentVariable("RCLONE_CONFIG_PASS", rclonepw);
-
                 if (!debugMode && Properties.Settings.Default.checkForUpdates)
                 {
                     Updater.AppName = "AndroidSideloader";
                     Updater.RawGitHubUrl = "https://raw.githubusercontent.com/nerdunit/androidsideloader";
                     Updater.Update();
                 }
-
+                initMirrors();
+                initGames();
                 listappsBtn();
             });
             t1.SetApartmentState(ApartmentState.STA);
@@ -456,8 +453,8 @@ namespace AndroidSideloader
 
         private async void listappsBtn()
         {
-            games = getGames().Result;
-            allText = "";
+            //games = getGames().Result;
+
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
             var line = listapps().Split('\n');
@@ -611,7 +608,7 @@ namespace AndroidSideloader
                 RemoveFolder("/sdcard/Android/obb/" + packageName);
                 RemoveFolder("/sdcard/Android/obb/" + packageName + "/");
 
-                uninstallText += allText;
+//                uninstallText += allText;
 
                 dialogResult = FlexibleMessageBox.Show("Do you want to remove savedata for " + packageName + ", this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
@@ -831,8 +828,6 @@ namespace AndroidSideloader
             Thread t1 = new Thread(() =>
             {
                 ADB.DeviceID = GetDeviceID();
-                initMirrors();
-                initGames();
             });
             t1.IsBackground = true;
             t1.Start();
@@ -881,6 +876,7 @@ namespace AndroidSideloader
         Process rclone = new Process();
         string runRcloneCommand(string command, bool log = true)
         {
+            Logger.Log($"Running Rclone command: {command}");
             wait = true;
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
@@ -909,7 +905,7 @@ namespace AndroidSideloader
             string rcloneError = rclone.StandardError.ReadToEnd();
             rclone.WaitForExit();
             wait = false;
-            Debug.WriteLine($"Rclone error: {rcloneError} {rcloneError.Length}");
+            Logger.Log($"Rclone error: {rcloneError} {rcloneError.Length}\nRclone Output: {output}");
             if (rcloneError.Length > 77)
                 processError = rcloneError;
             return output;
@@ -956,11 +952,11 @@ namespace AndroidSideloader
             string about = $@"Finally {Updater.LocalVersion}, with new version comming Soon™
  - Software orignally coded by rookie.wtf
  - Thanks to pmow for all of his work, including rclone, wonka and other projects
- - Thanks to flow for being friendly and helping every one
- - Thanks to succ for creating and maintaining the server
- - Thanks to badcoder5000 for redesigning the UI
+ - Thanks to the data team, they know who they are ;)
+ - Thanks to flow for being friendly and helping every one, also congrats on being the discord server owner now! :D
+ - Thanks to badcoder5000 for helping me redesign the ui
  - Thanks to gotard for the theme changer
- - Thanks to Verb8em#0423 for drawing the new icon
+ - Thanks to Verb8em for drawing the new icon
  - Thanks to 7zip team for 7zip :)
  - Thanks to rclone team for rclone :D
  - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
@@ -1103,7 +1099,7 @@ namespace AndroidSideloader
 
                 Thread t1 = new Thread(() =>
                 {
-                    games = runRcloneCommand($"copy --config .\\a \"{currentRemote}:Quest Games/" + gameName + "\" \"" + Environment.CurrentDirectory + "\\" + gameName + "\" --progress --drive-acknowledge-abuse --rc").Split('\n');
+                    games = runRcloneCommand($"copy --config .\\a \"{currentRemote}:Quest Games/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc").Split('\n');
                     foreach (string line in games)
                         Debug.WriteLine(line);
                 });
@@ -1232,18 +1228,16 @@ namespace AndroidSideloader
                                     Console.WriteLine(spoofer.spoofedApkPath);
                                     Spoofer.spoofer.SpoofApk(file, $"com.{Utilities.randomString(rand.Next(3, 8))}.{Utilities.randomString(rand.Next(3, 8))}");
 
-                                    ADB.Sideload(spoofer.spoofedApkPath);
+                                    output += ADB.Sideload(spoofer.spoofedApkPath);
                                 }
                                 else
-                                    ADB.Sideload(file);
+                                    output += ADB.Sideload(file);
                             });
                             apkThread.IsBackground = true;
                             apkThread.Start();
 
                             while (apkThread.IsAlive)
                                 await Task.Delay(100);
-
-                            output += allText;
                         }
                     }
 
@@ -1276,15 +1270,13 @@ namespace AndroidSideloader
                             {
                                 if (Properties.Settings.Default.SpoofGames)
                                     Spoofer.spoofer.RenameObb(folder, spoofer.newPackageName, spoofer.originalPackageName);
-                                ADB.CopyOBB(folder);
+                                output += ADB.CopyOBB(folder);
                             });
                             obbThread.IsBackground = true;
                             obbThread.Start();
 
                             while (obbThread.IsAlive)
                                 await Task.Delay(100);
-
-                            output += allText;
                         }
                     }
 

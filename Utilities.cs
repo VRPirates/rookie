@@ -101,8 +101,8 @@ namespace Spoofer
             if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe"))
             {
                 WebClient client = new WebClient();
-                client.DownloadFile("https://github.com/nerdunit/androidADB.Sideloader/raw/master/7z.exe", "7z.exe");
-                client.DownloadFile("https://github.com/nerdunit/androidADB.Sideloader/raw/master/7z.dll", "7z.dll");
+                client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
+                client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
             }
             ProcessStartInfo pro = new ProcessStartInfo();
             pro.WindowStyle = ProcessWindowStyle.Hidden;
@@ -118,7 +118,7 @@ namespace Spoofer
 
         public static string AppName { get; set; }
         public static string RawGitHubUrl { get; set; } //https://raw.githubusercontent.com/nerdunit/androidADB.Sideloader
-        static readonly public string LocalVersion = "1.15";
+        static readonly public string LocalVersion = "1.15HF1";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
