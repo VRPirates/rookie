@@ -1,30 +1,26 @@
-<!--- Provide a general summary of the issue in the Title above -->
+---
+name: Bug report 🐞
+about: Create a report to help us improve
+title: ''
+labels: bug
+---
+**Describe the bug**
+A clear and concise description of what the bug is.
+**To Reproduce**
+Steps to reproduce the behavior:
+1. Go to '...'
+2. Click on '....'
+3. Scroll down to '....'
+4. See error
+<!-- -->
+**Expected behavior**
+A clear and concise description of what you expected to happen.
+<!-- -->
+**Screenshots**
+If applicable, add screenshots to help explain your problem.
 
-## Expected Behavior
-<!--- Tell us what should happen -->
-
-## Current Behavior
-<!--- Tell us what happens instead of the expected behavior -->
-
-## Possible Solution
-<!--- Not obligatory, but suggest a fix/reason for the bug, -->
-
-## Steps to Reproduce
-<!--- Provide a link to a live example, or an unambiguous set of steps to -->
-<!--- reproduce this bug. Include code to reproduce, if relevant -->
-1.
-2.
-3.
-4.
-
-## Context (Environment)
-<!--- How has this issue affected you? What are you trying to accomplish? -->
-<!--- Providing context helps us come up with a solution that is most useful in the real world -->
-
-<!--- Provide a general summary of the issue in the Title above -->
-
-## Detailed Description
-<!--- Provide a detailed description of the change or addition you are proposing -->
-
-## Possible Implementation
-<!--- Not obligatory, but suggest an idea for implementing addition or change -->
+**Desktop (please complete the following information):**
+- OS [e.g. Windows 10 build 1833]
+- Version [e.g. 1.15]
+**Additional context**
+Add any other context about the problem here.
