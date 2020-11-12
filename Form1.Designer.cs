@@ -46,6 +46,7 @@
             this.aboutBtn = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
             this.otherContainer = new System.Windows.Forms.Panel();
+            this.SpoofFormButton = new System.Windows.Forms.Button();
             this.QuestOptionsButton = new System.Windows.Forms.Button();
             this.killRcloneButton = new System.Windows.Forms.Button();
             this.movieStreamButton = new System.Windows.Forms.Button();
@@ -64,7 +65,6 @@
             this.freeDisclaimer = new System.Windows.Forms.Label();
             this.devicesComboBox = new System.Windows.Forms.ComboBox();
             this.remotesList = new System.Windows.Forms.ComboBox();
-            this.SpoofFormButton = new System.Windows.Forms.Button();
             this.panel1.SuspendLayout();
             this.otherContainer.SuspendLayout();
             this.backupContainer.SuspendLayout();
@@ -395,6 +395,27 @@
             this.otherContainer.Size = new System.Drawing.Size(218, 148);
             this.otherContainer.TabIndex = 80;
             // 
+            // SpoofFormButton
+            // 
+            this.SpoofFormButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.SpoofFormButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SpoofFormButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SpoofFormButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.SpoofFormButton.Dock = System.Windows.Forms.DockStyle.Top;
+            this.SpoofFormButton.FlatAppearance.BorderSize = 0;
+            this.SpoofFormButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.SpoofFormButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.SpoofFormButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.SpoofFormButton.Location = new System.Drawing.Point(0, 112);
+            this.SpoofFormButton.Name = "SpoofFormButton";
+            this.SpoofFormButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
+            this.SpoofFormButton.Size = new System.Drawing.Size(218, 28);
+            this.SpoofFormButton.TabIndex = 17;
+            this.SpoofFormButton.Text = "SPOOF";
+            this.SpoofFormButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.SpoofFormButton.UseVisualStyleBackColor = false;
+            this.SpoofFormButton.Click += new System.EventHandler(this.SpoofFormButton_Click);
+            // 
             // QuestOptionsButton
             // 
             this.QuestOptionsButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
@@ -414,7 +435,7 @@
             this.QuestOptionsButton.Text = "QUEST OPTIONS";
             this.QuestOptionsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.QuestOptionsButton.UseVisualStyleBackColor = false;
-            this.QuestOptionsButton.Click += new System.EventHandler(this.QuestOptionsButton_Click_1);
+            this.QuestOptionsButton.Click += new System.EventHandler(this.QuestOptionsButton_Click);
             // 
             // killRcloneButton
             // 
@@ -608,7 +629,6 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // etaLabel
             // 
@@ -695,27 +715,6 @@
             this.remotesList.TabIndex = 81;
             this.remotesList.Text = "Select a mirror";
             this.remotesList.SelectedIndexChanged += new System.EventHandler(this.remotesList_SelectedIndexChanged);
-            // 
-            // SpoofFormButton
-            // 
-            this.SpoofFormButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.SpoofFormButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.SpoofFormButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.SpoofFormButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.SpoofFormButton.Dock = System.Windows.Forms.DockStyle.Top;
-            this.SpoofFormButton.FlatAppearance.BorderSize = 0;
-            this.SpoofFormButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.SpoofFormButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.SpoofFormButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.SpoofFormButton.Location = new System.Drawing.Point(0, 112);
-            this.SpoofFormButton.Name = "SpoofFormButton";
-            this.SpoofFormButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.SpoofFormButton.Size = new System.Drawing.Size(218, 28);
-            this.SpoofFormButton.TabIndex = 17;
-            this.SpoofFormButton.Text = "SPOOF";
-            this.SpoofFormButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.SpoofFormButton.UseVisualStyleBackColor = false;
-            this.SpoofFormButton.Click += new System.EventHandler(this.SpoofFormButton_Click);
             // 
             // Form1
             // 

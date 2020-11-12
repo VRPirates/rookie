@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JR.Utils.GUI.Forms;
+using System;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -35,6 +29,12 @@ namespace AndroidSideloader
             debugRcloneCheckBox.Checked = Properties.Settings.Default.logRclone;
             userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
             spoofGamesCheckbox.Checked = Properties.Settings.Default.SpoofGames;
+            if (Properties.Settings.Default.BandwithLimit.Length>1)
+            {
+                BandwithTextbox.Text = Properties.Settings.Default.BandwithLimit.Remove(Properties.Settings.Default.BandwithLimit.Length - 1);
+                BandwithComboBox.Text = Properties.Settings.Default.BandwithLimit[Properties.Settings.Default.BandwithLimit.Length-1].ToString();
+            }
+            
         }
 
         void intToolTips()
@@ -49,6 +49,16 @@ namespace AndroidSideloader
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            if (BandwithTextbox.Text.Length > 0 && BandwithTextbox.Text != "0")
+                if (BandwithComboBox.SelectedIndex == -1)
+                {
+                    FlexibleMessageBox.Show("You need to select something from the combobox");
+                    return;
+                }
+                else
+                    Properties.Settings.Default.BandwithLimit = $"{BandwithTextbox.Text.Replace(" ", "")}{BandwithComboBox.Text}";
+            else
+                Properties.Settings.Default.BandwithLimit = "";
 
             Properties.Settings.Default.Save();
         }

@@ -1,8 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Diagnostics;
-using System.Text;
-using System.Collections.Generic;
+using AndroidSideloader;
 
 namespace Spoofer
 {
@@ -67,12 +66,11 @@ namespace Spoofer
             folderPath = apkPath.Replace(Path.GetFileName(apkPath), "");
             File.Move(apkPath, $"{folderPath}spoofme.apk");
             apkPath = $"{folderPath}spoofme.apk";
-            var rand = new Random();
             decompiledPath = apkPath.Replace(".apk","");
             //newPackageName = $"com.{Utilities.randomString(rand.Next(3, 8))}.{Utilities.randomString(rand.Next(3, 8))}";
             originalPackageName = PackageName(apkPath);
-            Console.WriteLine($"Your app will be spoofed as {newPackageName}");
-            Console.WriteLine($"Folderpath: {folderPath} decompiledPaht: {decompiledPath} ");
+            Logger.Log($"Your app will be spoofed as {newPackageName}");
+            Logger.Log($"Folderpath: {folderPath} decompiledPaht: {decompiledPath} ");
             if (obbPath.Length > 1)
             {
                 RenameObb(obbPath,newPackageName,originalPackageName);
@@ -110,7 +108,7 @@ namespace Spoofer
             spoofedApkPath = $"{Path.GetFileName(apkPath).Replace(".apk", "")}_Spoofed as {newPackageName}.apk";
 
             string output = Utilities.startProcess("cmd.exe", folderPath, $"apktool b \"{Path.GetFileName(apkPath).Replace(".apk", "")}\" -o \"{spoofedApkPath}\"");
-            File.AppendAllText("debug.txt", $"apktool b \"{Path.GetFileName(apkPath).Replace(".apk", "")}\" -o \"{spoofedApkPath}\": {output}");
+            Logger.Log($"apktool b \"{Path.GetFileName(apkPath).Replace(".apk", "")}\" -o \"{spoofedApkPath}\": {output}");
             Console.WriteLine("APK Rebuilt");
 
             //Sign the new apk

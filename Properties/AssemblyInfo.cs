@@ -5,10 +5,11 @@ using System.Runtime.InteropServices;
 // General Information about an assembly is controlled through the following
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
+//[assembly: AssemblyKeyFileAttribute("keypair.snk")]
 [assembly: AssemblyTitle("AndroidSideloader")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Rookie's Sideloader")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("Rookie.WTF")]
 [assembly: AssemblyProduct("AndroidSideloader")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

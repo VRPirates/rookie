@@ -1,23 +1,16 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Windows.Forms;
-using System.Reflection;
 using System.IO;
 using System.Threading;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Management;
-using System.ComponentModel;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net.Http;
-using System.Windows.Threading;
 using System.Net;
 using SergeUtils;
 using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
-using System.Globalization;
-using System.Linq;
 using Spoofer;
 
 namespace AndroidSideloader
@@ -30,11 +23,8 @@ namespace AndroidSideloader
 #else
         public static bool debugMode = false;
 #endif
-        string path;
 
         bool is1April = false;
-
-        string rclonepw = "0aE0$D61#avO";
 
         public Form1()
         {
@@ -61,8 +51,6 @@ namespace AndroidSideloader
             }
         }
 
-        List<string> listBoxItems = new List<string>();
-
         void AprilPrank()
         {
             if (is1April)
@@ -77,6 +65,7 @@ namespace AndroidSideloader
         private async void startsideloadbutton_Click(object sender, EventArgs e)
         {
             string output = string.Empty;
+            string path = string.Empty;
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Android apps (*.apk)|*.apk";
@@ -187,7 +176,7 @@ namespace AndroidSideloader
             notify(output);
         }
 
-        private async void ChangeTitlebarToDevice()
+        private void ChangeTitlebarToDevice()
         {
             if (!Devices.Contains("unauthorized"))
             {
@@ -293,6 +282,13 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            //Delete the Debug file if it is more than 5MB
+            if (File.Exists(Logger.logfile))
+            {
+                long length = new System.IO.FileInfo(Logger.logfile).Length;
+                if (length > 5000000) File.Delete(Logger.logfile);
+            }
+
             ChangeTitle("Loading...");
             try { Spoofer.spoofer.Init(); } catch { }
             progressBar.Style = ProgressBarStyle.Marquee;
@@ -320,8 +316,6 @@ namespace AndroidSideloader
 
             Thread t1 = new Thread(() =>
             {
-                Environment.SetEnvironmentVariable("RCLONE_CRYPT_REMOTE", rclonepw);
-                Environment.SetEnvironmentVariable("RCLONE_CONFIG_PASS", rclonepw);
                 if (!debugMode && Properties.Settings.Default.checkForUpdates)
                 {
                     Updater.AppName = "AndroidSideloader";
@@ -430,7 +424,9 @@ namespace AndroidSideloader
             return ADB.RunAdbCommandToString("shell pm list packages");
         }
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         public async Task<string[]> getGames()
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             string command = $"cat \"{currentRemote}:Quest Games/APK_packagenames.txt\" --config .\\a";
             Process cmd = new Process();
@@ -451,10 +447,8 @@ namespace AndroidSideloader
             return games;
         }
 
-        private async void listappsBtn()
+        private void listappsBtn()
         {
-            //games = getGames().Result;
-
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
             var line = listapps().Split('\n');
@@ -659,7 +653,7 @@ namespace AndroidSideloader
             notify("Done bulk sideloading");
         }
 
-        private async void recursiveSideload(string location)
+        private void recursiveSideload(string location)
         {
             ADB.DeviceID = GetDeviceID();
             string[] files = Directory.GetFiles(location);
@@ -708,7 +702,7 @@ namespace AndroidSideloader
             FlexibleMessageBox.Show("Done");
         }
 
-        async void recursiveCopy(string location)
+        void recursiveCopy(string location)
         {
             string[] files = Directory.GetFiles(location);
             string[] childDirectories = Directory.GetDirectories(location);
@@ -746,6 +740,7 @@ namespace AndroidSideloader
                 string[] files = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (string file in files)
                 {
+
                     string extension = Path.GetExtension(file);
                     if (extension == ".apk")
                     {
@@ -767,6 +762,10 @@ namespace AndroidSideloader
                     }
                     else if (Directory.Exists(file))
                     {
+                        if (File.Exists("install.txt"))
+                        {
+                            try { Sideloader.RunCommandsFromFile($"{file}\\install.txt", file); } catch { }
+                        }
                         ok = true;
                         string[] foldersindirectory = Directory.GetDirectories(file);
                         foreach (string curr in foldersindirectory)
@@ -817,6 +816,7 @@ namespace AndroidSideloader
         string[] games;
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            
 
             DateTime today = DateTime.Today;
 
@@ -839,8 +839,8 @@ namespace AndroidSideloader
         void initMirrors()
         {
             remotesList.Invoke(() => { remotesList.Items.Clear(); });
-            var mirrors = runRcloneCommand("--config .\\a listremotes").Split('\n');
-            mirrors = runRcloneCommand("--config .\\a listremotes").Split('\n');
+            var mirrors = RCLONE.runRcloneCommand("--config .\\a listremotes").Split('\n');
+            mirrors = RCLONE.runRcloneCommand("--config .\\a listremotes").Split('\n');
 
             Logger.Log("Loaded following mirrors: ");
             foreach (string mirror in mirrors)
@@ -872,44 +872,9 @@ namespace AndroidSideloader
         {
             downloadInstallGameButton.Enabled = true;
         }
-        string processError = string.Empty;
-        Process rclone = new Process();
-        string runRcloneCommand(string command, bool log = true)
-        {
-            Logger.Log($"Running Rclone command: {command}");
-            wait = true;
-            rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-
-            if (rclonepw.Length > 0)
-                command += " --ask-password=false";
-            if (log && Properties.Settings.Default.logRclone)
-                command += " --log-file=log.txt --log-level DEBUG";
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
-            rclone.StartInfo.Arguments = command;
-            rclone.StartInfo.RedirectStandardInput = true;
-            rclone.StartInfo.RedirectStandardError = true;
-            rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
-            rclone.StartInfo.CreateNoWindow = true;
-            if (debugMode == true)
-                rclone.StartInfo.CreateNoWindow = false;
-            rclone.StartInfo.UseShellExecute = false;
-            rclone.Start();
-
-            rclone.StandardInput.WriteLine(command);
-            rclone.StandardInput.Flush();
-            rclone.StandardInput.Close();
+        public static string processError = string.Empty;
 
 
-            var output = rclone.StandardOutput.ReadToEnd();
-            string rcloneError = rclone.StandardError.ReadToEnd();
-            rclone.WaitForExit();
-            wait = false;
-            Logger.Log($"Rclone error: {rcloneError} {rcloneError.Length}\nRclone Output: {output}");
-            if (rcloneError.Length > 77)
-                processError = rcloneError;
-            return output;
-        }
         string currentRemote = string.Empty;
         void initGames()
         {
@@ -917,7 +882,7 @@ namespace AndroidSideloader
 
             gamesComboBox.Invoke(() => { gamesComboBox.Items.Clear(); });
             
-            var currGames = runRcloneCommand($"lsf --config .\\a --dirs-only \"{currentRemote}:Quest Games\" --drive-acknowledge-abuse").Split('\n');
+            var currGames = RCLONE.runRcloneCommand($"lsf --config .\\a --dirs-only \"{currentRemote}:Quest Games\" --drive-acknowledge-abuse").Split('\n');
 
             Debug.WriteLine("Loaded following games: ");
             foreach (string game in currGames)
@@ -967,8 +932,6 @@ namespace AndroidSideloader
             FlexibleMessageBox.Show(about);
         }
 
-        bool wait;
-
         private void userjsonButton_Click(object sender, EventArgs e)
         {
             UsernameForm form = new UsernameForm();
@@ -1011,34 +974,15 @@ namespace AndroidSideloader
         private static readonly HttpClient client = new HttpClient();
 
         bool updatedConfig = false;
-        async Task updateConfig()
-        {
-            updatedConfig = true;
-
-            string localHash = "";
-            try { localHash = File.ReadAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt"); } catch { } //file may not exist
-
-            string hash = runRcloneCommand($"md5sum --config .\\a \"{currentRemote}:Quest Homebrew/Sideloading Methods/1. Rookie Sideloader - VRP Edition/a\"");
-            try { hash = hash.Substring(0, hash.LastIndexOf(" ")); } catch { return; } //remove stuff after hash
-
-            Debug.WriteLine("The local file hash is " + localHash + " and the current a file hash is " + hash);
-
-            if (!string.Equals(localHash, hash))
-            {
-                ChangeTitle("Rookie's Sideloader | Updating rclone config");
-                runRcloneCommand(string.Format($"copy \"{currentRemote}:Quest Homebrew/Sideloading Methods/1. Rookie Sideloader - VRP Edition/a\" \"{Environment.CurrentDirectory}\" --config .\\a"));
-                killRclone();
-                File.Copy(Environment.CurrentDirectory + "\\a", Environment.CurrentDirectory + "\\rclone\\a", true);
-                File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", hash);
-            }
-        }
+        
         bool gamesAreDownloading = false;
         List<string> gamesQueueList = new List<string>();
 
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
         async Task<bool> showGameSizeDialog(string gameName)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
-
-            dynamic results = JsonConvert.DeserializeObject<dynamic>(runRcloneCommand($"size \"{currentRemote}:Quest Games/{gameName}\" --config .\\a --json"));
+            dynamic results = JsonConvert.DeserializeObject<dynamic>(RCLONE.runRcloneCommand($"size \"{currentRemote}:Quest Games/{gameName}\" --config .\\a --json"));
             long gameSize = results.bytes.ToObject<long>();
             Debug.WriteLine($"Remote: {currentRemote}, GameSize: {gameSize}, GameName: {gameName}");
             DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download {gameName}? it has a size of {String.Format("{0:0.00}", (double)gameSize / 1000000)} MB", "Are you sure?", MessageBoxButtons.YesNo);
@@ -1046,6 +990,7 @@ namespace AndroidSideloader
                 return false;
             return true;
         }
+
         int quotaTries = 0;
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
@@ -1057,8 +1002,9 @@ namespace AndroidSideloader
 
             if (updatedConfig == false && Properties.Settings.Default.autoUpdateConfig == true) //check for config only once per program open and if setting enabled
             {
-                ChangeTitle("Rookie's Sideloader | Checking if config is updated");
-                await Task.Run(() => updateConfig());
+                updatedConfig = true;
+                ChangeTitle("Rookie's Sideloader | Checking if config is updated and updating config");
+                await Task.Run(() => Sideloader.updateConfig(currentRemote));
             }
 
             if (await showGameSizeDialog(gamesComboBox.SelectedItem.ToString())==false)
@@ -1073,40 +1019,37 @@ namespace AndroidSideloader
 
             gamesAreDownloading = true;
 
-            Thread userJsonThread = new Thread(() =>
+            if (Properties.Settings.Default.userJsonOnGameInstall)
             {
-                doUserJson();
-            });
-            userJsonThread.IsBackground = true;
-            userJsonThread.Start();
-
-
-
+                Thread userJsonThread = new Thread(() => { ChangeTitle("Rookie's Sideloader | Pushing user.json"); Sideloader.PushUserJsons(); });
+                userJsonThread.IsBackground = true;
+                userJsonThread.Start();
+            }
 
             string output = "";
 
             while (gamesQueueList.Count>0)
             {
                 string gameName = gamesQueueList.ToArray()[0];
-                Debug.WriteLine(runRcloneCommand($"size \"{currentRemote}:Quest Games/{gameName}\" --config .\\a --json"));
+                Debug.WriteLine(RCLONE.runRcloneCommand($"size \"{currentRemote}:Quest Games/{gameName}\" --config .\\a --json"));
 
                 int apkNumber = 0;
                 int obbNumber = 0;
 
-                Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + gameName);
-
-                string[] games;
+                string gameDirectory = Environment.CurrentDirectory + "\\" + gameName;
+                Directory.CreateDirectory(gameDirectory);
 
                 Thread t1 = new Thread(() =>
                 {
-                    games = runRcloneCommand($"copy --config .\\a \"{currentRemote}:Quest Games/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc").Split('\n');
-                    foreach (string line in games)
-                        Debug.WriteLine(line);
+                    games = RCLONE.runRcloneCommand($"copy --config .\\a \"{currentRemote}:Quest Games/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", true, Properties.Settings.Default.BandwithLimit).Split('\n');
+
+                    if (File.Exists("install.txt"))
+                    {
+                        try { Sideloader.RunCommandsFromFile($"{gameDirectory}\\install.txt", gameDirectory); } catch { }
+                    }
                 });
                 t1.IsBackground = true;
                 t1.Start();
-
-                ChangeTitle("Rookie's Sideloader | Pushing user.json");
 
                 ChangeTitle("Rookie's Sideloader | Downloading game " + gameName);
 
@@ -1165,9 +1108,9 @@ namespace AndroidSideloader
 
                 //Quota Errors
                 bool quotaError = false;
-                if (processError.Length!=0)
+                if (RCLONE.rcloneError.Length!=0)
                 {
-                    if (processError.Contains("downloadQuotaExceeded"))
+                    if (RCLONE.rcloneError.Contains("downloadQuotaExceeded"))
                     {
                         quotaTries++;
                         quotaError = true;
@@ -1187,13 +1130,11 @@ namespace AndroidSideloader
                             remotesList.SelectedIndex=0;
 
                         gamesQueueList.RemoveAt(0);
-                        //gamesQueueList.Add(gameName);
                         gamesQueListBox.DataSource = null;
                         gamesQueListBox.DataSource = gamesQueueList;
                     }
-                    else FlexibleMessageBox.Show(processError);
+                    else FlexibleMessageBox.Show(RCLONE.rcloneError);
                 }
-                processError = string.Empty;
 
                 if (quotaError==false)
                 {
@@ -1305,29 +1246,9 @@ namespace AndroidSideloader
             notify($"Apk installation output: {output}\n");
         }
 
-        private void doUserJson()
-        {
-            if (!Properties.Settings.Default.userJsonOnGameInstall)
-                return;
-            foreach (var userJson in UsernameForm.userJsons)
-            {
-                UsernameForm.createUserJsonByName(randomString(16), userJson);
-                ADB.RunAdbCommandToString("push \"" + Environment.CurrentDirectory + $"\\{userJson}\" " + " /sdcard/");
-                File.Delete(userJson);
-            }
-        }
-        
-        void killRclone()
-        {
-            foreach (var process in Process.GetProcessesByName("rclone"))
-            {
-                process.Kill();
-            }
-        }
-
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            killRclone();
+            RCLONE.killRclone();
         }
 
         private void movieStreamButton_Click(object sender, EventArgs e)
@@ -1336,7 +1257,7 @@ namespace AndroidSideloader
             {
                 Thread t1 = new Thread(() =>
                 {
-                    runRcloneCommand($"--config .\\a serve dlna {currentRemote}-movies:");
+                    RCLONE.runRcloneCommand($"--config .\\a serve dlna {currentRemote}-movies:");
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -1346,7 +1267,7 @@ namespace AndroidSideloader
             }
             else
             {
-                try { rclone.Kill(); } catch {  }
+                try { RCLONE.killRclone(); } catch {  }
                 ChangeTitle("Stopped Movie Stream!");
                 movieStreamButton.Text = "START MOVIE STREAM";
             } 
@@ -1355,7 +1276,7 @@ namespace AndroidSideloader
 
         private async void killRcloneButton_Click(object sender, EventArgs e)
         {
-            killRclone();
+            RCLONE.killRclone();
             movieStreamButton.Text = "START MOVIE STREAM";
             ChangeTitle("Killed Rclone");
             await Task.Delay(TimeSpan.FromSeconds(5));
@@ -1388,18 +1309,8 @@ namespace AndroidSideloader
             remotesList.Invoke(() => { currentRemote = remotesList.SelectedItem.ToString(); });
         }
 
+
         private void QuestOptionsButton_Click(object sender, EventArgs e)
-        {
-            QuestForm form = new QuestForm();
-            form.Show();
-        }
-
-        private void pictureBox1_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void QuestOptionsButton_Click_1(object sender, EventArgs e)
         {
             QuestForm Form = new QuestForm();
             Form.Show();

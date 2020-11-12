@@ -37,6 +37,9 @@
             this.debugRcloneCheckBox = new System.Windows.Forms.CheckBox();
             this.userJsonOnGameInstall = new System.Windows.Forms.CheckBox();
             this.spoofGamesCheckbox = new System.Windows.Forms.CheckBox();
+            this.BandwithTextbox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.BandwithComboBox = new System.Windows.Forms.ComboBox();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -54,7 +57,7 @@
             // 
             this.applyButton.BackColor = System.Drawing.Color.White;
             this.applyButton.ForeColor = System.Drawing.Color.Black;
-            this.applyButton.Location = new System.Drawing.Point(357, 183);
+            this.applyButton.Location = new System.Drawing.Point(357, 266);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(75, 23);
             this.applyButton.TabIndex = 5;
@@ -77,7 +80,7 @@
             // 
             this.resetSettingsButton.BackColor = System.Drawing.Color.White;
             this.resetSettingsButton.ForeColor = System.Drawing.Color.Black;
-            this.resetSettingsButton.Location = new System.Drawing.Point(256, 183);
+            this.resetSettingsButton.Location = new System.Drawing.Point(256, 266);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Size = new System.Drawing.Size(95, 23);
             this.resetSettingsButton.TabIndex = 4;
@@ -140,12 +143,44 @@
             this.spoofGamesCheckbox.UseVisualStyleBackColor = true;
             this.spoofGamesCheckbox.CheckedChanged += new System.EventHandler(this.spoofGamesCheckbox_CheckedChanged);
             // 
+            // BandwithTextbox
+            // 
+            this.BandwithTextbox.Location = new System.Drawing.Point(183, 176);
+            this.BandwithTextbox.Name = "BandwithTextbox";
+            this.BandwithTextbox.Size = new System.Drawing.Size(177, 20);
+            this.BandwithTextbox.TabIndex = 11;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(10, 179);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(167, 13);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Rclone bandwith limit, 0 to disable";
+            // 
+            // BandwithComboBox
+            // 
+            this.BandwithComboBox.FormattingEnabled = true;
+            this.BandwithComboBox.Items.AddRange(new object[] {
+            "B",
+            "K",
+            "M",
+            "G"});
+            this.BandwithComboBox.Location = new System.Drawing.Point(366, 176);
+            this.BandwithComboBox.Name = "BandwithComboBox";
+            this.BandwithComboBox.Size = new System.Drawing.Size(55, 21);
+            this.BandwithComboBox.TabIndex = 13;
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(444, 218);
+            this.ClientSize = new System.Drawing.Size(444, 301);
+            this.Controls.Add(this.BandwithComboBox);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.BandwithTextbox);
             this.Controls.Add(this.spoofGamesCheckbox);
             this.Controls.Add(this.userJsonOnGameInstall);
             this.Controls.Add(this.debugRcloneCheckBox);
@@ -178,5 +213,8 @@
         private System.Windows.Forms.CheckBox debugRcloneCheckBox;
         private System.Windows.Forms.CheckBox userJsonOnGameInstall;
         private System.Windows.Forms.CheckBox spoofGamesCheckbox;
+        private System.Windows.Forms.TextBox BandwithTextbox;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ComboBox BandwithComboBox;
     }
 }

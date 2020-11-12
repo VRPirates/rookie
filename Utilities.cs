@@ -6,13 +6,12 @@ using System.Net;
 using System.Windows.Forms;
 using System.Net.Http;
 using System.IO;
-
+using AndroidSideloader;
 
 namespace Spoofer
 {
     class Utilities
     {
-        private static Random rand = new Random();
         public static string RandomPackageName()
         {
             return $"com.{Utilities.randomString(rand.Next(3, 8))}.{Utilities.randomString(rand.Next(3, 8))}";
@@ -55,23 +54,24 @@ namespace Spoofer
                 FileName = "cmd.exe"
             });
         }
-
+        static Random rand = new Random();
         public static string randomString(int length)
         {
             string valid = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
             StringBuilder res = new StringBuilder();
-            Random rnd = new Random();
-            int randomInteger = rnd.Next(0, valid.Length);
+
+            int randomInteger = rand.Next(0, valid.Length);
             while (0 < length--)
             {
                 res.Append(valid[randomInteger]);
-                randomInteger = rnd.Next(0, valid.Length);
+                randomInteger = rand.Next(0, valid.Length);
             }
             return res.ToString();
         }
         public static string processError = string.Empty;
         public static string startProcess(string process, string path, string command)
         {
+            Logger.Log($"Ran process {process} with command {command} in path {path}");
             Process cmd = new Process();
             cmd.StartInfo.FileName = "cmd.exe";
             cmd.StartInfo.RedirectStandardInput = true;
@@ -88,8 +88,10 @@ namespace Spoofer
             string error = cmd.StandardError.ReadToEnd();
             if (error.Length > 1)
                 processError = error;
-
-            return cmd.StandardOutput.ReadToEnd();
+            var output = cmd.StandardOutput.ReadToEnd();
+            Logger.Log($"Output: {output}");
+            Logger.Log($"Error: {error}");
+            return output;
         }
 
     }
@@ -118,7 +120,7 @@ namespace Spoofer
 
         public static string AppName { get; set; }
         public static string RawGitHubUrl { get; set; } //https://raw.githubusercontent.com/nerdunit/androidADB.Sideloader
-        static readonly public string LocalVersion = "1.15HF1";
+        static readonly public string LocalVersion = "1.16";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 

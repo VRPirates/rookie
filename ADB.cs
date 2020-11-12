@@ -1,22 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Windows.Forms;
 using System.IO;
-using System.Threading;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Management;
-using System.ComponentModel;
-using System.Text;
-using System.Threading.Tasks;
-using System.Net.Http;
-using System.Windows.Threading;
-using System.Net;
-using SergeUtils;
-using JR.Utils.GUI.Forms;
-using Newtonsoft.Json;
-using System.Globalization;
-using System.Linq;
 
 namespace AndroidSideloader
 {
