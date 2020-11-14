@@ -134,18 +134,6 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("ActiveCaptionText")]
-        public global::System.Drawing.Color PanelColor {
-            get {
-                return ((global::System.Drawing.Color)(this["PanelColor"]));
-            }
-            set {
-                this["PanelColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ActiveCaptionText")]
         public global::System.Drawing.Color ButtonColor {
             get {
                 return ((global::System.Drawing.Color)(this["ButtonColor"]));

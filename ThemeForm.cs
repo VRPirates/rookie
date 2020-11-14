@@ -22,12 +22,6 @@ namespace AndroidSideloader
                 Properties.Settings.Default.ButtonColor = colorDialog1.Color;
         }
 
-        private void button2_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-                Properties.Settings.Default.PanelColor = colorDialog1.Color;
-        }
-
         private void button1_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
@@ -49,7 +43,6 @@ namespace AndroidSideloader
             Properties.Settings.Default.TextBoxColor = Color.FromArgb(45,45,45);
             Properties.Settings.Default.ButtonColor = SystemColors.ActiveCaptionText;
             Properties.Settings.Default.SubButtonColor=Color.FromArgb(64, 64, 64);
-            Properties.Settings.Default.PanelColor = SystemColors.ActiveCaptionText;
             Properties.Settings.Default.BackPicturePath = "";
             Properties.Settings.Default.FontStyle = new Font("Microsoft Sans Serif", 11, FontStyle.Regular);
             Properties.Settings.Default.FontColor = Color.White;
@@ -63,12 +56,6 @@ namespace AndroidSideloader
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
                 Properties.Settings.Default.ComboBoxColor = colorDialog1.Color;
-        }
-
-        private void button6_Click(object sender, EventArgs e)
-        {
-            if (colorDialog1.ShowDialog() == DialogResult.OK)
-                Properties.Settings.Default.TextBoxColor = colorDialog1.Color;
         }
 
         private void button9_Click(object sender, EventArgs e)
@@ -112,7 +99,6 @@ namespace AndroidSideloader
         private void button12_Click(object sender, EventArgs e)
         {
             String BackColor = ColorTranslator.ToHtml(Properties.Settings.Default.BackColor);
-            String PanelColor = ColorTranslator.ToHtml(Properties.Settings.Default.PanelColor);
             String TextBoxColor = ColorTranslator.ToHtml(Properties.Settings.Default.TextBoxColor);
             String ComboBoxColor = ColorTranslator.ToHtml(Properties.Settings.Default.ComboBoxColor);
             String ButtonColor = ColorTranslator.ToHtml(Properties.Settings.Default.ButtonColor);
@@ -136,14 +122,14 @@ namespace AndroidSideloader
                             break;
                         }
                     }
-                    File.WriteAllText(Environment.CurrentDirectory + "\\theme" + i + ".txt", "#SideloaderTheme# \n" + BackColor + "\n" + PanelColor + "\n" + ButtonColor + "\n" + SubButtonColor + "\n"
+                    File.WriteAllText(Environment.CurrentDirectory + "\\theme" + i + ".txt", "#SideloaderTheme# \n" + BackColor + "\n" + ButtonColor + "\n" + SubButtonColor + "\n"
                         + TextBoxColor + "\n" + ComboBoxColor + "\n" + FontColor + "\n" + FontStyle);
                     MessageBox.Show("Theme exported as theme" + i + ".txt");
                 }
             }
             else
             {
-                File.WriteAllText(Environment.CurrentDirectory + "\\theme.txt", "#SideloaderTheme# \n" + BackColor + "\n" + PanelColor + "\n" + ButtonColor + "\n" + SubButtonColor + "\n"
+                File.WriteAllText(Environment.CurrentDirectory + "\\theme.txt", "#SideloaderTheme# \n" + BackColor + "\n" + ButtonColor + "\n" + SubButtonColor + "\n"
                     + TextBoxColor + "\n" + ComboBoxColor + "\n" + FontColor + "\n" + FontStyle);
                 MessageBox.Show("Theme exported as theme.txt");
             }
@@ -163,14 +149,12 @@ namespace AndroidSideloader
                         myCol.CopyTo(settings, 0);
 
                         Color BackColor = ColorTranslator.FromHtml(settings[1]);
-                        Color PanelColor = ColorTranslator.FromHtml(settings[2]);
-                        Color ButtonColor = ColorTranslator.FromHtml(settings[3]);
-                        Color SubButtonColor = ColorTranslator.FromHtml(settings[4]);
-                        Color TextBoxColor = ColorTranslator.FromHtml(settings[5]);
-                        Color ComboBoxColor = ColorTranslator.FromHtml(settings[6]);
-                        Color FontColor = ColorTranslator.FromHtml(settings[7]);
+                        Color ButtonColor = ColorTranslator.FromHtml(settings[2]);
+                        Color SubButtonColor = ColorTranslator.FromHtml(settings[3]);
+                        Color TextBoxColor = ColorTranslator.FromHtml(settings[4]);
+                        Color ComboBoxColor = ColorTranslator.FromHtml(settings[5]);
+                        Color FontColor = ColorTranslator.FromHtml(settings[6]);
                         Properties.Settings.Default.BackColor = BackColor;
-                        Properties.Settings.Default.PanelColor = PanelColor;
                         Properties.Settings.Default.ButtonColor = ButtonColor;
                         Properties.Settings.Default.SubButtonColor = SubButtonColor;
                         Properties.Settings.Default.TextBoxColor = TextBoxColor;
@@ -179,7 +163,7 @@ namespace AndroidSideloader
                         System.ComponentModel.TypeConverter converter =
                         System.ComponentModel.TypeDescriptor.GetConverter(typeof(Font));
                         var cvt = new FontConverter();
-                        Font f = cvt.ConvertFromString(settings[8]) as Font;
+                        Font f = cvt.ConvertFromString(settings[7]) as Font;
                         Properties.Settings.Default.FontStyle = f;
                     }
                     else
@@ -187,6 +171,12 @@ namespace AndroidSideloader
                     
                 }
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            if (colorDialog1.ShowDialog() == DialogResult.OK)
+                Properties.Settings.Default.TextBoxColor = colorDialog1.Color;
         }
     }
 }

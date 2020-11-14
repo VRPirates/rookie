@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Spoofer;
+using System.Text.RegularExpressions;
 
 namespace AndroidSideloader
 {
@@ -40,12 +41,33 @@ namespace AndroidSideloader
             }
         }
 
+        public static string RunADBCommandsFromFile(string path, string RunFromPath)
+        {
+            string output = string.Empty;
+            var commands = File.ReadAllLines(path);
+            foreach (string cmd in commands)
+            {
+                if (cmd.StartsWith("adb"))
+                {
+                    var regex = new Regex(Regex.Escape("adb"));
+                    var command = regex.Replace(cmd, $"\"{ADB.adbFilePath}\"", 1);
+
+                    Logger.Log($"Logging command: {command} from file: {path}");
+                    output += Utilities.startProcess("cmd.exe", RunFromPath, command);
+                }
+            }
+            return output;
+        }
+
         public static string RunCommandsFromFile(string path, string RunFromPath)
         {
             string output = string.Empty;
             var commands = File.ReadAllLines(path);
             foreach (string command in commands)
-                output+=Utilities.startProcess("cmd.exe",RunFromPath,command);
+            {
+                Logger.Log($"Logging command: {command} from file: {path}");
+                output += Utilities.startProcess("cmd.exe", RunFromPath, command);
+            }
             return output;
         }
 

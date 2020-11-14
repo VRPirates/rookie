@@ -7,7 +7,8 @@ namespace AndroidSideloader
     class ADB
     {
         static Process adb = new Process();
-        public static string adbPath = Environment.CurrentDirectory + "\\adb\\";
+        public static string adbFolderPath = Environment.CurrentDirectory + "\\adb";
+        public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static bool IsRunningCommand = false;
         public static string RunAdbCommandToString(string command)
         {
@@ -18,14 +19,14 @@ namespace AndroidSideloader
                 command = $" -s {DeviceID} {command}";
 
             Logger.Log($"Running command {command}");
-            adb.StartInfo.FileName = Environment.CurrentDirectory + "\\adb\\adb.exe";
+            adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
+            adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
             adb.StartInfo.RedirectStandardOutput = true;
-            adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.CreateNoWindow = true;
             adb.StartInfo.UseShellExecute = false;
-            adb.StartInfo.WorkingDirectory = adbPath;
+            adb.StartInfo.WorkingDirectory = adbFolderPath;
 
             //adb.OutputDataReceived += ADB_OutputDataReceived;
             adb.ErrorDataReceived += ADB_ErrorDataReceived;

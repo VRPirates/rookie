@@ -29,9 +29,6 @@
     <Setting Name="BackColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">45, 45, 45</Value>
     </Setting>
-    <Setting Name="PanelColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">ActiveCaptionText</Value>
-    </Setting>
     <Setting Name="ButtonColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">ActiveCaptionText</Value>
     </Setting>

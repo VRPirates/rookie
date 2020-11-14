@@ -44,7 +44,7 @@ namespace AndroidSideloader
                 await Task.Delay(100);
 
             progressBar1.Style = ProgressBarStyle.Continuous;
-  
+
             FlexibleMessageBox.Show($"App spoofed from {spoofer.originalPackageName} to {NewPackageName}");
         }
 

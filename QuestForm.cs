@@ -24,6 +24,8 @@ namespace AndroidSideloader
                 Int32.TryParse(TextureResTextBox.Text, out int result);
                 ADB.RunAdbCommandToString($"shell settings put global texture_size_Global {TextureResTextBox.Text}");
                 ADB.RunAdbCommandToString($"shell settings put global texture_size_Global {TextureResTextBox.Text}");
+                ADB.RunAdbCommandToString($"shell setprop debug.oculus.textureWidth {TextureResTextBox.Text}");
+                ADB.RunAdbCommandToString($"shell setprop debug.oculus.textureHeight {TextureResTextBox.Text}");
             }
 
         }

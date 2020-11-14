@@ -119,8 +119,9 @@ namespace Spoofer
     {
 
         public static string AppName { get; set; }
-        public static string RawGitHubUrl { get; set; } //https://raw.githubusercontent.com/nerdunit/androidADB.Sideloader
-        static readonly public string LocalVersion = "1.16";
+        public static string RawGitHubUrl { get; set; } //https://raw.githubusercontent.com/nerdunit/androidsideloader
+        public static string GitHubUrl { get; set; }
+        static readonly public string LocalVersion = "1.17";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
@@ -143,30 +144,27 @@ namespace Spoofer
         }
         private static void doUpdate()
         {
+            DialogResult dialogResult = FlexibleMessageBox.Show($"There is a new update you have version {LocalVersion}, do you want to update?\nCHANGELOG\n{changelog}", $"Version {currentVersion} is available", MessageBoxButtons.YesNo);
+            if (dialogResult != DialogResult.Yes)
+                return;
+
             try
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show($"There is a new update you have version {LocalVersion}, do you want to update?\nCHANGELOG\n{changelog}", $"Version {currentVersion} is available", MessageBoxButtons.YesNo);
-                if (dialogResult != DialogResult.Yes)
-                    return;
-
-                //download updated version
                 using (var fileClient = new WebClient())
                 {
                     ServicePointManager.Expect100Continue = true;
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    fileClient.DownloadFile($"{RawGitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
+                    Logger.Log($"Downloading update from {RawGitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
+                    fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
                 }
 
                 Utilities.Melt();
-
+                Logger.Log("Starting {AppName} v{currentVersion}.exe");
                 Process.Start($"{AppName} v{currentVersion}.exe");
-
-                Environment.Exit(0);
             }
-            catch
-            {
+            catch { }
 
-            }
+            Environment.Exit(0);
         }
     }
 }

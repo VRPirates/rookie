@@ -1,6 +1,46 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+v1.17
+Please manually update to this version, as it fixes automatic updates that were broken since 1.15
+
+Changes
+ + Better game installation => no need for manual installation of games anymore
+ + Added theme changer back and updated it
+ = Fixed updates
+ = Updated quest options
+
+Date 11/14/2020
+
+VT: https://bit.ly/3lwztcn
+
+MD5 Checksum: CC7BF16A3D687C21208E9E986D720CAE
+SHA-1 Checksum: CE0C71B4097068E84FA6FC65F4AFE69CBC79AA29
+SHA-256 Checksum: D9393C28376DDE1D0582BCF939D1414879EDE6772CE82F83F54C0EA0F239B2F0
+SHA-512 Checksum: 326C7A0177E9B8BCFA10CB3B8FAEA025F9C45C599DE5D46CA06DFEE427351F3AE88371C5A0827DEADF7D3F459052C421A145AA5581FE3C4BD2EFAD33BCFFC37B
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+wFCUACgkQvrtJUNxE
+TxO0ThAAw6po24zaYQFa+aGrgQNuWYWRxirCkLekEgmy8XVL6Q0rgMeLeq2MrCBP
+wi2eBMFlLNOXy1TXOhled89NRBiBeST2Hl4TVv0Qdavd9cSeuGD/rh/PsyxnxY2Y
+RWCPeXiYOf0mN1zVylLas+2vk9o/lrNieJir1nMEvyVbUJs8lTDcBdo2vVFwHK9N
+nStFPxjqRb8R6smTIsltIh4+juQQMX0GyCcEMUkb5aO6BP34Mpsoaf+9bxV/elJm
+UXnFSh5pjzHhkYGKVePtoHev8aFOzLeqIrfyWRJl+7gBMgYIautaxAIE+Zsy3Sai
+wxUk9HJeAYwEPhYcIJKGAy+fmeX/TePQjUqLu1Pp+sJ8orstSiMjwXr84UtvyUWZ
++gSTgsQJ1QNUlhp+eJ0D6CchkAwliUXgnpIzwyn1Jj54X3ecHNjMbc5SettlXcBG
+qgy5bUx8+v4H4gHmqTyZQNv1bsvIiQlcwPPUtpSzSXrzJPfZjrqPZzUWB8/Vltqc
+JIR8FxEqi7+mW6AqrhUjE74N/fFibJTEuv6RALwZIAfMYEuSeFlZlDJYZ9v3H4/X
+2jd+wEksbq6uYUl2l3X/7TpMWX29paj18cLD8oTSLK/RvzLXe0hhUcvuHrMxi+14
+Q+V7uZYGge4Z5PANGPhd2tSkvw4CyA25OQ868QXjqciSLTfK2SU=
+=Yu78
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 v1.16
 
 Changes

@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using System.Windows.Forms;
 using System.IO;
+using System.Drawing;
+using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Collections.Generic;
 using System.Text;
@@ -31,12 +34,15 @@ namespace AndroidSideloader
             InitializeComponent();
         }
 
-        public void ChangeTitle(string txt)
+        string olddTitle = "";
+        //            await Task.Delay(TimeSpan.FromSeconds(5));
+        public async void ChangeTitle(string txt, bool reset = true)
         {
-            if (this.InvokeRequired)
-                this.Invoke(new Action(() => this.Text = txt));
-            else
-                this.Text = txt;
+            this.Invoke(() => { olddTitle = this.Text; this.Text = txt; });
+            if (!reset)
+                return;
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            this.Invoke(() => { this.Text = olddTitle; });
         }
 
         private void ShowSubMenu(Panel subMenu)
@@ -203,7 +209,7 @@ namespace AndroidSideloader
                 if (!File.Exists("Sideloader Launcher.exe"))
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
 
-                if (!Directory.Exists(ADB.adbPath)) //if there is no adb folder, download and extract
+                if (!Directory.Exists(ADB.adbFolderPath)) //if there is no adb folder, download and extract
                 {
                     try
                     {
@@ -211,7 +217,6 @@ namespace AndroidSideloader
                         oldTitle = this.Text;
                         ChangeTitle($"Rookie's Sideloader | Extracting archive {Environment.CurrentDirectory}\\adb.7z");
                         Zip.ExtractFile($"{Environment.CurrentDirectory}\\adb.7z", Environment.CurrentDirectory);
-                        ChangeTitle(oldTitle);
                         File.Delete("adb.7z");
                     }
                     catch
@@ -232,10 +237,8 @@ namespace AndroidSideloader
                     client.DownloadFile(url, "rclone.zip");
 
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
-                    oldTitle = this.Text;
                     ChangeTitle("Rookie's Sideloader | Extracting archive " + $"{Environment.CurrentDirectory}\\rclone.zip");
                     Zip.ExtractFile(Environment.CurrentDirectory + "\\rclone.zip", Environment.CurrentDirectory);
-                    ChangeTitle(oldTitle);
 
                     File.Delete("rclone.zip");
 
@@ -289,9 +292,8 @@ namespace AndroidSideloader
                 if (length > 5000000) File.Delete(Logger.logfile);
             }
 
-            ChangeTitle("Loading...");
             try { Spoofer.spoofer.Init(); } catch { }
-            progressBar.Style = ProgressBarStyle.Marquee;
+            
 
             if (Properties.Settings.Default.CallUpgrade)
             {
@@ -314,31 +316,7 @@ namespace AndroidSideloader
 
             ChangeTitlebarToDevice();
 
-            Thread t1 = new Thread(() =>
-            {
-                if (!debugMode && Properties.Settings.Default.checkForUpdates)
-                {
-                    Updater.AppName = "AndroidSideloader";
-                    Updater.RawGitHubUrl = "https://raw.githubusercontent.com/nerdunit/androidsideloader";
-                    Updater.Update();
-                }
-                initMirrors();
-                initGames();
-                listappsBtn();
-            });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = false;
-            t1.Start();
 
-            showAvailableSpace();
-
-            intToolTips();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
-            progressBar.Style = ProgressBarStyle.Continuous;
-
-            enableButtons();
         }
 
         void intToolTips()
@@ -377,7 +355,7 @@ namespace AndroidSideloader
 
                 try
                 {
-                    Directory.Move(ADB.adbPath + "data", Environment.CurrentDirectory + "\\data");
+                    Directory.Move(ADB.adbFolderPath + "\\data", Environment.CurrentDirectory + "\\data");
                 }
                 catch (Exception ex)
                 {
@@ -762,9 +740,9 @@ namespace AndroidSideloader
                     }
                     else if (Directory.Exists(file))
                     {
-                        if (File.Exists("install.txt"))
+                        if (File.Exists($"{file}\\install.txt"))
                         {
-                            try { Sideloader.RunCommandsFromFile($"{file}\\install.txt", file); } catch { }
+                            Sideloader.RunADBCommandsFromFile($"{file}\\install.txt", file);
                         }
                         ok = true;
                         string[] foldersindirectory = Directory.GetDirectories(file);
@@ -810,30 +788,44 @@ namespace AndroidSideloader
 
         private void Form1_DragLeave(object sender, EventArgs e)
         {
-            ChangeTitle(oldTitle);
             DragDropLbl.Visible = false;
         }
         string[] games;
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            
+            Thread t1 = new Thread(() =>
+            {
+                if (!debugMode && Properties.Settings.Default.checkForUpdates)
+                {
+                    Updater.AppName = "AndroidSideloader";
+                    Updater.RawGitHubUrl = "https://raw.githubusercontent.com/nerdunit/androidsideloader";
+                    Updater.GitHubUrl = "https://github.com/nerdunit/androidsideloader";
+                    Updater.Update();
+                }
+                progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
+                initMirrors();
+                initGames();
+                listappsBtn();
+                //progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Continuous; });
+            });
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.IsBackground = false;
+            t1.Start();
+
+            showAvailableSpace();
+
+            intToolTips();
+
+            while (t1.IsAlive)
+                await Task.Delay(100);
+
+            downloadInstallGameButton.Enabled = true;
 
             DateTime today = DateTime.Today;
 
             if (today.Month == 4 && today.Day == 1)
                 is1April = true;
-
-            progressBar.Style = ProgressBarStyle.Marquee;
-
-            Thread t1 = new Thread(() =>
-            {
-                ADB.DeviceID = GetDeviceID();
-            });
-            t1.IsBackground = true;
-            t1.Start();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
+            progressBar.Style = ProgressBarStyle.Continuous;
         }
 
         void initMirrors()
@@ -868,10 +860,6 @@ namespace AndroidSideloader
             }
         }
 
-        private void enableButtons()
-        {
-            downloadInstallGameButton.Enabled = true;
-        }
         public static string processError = string.Empty;
 
 
@@ -1004,7 +992,9 @@ namespace AndroidSideloader
             {
                 updatedConfig = true;
                 ChangeTitle("Rookie's Sideloader | Checking if config is updated and updating config");
+                progressBar.Style = ProgressBarStyle.Marquee;
                 await Task.Run(() => Sideloader.updateConfig(currentRemote));
+                progressBar.Style = ProgressBarStyle.Continuous;
             }
 
             if (await showGameSizeDialog(gamesComboBox.SelectedItem.ToString())==false)
@@ -1021,6 +1011,7 @@ namespace AndroidSideloader
 
             if (Properties.Settings.Default.userJsonOnGameInstall)
             {
+                
                 Thread userJsonThread = new Thread(() => { ChangeTitle("Rookie's Sideloader | Pushing user.json"); Sideloader.PushUserJsons(); });
                 userJsonThread.IsBackground = true;
                 userJsonThread.Start();
@@ -1041,17 +1032,17 @@ namespace AndroidSideloader
 
                 Thread t1 = new Thread(() =>
                 {
-                    games = RCLONE.runRcloneCommand($"copy --config .\\a \"{currentRemote}:Quest Games/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", true, Properties.Settings.Default.BandwithLimit).Split('\n');
+                    RCLONE.runRcloneCommand($"copy --config .\\a \"{currentRemote}:Quest Games/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", true, Properties.Settings.Default.BandwithLimit).Split('\n');
 
-                    if (File.Exists("install.txt"))
+                    if (File.Exists($"{gameDirectory}\\install.txt"))
                     {
-                        try { Sideloader.RunCommandsFromFile($"{gameDirectory}\\install.txt", gameDirectory); } catch { }
+                        Sideloader.RunADBCommandsFromFile($"{gameDirectory}\\install.txt", gameDirectory);
                     }
                 });
                 t1.IsBackground = true;
                 t1.Start();
 
-                ChangeTitle("Rookie's Sideloader | Downloading game " + gameName);
+                ChangeTitle("Rookie's Sideloader | Downloading game " + gameName, false);
 
                 int i = 0;
                 while (t1.IsAlive)
@@ -1135,13 +1126,13 @@ namespace AndroidSideloader
                     }
                     else FlexibleMessageBox.Show(RCLONE.rcloneError);
                 }
-
+                ChangeTitle(oldTitle, false);
                 if (quotaError==false)
                 {
                     ADB.DeviceID = GetDeviceID();
                     quotaTries = 0;
                     progressBar.Value = 0;
-                    ChangeTitle("Rookie's Sideloader | Installing game apk " + gameName);
+                    ChangeTitle("Rookie's Sideloader | Installing game apk " + gameName, false);
                     etaLabel.Text = "ETA: Wait for install...";
                     speedLabel.Text = "DLS: Done downloading";
 
@@ -1184,7 +1175,7 @@ namespace AndroidSideloader
 
                     Debug.WriteLine(wrDelimiter);
 
-                    ChangeTitle("Rookie's Sideloader | Installing game obb " + gameName);
+                    ChangeTitle("Rookie's Sideloader | Installing game obb " + gameName, false);
 
                     string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
@@ -1223,7 +1214,7 @@ namespace AndroidSideloader
 
                     if (Properties.Settings.Default.deleteAllAfterInstall)
                     {
-                        ChangeTitle("Rookie's Sideloader | Deleting game files");
+                        ChangeTitle("Rookie's Sideloader | Deleting game files", false);
                         Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
                     }
 
@@ -1279,7 +1270,6 @@ namespace AndroidSideloader
             RCLONE.killRclone();
             movieStreamButton.Text = "START MOVIE STREAM";
             ChangeTitle("Killed Rclone");
-            await Task.Delay(TimeSpan.FromSeconds(5));
             await CheckForDevice();
             ChangeTitlebarToDevice();
         }
@@ -1321,9 +1311,17 @@ namespace AndroidSideloader
             SpoofForm Form = new SpoofForm();
             Form.Show();
         }
-    }
 
-    public static class ControlExtensions
+        private void ThemeChangerButton_Click(object sender, EventArgs e)
+        {
+            themeForm Form = new themeForm();
+            Form.Show();
+        }
+
+
+
+    }
+        public static class ControlExtensions
     {
         public static void Invoke(this Control control, Action action)
         {
