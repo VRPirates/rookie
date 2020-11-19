@@ -121,7 +121,7 @@ namespace Spoofer
         public static string AppName { get; set; }
         public static string RawGitHubUrl { get; set; } //https://raw.githubusercontent.com/nerdunit/androidsideloader
         public static string GitHubUrl { get; set; }
-        static readonly public string LocalVersion = "1.17";
+        static readonly public string LocalVersion = "1.17SU1";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 

@@ -107,6 +107,8 @@ namespace AndroidSideloader
         private void spoofGamesCheckbox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.SpoofGames = spoofGamesCheckbox.Checked;
+            if (spoofGamesCheckbox.Checked)
+                FlexibleMessageBox.Show(Sideloader.SpooferWarning);
         }
     }
 }

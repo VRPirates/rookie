@@ -32,10 +32,11 @@ namespace AndroidSideloader
 
             progressBar1.Style = ProgressBarStyle.Marquee;
 
+            string output = "";
             Thread t1 = new Thread(() =>
             {
                 spoofer.Init();
-                spoofer.SpoofApk(path, NewPackageName);
+                output += spoofer.SpoofApk(path, NewPackageName);
             });
             t1.IsBackground = true;
             t1.Start();
@@ -43,9 +44,14 @@ namespace AndroidSideloader
             while (t1.IsAlive)
                 await Task.Delay(100);
 
+            
+
             progressBar1.Style = ProgressBarStyle.Continuous;
 
-            FlexibleMessageBox.Show($"App spoofed from {spoofer.originalPackageName} to {NewPackageName}");
+            if (output.Contains("is not recognized as an internal or external command"))
+                FlexibleMessageBox.Show(Sideloader.SpooferWarning);
+            else
+                FlexibleMessageBox.Show($"App spoofed from {spoofer.originalPackageName} to {NewPackageName}");
         }
 
         private void SpoofForm_Load(object sender, EventArgs e)

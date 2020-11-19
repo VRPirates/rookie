@@ -10,6 +10,13 @@ namespace AndroidSideloader
     class Sideloader
     {
 
+        public static string CrashLogPath = "crashlog.txt";
+
+        public static string SpooferWarning = @"Please make sure you have installed:
+- APKTool
+- Java JDK
+- aapt
+And all of them added to PATH, without ANY of them, the spoofer won't work!";
         public static void PushUserJsons()
         {
             foreach (var userJson in UsernameForm.userJsons)

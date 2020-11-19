@@ -285,6 +285,15 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            if (File.Exists(Sideloader.CrashLogPath))
+            {
+                DialogResult dialogResult = FlexibleMessageBox.Show(this, $@"Looks like sideloader crashed last time, please make an issue at https://github.com/nerdunit/androidsideloader/issues
+Please don't forget to post the crash.log and fill in any details you can
+Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this message will not appear when you start the sideloader but please first report this issue)", "Crash Detected", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                    File.Delete(Sideloader.CrashLogPath);
+            }
+
             //Delete the Debug file if it is more than 5MB
             if (File.Exists(Logger.logfile))
             {
@@ -293,7 +302,6 @@ namespace AndroidSideloader
             }
 
             try { Spoofer.spoofer.Init(); } catch { }
-            
 
             if (Properties.Settings.Default.CallUpgrade)
             {
@@ -1011,7 +1019,6 @@ namespace AndroidSideloader
 
             if (Properties.Settings.Default.userJsonOnGameInstall)
             {
-                
                 Thread userJsonThread = new Thread(() => { ChangeTitle("Rookie's Sideloader | Pushing user.json"); Sideloader.PushUserJsons(); });
                 userJsonThread.IsBackground = true;
                 userJsonThread.Start();
@@ -1058,6 +1065,8 @@ namespace AndroidSideloader
 
                         float downloadSpeed = results.speed.ToObject<float>();
 
+//                        float downloadSpeedDelta = 0F;
+
                         long allSize = 0;
 
                         long downloaded = 0;
@@ -1082,9 +1091,7 @@ namespace AndroidSideloader
                             {
                                 i = 0;
                                 float seconds = (allSize - downloaded) / downloadSpeed;
-
                                 TimeSpan time = TimeSpan.FromSeconds(seconds);
-
                                 etaLabel.Text = "ETA: " + time.ToString(@"hh\:mm\:ss") + " left";
                             }
 

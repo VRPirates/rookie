@@ -59,9 +59,10 @@ namespace Spoofer
 
         public static string spoofedApkPath = string.Empty;
 
-        public static void SpoofApk(string apkPath, string newPackageName, string obbPath = "")
+        public static string SpoofApk(string apkPath, string newPackageName, string obbPath = "")
         {
             //Rename
+            string output = "";
             string oldGameName = Path.GetFileName(apkPath);
             folderPath = apkPath.Replace(Path.GetFileName(apkPath), "");
             File.Move(apkPath, $"{folderPath}spoofme.apk");
@@ -77,7 +78,7 @@ namespace Spoofer
             }
 
             Console.WriteLine("Extracting apk...");
-            DecompileApk(apkPath);
+            output += DecompileApk(apkPath);
 
             Console.WriteLine("Spoofing apk...");
             //Rename APK Packagename
@@ -107,7 +108,7 @@ namespace Spoofer
             Console.WriteLine("Rebuilding the APK...");
             spoofedApkPath = $"{Path.GetFileName(apkPath).Replace(".apk", "")}_Spoofed as {newPackageName}.apk";
 
-            string output = Utilities.startProcess("cmd.exe", folderPath, $"apktool b \"{Path.GetFileName(apkPath).Replace(".apk", "")}\" -o \"{spoofedApkPath}\"");
+            output += Utilities.startProcess("cmd.exe", folderPath, $"apktool b \"{Path.GetFileName(apkPath).Replace(".apk", "")}\" -o \"{spoofedApkPath}\"");
             Logger.Log($"apktool b \"{Path.GetFileName(apkPath).Replace(".apk", "")}\" -o \"{spoofedApkPath}\": {output}");
             Console.WriteLine("APK Rebuilt");
 
@@ -115,7 +116,7 @@ namespace Spoofer
             Console.WriteLine("Signing the APK...");
             if (File.Exists(folderPath + "keystore.key") == false)
                 File.Copy("keystore.key", $"{folderPath}keystore.key");
-            SignApk(apkPath,newPackageName);
+            output += SignApk(apkPath,newPackageName);
 
             File.Move($"{folderPath}\\{spoofedApkPath}", $"{folderPath}\\{oldGameName}_ Spoofed as {newPackageName}.apk");
             File.Move(apkPath, $"{apkPath.Replace(Path.GetFileName(apkPath), "")}\\{oldGameName}.apk");
@@ -128,9 +129,11 @@ namespace Spoofer
                 File.Delete($"{folderPath}keystore.key");
             Directory.Delete(decompiledPath, true);
             Console.WriteLine("Residual files deleted");
+
+            return output;
         }
 
-        public static void SignApk(string path, string packageName)
+        public static string SignApk(string path, string packageName)
         {
             Process cmdSign = new Process();
             cmdSign.StartInfo.FileName = "cmd.exe";
@@ -138,16 +141,19 @@ namespace Spoofer
             cmdSign.StartInfo.WorkingDirectory = folderPath;
             cmdSign.StartInfo.CreateNoWindow = true;
             cmdSign.StartInfo.UseShellExecute = false;
+            cmdSign.StartInfo.RedirectStandardOutput = true;
             cmdSign.Start();
             cmdSign.StandardInput.WriteLine($"jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore keystore.key \"{spoofedApkPath}\" {alias}");
             cmdSign.StandardInput.WriteLine(password);
             cmdSign.StandardInput.Flush();
             cmdSign.StandardInput.Close();
             cmdSign.WaitForExit();
-            File.AppendAllText("debug.txt", $"jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore keystore.key \"{spoofedApkPath}\" {alias}");
+            var output = cmdSign.StandardOutput.ReadToEnd();
+            Logger.Log(output);
+            return output;
         }
 
-        public static void DecompileApk(string path)
+        public static string DecompileApk(string path)
         {
             string output = Utilities.startProcess("cmd.exe", folderPath, $"apktool d -f \"{path}\"");
 
@@ -155,7 +161,8 @@ namespace Spoofer
             File.AppendAllText("debug.txt", $"apktool d \"{path}\": {output}");
             //If error
             if (Utilities.processError.Length > 1)
-                Console.WriteLine($"ERROR: {Utilities.processError}");
+                output += $"ERROR: {Utilities.processError}";
+            return output;
         }
 
         //Renames obb to new obb according to packagename

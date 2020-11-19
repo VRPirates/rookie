@@ -1,6 +1,45 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+v1.17SU1
+
+Changes
+ + Added some instructions & checks for the spoofer
+ + Added crash detection
+ = Fixed the game queue broken since 1.17
+
+Date 11/19/2020
+
+VT: https://bit.ly/3nDUMcx
+
+MD5 Checksum: 6DA8ADBE4447A809C598379E73DC7F77
+SHA-1 Checksum: 924220FE8877174CCB9732F1F99B759DD6749102
+SHA-256 Checksum: 0405C389A7D84CAC0D9081BDE10D010300822B10EBC2FF94C501EC740C8CFA40
+SHA-512 Checksum: E8C3A15257C30278CEBC46507B1F6049FFB5AC0D6E4FBB73E1776537F80CBEA95C8C81A3F3259F8AEEDE276EBF6D50F6945622403E9D80B5E9E0F47B050BBEA9
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+2aycACgkQvrtJUNxE
+TxOlEw/6ArmiRFAjUNC2YaElJ7fFsXVzCaeJ680rs0CK4oX9P7YjZ46y2/VGDtX/
+IAGvWCqHOIw2t0sk01/JwoyKZFERLDn2MRCj9FTPsrPA8yqveiIx/fof90QaN2Q9
+4aV6ht+SSirQFWTXENboEbQSWxFHW/z5/Dud8gDBuCTuFuueBk+EAph5yI3dcjCK
+naDE1gX+CE21ef84F3nGMspu2q/uCaIM2mvEWR2hBvWLsQpH7m5uQegXGYywe6YC
+/8wEY2mEe0nayp/3NglDDarsPN8wx1U5i/kqS8wrzZZT49pRqKZ0wykWGfAPQsaO
+txmfiwH+5cu3J/6PpAMVuNjhtL0dnR5MapsXT3CoRvSiRDl2urdYJUQj1CsYOEWP
+Q4St6ISoUoANhVFRcM9mbq7clxdJnfBqdr1J0YrK804qWp3krDYv5hrpE3Puu/nA
+TORsqWiHPgQQHANsNYsY4WkvLiYHWyB62Cm2NATdtaoVWzsrBgFk9xlp1oIQcMXo
+RlRQZQ7tQ0VFFxaP7ARRaf9ay78geC3W/cr63JTn8Hz7Ul1h+ZRa7tb1KYvpCTnp
+xC7vh3IyBwc4M7mt4CxsjdFnkO3iaDybFvlufua/5vMlt70HLdutHa7vMYSZ+GFr
+HL+SrazP9o8ut2L85uBqCjWHPfgVaBaaQgk9FgZe0WQoS06fdeU=
+=DIzT
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 v1.17
 Please manually update to this version, as it fixes automatic updates that were broken since 1.15
 
@@ -271,10 +310,6 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
 =xp7X
 -----END PGP SIGNATURE-----
 
-
-MUST UPDATE 1.12
- READ THIS -> https://pastebin.com/raw/K7eJe3F9
-
 1.11HF1
  = Fixed some crashes that occured when a unauthorized device was used with the sideloader
 
@@ -369,7 +404,7 @@ MUST UPDATE 1.12
  + Every app installed will have all perms granted
  + Displays apps for games instead of package names if you have rclone set up
  + Uninstall app now will also delete its obb folder
- //For auto download you need an rclone config and rclone to be set up correctly, VRP:Quest Games
+ //For auto download you need an rclone config and rclone to be set up correctly
 
 0.15HF1
  + Added list apps button back
@@ -427,7 +462,7 @@ MUST UPDATE 1.12
  + Added the buggy progress bar back, uses different "logic"
  + Added an icon (Increased the exe size by like 300% just with that)
  + Added sideload folder button
- + Added Creat user.json button and form
+ + Added Create user.json button and form
  + Changed Message Boxes to notifications
 
 0.8.5
