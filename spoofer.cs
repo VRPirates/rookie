@@ -15,8 +15,10 @@ namespace Spoofer
             if (File.Exists("keystore.key") == false || File.Exists("details.txt") == false)
             {
                 Console.WriteLine("There is no key to sign the apk, making one now...");
+                var rand = new Random();
                 alias = Utilities.randomString(8);
                 password = Utilities.randomString(16);
+                string subject = $"CN = {Utilities.randomString(rand.Next(2, 6))}, OU = {Utilities.randomString(rand.Next(2, 6))}, O = {Utilities.randomString(rand.Next(2, 6))}, L = {Utilities.randomString(rand.Next(2, 6))}, ST = {Utilities.randomString(rand.Next(2, 6))}, C = {Utilities.randomString(rand.Next(2, 6))}";
 
                 Process cmd = new Process();
                 cmd.StartInfo.FileName = "cmd.exe";
@@ -27,13 +29,7 @@ namespace Spoofer
                 cmd.StartInfo.CreateNoWindow = true;
                 cmd.StartInfo.UseShellExecute = false;
                 cmd.Start();
-                cmd.StandardInput.WriteLine($"keytool -genkeypair -alias {alias} -keyalg RSA -keysize 2048 -keystore keystore.key");
-                cmd.StandardInput.WriteLine(password);
-                cmd.StandardInput.WriteLine(password);
-                var rand = new Random();
-                for (int i = 0; i < 6; i++)
-                    cmd.StandardInput.WriteLine(Utilities.randomString(rand.Next(2,6)));
-                cmd.StandardInput.WriteLine("yes");
+                cmd.StandardInput.WriteLine($"keytool -genkeypair -alias {alias} -keyalg RSA -keysize 2048 -keystore keystore.key -keypass {password} -storepass {password} -dname \"{subject}\"");
                 cmd.StandardInput.Flush();
                 cmd.StandardInput.Close();
                 cmd.WaitForExit();
