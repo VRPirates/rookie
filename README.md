@@ -1,6 +1,8 @@
 # androidsideloader
 
-The icon of the app contains an icon made by icon8.com
+This app might get detected as malware, however both the sideloader and the sideloader launcher are open source
+
+https://www.virustotal.com/gui/file/977105693610cf360fc29339b918e224180ba393ba05a64b6255af3845cbf376/relations
 
 Special thanks:
  - Thanks to pmow for all of his work, including rclone, wonka and other projects
