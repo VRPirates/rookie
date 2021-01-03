@@ -307,12 +307,12 @@
             // 
             this.DragDropLbl.AutoSize = true;
             this.DragDropLbl.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F);
+            this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.5F);
             this.DragDropLbl.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.DragDropLbl.Location = new System.Drawing.Point(296, 459);
             this.DragDropLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.DragDropLbl.Name = "DragDropLbl";
-            this.DragDropLbl.Size = new System.Drawing.Size(160, 29);
+            this.DragDropLbl.Size = new System.Drawing.Size(142, 25);
             this.DragDropLbl.TabIndex = 25;
             this.DragDropLbl.Text = "DragDropLBL";
             this.DragDropLbl.Visible = false;
