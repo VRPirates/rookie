@@ -613,7 +613,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
 //                uninstallText += allText;
 
-                dialogResult = FlexibleMessageBox.Show("We recommend you KEEP YOUR GAME SAVES, since they're only a few MB. " + packageName + "Want Rookie to BACKUP YOUR CURRENT SAVE BEFORE UNINSTALLING?", "KEEP SAVES?", MessageBoxButtons.YesNo);
+                dialogResult = FlexibleMessageBox.Show("Since save files are typically a few MB we recommend you KEEP YOUR GAME SAVES for. Want Rookie to BACKUP YOUR" + packageName +  "SAVE BEFORE UNINSTALLING?", "KEEP SAVES?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.No)
                 {
                     RemoveFolder("/sdcard/Android/data/" + packageName + "/");

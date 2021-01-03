@@ -181,7 +181,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("OrangeRed")]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
         public global::System.Drawing.Color FontColor {
             get {
                 return ((global::System.Drawing.Color)(this["FontColor"]));

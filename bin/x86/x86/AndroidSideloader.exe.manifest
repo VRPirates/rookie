@@ -50,17 +50,17 @@
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>WfGHNPUnw/zb1eRueU0TbKzMybDCyFR2mYnXJ46ViCQ=</dsig:DigestValue>
+        <dsig:DigestValue>+FwpUer0PLYlaBtmcAIVu1JeataZtMU4JjdaWq84qxA=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="AndroidSideloader.exe.config" size="5845">
+  <file name="AndroidSideloader.exe.config" size="5841">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>ojSjWAC2Lo3AQZd4ItWTFn8AUBtIeRuzf/MB1HS1/Fw=</dsig:DigestValue>
+      <dsig:DigestValue>m2ydOM0IJ+fauLTQFyZn+qysVnoB3JgsBFDIavRcI8o=</dsig:DigestValue>
     </hash>
   </file>
   <file name="changelog.txt" size="18978">
