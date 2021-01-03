@@ -194,7 +194,30 @@ namespace AndroidSideloader
                     this.Invoke(() => { this.Text = "Rookie's Sideloader | No Device Connected"; });
             }
         }
+        public static bool HasDependencies()
+        {
+            if (!ExistsOnPath("jarsigner") && !ExistsOnPath("apktool") && !ExistsOnPath("aapt"))
+                return true;
+            return false;
+        }
+        public static bool ExistsOnPath(string fileName)
+        {
+            return GetFullPath(fileName) != null;
+        }
+        public static string GetFullPath(string fileName)
+        {
+            if (File.Exists(fileName))
+                return Path.GetFullPath(fileName);
 
+            var values = Environment.GetEnvironmentVariable("PATH");
+            foreach (var path in values.Split(Path.PathSeparator))
+            {
+                var fullPath = Path.Combine(path, fileName);
+                if (File.Exists(fullPath))
+                    return fullPath;
+            }
+            return null;
+        }
         void downloadFiles()
         {
             using (var client = new WebClient())
@@ -300,8 +323,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 long length = new System.IO.FileInfo(Logger.logfile).Length;
                 if (length > 5000000) File.Delete(Logger.logfile);
             }
-
-            try { Spoofer.spoofer.Init(); } catch { }
+            if (HasDependencies())
+            try {Spoofer.spoofer.Init(); } catch { }
 
             if (Properties.Settings.Default.CallUpgrade)
             {
@@ -590,7 +613,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
 //                uninstallText += allText;
 
-                dialogResult = FlexibleMessageBox.Show("Do you want to remove savedata for " + packageName + ", this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+                dialogResult = FlexibleMessageBox.Show("Do you want to remove GAME SAVE FILES for " + packageName + ", this CANNOT be undone! Recommended: NO", "WARNING!", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     RemoveFolder("/sdcard/Android/data/" + packageName + "/");
@@ -1325,10 +1348,32 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             Form.Show();
         }
 
+        private void gamesComboBox_SelectedIndexChanged(object sender, EventArgs e)
+        {
 
+        }
 
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void m_combo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+
+        }
     }
-        public static class ControlExtensions
+    public static class ControlExtensions
     {
         public static void Invoke(this Control control, Action action)
         {

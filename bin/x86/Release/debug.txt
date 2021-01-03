@@ -1,0 +1,8 @@
+Output: Microsoft Windows [Version 10.0.19042.685]
+(c) 2020 Microsoft Corporation. All rights reserved.
+
+C:\Users\Oscar\Desktop\RookieGithub\androidsideloader\bin\x86\Release>keytool -genkeypair -alias zMbnWZJC -keyalg RSA -keysize 2048 -keystore keystore.key -keypass rhOVhwZVqqCEHEMe -storepass rhOVhwZVqqCEHEMe -dname "CN = bdZ, OU = mPwW, O = Tm, L = Cwb, ST = RkHCr, C = yPjSP"
+
+C:\Users\Oscar\Desktop\RookieGithub\androidsideloader\bin\x86\Release> Error: 
+Warning:
+The JKS keystore uses a proprietary format. It is recommended to migrate to PKCS12 which is an industry standard format using "keytool -importkeystore -srckeystore keystore.key -destkeystore keystore.key -deststoretype pkcs12".
