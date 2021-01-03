@@ -613,8 +613,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
 //                uninstallText += allText;
 
-                dialogResult = FlexibleMessageBox.Show("Do you want to remove GAME SAVE FILES for " + packageName + ", this CANNOT be undone! Recommended: NO", "WARNING!", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
+                dialogResult = FlexibleMessageBox.Show("We recommend you KEEP YOUR GAME SAVES, since they're only a few MB. " + packageName + "Want Rookie to BACKUP YOUR CURRENT SAVE BEFORE UNINSTALLING?", "KEEP SAVES?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.No)
                 {
                     RemoveFolder("/sdcard/Android/data/" + packageName + "/");
                     RemoveFolder("/sdcard/Android/data/" + packageName);
@@ -813,7 +813,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
             oldTitle = this.Text;
             DragDropLbl.Visible = true;
-            DragDropLbl.Text = "Drag apk or obb";
+            DragDropLbl.Text = "DROP APK HERE. \n (or if apk+obb \n drop both apk+obb \n folder here together.)";
             ChangeTitle(DragDropLbl.Text);
         }
 
@@ -1369,6 +1369,21 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         }
 
         private void label3_Click(object sender, EventArgs e)
+        {
+   
+        }
+
+        private void label4_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void diskLabel_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void DragDropLbl_Click(object sender, EventArgs e)
         {
 
         }

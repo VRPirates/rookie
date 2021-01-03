@@ -1,0 +1,4 @@
+Message: Access to the path 'C:\Documents and Settings' is denied.
+Data: System.Collections.ListDictionaryInternal
+Source: mscorlib
+TargetSite: Void WinIOError(Int32, System.String)
