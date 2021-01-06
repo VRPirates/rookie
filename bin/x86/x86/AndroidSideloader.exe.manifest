@@ -43,24 +43,24 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AndroidSideloader.exe" size="1162752">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AndroidSideloader.exe" size="1162240">
       <assemblyIdentity name="AndroidSideloader" version="1.13.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>+FwpUer0PLYlaBtmcAIVu1JeataZtMU4JjdaWq84qxA=</dsig:DigestValue>
+        <dsig:DigestValue>Dhn4EfMTSXeHbgCjJayP35p2xpJQFOngnXdI6EqKYS4=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>
-  <file name="AndroidSideloader.exe.config" size="5841">
+  <file name="AndroidSideloader.exe.config" size="5854">
     <hash>
       <dsig:Transforms>
         <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
       </dsig:Transforms>
       <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-      <dsig:DigestValue>m2ydOM0IJ+fauLTQFyZn+qysVnoB3JgsBFDIavRcI8o=</dsig:DigestValue>
+      <dsig:DigestValue>1SkW5KsfAxqhMOS0k8enIkhonwhzO9HrNF6d4dNLDnI=</dsig:DigestValue>
     </hash>
   </file>
   <file name="changelog.txt" size="18978">

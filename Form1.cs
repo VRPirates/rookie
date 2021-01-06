@@ -602,7 +602,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 }
                 catch { }
 
-                DialogResult dialogResult = FlexibleMessageBox.Show("Are you sure you want to uninstall " + packageName + ", this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show("Do you want Rookie to attempt to BACKUP YOUR SAVE FILES" + " before" + " uninstalling?", "BACKUP SAVE?", MessageBoxButtons.YesNo);
                 if (dialogResult != DialogResult.Yes)
                     return;
                 
@@ -813,7 +813,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             if (e.Data.GetDataPresent(DataFormats.FileDrop)) e.Effect = DragDropEffects.Copy;
             oldTitle = this.Text;
             DragDropLbl.Visible = true;
-            DragDropLbl.Text = "DROP APK HERE. \n (or if apk+obb \n drop both apk+obb \n folder here together.)";
+            DragDropLbl.Text = "Drag and Drop-\nAPK or APK+OBB folder.";
             ChangeTitle(DragDropLbl.Text);
         }
 
@@ -1384,6 +1384,11 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         }
 
         private void DragDropLbl_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void freeDisclaimer_Click(object sender, EventArgs e)
         {
 
         }
