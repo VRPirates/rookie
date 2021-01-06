@@ -13913,3 +13913,31 @@ package:com.TribeXR.TribeXR
 
 
 
+Running command shell df
+Running command devices
+Running Rclone command: --config .\a listremotes --ask-password=false
+Rclone error: 2021/01/06 17:19:27 NOTICE: Config file "C:\\Users\\Oscar\\Desktop\\RookieGithub\\androidsideloader\\bin\\x86\\x86\\rclone\\a" not found - using defaults
+ 154
+Rclone Output: 
+
+
+Running Rclone command: --config .\a listremotes --ask-password=false
+Rclone error: 2021/01/06 17:19:28 NOTICE: Config file "C:\\Users\\Oscar\\Desktop\\RookieGithub\\androidsideloader\\bin\\x86\\x86\\rclone\\a" not found - using defaults
+ 154
+Rclone Output: 
+
+
+Loaded following mirrors: 
+Running Rclone command: lsf --config .\a --dirs-only ":Quest Games" --drive-acknowledge-abuse --ask-password=false
+Rclone error: 2021/01/06 17:19:28 Failed to create file system for ":Quest Games": config name contains invalid characters - may only contain 0-9, A-Z ,a-z ,_ , - and space
+ 159
+Rclone Output: 
+
+
+Running command shell pm list packages
+
+Devices:
+
+
+Running command shell df
+

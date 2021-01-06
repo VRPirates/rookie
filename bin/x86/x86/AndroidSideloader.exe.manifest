@@ -43,14 +43,14 @@
     </dependentAssembly>
   </dependency>
   <dependency>
-    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AndroidSideloader.exe" size="1162240">
+    <dependentAssembly dependencyType="install" allowDelayedBinding="true" codebase="AndroidSideloader.exe" size="1161728">
       <assemblyIdentity name="AndroidSideloader" version="1.13.0.0" language="neutral" processorArchitecture="x86" />
       <hash>
         <dsig:Transforms>
           <dsig:Transform Algorithm="urn:schemas-microsoft-com:HashTransforms.Identity" />
         </dsig:Transforms>
         <dsig:DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha256" />
-        <dsig:DigestValue>Dhn4EfMTSXeHbgCjJayP35p2xpJQFOngnXdI6EqKYS4=</dsig:DigestValue>
+        <dsig:DigestValue>s2oftAaZUqlnRCWhQgcQS9bULv/S0wU4lioNvQzmfEs=</dsig:DigestValue>
       </hash>
     </dependentAssembly>
   </dependency>

@@ -602,7 +602,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 }
                 catch { }
 
-                DialogResult dialogResult = FlexibleMessageBox.Show("Do you want Rookie to attempt to BACKUP YOUR SAVE FILES" + " before" + " uninstalling?", "BACKUP SAVE?", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show("Do you want Rookie's Sideloader to attempt a BACKUP of YOUR SAVE FILES" + " before" + " uninstalling?", "BACKUP SAVE?", MessageBoxButtons.YesNo);
                 if (dialogResult != DialogResult.Yes)
                     return;
                 
