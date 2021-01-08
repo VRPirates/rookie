@@ -1,0 +1,4 @@
+Message: Current thread must be set to single thread apartment (STA) mode before OLE calls can be made. Ensure that your Main function has STAThreadAttribute marked on it.
+Data: System.Collections.ListDictionaryInternal
+Source: System.Windows.Forms
+TargetSite: Void SetDataObject(System.Object, Boolean, Int32, Int32)
