@@ -8,3 +8,8 @@ bin/Debug/AndroidSideloader.exe
 bin/Debug/AndroidSideloader.application
 .vs/slnx.sqlite
 .vs/androidsideloader/v16/.suo
+/bin/Release/keystore.key
+/bin/Release/details.txt
+/bin/Release/debuglog.txt
+/bin/Release/debug.txt
+/bin/Release
