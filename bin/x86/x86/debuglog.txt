@@ -13941,3 +13941,587 @@ Devices:
 
 Running command shell df
 
+Running command shell df
+Filesystem      1K-blocks      Used Available Use% Mounted on
+tmpfs             2971136       704   2970432   1% /dev
+tmpfs             2971136         0   2971136   0% /mnt
+tmpfs             2971136         0   2971136   0% /apex
+/dev/block/dm-4   1641892   1636752         0 100% /
+/dev/block/dm-5    304688    303752         0 100% /vendor
+/dev/block/dm-6 242680204 189674716  52874416  79% /data
+/data/media     242680204 189674716  52874416  79% /storage/emulated
+
+
+
+Running command devices
+List of devices attached
+1WMHH820GH0361	device
+
+
+
+
+Devices:
+1WMHH820GH0361
+
+
+
+Running command  -s 1WMHH820GH0361 shell df
+Filesystem      1K-blocks      Used Available Use% Mounted on
+tmpfs             2971136       704   2970432   1% /dev
+tmpfs             2971136         0   2971136   0% /mnt
+tmpfs             2971136         0   2971136   0% /apex
+/dev/block/dm-4   1641892   1636752         0 100% /
+/dev/block/dm-5    304688    303752         0 100% /vendor
+/dev/block/dm-6 242680204 189674716  52874416  79% /data
+/data/media     242680204 189674716  52874416  79% /storage/emulated
+
+
+
+Running Rclone command: --config .\a listremotes --ask-password=false
+Rclone error: 2021/01/08 07:48:07 NOTICE: Config file "C:\\Users\\Oscar\\Desktop\\RookieGithub\\androidsideloader\\bin\\x86\\x86\\rclone\\a" not found - using defaults
+ 154
+Rclone Output: 
+
+
+Running Rclone command: --config .\a listremotes --ask-password=false
+Rclone error: 2021/01/08 07:48:07 NOTICE: Config file "C:\\Users\\Oscar\\Desktop\\RookieGithub\\androidsideloader\\bin\\x86\\x86\\rclone\\a" not found - using defaults
+ 154
+Rclone Output: 
+
+
+Loaded following mirrors: 
+Running Rclone command: lsf --config .\a --dirs-only ":Quest Games" --drive-acknowledge-abuse --ask-password=false
+Rclone error: 2021/01/08 07:48:07 Failed to create file system for ":Quest Games": config name contains invalid characters - may only contain 0-9, A-Z ,a-z ,_ , - and space
+ 159
+Rclone Output: 
+
+
+Running command  -s 1WMHH820GH0361 shell pm list packages
+package:com.android.cts.priv.ctsshim
+package:com.FireproofStudios.TheRoomVR
+package:aaa.QuestAppLauncher.App
+package:com.electrichatgames.tothetop
+package:com.android.dynsystem
+package:com.oculus.updater
+package:com.android.providers.calendar
+package:com.oculus.statscollector
+package:com.vertigogames.azsq
+package:com.android.providers.media
+package:com.crowscrowscrows.AccountingPlus
+package:jp.co.amata.lastlabyrinth
+package:com.oculus.systemdriver
+package:com.crytek.climb
+package:com.zenstudios.PinballFX2VRQuest
+package:com.schellgames.untilyoufall
+package:com.VerticalRobot.RedMatter
+package:com.infectiousape.kingspray
+package:com.Trebuchet.PrisonBossVR
+package:com.TenderClaws.VVR.Quest
+package:com.zoink.ghostgiant
+package:com.android.documentsui
+package:com.facebook.horizon
+package:com.android.externalstorage
+package:com.DigitalLode.Espire1
+package:com.Drool.Thumper.quest
+package:com.oculus.browser
+package:com.android.htmlviewer
+package:com.resolutiongames.ignis
+package:com.android.companiondevicemanager
+package:com.oculus.os.vrlockscreen
+package:com.altvr.AltspaceVR_Quest
+package:com.nDreams.PhantomQuest
+package:com.android.providers.downloads
+package:com.owlchemylabs.vacationsimulator
+package:com.android.providers.tv
+package:com.android.networkstack.inprocess
+package:com.cvr.highseas2
+package:com.WenklyStudio.ElvenAssassin
+package:com.holomia.missionxlite
+package:com.ILMxLAB.VaderImmortal.ep1
+package:com.ILMxLAB.VaderImmortal.ep2
+package:com.VRKemono.RealmsofEternity
+package:VirtualDesktop.Android
+package:de.erthu.advr
+package:io.arvore.pixelripped1995
+package:com.themunky.drunknbarfightQuest
+package:com.cloudheadgames.pistolwhip
+package:com.odders.ohshape
+package:com.oculus.vrshell.desktop
+package:com.android.pacprocessor
+package:com.resolutiongames.cookinggame
+package:com.enhanceexperience.tetriseffect
+package:com.Sutur.DescentAlpsPreRelease
+package:com.oculus.vrshell
+package:com.CaveManStudio.ContractorsVR
+package:com.android.modulemetadata
+package:com.android.certinstaller
+package:com.oculus.environment.prod.adobe
+package:com.oculus.environment.prod.japan
+package:com.tvb.cubism
+package:android
+package:com.halfbrick.fruitninjavr
+package:com.MyronSoftware.Deisim
+package:com.android.mtp
+package:com.android.backupconfirm
+package:com.oculus.location.geocoder
+package:com.oculus.os.vrbrowserlauncher
+package:com.resolutiongames.wondergladesantacruz
+package:com.oculus.environment.prod.spacestation
+package:com.oculus.horizon
+package:com.android.provision
+package:com.android.statementservice
+package:com.CortopiaStudios.Wands
+package:com.oculus.unifiedtelemetry
+package:com.emcneill.Ironlights
+package:com.oculus.systemutilities
+package:com.LoneWolfInteractive.GlitchAssassin
+package:com.oculus.deviceauthserver
+package:com.ForwardXP.nuke
+package:com.android.settings.intelligence
+package:com.GreenerGames.QuestTreks
+package:com.schellgames.ieytdquest
+package:com.fitxr.boxvr
+package:com.oculus.linefrequencyservice
+package:com.oculus.os.logcollector
+package:com.owlchemylabs.jobsimulator
+package:com.oculus.xrstreamingclient
+package:com.polyarc.MossGame
+package:com.SDI.TWD
+package:com.markschramm.gravitylab
+package:com.android.providers.settings
+package:com.oculus.socialplatform
+package:com.android.sharedstoragebackup
+package:com.Armature.SportsScramble
+package:com.melscience.melchemistryvr
+package:com.coplanar.vre
+package:com.coatsink.alone
+package:com.coatsink.nexus
+package:com.TenderClaws.TheUnderPresents.Quest
+package:com.ivanovichgames.pangman
+package:com.android.webview
+package:com.holonautic.HandPhysicsLab
+package:com.android.inputdevices
+package:com.PixelToys.BattleSisters
+package:com.downpourinteractive.onward
+package:com.whalerockindustries.testedvr
+package:com.oculus.firsttimenuxhollywoodresources
+package:com.oculus.assistant
+package:com.oculus.notification_proxy
+package:com.Miragesoft.RealVrFishingQ
+package:com.fasttravelgames.diorama
+package:com.golfscope.proputt
+package:com.metanaut.Gadgeteer
+package:com.brennanhatton.dungeontrain
+package:com.oculus.companion.server
+package:com.CortopiaStudios.DTRH
+package:com.Thunderbox.TsuroVR
+package:android.ext.shared
+package:com.android.onetimeinitializer
+package:com.coinflip.ninja
+package:com.hiddenpath.phoenix
+package:com.android.keychain
+package:com.scale1.sepsdinerSolo
+package:com.voidroom.TeaForGod
+package:com.kluge.SynthRiders
+package:com.JustDrive.JustDrive
+package:com.oculus.vrcast
+package:com.android.localtransport
+package:com.android.packageinstaller
+package:com.oculus.systemux
+package:com.facebook.spatial_persistence_service
+package:com.VirtualAge.GladiusQuest
+package:com.android.proxyhandler
+package:com.oculus.nux.ota
+package:com.oculus.fitnesstracker
+package:com.android.managedprovisioning
+package:com.oculus.bugreportservice
+package:com.oculus.gatekeeperservice
+package:com.oculus.environment.prod.cyberhome
+package:com.oculus.os.chargecontrol
+package:com.oculus.os.clearactivity
+package:com.BigBoxVR.PopulationONE
+package:com.oculus.dab2
+package:com.oculus.ocms
+package:com.oculus.yadi
+package:com.iillusions.spacepiratetrainerquest
+package:com.oculus.appsafety
+package:com.mixedrealms.sairentovruntethered
+package:com.Armature.FailFactory
+package:com.oculus.bodyapiservice
+package:com.RacketFury.RF_GearVR
+package:com.fyian.TheThrillOfTheFight
+package:com.funktroniclabs.fuji
+package:com.AlzanStudios.HPPortable
+package:com.gravitysketch.gravitysketch
+package:quest.eleven.forfunlabs
+package:com.oculus.systemactivities
+package:com.oculus.tv
+package:com.oculus.userserver2
+package:com.ToastVR.RichiesPlankExperience
+package:com.android.storagemanager
+package:com.android.bookmarkprovider
+package:com.android.settings
+package:com.oculus.guardianresources
+package:com.nextgenreality.GunClubVR
+package:com.oculus.guardian
+package:com.Mixeal.TheFinalOvers
+package:com.Supermedium.Supermedium
+package:com.enhanceexperience.rezquest
+package:com.oculus.gamingactivity
+package:com.android.networkstack.permissionconfig
+package:com.drbeef.quake2quest
+package:com.oculus.explore
+package:com.chesstar.HiBow.Launcher
+package:com.android.cts.ctsshim
+package:com.oculus.messenger
+package:com.mightygamesgroup.shootyvr
+package:com.drashvr.titansofspacevr6dof
+package:com.Ikimasho.StarShaman
+package:com.ilmxlab.tales
+package:com.PixelToys.DropDead
+package:com.forcefieldxr.timestall
+package:com.android.vpndialogs
+package:com.Drifter.Kodiak
+package:unity.SUPERHOT_Team.SUPERHOT_VR_QA
+package:com.UNIVRS.LWAVR
+package:com.android.shell
+package:com.android.wallpaperbackup
+package:com.android.providers.blockednumber
+package:com.MiroWin.OMT
+package:com.android.providers.userdictionary
+package:com.oculus.externalstorage
+package:com.harmonixmusic.kata
+package:com.ThreeDAR.PaperBirdsQuest
+package:com.ndreams.shootyfruity
+package:com.nextgenreality.rush
+package:com.onehamsa.RNXQ
+package:com.YourCompany.RoboRecall
+package:com.oculus.preloader
+package:com.Aldin.WotW
+package:com.sadetta.premiumbowling
+package:com.android.location.fused
+package:com.resolutiongames.codenamelazarus
+package:com.android.systemui
+package:com.android.bluetoothmidiservice
+package:com.AoQ.AttackOnQuest
+package:com.CyanWorlds.Myst
+package:com.sketchbox.Grapple
+package:gg.trs.grappa
+package:com.android.permissioncontroller
+package:com.facebook.arvr.quillplayer
+package:com.truantpixel.twomdquest
+package:com.grounding.ch5vrquest
+package:oculus.platform
+package:com.TriangleFactory.HyperDash
+package:com.oculus.micservice
+package:com.oculus.vralertservice
+package:com.oculus.bugreporter
+package:com.android.bluetooth
+package:com.qualcomm.timeservice
+package:com.SquanchGames.Trover
+package:com.android.providers.contacts
+package:com.android.captiveportallogin
+package:com.oculus.vrshell.home
+package:com.MightyCoconut.WalkaboutMiniGolf
+package:com.oculus.handsnuxresources
+package:jp.co.crypton.mikuvrq
+package:com.Solfar.InDeath
+package:com.AgainstGravity.RecRoom
+package:com.oculus.alpenglow
+package:com.picselica.OceanRiftFullQuest
+package:com.TribeXR.TribeXR
+
+
+
+Running command shell df
+Filesystem      1K-blocks      Used Available Use% Mounted on
+tmpfs             2971136       704   2970432   1% /dev
+tmpfs             2971136         0   2971136   0% /mnt
+tmpfs             2971136         0   2971136   0% /apex
+/dev/block/dm-4   1641892   1636752         0 100% /
+/dev/block/dm-5    304688    303752         0 100% /vendor
+/dev/block/dm-6 242680204 189674612  52874520  79% /data
+/data/media     242680204 189674612  52874520  79% /storage/emulated
+
+
+
+Running command devices
+List of devices attached
+1WMHH820GH0361	device
+
+
+
+
+Running Rclone command: --config .\a listremotes --ask-password=false
+Devices:
+1WMHH820GH0361
+
+
+
+Running command  -s 1WMHH820GH0361 shell df
+Rclone error: 2021/01/08 07:48:11 NOTICE: Config file "C:\\Users\\Oscar\\Desktop\\RookieGithub\\androidsideloader\\bin\\x86\\x86\\rclone\\a" not found - using defaults
+ 154
+Rclone Output: 
+
+
+Running Rclone command: --config .\a listremotes --ask-password=false
+Filesystem      1K-blocks      Used Available Use% Mounted on
+tmpfs             2971136       704   2970432   1% /dev
+tmpfs             2971136         0   2971136   0% /mnt
+tmpfs             2971136         0   2971136   0% /apex
+/dev/block/dm-4   1641892   1636752         0 100% /
+/dev/block/dm-5    304688    303752         0 100% /vendor
+/dev/block/dm-6 242680204 189674612  52874520  79% /data
+/data/media     242680204 189674612  52874520  79% /storage/emulated
+
+
+
+Rclone error: 2021/01/08 07:48:11 NOTICE: Config file "C:\\Users\\Oscar\\Desktop\\RookieGithub\\androidsideloader\\bin\\x86\\x86\\rclone\\a" not found - using defaults
+ 154
+Rclone Output: 
+
+
+Loaded following mirrors: 
+Running Rclone command: lsf --config .\a --dirs-only ":Quest Games" --drive-acknowledge-abuse --ask-password=false
+Rclone error: 2021/01/08 07:48:11 Failed to create file system for ":Quest Games": config name contains invalid characters - may only contain 0-9, A-Z ,a-z ,_ , - and space
+ 159
+Rclone Output: 
+
+
+Running command  -s 1WMHH820GH0361 shell pm list packages
+package:com.android.cts.priv.ctsshim
+package:com.FireproofStudios.TheRoomVR
+package:aaa.QuestAppLauncher.App
+package:com.electrichatgames.tothetop
+package:com.android.dynsystem
+package:com.oculus.updater
+package:com.android.providers.calendar
+package:com.oculus.statscollector
+package:com.vertigogames.azsq
+package:com.android.providers.media
+package:com.crowscrowscrows.AccountingPlus
+package:jp.co.amata.lastlabyrinth
+package:com.oculus.systemdriver
+package:com.crytek.climb
+package:com.zenstudios.PinballFX2VRQuest
+package:com.schellgames.untilyoufall
+package:com.VerticalRobot.RedMatter
+package:com.infectiousape.kingspray
+package:com.Trebuchet.PrisonBossVR
+package:com.TenderClaws.VVR.Quest
+package:com.zoink.ghostgiant
+package:com.android.documentsui
+package:com.facebook.horizon
+package:com.android.externalstorage
+package:com.DigitalLode.Espire1
+package:com.Drool.Thumper.quest
+package:com.oculus.browser
+package:com.android.htmlviewer
+package:com.resolutiongames.ignis
+package:com.android.companiondevicemanager
+package:com.oculus.os.vrlockscreen
+package:com.altvr.AltspaceVR_Quest
+package:com.nDreams.PhantomQuest
+package:com.android.providers.downloads
+package:com.owlchemylabs.vacationsimulator
+package:com.android.providers.tv
+package:com.android.networkstack.inprocess
+package:com.cvr.highseas2
+package:com.WenklyStudio.ElvenAssassin
+package:com.holomia.missionxlite
+package:com.ILMxLAB.VaderImmortal.ep1
+package:com.ILMxLAB.VaderImmortal.ep2
+package:com.VRKemono.RealmsofEternity
+package:VirtualDesktop.Android
+package:de.erthu.advr
+package:io.arvore.pixelripped1995
+package:com.themunky.drunknbarfightQuest
+package:com.cloudheadgames.pistolwhip
+package:com.odders.ohshape
+package:com.oculus.vrshell.desktop
+package:com.android.pacprocessor
+package:com.resolutiongames.cookinggame
+package:com.enhanceexperience.tetriseffect
+package:com.Sutur.DescentAlpsPreRelease
+package:com.oculus.vrshell
+package:com.CaveManStudio.ContractorsVR
+package:com.android.modulemetadata
+package:com.android.certinstaller
+package:com.oculus.environment.prod.adobe
+package:com.oculus.environment.prod.japan
+package:com.tvb.cubism
+package:android
+package:com.halfbrick.fruitninjavr
+package:com.MyronSoftware.Deisim
+package:com.android.mtp
+package:com.android.backupconfirm
+package:com.oculus.location.geocoder
+package:com.oculus.os.vrbrowserlauncher
+package:com.resolutiongames.wondergladesantacruz
+package:com.oculus.environment.prod.spacestation
+package:com.oculus.horizon
+package:com.android.provision
+package:com.android.statementservice
+package:com.CortopiaStudios.Wands
+package:com.oculus.unifiedtelemetry
+package:com.emcneill.Ironlights
+package:com.oculus.systemutilities
+package:com.LoneWolfInteractive.GlitchAssassin
+package:com.oculus.deviceauthserver
+package:com.ForwardXP.nuke
+package:com.android.settings.intelligence
+package:com.GreenerGames.QuestTreks
+package:com.schellgames.ieytdquest
+package:com.fitxr.boxvr
+package:com.oculus.linefrequencyservice
+package:com.oculus.os.logcollector
+package:com.owlchemylabs.jobsimulator
+package:com.oculus.xrstreamingclient
+package:com.polyarc.MossGame
+package:com.SDI.TWD
+package:com.markschramm.gravitylab
+package:com.android.providers.settings
+package:com.oculus.socialplatform
+package:com.android.sharedstoragebackup
+package:com.Armature.SportsScramble
+package:com.melscience.melchemistryvr
+package:com.coplanar.vre
+package:com.coatsink.alone
+package:com.coatsink.nexus
+package:com.TenderClaws.TheUnderPresents.Quest
+package:com.ivanovichgames.pangman
+package:com.android.webview
+package:com.holonautic.HandPhysicsLab
+package:com.android.inputdevices
+package:com.PixelToys.BattleSisters
+package:com.downpourinteractive.onward
+package:com.whalerockindustries.testedvr
+package:com.oculus.firsttimenuxhollywoodresources
+package:com.oculus.assistant
+package:com.oculus.notification_proxy
+package:com.Miragesoft.RealVrFishingQ
+package:com.fasttravelgames.diorama
+package:com.golfscope.proputt
+package:com.metanaut.Gadgeteer
+package:com.brennanhatton.dungeontrain
+package:com.oculus.companion.server
+package:com.CortopiaStudios.DTRH
+package:com.Thunderbox.TsuroVR
+package:android.ext.shared
+package:com.android.onetimeinitializer
+package:com.coinflip.ninja
+package:com.hiddenpath.phoenix
+package:com.android.keychain
+package:com.scale1.sepsdinerSolo
+package:com.voidroom.TeaForGod
+package:com.kluge.SynthRiders
+package:com.JustDrive.JustDrive
+package:com.oculus.vrcast
+package:com.android.localtransport
+package:com.android.packageinstaller
+package:com.oculus.systemux
+package:com.facebook.spatial_persistence_service
+package:com.VirtualAge.GladiusQuest
+package:com.android.proxyhandler
+package:com.oculus.nux.ota
+package:com.oculus.fitnesstracker
+package:com.android.managedprovisioning
+package:com.oculus.bugreportservice
+package:com.oculus.gatekeeperservice
+package:com.oculus.environment.prod.cyberhome
+package:com.oculus.os.chargecontrol
+package:com.oculus.os.clearactivity
+package:com.BigBoxVR.PopulationONE
+package:com.oculus.dab2
+package:com.oculus.ocms
+package:com.oculus.yadi
+package:com.iillusions.spacepiratetrainerquest
+package:com.oculus.appsafety
+package:com.mixedrealms.sairentovruntethered
+package:com.Armature.FailFactory
+package:com.oculus.bodyapiservice
+package:com.RacketFury.RF_GearVR
+package:com.fyian.TheThrillOfTheFight
+package:com.funktroniclabs.fuji
+package:com.AlzanStudios.HPPortable
+package:com.gravitysketch.gravitysketch
+package:quest.eleven.forfunlabs
+package:com.oculus.systemactivities
+package:com.oculus.tv
+package:com.oculus.userserver2
+package:com.ToastVR.RichiesPlankExperience
+package:com.android.storagemanager
+package:com.android.bookmarkprovider
+package:com.android.settings
+package:com.oculus.guardianresources
+package:com.nextgenreality.GunClubVR
+package:com.oculus.guardian
+package:com.Mixeal.TheFinalOvers
+package:com.Supermedium.Supermedium
+package:com.enhanceexperience.rezquest
+package:com.oculus.gamingactivity
+package:com.android.networkstack.permissionconfig
+package:com.drbeef.quake2quest
+package:com.oculus.explore
+package:com.chesstar.HiBow.Launcher
+package:com.android.cts.ctsshim
+package:com.oculus.messenger
+package:com.mightygamesgroup.shootyvr
+package:com.drashvr.titansofspacevr6dof
+package:com.Ikimasho.StarShaman
+package:com.ilmxlab.tales
+package:com.PixelToys.DropDead
+package:com.forcefieldxr.timestall
+package:com.android.vpndialogs
+package:com.Drifter.Kodiak
+package:unity.SUPERHOT_Team.SUPERHOT_VR_QA
+package:com.UNIVRS.LWAVR
+package:com.android.shell
+package:com.android.wallpaperbackup
+package:com.android.providers.blockednumber
+package:com.MiroWin.OMT
+package:com.android.providers.userdictionary
+package:com.oculus.externalstorage
+package:com.harmonixmusic.kata
+package:com.ThreeDAR.PaperBirdsQuest
+package:com.ndreams.shootyfruity
+package:com.nextgenreality.rush
+package:com.onehamsa.RNXQ
+package:com.YourCompany.RoboRecall
+package:com.oculus.preloader
+package:com.Aldin.WotW
+package:com.sadetta.premiumbowling
+package:com.android.location.fused
+package:com.resolutiongames.codenamelazarus
+package:com.android.systemui
+package:com.android.bluetoothmidiservice
+package:com.AoQ.AttackOnQuest
+package:com.CyanWorlds.Myst
+package:com.sketchbox.Grapple
+package:gg.trs.grappa
+package:com.android.permissioncontroller
+package:com.facebook.arvr.quillplayer
+package:com.truantpixel.twomdquest
+package:com.grounding.ch5vrquest
+package:oculus.platform
+package:com.TriangleFactory.HyperDash
+package:com.oculus.micservice
+package:com.oculus.vralertservice
+package:com.oculus.bugreporter
+package:com.android.bluetooth
+package:com.qualcomm.timeservice
+package:com.SquanchGames.Trover
+package:com.android.providers.contacts
+package:com.android.captiveportallogin
+package:com.oculus.vrshell.home
+package:com.MightyCoconut.WalkaboutMiniGolf
+package:com.oculus.handsnuxresources
+package:jp.co.crypton.mikuvrq
+package:com.Solfar.InDeath
+package:com.AgainstGravity.RecRoom
+package:com.oculus.alpenglow
+package:com.picselica.OceanRiftFullQuest
+package:com.TribeXR.TribeXR
+
+
+

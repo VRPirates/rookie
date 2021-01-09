@@ -440,13 +440,14 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             string command = $"cat \"{currentRemote}:Quest Games/APK_packagenames.txt\" --config .\\a";
             Process cmd = new Process();
             cmd.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+            cmd.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            cmd.StartInfo.CreateNoWindow = true;
+            cmd.StartInfo.UseShellExecute = false;
             cmd.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
             cmd.StartInfo.Arguments = command;
             cmd.StartInfo.RedirectStandardInput = true;
             cmd.StartInfo.RedirectStandardOutput = true;
             cmd.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
-            cmd.StartInfo.CreateNoWindow = true;
-            cmd.StartInfo.UseShellExecute = false;
             cmd.Start();
             cmd.StandardInput.WriteLine(command);
             cmd.StandardInput.Flush();
@@ -1293,6 +1294,27 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 movieStreamButton.Text = "START MOVIE STREAM";
             } 
             
+        }
+
+        private void Form2_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            System.Windows.Forms.Application.Exit();
+            Process proc1 = new Process();
+            proc1.StartInfo.FileName = @"c:\windows\system32\cmd.exe";
+            proc1.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
+            proc1.StartInfo.CreateNoWindow = true;
+            proc1.StartInfo.RedirectStandardInput = true;
+            proc1.StartInfo.RedirectStandardOutput = true;
+            proc1.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\adb";
+            proc1.StartInfo.StandardOutputEncoding = Encoding.UTF8;
+
+
+
+            proc1.StartInfo.UseShellExecute = false;
+
+            proc1.Start();
+
+            proc1.StandardInput.WriteLine("adb kill-server");
         }
 
         private async void killRcloneButton_Click(object sender, EventArgs e)

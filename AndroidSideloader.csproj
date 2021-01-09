@@ -214,6 +214,8 @@
     <Compile Include="SpoofForm.Designer.cs">
       <DependentUpon>SpoofForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="System\DiagnosticsProcessStartInfo.cs" />
+    <Compile Include="System\StartInfo.cs" />
     <Compile Include="ThemeForm.cs">
       <SubType>Form</SubType>
     </Compile>
