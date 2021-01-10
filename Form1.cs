@@ -1270,24 +1270,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            System.Windows.Forms.Application.Exit();
-            Process proc1 = new Process();
-            proc1.StartInfo.FileName = @"c:\windows\system32\cmd.exe";
-            proc1.StartInfo.WindowStyle = ProcessWindowStyle.Hidden;
-            proc1.StartInfo.CreateNoWindow = true;
-            proc1.StartInfo.RedirectStandardInput = true;
-            proc1.StartInfo.RedirectStandardOutput = true;
-            proc1.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\adb";
-            proc1.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
-
-
-            proc1.StartInfo.UseShellExecute = false;
-
-            proc1.Start();
-
-            proc1.StandardInput.WriteLine("adb kill-server");
             RCLONE.killRclone();
+            ADB.RunAdbCommandToString("kill-server");
+
         }
 
         private void movieStreamButton_Click(object sender, EventArgs e)
