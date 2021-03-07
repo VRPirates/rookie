@@ -30,10 +30,8 @@
         {
             this.colorDialog1 = new System.Windows.Forms.ColorDialog();
             this.button1 = new System.Windows.Forms.Button();
-            this.button2 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
             this.button5 = new System.Windows.Forms.Button();
-            this.button6 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
@@ -45,6 +43,7 @@
             this.button12 = new System.Windows.Forms.Button();
             this.button13 = new System.Windows.Forms.Button();
             this.openThemeDialog = new System.Windows.Forms.OpenFileDialog();
+            this.button2 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // colorDialog1
@@ -62,19 +61,9 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // button2
-            // 
-            this.button2.Location = new System.Drawing.Point(13, 68);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(128, 23);
-            this.button2.TabIndex = 0;
-            this.button2.Text = "Set panel color";
-            this.button2.UseVisualStyleBackColor = true;
-            this.button2.Click += new System.EventHandler(this.button2_Click);
-            // 
             // button4
             // 
-            this.button4.Location = new System.Drawing.Point(13, 152);
+            this.button4.Location = new System.Drawing.Point(13, 125);
             this.button4.Name = "button4";
             this.button4.Size = new System.Drawing.Size(128, 23);
             this.button4.TabIndex = 0;
@@ -84,23 +73,13 @@
             // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(13, 208);
+            this.button5.Location = new System.Drawing.Point(13, 181);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(128, 23);
             this.button5.TabIndex = 0;
             this.button5.Text = "Set combobox color";
             this.button5.UseVisualStyleBackColor = true;
             this.button5.Click += new System.EventHandler(this.button5_Click);
-            // 
-            // button6
-            // 
-            this.button6.Location = new System.Drawing.Point(13, 236);
-            this.button6.Name = "button6";
-            this.button6.Size = new System.Drawing.Size(128, 23);
-            this.button6.TabIndex = 0;
-            this.button6.Text = "Set textbox color";
-            this.button6.UseVisualStyleBackColor = true;
-            this.button6.Click += new System.EventHandler(this.button6_Click);
             // 
             // button7
             // 
@@ -140,7 +119,7 @@
             // 
             // button10
             // 
-            this.button10.Location = new System.Drawing.Point(13, 124);
+            this.button10.Location = new System.Drawing.Point(13, 97);
             this.button10.Name = "button10";
             this.button10.Size = new System.Drawing.Size(128, 23);
             this.button10.TabIndex = 4;
@@ -155,7 +134,7 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(13, 96);
+            this.button3.Location = new System.Drawing.Point(13, 69);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(128, 23);
             this.button3.TabIndex = 5;
@@ -165,7 +144,7 @@
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(13, 180);
+            this.button11.Location = new System.Drawing.Point(13, 153);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(128, 23);
             this.button11.TabIndex = 6;
@@ -199,12 +178,23 @@
             // 
             this.openThemeDialog.Filter = "Text Files|*.txt";
             // 
+            // button2
+            // 
+            this.button2.Location = new System.Drawing.Point(13, 210);
+            this.button2.Name = "button2";
+            this.button2.Size = new System.Drawing.Size(128, 23);
+            this.button2.TabIndex = 9;
+            this.button2.Text = "Set textbox color";
+            this.button2.UseVisualStyleBackColor = true;
+            this.button2.Click += new System.EventHandler(this.button2_Click);
+            // 
             // themeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(290, 272);
+            this.ClientSize = new System.Drawing.Size(290, 248);
+            this.Controls.Add(this.button2);
             this.Controls.Add(this.button13);
             this.Controls.Add(this.button12);
             this.Controls.Add(this.button11);
@@ -213,10 +203,8 @@
             this.Controls.Add(this.button9);
             this.Controls.Add(this.button8);
             this.Controls.Add(this.button7);
-            this.Controls.Add(this.button6);
             this.Controls.Add(this.button5);
             this.Controls.Add(this.button4);
-            this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Name = "themeForm";
@@ -230,10 +218,8 @@
 
         private System.Windows.Forms.ColorDialog colorDialog1;
         private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button4;
         private System.Windows.Forms.Button button5;
-        private System.Windows.Forms.Button button6;
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.Button button8;
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
@@ -245,5 +231,6 @@
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.Button button13;
         private System.Windows.Forms.OpenFileDialog openThemeDialog;
+        private System.Windows.Forms.Button button2;
     }
 }

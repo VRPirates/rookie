@@ -34,23 +34,27 @@
             // 
             // pictureBox1
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(13, 13);
+            this.pictureBox1.Location = new System.Drawing.Point(10, 11);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(775, 425);
+            this.pictureBox1.Size = new System.Drawing.Size(581, 345);
             this.pictureBox1.TabIndex = 0;
             this.pictureBox1.TabStop = false;
             // 
             // ImageForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 450);
+            this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
+            this.ClientSize = new System.Drawing.Size(600, 366);
             this.Controls.Add(this.pictureBox1);
+            this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.Margin = new System.Windows.Forms.Padding(2);
             this.Name = "ImageForm";
+            this.ShowIcon = false;
             this.Text = "ImageForm";
             this.TopMost = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ImageForm_FormClosing);
-            this.Load += new System.EventHandler(this.ImageForm_Load);
             this.Shown += new System.EventHandler(this.ImageForm_Shown);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);

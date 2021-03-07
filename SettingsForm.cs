@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using JR.Utils.GUI.Forms;
+using System;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -30,9 +24,17 @@ namespace AndroidSideloader
         {
             checkForUpdatesCheckBox.Checked = Properties.Settings.Default.checkForUpdates;
             enableMessageBoxesCheckBox.Checked = Properties.Settings.Default.enableMessageBoxes;
-            copyMessageToClipboardCheckBox.Checked = Properties.Settings.Default.copyMessageToClipboard;
             deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
             updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
+            debugRcloneCheckBox.Checked = Properties.Settings.Default.logRclone;
+            userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
+            spoofGamesCheckbox.Checked = Properties.Settings.Default.SpoofGames;
+            if (Properties.Settings.Default.BandwithLimit.Length>1)
+            {
+                BandwithTextbox.Text = Properties.Settings.Default.BandwithLimit.Remove(Properties.Settings.Default.BandwithLimit.Length - 1);
+                BandwithComboBox.Text = Properties.Settings.Default.BandwithLimit[Properties.Settings.Default.BandwithLimit.Length-1].ToString();
+            }
+            
         }
 
         void intToolTips()
@@ -41,14 +43,23 @@ namespace AndroidSideloader
             checkForUpdatesToolTip.SetToolTip(this.checkForUpdatesCheckBox, "If this is checked, the software will check for available updates");
             ToolTip enableMessageBoxesToolTip = new ToolTip();
             enableMessageBoxesToolTip.SetToolTip(this.enableMessageBoxesCheckBox, "If this is checked, the software will display message boxes after every completed task");
-            ToolTip copyMessageToClipboardToolTip = new ToolTip();
-            copyMessageToClipboardToolTip.SetToolTip(this.copyMessageToClipboardCheckBox, "If this is checked, after each task the software will set the result message to your clipboard");
             ToolTip deleteAfterInstallToolTip = new ToolTip();
             deleteAfterInstallToolTip.SetToolTip(this.deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
         }
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            if (BandwithTextbox.Text.Length > 0 && BandwithTextbox.Text != "0")
+                if (BandwithComboBox.SelectedIndex == -1)
+                {
+                    FlexibleMessageBox.Show("You need to select something from the combobox");
+                    return;
+                }
+                else
+                    Properties.Settings.Default.BandwithLimit = $"{BandwithTextbox.Text.Replace(" ", "")}{BandwithComboBox.Text}";
+            else
+                Properties.Settings.Default.BandwithLimit = "";
+
             Properties.Settings.Default.Save();
         }
 
@@ -67,11 +78,6 @@ namespace AndroidSideloader
             Properties.Settings.Default.enableMessageBoxes = enableMessageBoxesCheckBox.Checked;
         }
 
-        private void copyMessageToClipboardCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.copyMessageToClipboard = copyMessageToClipboardCheckBox.Checked;
-        }
-
         private void resetSettingsButton_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Reset();
@@ -86,6 +92,23 @@ namespace AndroidSideloader
         private void updateConfigCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.autoUpdateConfig = updateConfigCheckBox.Checked;
+        }
+
+        private void debugRcloneCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.logRclone = debugRcloneCheckBox.Checked;
+        }
+
+        private void userJsonOnGameInstall_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.userJsonOnGameInstall = userJsonOnGameInstall.Checked;
+        }
+
+        private void spoofGamesCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.SpoofGames = spoofGamesCheckbox.Checked;
+            if (spoofGamesCheckbox.Checked)
+                FlexibleMessageBox.Show(Sideloader.SpooferWarning);
         }
     }
 }

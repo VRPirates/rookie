@@ -8,7 +8,7 @@
     <Setting Name="enableMessageBoxes" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
-    <Setting Name="copyMessageToClipboard" Type="System.Boolean" Scope="User">
+    <Setting Name="logRclone" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="firstRun" Type="System.Boolean" Scope="User">
@@ -17,11 +17,17 @@
     <Setting Name="deleteAllAfterInstall" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">True</Value>
     </Setting>
+    <Setting Name="autoUpdateConfig" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="userJsonOnGameInstall" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+    <Setting Name="CallUpgrade" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
     <Setting Name="BackColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">45, 45, 45</Value>
-    </Setting>
-    <Setting Name="PanelColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">ActiveCaptionText</Value>
     </Setting>
     <Setting Name="ButtonColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">ActiveCaptionText</Value>
@@ -39,10 +45,16 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="FontStyle" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Microsoft Sans Serif, 11.25pt</Value>
+      <Value Profile="(Default)">Microsoft Sans Serif, 9.2pt, style=Bold</Value>
     </Setting>
     <Setting Name="BackPicturePath" Type="System.String" Scope="User">
-      <Value Profile="(Default)"> </Value>
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="SpoofGames" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="BandwithLimit" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>
