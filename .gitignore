@@ -13,3 +13,11 @@ bin/Debug/AndroidSideloader.application
 /bin/Release/debuglog.txt
 /bin/Release/debug.txt
 /bin/Release
+/.vs/androidsideloader/config/applicationhost.config
+/.vs/tasks.vs.json
+/.vs/ProjectSettings.json
+/.vs/androidsideloader/v16/Browse.VC.opendb
+/.vs/androidsideloader/v16/Browse.VC.db-wal
+/.vs/androidsideloader/v16/Browse.VC.db-shm
+/.vs/androidsideloader/v16/Browse.VC.db
+/bin/Debug
