@@ -1,7 +1,7 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
-v1.17SU1
+v1.18
 
 Changes
  + Added clearer decriptions and message boxes for connections.
