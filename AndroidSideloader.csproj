@@ -286,6 +286,7 @@
   <ItemGroup>
     <Content Include="changelog.txt" />
     <Content Include="MetroFramework.txt" />
+    <Content Include="ReconnectButton.png" />
     <Content Include="Rookie.ico" />
   </ItemGroup>
   <ItemGroup>

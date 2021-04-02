@@ -4,11 +4,11 @@ Hash: SHA256
 v1.17SU1
 
 Changes
- + Added some instructions & checks for the spoofer
- + Added crash detection
- = Fixed the game queue broken since 1.17
+ + Added clearer decriptions and message boxes for connections.
+ - Removed April Fool's joke (the popup)
+ = Fixed auto mirror switching
 
-Date 11/19/2020
+Date 4/1/2021
 
 VT: https://bit.ly/3nDUMcx
 

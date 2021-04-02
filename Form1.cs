@@ -16,6 +16,7 @@ using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
 using Spoofer;
 
+
 namespace AndroidSideloader
 {
 
@@ -27,7 +28,7 @@ namespace AndroidSideloader
         public static bool debugMode = false;
 #endif
 
-        bool is1April = false;
+   bool is1April = false;
 
         public Form1()
         {
@@ -187,14 +188,50 @@ namespace AndroidSideloader
             if (!Devices.Contains("unauthorized"))
             {
                 if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
-                    this.Invoke(() => { this.Text = "Rookie's Sideloader | Device Not Authorized"; });
+                    this.Invoke(async () => { this.Text = "Rookie's Sideloader | Please allow ADB debugging.";
+                        DialogResult dialogResult = FlexibleMessageBox.Show("Without unplugging your device please look inside of your headset for a pop up that says 'ADB DEBUGGING', if you're on a trusted computer check the ALWAYS ALLOW box then click OK. (Note: ADB Debugging sometimes resets at random, so if you've done this before check again.)", "PLEASE LOOK INSIDE YOUR HEADSET.", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            await CheckForDevice();
+                            
+                            ChangeTitlebarToDevice();
+                            
+                            showAvailableSpace();
+                            ;
+                        }
+                        if (dialogResult == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+
+                    });
+                   
                 else if (Devices[0].Length > 1)
-                    this.Invoke(() => { this.Text = "Rookie's Sideloader | Device Connected with ID | " + Devices[0].Replace("device", ""); });
+                    this.Invoke(() => { this.Text = "Rookie's Sideloader | Device Connected with ID | " + Devices[0].Replace("device", "");
+                    });
                 else
-                    this.Invoke(() => { this.Text = "Rookie's Sideloader | No Device Connected"; });
+                    this.Invoke(async () =>
+                    {
+                        this.Text = "Rookie's Sideloader | Missing Requirements: No Device Detected";
+                        DialogResult dialogResult = FlexibleMessageBox.Show("You must have a DEVELOPER ACCOUNT and ADB DRIVERS for your device installed in order to sideload.", "NO DEVICE FOUND", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            await CheckForDevice();
+
+                            ChangeTitlebarToDevice();
+
+                            showAvailableSpace();
+                            ;
+                        }
+                        if (dialogResult == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+
+                    });
             }
         }
-        public static bool HasDependencies()
+        public static bool HasDependencies() 
         {
             if (!ExistsOnPath("jarsigner") && !ExistsOnPath("apktool") && !ExistsOnPath("aapt"))
                 return true;
@@ -363,7 +400,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ToolTip RestoreGameDataToolTip = new ToolTip();
             RestoreGameDataToolTip.SetToolTip(this.restorebutton, "Restores the game and apps data to the device, first use Backup Game Data button");
             ToolTip GetAPKToolTip = new ToolTip();
-            GetAPKToolTip.SetToolTip(this.getApkButton, "Saves the selected apk to the folder where the sideloader is");
+            GetAPKToolTip.SetToolTip(this.getApkButton, "Saves the selected installed game as an APK in the sideloader folder");
             ToolTip sideloadFolderToolTip = new ToolTip();
             sideloadFolderToolTip.SetToolTip(this.sideloadFolderButton, "Sideloads every apk from a folder");
             ToolTip uninstallAppToolTip = new ToolTip();
@@ -771,6 +808,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                         Directory.Delete(Environment.CurrentDirectory + "\\" + foldername, true);
                     }
                     else if (Directory.Exists(file))
+
+
                     {
                         if (File.Exists($"{file}\\install.txt"))
                         {
@@ -856,7 +895,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             DateTime today = DateTime.Today;
 
             if (today.Month == 4 && today.Day == 1)
-                is1April = true;
+                
             progressBar.Style = ProgressBarStyle.Continuous;
         }
 
@@ -1132,7 +1171,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 bool quotaError = false;
                 if (RCLONE.rcloneError.Length!=0)
                 {
-                    if (RCLONE.rcloneError.Contains("downloadQuotaExceeded"))
+                    if (RCLONE.rcloneError.Contains("Quota") && RCLONE.rcloneError.Contains("Exceeded") || RCLONE.rcloneError.Contains("504") || RCLONE.rcloneError.Contains("Bad Request"))
                     {
                         quotaTries++;
                         quotaError = true;
@@ -1195,6 +1234,9 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                 }
                                 else
                                     output += ADB.Sideload(file);
+                           
+
+
                             });
                             apkThread.IsBackground = true;
                             apkThread.Start();
@@ -1401,6 +1443,25 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         private void label7_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private async void RefreshButton_Click(object sender, EventArgs e)
+        {
+
+            {
+                await CheckForDevice();
+                ChangeTitlebarToDevice();
+                showAvailableSpace();
+            }
+        }
+
+        private async void pictureBox1_Click(object sender, EventArgs e)
+        {
+            {
+                await CheckForDevice();
+                ChangeTitlebarToDevice();
+                showAvailableSpace();
+            }
         }
     }
     public static class ControlExtensions
