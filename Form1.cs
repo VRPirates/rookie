@@ -199,7 +199,7 @@ namespace AndroidSideloader
                             showAvailableSpace();
                             ;
                         }
-                        if (dialogResult == DialogResult.Cancel)
+                        else
                         {
                             return;
                         }
