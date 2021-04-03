@@ -1,9 +1,10 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
-v1.18
+v1.18.1
 
 Changes
+ + Added GPU level and CPU level to Quest Settings window.
  + Added clearer decriptions and message boxes for connections.
  - Removed April Fool's joke (the popup)
  = Fixed auto mirror switching
