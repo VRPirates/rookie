@@ -1,0 +1,552 @@
+!!!IMPORTANT!!!
+THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
+Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
+Make sure to redownload the entire rclone folder from the config provider!
+
+v2.0-WIP
+
+Changes
+ + Added update checker for games
+ + Added dependency check for spoofer
+ + Games now can have images
+ + Replaced the gamescombo box with a listview
+ + Listview marks already installed games with green and outdated ones with yellow
+ + Sideloader should be faster now
+ + Reduced sideloader size
+ + Installing games and copying obbs tries to wake the device first
+ + Sideloader calls adb usb on start now
+ + ADB Output now is a proper object containing strings for stdout and stderr, handling will be easier now
+ + Changed spoof on rclone install to resign, allowing users to easily update games from now on!
+ //You can still use the spoof button manually
+ = Fixed UI not starting for some people
+ = Refreshing mirrors now deosn't change the selected mirror
+ = Cleaned & reworked code in sideloader and spoofer
+ = Fixed Spoofer.Init() on Non-English Windows
+ = Fixed crash detection
+ = Reworked rclone config handling
+ = Fixed game release not existing resulted in a crash
+ = Sideloader false positive detections reduced
+ = Small ui changes, hopefully for the better
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.17SU1
+
+Changes
+ + Added some instructions & checks for the spoofer
+ + Added crash detection
+ = Fixed the game queue broken since 1.17
+
+Date 11/19/2020
+
+VT: https://bit.ly/3nDUMcx
+
+MD5 Checksum: 6DA8ADBE4447A809C598379E73DC7F77
+SHA-1 Checksum: 924220FE8877174CCB9732F1F99B759DD6749102
+SHA-256 Checksum: 0405C389A7D84CAC0D9081BDE10D010300822B10EBC2FF94C501EC740C8CFA40
+SHA-512 Checksum: E8C3A15257C30278CEBC46507B1F6049FFB5AC0D6E4FBB73E1776537F80CBEA95C8C81A3F3259F8AEEDE276EBF6D50F6945622403E9D80B5E9E0F47B050BBEA9
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+2aycACgkQvrtJUNxE
+TxOlEw/6ArmiRFAjUNC2YaElJ7fFsXVzCaeJ680rs0CK4oX9P7YjZ46y2/VGDtX/
+IAGvWCqHOIw2t0sk01/JwoyKZFERLDn2MRCj9FTPsrPA8yqveiIx/fof90QaN2Q9
+4aV6ht+SSirQFWTXENboEbQSWxFHW/z5/Dud8gDBuCTuFuueBk+EAph5yI3dcjCK
+naDE1gX+CE21ef84F3nGMspu2q/uCaIM2mvEWR2hBvWLsQpH7m5uQegXGYywe6YC
+/8wEY2mEe0nayp/3NglDDarsPN8wx1U5i/kqS8wrzZZT49pRqKZ0wykWGfAPQsaO
+txmfiwH+5cu3J/6PpAMVuNjhtL0dnR5MapsXT3CoRvSiRDl2urdYJUQj1CsYOEWP
+Q4St6ISoUoANhVFRcM9mbq7clxdJnfBqdr1J0YrK804qWp3krDYv5hrpE3Puu/nA
+TORsqWiHPgQQHANsNYsY4WkvLiYHWyB62Cm2NATdtaoVWzsrBgFk9xlp1oIQcMXo
+RlRQZQ7tQ0VFFxaP7ARRaf9ay78geC3W/cr63JTn8Hz7Ul1h+ZRa7tb1KYvpCTnp
+xC7vh3IyBwc4M7mt4CxsjdFnkO3iaDybFvlufua/5vMlt70HLdutHa7vMYSZ+GFr
+HL+SrazP9o8ut2L85uBqCjWHPfgVaBaaQgk9FgZe0WQoS06fdeU=
+=DIzT
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.17
+Please manually update to this version, as it fixes automatic updates that were broken since 1.15
+
+Changes
+ + Better game installation => no need for manual installation of games anymore
+ + Added theme changer back and updated it
+ = Fixed updates
+ = Updated quest options
+
+Date 11/14/2020
+
+VT: https://bit.ly/3lwztcn
+
+MD5 Checksum: CC7BF16A3D687C21208E9E986D720CAE
+SHA-1 Checksum: CE0C71B4097068E84FA6FC65F4AFE69CBC79AA29
+SHA-256 Checksum: D9393C28376DDE1D0582BCF939D1414879EDE6772CE82F83F54C0EA0F239B2F0
+SHA-512 Checksum: 326C7A0177E9B8BCFA10CB3B8FAEA025F9C45C599DE5D46CA06DFEE427351F3AE88371C5A0827DEADF7D3F459052C421A145AA5581FE3C4BD2EFAD33BCFFC37B
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+wFCUACgkQvrtJUNxE
+TxO0ThAAw6po24zaYQFa+aGrgQNuWYWRxirCkLekEgmy8XVL6Q0rgMeLeq2MrCBP
+wi2eBMFlLNOXy1TXOhled89NRBiBeST2Hl4TVv0Qdavd9cSeuGD/rh/PsyxnxY2Y
+RWCPeXiYOf0mN1zVylLas+2vk9o/lrNieJir1nMEvyVbUJs8lTDcBdo2vVFwHK9N
+nStFPxjqRb8R6smTIsltIh4+juQQMX0GyCcEMUkb5aO6BP34Mpsoaf+9bxV/elJm
+UXnFSh5pjzHhkYGKVePtoHev8aFOzLeqIrfyWRJl+7gBMgYIautaxAIE+Zsy3Sai
+wxUk9HJeAYwEPhYcIJKGAy+fmeX/TePQjUqLu1Pp+sJ8orstSiMjwXr84UtvyUWZ
++gSTgsQJ1QNUlhp+eJ0D6CchkAwliUXgnpIzwyn1Jj54X3ecHNjMbc5SettlXcBG
+qgy5bUx8+v4H4gHmqTyZQNv1bsvIiQlcwPPUtpSzSXrzJPfZjrqPZzUWB8/Vltqc
+JIR8FxEqi7+mW6AqrhUjE74N/fFibJTEuv6RALwZIAfMYEuSeFlZlDJYZ9v3H4/X
+2jd+wEksbq6uYUl2l3X/7TpMWX29paj18cLD8oTSLK/RvzLXe0hhUcvuHrMxi+14
+Q+V7uZYGge4Z5PANGPhd2tSkvw4CyA25OQ868QXjqciSLTfK2SU=
+=Yu78
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.16
+
+Changes
+ + Speed Limiter for rclone
+ = Random packagenames more random now
+ = Bugfixes
+
+Date 11/12/2020
+
+VT: https://bit.ly/2K4Y5Lv
+
+MD5 Checksum: 29978E435BF02865CE61EF6279FB42ED
+SHA-1 Checksum: 2E47CFDE7549D088A102F021657E9CD6859EAC47
+SHA-256 Checksum: 50057AC0DA315C492C9C45B5801AE99E65B812F5BC18E23622CCAF5FBC48760A
+SHA-512 Checksum: E485ADB6088C1F7DC34B65B57A9077E876D3D576D48CCED1FCA691A113CA5F6D0F8A0D31C6C848B6719FF18B7D4C5F829B9DAA8789EA6087F8B1D41005F87A48
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+tHY0ACgkQvrtJUNxE
+TxOpjRAAmjaIfvIP+HvfTMGKOEGoVRDIBqEyi8tzq8hn5Z3OadBVLkWT23WblQBw
+Ur6BN1fuhH5B8ToGoqX/C1lrgXsvHNDB8frGUWnO1G1KJAQEGwKPRdKyK7YPlrYm
+kK74CYuM8w7qjkhX3f50ECZ4Kj1WsE92mIHjfB1xLSGzN0o7Tr1EvFFDnuXrJ0I0
+vEbeto0Qo19ORcoP7KFPgGuYmMYJQ2MuwYmWDWAdm4iL1Y9vEKZ4TsHG+KmYPdo8
+19YoZj8PsgYxCBy9B+UZfkJnfF7gYKmiAsgnQviDc4BvZccfAVjmWcKkzJueDkvr
+GgFmbaFE48svC2NU8Qd2gq6gIX0JrnKACZqopqgorl1817Z7Rsdh2iVwTMOvxbe7
+a4kAtDN90KwuRlnwoxeCBdESDSrANbiNi1yaDZc5hr/xOxUsa1JKhk7/8mcdHj78
+QoCRoji60Cq8XYeRNDXI32TkZd7ql9c64AjGH1uSySIPXfehOa+m5S53Jo2dRh5p
+iI1LGHjTk7EDekIVRh/cPC+hohfUAKYbUcXp15cx0HndW5+galYIH/RAjF0L+Q1U
+THz36HpKvLSsgkVkeVjPNJn9Ow6xgyByLTkHrS9D7Kj78FrKiAKr08+aI3+WCpdq
+1G9HcH5VzDeZ7/jfVQPhsAn3dPxlTt6ReYzbeFkrO1UHFcTdl58=
+=KyH4
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.15HF1
+
+Changes
+ = Bugfixes
+
+Date 11/06/2020
+
+VT: https://bit.ly/2GDYWRU
+
+MD5 Checksum: F0D51FEC94F8D266390E61E89E6A2EE0
+SHA-1 Checksum: 4FB43CFA6021B8360A23858169FAF15468B68EDF
+SHA-256 Checksum: CBE414D9A283871099057EE5D8E56AF408996AE9C996C31F92C4DAE16D48B024
+SHA-512 Checksum: F16A6B29ECABBB16D25B7F7FC52CB15AE4930B2B17ABAC791BF1F331270F40B047094FDEAF1EF834E72E26AA3A6762AF8BE13EBCB735EB1C1009F884E338D9DE
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+lfEkACgkQvrtJUNxE
+TxMDDxAAg+90vrCn0PllPEezzX3AJpy7NFWhFjUlDOLzNFMPa/QdAfF6H5vhEGay
+bhX2BDHKSIV86bLkyGPkGHuf3etpXvZsNAmPuDoZpZ4owd1O09DOvAHIJx8F1Eia
+Jc9Zovz6lKLAeIbK9ZdChKwTG3hYLIkx3rMgtvnJkZfzUKbhdU9MP0rVEzDPkSfe
+ay2CGA9xLBUhPcItUTxhANzrDpRXMGHqbi+Wrscp+KmvnjHzN3Haq2A9rsasXM5Z
+RSG8ccLZiI496tJQquTvPXYcnWQQudzcf3yiicztein0xcISEat0FFIVao7TtnS4
+cgitvGNtfXXauAxyzjZ7PdgrVuoAE/v4m25pzaTRy7TOfW1uTz2/6lr6tZa38+p9
+Bs36KcoK64FcPWjfR7zvvmCUWT/aHlRC9FwMvBHB81WRRk6xGaKl8G2QxfKY/ATl
+DNlgYXfXLzipam74XfPHiyK4Sc55WLDQxZfZfD6tqTo4u8qoDESvcEz+pbGe4Wp8
+awY4FVeSP1jVQzHgWf+oMTiHm5Gb3qMLUhZ/AHidUWFLhzXmAA4YXxIHKidRjCYT
+42Kzs1sjT2A5ll2V7jz4pqoRlsvRAxNZ5KgAZ2R01zo7gS1nGqjyoGq3tLWHbfJk
+/kD4QlOwcv06Jvp8aHcPxpccB7KHZGoRT2PB6IQE9Gt72pmAU9c=
+=f7yh
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.15
+
+Changes
+ + Added a spoofer
+ + Added option to auto spoof games with random package name
+ + Added new username support for quest 2
+ = Updated drag and drop sideloading
+ = Fixed storage label
+ - Removed troubleshoot form and theme form
+
+Date 11/04/2020
+
+VT: https://bit.ly/3kYCQsb
+
+MD5 Checksum: 39BAB4CEE3D0E387E770BA35F4488C2F
+SHA-1 Checksum: C6F311411408BCF5A55034E7A926EA385819F348
+SHA-256 Checksum: 64640374EF39DD9CFC4A613A49888E3194994AA934C5E952174A2FCF533E2D19
+SHA-512 Checksum: 22769280B732821539100BFA77C67141F271DB401DB3AFB28EF285E352659F9F45A90C8ABE1C0B829770C5AE580CA76A9208505888443C22EE82AAAE7035C6F7
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+jJScACgkQvrtJUNxE
+TxMTag//f570tZ4zxL1x1rdajdoYzPD6oaGIabRVPrqVogsFPuVF1Q3AOzr+nzQN
+Tiq7yRPmByu/dtBGby2mqL1acQ/9TLYDtmnOAxQJqj4h0KhYlnzdCfqJJbTghtZX
+cy44ZqgPW47P608+zC/NfePNt7Fq1rFKN3Bpo/ISoyi5/IVGqGq1Ix/D0SlhiM5X
+5VkiY+w5S0rXuAyQ4g6/03AiI9fdNVkREhUh/tYvb7IkxaN9IDlltHByeuvekMjZ
+KU+mwZ9habfthB31hp+bAXz82tbIzB4LJ1P8MNadIT8ZXG19zHEY/KlaDp2NjniV
+h+V9AnxPHlcZk63yVPOywxpZcv81LflMgs9XItX+zKH7ibniBEu8jxc/2uAjrDF/
+JuvnOUKTuH7S2iIzHhKLYZYHiOu8sIuwGC96Ep172PGCAkVVR6CtfNPMmVZRllsY
+JG3Pxdrw526SAy3Vqixbbm79Fs1o77resqGM2zl6L7Sr6sH3VnDxabVXxALgo1pH
++LSu5rCLIIsCP1a4MAyy6UgO/+ZLrC1QazR4yY7SRQHAIM48XG4d6CznFCOjczhW
+VvYL6gZD7X4xlNBqNMtih8JDHIQ1y7n1f075oCxfWwt02kXhDL/cn8+UZ17IS6EZ
+zr/SLm1464/htCZgsUZgQrov6CpHX/xNqAubowkAVOdDREbwh2w=
+=QKlt
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.14SU1
+
+Changes
+ + Quota errors now will try to redownload the game from another mirror
+ = Only showing mirror remotes for apps
+// Will fix device storage when I get my quest 2 and can debug adb
+
+Date 10/18/2020
+
+VT: https://bit.ly/3kcG62A
+
+MD5 Checksum: 2A30E5F3DB785DC8104A2AA55A83CF53
+SHA-1 Checksum: 8376E5971FC4F60995A1125DD9344E52135DB4F7
+SHA-256 Checksum: FD5C74067BA00561A540DE5A4F49FA63B99C9520435A51487F997AEC569E9659
+SHA-512 Checksum: 6188D6306CA2A3F25DE08E19D1F20046774F7AA30BD745ED24FC7E53126DF3950211B599E3D774F540A6C1DEC177A895FAE70FB564B6AE96F5F10ABDCB9021C1
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+MCbMACgkQvrtJUNxE
+TxNMVxAAlIkoTuGTDwXRBFNanulPiYmus9UazHoVFxtG2BELk1/JLPm7dwT29FiZ
+oacUhhxLAEfDm169FoPNFCH/6q74xqjACkm8FjwCoas53DekguIvrhJKA3SiBUtZ
+m7+hrT3WWGxXoE3+avSFmdBWWvKVA9pNR/DHprHSoinDUvgSfwBHrWD8PtuSIlwU
+/jNpzyDnmBfdT4LROq93hcfFXM+POLWs5f3rXFdT+zTZexxlRiG5h7yMmsYdwdov
+4jMUSzrBpRXbmmHwDi4KLzsdOJ/5okJgRdPTZm/L1rAoJT0F7QVi2shvkoN7SIH/
+Fg+k0ZrNOnlpdAJwLmJD4PkQmxv5zpGSh8w7nbQJ41HgBtTQTh3OCpRRamPzAmfo
+A2n/NsYpR8J8u7kGzT1MUnUn2RL+igutSrnQl8R6yR8jFjaTt+F90pBXZ1nnY6mS
+8YE9mBBK3365cYVqQzOW1TUSCSzQqwTbfKDHkKrzHQWrpQ8VNMLcJBLZwU8di+4p
+u8lt1uT5MRZ+9I80YBXhwzBKkiNYOt5vHpGgt0Ib4WDS7rt/7UnzEAfl8P3VEEfX
+6w1HctI2zAVWYutBMv6HL3v23cO+UT8H6Wdgxq36mlMSNiqjLIntfIRrySUOy7JV
+D6LE34gzpDGsBIzrpW/Hlz4wGTi6nnY0Ke6DkA1H0UOoDN9ItI4=
+=ARa/
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+v1.14
+
+Changes
+ + Added the ability to change remotes (mirrors)
+ + Rclone errors are now reported properly
+ = Fixed some bugs
+// Will fix device storage when I get my quest 2 and can debug adb
+
+Date 10/17/2020
+
+VT: https://bit.ly/3j8kCm8
+
+MD5 Checksum: B862B807462CE35CC930C2B1118D5692
+SHA-1 Checksum: F52C8630C89CAEDB2E90A857E494DE00B137712D
+SHA-256 Checksum: 3DDFA2B4CCFC0E9F6F86E8A74E6D3511B9C643F4C4AF19D3878B8704FA360558
+SHA-512 Checksum: 16A022D8A4D235D7C537D9F01FE7C5F964A67A3A8CD68B3DC17AF08D94837DAC6CE0C20557D029DC169E5616B36C2A4C36B1647CE0DF930C7694F3FEC3430E70
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+KrhQACgkQvrtJUNxE
+TxP9MRAAjZbYWkbZPK+QMqzNqsgEARs6buzrwc24dth6QEod9Fgmdg5wdinZdG8X
+MK467pd9u0JqM3u8DeKSUD0GEzJZStNKsbHfjvNAF3m8toaXLncWy7MYNN9loAra
+17MvUBBwB1QgsXtQ3EXT1cBbS3YkQPg5E+ayvY9ZgyiOpDK6fs1tA24NZUWc53kY
+TIl5IL3mZNfJck8Xc/QkZJmkBOA89oDToLOjNmZRXXEHNT/eTS6pEkMZonWQjGqF
+D2dEfQTOuIAD93JzwcP5wVJFh7z6o65/7tfguDqBsTgoRWODaY+kQJDAxoWN9w/n
+nagXg/y30EmE1mWQFUYa1n0V65OzT5+J8VF53DCHkgaejYLfi0lhy8TlWQZpmzen
+WJOsP1Oj3ZZ9sErO8waajDBzDZ3kU9NvAOeOblE491w0713MYZYs5BVgoyHi24xO
+obcp1gpLi326fkPqajgIFpDHJ014OnaXmoY9ynW9rlZJ4rwJ7WytRDzcpfyk9LV1
+G1tlcCS4c/RmuVfZi4Jh0guvOOIpJSqdG4KUtvd548sslTMdHytt+YugbKqcBAto
+nWroKcsmg0swAm7YgYmQXqcpM17JC21eUgm3Bc4ZZSDtP4g3Pm7vRO1+hwUNYBE9
+QeEMXYDPRsTxdpuEFsbmS/EfnndvJvl9BL92Zt4+T4ruL+II50s=
+=r+0B
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+New version v1.13 Released
+
+Changes
+ + Pgp messages will be available now for every update, so you can verify updates easily
+ = Fixed some bugs like the rclone suicide
+ - Removed china detection
+
+Date 9/10/2020
+
+MD5 Checksum: 3834485C5AF611523460E639969284F3
+SHA-1 Checksum: DAF556D34F80FDE6A6A3D8F338381030B2B19E44
+SHA-256 Checksum: 063FABA6A76A98AB862BBBF6F3348F176F66FD4932075E761A5FCAA85785EE4B
+SHA-512 Checksum: CC743BD95826664535239BB665934E88A25CC948B95E4A3E8B34379C1E8DEB8FED05EAD87428F4B85D5841ED9101F38E4E3DAFB0EAF3CD2F2E4314B62356104D
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl9aBpMACgkQvrtJUNxE
+TxOJcA/+LEzXQtyBhZ0oj22PEk0yMLQYOBLYDB96jf39IqLQAzrIUL339jRcRKMv
+yhFWXpvND1wrQl3/LNtFpBSkSnvqUXtxHWg6US+Ov3nnrEvYiwK8D9f1eC5Mt3Wy
+4HZIyTh9HcrLsfbnP2kDlLOaMQSIH4rChezF79xZMcx7kRmQ0/hyXlmGAPyWs8t8
+5aLxk5YUcfq1Pu+ncqeX+ihYVzQHi2eXaOAIR1rSCEXfHEg9tkRzWcma8tY29gQv
+IgGwxF/YnAPOdBtzuakaT88a1MsP+tAcWxmsyvTQHrv1m0h3QPU1DxMFUfAlBjLM
+5tHgTTjkXedRpR+Kga5CDuK7L5p1zVMRDINcUOf9MXV2fRurZ+OIHefAd+zbrd0n
+vHi1D1sFzb/lT5LCa/vrfO9crRnLdK1EI/5HNeSj9iIdD2jEMbjSjo9yv7LA2MHi
+4wnvguRpK5YUGqGc2yyCRxtyKAgXXxLBFNb5K453vdLtDukZIkhLuQVchsk4PutZ
+1uIg7/ZmAIPxlEHaLckaV7QEFbq9h2hFWOsSjWAATyvnkp4nxyvAavW4zNQCbd3V
+XJhimZkE+3SNAuZGw10nikVz7DFMlI0dyL+jmwIuODcFMZZwkEtBr3J/Ad9V1k+G
+DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
+=xp7X
+-----END PGP SIGNATURE-----
+
+1.11HF1
+ = Fixed some crashes that occured when a unauthorized device was used with the sideloader
+
+1.11
+ + Added support for multiple devices
+
+1.10SU1
+ + Settings should now persist through updates
+ - Removed download button and hwid stuff
+
+1.10
+ + Added back the game size messagebox
+ + Added support for unicode in adb
+ = Fixed restore gamedata
+ = Clicking the first game won't remove it since it causes problems
+ = Changed the sideloader icon
+
+1.9SU2
+ + Clicking a game on the listbox will now remove it from the list
+
+1.9SU1
+ - Removed some code I forgot to remove when debugging
+
+1.9
+ + Added a queue for downloading games
+ + Added a setting for disabling user.json push
+
+1.8SU2
+ = Install game now won't throw an exception when a game isn't selected
+
+1.8SU1
+ + Added debug logs for rclone
+
+1.8
+ + Disk info updates every command that changes disk space
+ = Rclone now logs commands and output
+ = Changed backup button
+
+1.7.5
+ + Made sideloader even faster when opening
+ + Added some chiptune music and the setting to stop it
+ = Fixed donator button broken in 1.7
+
+1.7
+ + Removed some freezes
+ + Sideloader kills rclone on start and on close if it's open so you dont waste bandwith
+ + Updating rclone config now does a hash check first
+ + Refresh storage after game install and on game uninstall
+
+1.6
+ + Disk space label and check
+ + Checks game size before download
+ = Download and install game button outputs adb log now
+ - Launch package name button and textbox
+
+1.5
+ + Added ETA, based on CURRENT DOWNLOAD SPEED NOT DELTA OF IT
+ + Added DLS label instead of showing it in the toolbar
+ + Added more indication of what the software is doing, in the toolbar
+ + Added some tooltips
+
+1.4
+ + Donators can now change the speed of the donate button color change (even disable)
+ + Auto update for the rclone config
+ + Theme export and import buttons (by gotard)
+
+1.3
+ + Added progress bar logic for game downloading with rclone
+ + Uninstalling apps now asks the user if it should also remove game data
+ = Sorted installed apps combobox
+ = Fixed uninstalling apps by package names lol nobody knew was broken
+
+1.2
+ + Added unicode support for rclone
+ + Added some delay on game installation
+ = Fixed stuff
+
+1.1
+ + Added Themes
+ + Added dollarvr user.json
+ + Added user.json transfer on game download
+ + Added user.json transfer on first run
+ = Fixed tab indexes
+ = Now both drop downs can be visible at the same time
+
+1.0HF1
+ = Fixed a problem when deleting an app
+
+1.0
+ + Added games auto download
+ + Added auto troubleshoot
+ + Every app installed will have all perms granted
+ + Displays apps for games instead of package names if you have rclone set up
+ + Uninstall app now will also delete its obb folder
+ //For auto download you need an rclone config and rclone to be set up correctly
+
+0.15HF1
+ + Added list apps button back
+ = Fixed Uninstall apk and get apk
+
+0.15
+ = MASSIVE UI REDESIGN
+ + Added toggle for tor/clearnet
+ + Added download games through tor but still waiting for someone to help me host the files
+ + Added download with progress
+ = Changed adb sideload command to allow downgrades too
+ - Removed perms stuff, was too buggy
+
+0.14HF1
+ + Added donate button
+ = Fixed ui order
+ - Removed warning from bulk obb sideload button
+
+0.14
+ + Check file hash button
+ + Added first run check (will maybe be used to create user.json files)
+ + Added drag and drop for apk and obb files
+ + Progress bar now works for every adb command
+ = Moved buttons
+ - Instructions button
+ - Removed run custom adb command button and form
+
+0.13
+ + Added vrmoo.cn.json
+ + Added bulk obb copy
+ = Message Box now top most
+
+0.12
+ + Added settings form
+ + Added progress bar (again)
+ + Added a new user.json
+ = Fixed crash on some systems (PerformanceCounter)
+ = Fixed crash because of file name inconsistency
+ - Removed performance counters because they made the software not work for some people
+
+0.11
+ + Changed normal message boxes to flexible ones
+ + Added changelog to update message
+ = Improved update message
+ - Removed progressbar
+
+0.10
+ + Added few tooltips
+ + Sideload folder now works for all apks (recursive search)
+ = Obb copy and Sideload progress bar problems should be fixed
+ = Fixed user.json not working if the any of folder had spaces
+ = Switched back to Message Boxes
+
+0.9
+ + Added the buggy progress bar back, uses different "logic"
+ + Added an icon (Increased the exe size by like 300% just with that)
+ + Added sideload folder button
+ + Added Create user.json button and form
+ + Changed Message Boxes to notifications
+
+0.8.5
+ + Added auto update download
+ = Fixed a bug where if you didn't have the adb folder it would crash
+
+0.8
+ + Every command now shows progress on title bar
+ + Automatically run Adb Devices and List Apps on form startup
+ + You can now search the App List Combo Box
+ = Cleaned some code
+
+0.7
+ = Fixed UI Freezes
+ + Added Uninstall APK Button
+ + Added Launch package Button
+ - Removed loading bar
+
+0.6
+ + Added List Apk Perms button
+ + Added Change Permissions button
+ + Added dinamically added checkbox for permisssions
+ = The software now downloads adb from master instead of v0.3 release
+
+0.5
+ - Removed Flash Firmware
+ = Redesigned UI
+ = Reworked RunAdbCommand function (now it will be possible to do stuff I wasnt able to do before)
+ = Replaced Ui Buttons, still needs work
+ + Added List apk button
+ + Added List apk combo box
+ + Added get apk function
+ = Cleaned a bit of code
+
+0.4
+ + Added auto download of adb archive
+ + Added auto extraction of adb archive
+
+0.3
+ + Added new form, you can run custom adb commands now
+ + Added recover and backup app data
+ - Removed Select APK and Select OBB Buttons
+ - Removed tooltips from removed buttons
+ + Sideload APK and Copy Obb buttons now also make you select the file/folder
+ + Improved firmware button
+
+0.2
+ + Added Flash Firmware button
+ + Added few tooltips
+ + Renamed buttons
+
+0.1
+ + Initial Release
+
+ HF - Hot Fix
+ SU - Small Update
