@@ -41,7 +41,6 @@
             this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.downloadInstallGameButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.freeDisclaimer = new System.Windows.Forms.Label();
             this.downloadingLabel = new System.Windows.Forms.Label();
             this.StorageLabel = new System.Windows.Forms.Label();
             this.aboutBtn = new System.Windows.Forms.Button();
@@ -63,6 +62,7 @@
             this.diskLabel = new System.Windows.Forms.Label();
             this.speedLabel = new System.Windows.Forms.Label();
             this.etaLabel = new System.Windows.Forms.Label();
+            this.freeDisclaimer = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.gamesQueListBox = new System.Windows.Forms.ListBox();
             this.devicesComboBox = new System.Windows.Forms.ComboBox();
@@ -338,18 +338,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(218, 887);
             this.panel1.TabIndex = 73;
-            // 
-            // freeDisclaimer
-            // 
-            this.freeDisclaimer.AutoSize = true;
-            this.freeDisclaimer.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.freeDisclaimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.freeDisclaimer.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.freeDisclaimer.Location = new System.Drawing.Point(223, 854);
-            this.freeDisclaimer.Name = "freeDisclaimer";
-            this.freeDisclaimer.Size = new System.Drawing.Size(487, 24);
-            this.freeDisclaimer.TabIndex = 79;
-            this.freeDisclaimer.Text = "This app is FREE github.com/nerdunit/androidsideloader";
             // 
             // downloadingLabel
             // 
@@ -740,6 +728,18 @@
             this.etaLabel.TabIndex = 75;
             this.etaLabel.Text = "ETA: HH:MM:SS Left";
             // 
+            // freeDisclaimer
+            // 
+            this.freeDisclaimer.AutoSize = true;
+            this.freeDisclaimer.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.freeDisclaimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.freeDisclaimer.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.freeDisclaimer.Location = new System.Drawing.Point(223, 854);
+            this.freeDisclaimer.Name = "freeDisclaimer";
+            this.freeDisclaimer.Size = new System.Drawing.Size(487, 24);
+            this.freeDisclaimer.TabIndex = 79;
+            this.freeDisclaimer.Text = "This app is FREE github.com/nerdunit/androidsideloader";
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
@@ -837,7 +837,7 @@
             this.searchTextBox.Name = "searchTextBox";
             this.searchTextBox.Size = new System.Drawing.Size(232, 24);
             this.searchTextBox.TabIndex = 83;
-            this.searchTextBox.Text = "Search mirror...";
+            this.searchTextBox.Text = "Search";
             this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
             // 
             // gamesPictureBox

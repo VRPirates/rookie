@@ -111,7 +111,11 @@ namespace AndroidSideloader
         public static ProcessOutput Sideload(string path)
         {
             WakeDevice();
-            return RunAdbCommandToString($"install -g -r \"{path}\"");
+            ProcessOutput ret = new ProcessOutput();
+            AndroidSideloader.Program.form.ChangeTitle($"Sideloading {path}");
+            ret = RunAdbCommandToString($"install -g -r \"{path}\"");
+            AndroidSideloader.Program.form.ChangeTitle($"Sideload done");
+            return ret;
         }
 
         public static ProcessOutput CopyOBB(string path)
@@ -119,7 +123,7 @@ namespace AndroidSideloader
             WakeDevice();
             if (SideloaderUtilities.CheckFolderIsObb(path))
                 return RunAdbCommandToString($"push \"{path}\" /sdcard/Android/obb");
-            return new ProcessOutput("","");
+            return new ProcessOutput();
         }
     }
 }

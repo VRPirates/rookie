@@ -32,7 +32,7 @@ namespace AndroidSideloader
         {
             Environment.SetEnvironmentVariable("RCLONE_CRYPT_REMOTE", rclonepw);
             Environment.SetEnvironmentVariable("RCLONE_CONFIG_PASS", rclonepw);
-            ProcessOutput prcoutput = new ProcessOutput("","");
+            ProcessOutput prcoutput = new ProcessOutput();
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             string originalCommand = command;
             if (bandwithLimit.Length > 0)

@@ -11,7 +11,7 @@ namespace AndroidSideloader
         public string Output;
         public string Error;
 
-        public ProcessOutput(string output, string error)
+        public ProcessOutput(string output = "", string error = "")
         {
             Output = output;
             Error = error;

@@ -720,10 +720,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             if (itemsCount > 0)
             {
                 var rand = new Random();
-                if (random == true)
+                if (random == true && index < itemsCount)
                     index = rand.Next(0, itemsCount);
-                else if (index > itemsCount)
-                    index = 0;
                 remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = index;
@@ -1010,6 +1008,7 @@ without him none of this would be possible
                     ADB.DeviceID = GetDeviceID();
                     quotaTries = 0;
                     progressBar.Value = 0;
+                    progressBar.Style = ProgressBarStyle.Marquee;
                     ChangeTitle("Installing game apk " + gameName, false);
                     etaLabel.Text = "ETA: Wait for install...";
                     speedLabel.Text = "DLS: Done downloading";
@@ -1033,7 +1032,7 @@ without him none of this would be possible
                                     ChangeTitle($"Resigning {file}");
                                     //spoofer.PackageName(file);
                                     output += spoofer.SpoofApk(file, spoofer.PackageName(file), "", Path.GetFileNameWithoutExtension(file) + "r.apk");
-
+                                    ChangeTitle($"Done resigning {file}");
                                     output += ADB.Sideload(spoofer.spoofedApkPath);
                                 }
                                 else
@@ -1084,8 +1083,10 @@ without him none of this would be possible
                     showAvailableSpace();
                 }
             }
+            progressBar.Style = ProgressBarStyle.Continuous;
             etaLabel.Text = "ETA: Finished Queue";
             speedLabel.Text = "DLS: Finished Queue";
+            ProgressText.Text = "";
             await CheckForDevice();
             ChangeTitlebarToDevice();
             gamesAreDownloading = false;

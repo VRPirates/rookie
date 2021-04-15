@@ -43,7 +43,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         public static ProcessOutput RunADBCommandsFromFile(string path, string RunFromPath)
         {
             ADB.WakeDevice();
-            ProcessOutput output = new ProcessOutput("","");
+            ProcessOutput output = new ProcessOutput();
             var commands = File.ReadAllLines(path);
             foreach (string cmd in commands)
             {
@@ -62,7 +62,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             return output;
         }
 
-        public static ProcessOutput RecursiveOutput = new ProcessOutput("","");
+        public static ProcessOutput RecursiveOutput = new ProcessOutput();
         public static void RecursiveSideload(string FolderPath)
         {
             try
