@@ -3,6 +3,36 @@ THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
 Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
 Make sure to redownload the entire rclone folder from the config provider!
 
+I forgot, adb usb isn't called at start so the last changelog was wrong
+Also this was the first release to use GIT and sideloader had broken updates so thats why the huge ammount of commits in such a short time sorry
+
+v2.0-WIP-SU1
+
+Changes
+ = Enabled mount button
+ = Pushed UI Changes made by harry
+ 
+
+Date 13/04/2021
+
+VT: 
+
+MD5 Checksum: 
+SHA-1 Checksum: 
+SHA-256 Checksum: 
+SHA-512 Checksum: 
+
+You can always get my public key from miligra.me/pgp
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+!!!IMPORTANT!!!
+THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
+Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
+Make sure to redownload the entire rclone folder from the config provider!
+
 v2.0-WIP
 
 Changes
@@ -27,6 +57,34 @@ Changes
  = Fixed game release not existing resulted in a crash
  = Sideloader false positive detections reduced
  = Small ui changes, hopefully for the better
+
+Date 13/04/2021
+
+VT: https://bit.ly/3a3LvGg
+
+MD5 Checksum: 597D4AC957F69D5B1860D14D15DD3904
+SHA-1 Checksum: EC78E4416D5222E507F46499B62A1D16880F84DF
+SHA-256 Checksum: B68EE3B95CA531CA4678FEAAFD13F75A69D4495879536A9D04094ECFFEEC86EA
+SHA-512 Checksum: D98F319986179B362D0F4C4E092FE6AF4ED8D1FD5445667F68280B43BF49C9DB7AC3B0F49690644CB46A7A391EDF36E82A8BCF7C52770498E6CACEA52D44EA4D
+
+You can always get my public key from rookie.wtf/pgp.txt
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAmB1rNsACgkQvrtJUNxE
+TxND0BAAgq4HKuNG/wxcYfari00+Vz56BdjWawZ5OvgcB/KuZLEWFXN5IpDktZrl
+S7M8xGsAffDJYa0qamnpB0aE6uBgp3RCa4oyZUUlYf5sRiVwz9lF2Ip7XWZlkkpT
+3zDYC4FSnPtlMP/97/OfMfdUSO97TpI+mEM2qtknl4dQZ8DdTugRWKWq0Kb+0ZI7
+mD4FpxZSyko1lzBKCvInr/5LQWPrNknRIOwzxH3T+BPr9CjhAoPduvJUT7QzZZAc
++wYMUQYIb7M6zMy7iiiVtNlyIfwW8EnJdyE4p4NejIAQTOcFyvB7XTK/z2Ut7T1c
+/DIINF+Sat8wZ1mZ+c2I9+99StlwTSiYdWVZh2jW5F5wb8pWrgDrCmoG50X4gvWJ
+PGcWXG14x6TTAU0b55oPUEydWXMyxg9x/8IQA4IeDZGo9HdJDFfkW4hynTO675+o
+1AKr9dfdnAhgqqfw59eWtxh2epU67JAOIek7wikfOjNnVRykim4wZmHB/FC+hIuQ
+ppzs2QBxV2LknV3UeOklUMvR6n8Q/N0JZNxUde6o9HCOm2EbY27Iiho9wZI0+7Bk
+IL+cF4SdRdsBQHX6PLPk+1wX667A+QnwHOfkC9SXyUK+MI4CMvqZlzIitqT4QiFz
+r3JeCjJjYW4jwO7gKD8OM9CUMy+6+4C2ImS5CZ3cBB3KLXR59n4=
+=17aK
+-----END PGP SIGNATURE-----
 
 
 -----BEGIN PGP SIGNED MESSAGE-----
