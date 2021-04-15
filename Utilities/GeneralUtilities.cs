@@ -48,7 +48,6 @@ namespace AndroidSideloader.Utilities
 
             process.WaitForExit();
 
-            Console.WriteLine("ExitCode: {0}", process.ExitCode);
             process.Close();
         }
 

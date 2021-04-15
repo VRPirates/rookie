@@ -84,10 +84,8 @@ namespace Spoofer
                 RenameObb(obbPath, newPackageName, originalPackageName);
             }
 
-            Console.WriteLine("Extracting apk...");
             output += DecompileApk(apkPath);
 
-            Console.WriteLine("Spoofing apk...");
             //Rename APK Packagename
             string foo = File.ReadAllText($"{decompiledPath}\\AndroidManifest.xml").Replace(originalPackageName, newPackageName);
             File.WriteAllText($"{decompiledPath}\\AndroidManifest.xml", foo);
@@ -99,34 +97,23 @@ namespace Spoofer
                     File.WriteAllText(file, foo);
                 }
             }
-
-            Console.WriteLine("APK Spoofed");
-
-            Console.WriteLine("Rebuilding the APK...");
             
             //spoofedApkPath = $"{Path.GetFileName(apkPath).Replace(".apk", "")}_Spoofed as {newPackageName}.apk";
             spoofedApkPath = Path.GetDirectoryName(apkPath) + "\\" + spoofedFileName;
             string apkDecompiledPath = Path.GetFileName(apkPath).Replace(".apk", "");
 
             output += GeneralUtilities.startProcess("cmd.exe", folderPath, $"apktool b \"{apkDecompiledPath}\" -o \"{spoofedApkPath}\"");
-            Logger.Log($"apktool b \"{apkDecompiledPath}\" -o \"{spoofedApkPath}\": {output.Output} {output.Error}");
-            Console.WriteLine("APK Rebuilt");
 
             //Sign the new apk
-            Console.WriteLine("Signing the APK...");
             if (File.Exists(folderPath + "keystore.key") == false)
                 File.Copy("keystore.key", $"{folderPath}keystore.key");
             output += SignApk(spoofedApkPath);
 
-            Console.WriteLine("APK Signed");
-
             //Delete the copy of the key and the decompiled apk folder
-            Console.WriteLine("Deleting residual files...");
             if (string.Equals(folderPath, Environment.CurrentDirectory + "\\") == false)
                 File.Delete($"{folderPath}keystore.key");
             Directory.Delete(decompiledPath, true);
             File.Delete(apkPath);
-            Console.WriteLine("Residual files deleted");
 
             return output;
         }
@@ -249,7 +236,6 @@ namespace Spoofer
             {
                 return "PackageName ERROR";
             }
-            Console.WriteLine($"Packagename is {originalPackageName}");
             return originalPackageName;
         }
     }

@@ -87,18 +87,16 @@ namespace AndroidSideloader
             }
 
             //Output
-            Console.WriteLine("Headers:");
-            foreach (string s in gameProperties)
-            {
-                Console.WriteLine($"gameProperty: {s}");
-            }
-            Console.WriteLine("Games");
+            //Console.WriteLine("Headers:");
+            //foreach (string s in gameProperties)
+            //{
+            //    Console.WriteLine($"gameProperty: {s}");
+            //}
             foreach (string[] s in games)
             {
                 string output = "";
                 for (int i = 0; i < gameProperties.Count; i++)
                     output += s[i] + " ";
-                Console.WriteLine(output);
             }
         }
 
