@@ -20,8 +20,10 @@ namespace AndroidSideloader
 
 #if DEBUG
         public static bool debugMode = true;
+        public bool DeviceConnected = false;
 #else
         public static bool debugMode = false;
+        public bool DeviceConnected = false;
 #endif
 
         private bool isLoading = true;
@@ -132,6 +134,7 @@ namespace AndroidSideloader
 
             return devicesComboBox.SelectedIndex;
         }
+    
 
         private async void devicesbutton_Click(object sender, EventArgs e)
         {
@@ -179,13 +182,46 @@ namespace AndroidSideloader
             {
                 if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
                 {
-                    this.Invoke(() => { this.Text = "Rookie's Sideloader | Device Not Authorized"; });
-                    MessageBox.Show("Device not authorized, be sure to authorize computer on device...");
+                    DeviceConnected = false;
+                    this.Invoke(() =>
+                    {
+                        this.Text = "Rookie's Sideloader | Device Not Authorized";
+                        DialogResult dialogResult = MessageBox.Show("Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            devicesbutton.PerformClick();
+                     ;
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+                    });
                 }
                 else if (Devices[0].Length > 1)
+                {
                     this.Invoke(() => { this.Text = "Rookie's Sideloader | Device Connected with ID | " + Devices[0].Replace("device", ""); });
+                    DeviceConnected = true;
+                }
                 else
-                    this.Invoke(() => { this.Text = "Rookie's Sideloader | No Device Connected"; });
+                    this.Invoke(() =>
+                    {
+                        DeviceConnected = false;
+                        this.Text = "Rookie's Sideloader | No Device Connected";
+                        DialogResult dialogResult = MessageBox.Show("No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            devicesbutton.PerformClick();
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+
+
+                    });
             }
         }
 
@@ -560,6 +596,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             DragDropLbl.Visible = true;
             DragDropLbl.Text = "Drag apk or obb";
             ChangeTitle(DragDropLbl.Text);
+            ProgressText.Text = $"{DragDropLbl.Text}";
         }
 
         private void Form1_DragLeave(object sender, EventArgs e)
@@ -623,16 +660,20 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 }
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
                 ChangeTitle("Rookie's Sideloader | Initializing Mirrors");
+                ProgressText.Text = "Initializing mirrors...";
                 initMirrors(true);
                 ChangeTitle("Rookie's Sideloader | Initializing Games");
+                ProgressText.Text = "Initializing games...";
                 SideloaderRCLONE.initGames(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
                     MessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                 }
-                ChangeTitle("Rookie's Sideloader | Sync-ing Game Photos");
+                ChangeTitle("Rookie's Sideloader | Syncing Game Photos");
+                ProgressText.Text = "Syncing release photos...";
                 SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                ChangeTitle("Rookie's Sideloader |  Sync-ing Release Notes");
+                ChangeTitle("Rookie's Sideloader |  Syncing Release Notes");
+                ProgressText.Text = "Syncing release notes...";
                 SideloaderRCLONE.UpdateGameNotes(currentRemote);
                 listappsbtn();
             });
@@ -653,6 +694,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
+            ProgressText.Text = "";
         }
 
         private void initMirrors(bool random)
@@ -717,7 +759,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
  - Software orignally coded by rookie.wtf
  - Thanks to pmow for all of his work, including rclone, wonka and other projects, and for scripting the backend
 without him none of this would be possible
- - Thanks to the data team, they know who they are ;)
+ - Thanks to the data team, they know who they are ;) (Especially HarryEffingPotter, no he did not put this here himself, that is perposterous.)
  - Thanks to flow for being friendly and helping every one, also congrats on being the discord server owner now! :D
  - Thanks to badcoder5000 for helping me redesign the ui
  - Thanks to gotard for the theme changer
@@ -858,9 +900,11 @@ without him none of this would be possible
             {
                 updatedConfig = true;
                 ChangeTitle("Rookie's Sideloader | Checking if config is updated and updating config");
+                ProgressText.Text = "Updating config...";
                 progressBar.Style = ProgressBarStyle.Marquee;
                 await Task.Run(() => SideloaderRCLONE.updateConfig(currentRemote));
                 progressBar.Style = ProgressBarStyle.Continuous;
+                ProgressText.Text = "";
             }
 
             //Do user json on firsttime
@@ -869,6 +913,7 @@ without him none of this would be possible
                 Thread userJsonThread = new Thread(() => { ChangeTitle("Rookie's Sideloader | Pushing user.json"); Sideloader.PushUserJsons(); });
                 userJsonThread.IsBackground = true;
                 userJsonThread.Start();
+
             }
 
             ProcessOutput output = new ProcessOutput("", "");
@@ -892,6 +937,7 @@ without him none of this would be possible
                 t1.Start();
 
                 ChangeTitle("Rookie's Sideloader | Downloading game " + gameName, false);
+                ProgressText.Text = "Downloading game...";
 
                 int i = 0;
                 while (t1.IsAlive)
@@ -941,6 +987,8 @@ without him none of this would be possible
                     catch { }
 
                     await Task.Delay(1000);
+
+
                 }
 
                 //Quota Errors
@@ -988,6 +1036,7 @@ without him none of this would be possible
                                 {
                                     var rand = new Random();
                                     ChangeTitle($"Resigning {file}");
+                                    ProgressText.Text = $"Resigning {file}";
                                     //spoofer.PackageName(file);
                                     output += spoofer.SpoofApk(file, spoofer.PackageName(file), "", Path.GetFileNameWithoutExtension(file) + "r.apk");
 
@@ -1007,8 +1056,9 @@ without him none of this would be possible
                     Debug.WriteLine(wrDelimiter);
 
                     ChangeTitle("Rookie's Sideloader | Installing game obb " + gameName, false);
+                    ProgressText.Text = "Installing game obb...";
 
-                    string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
+                   string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
                     foreach (string folder in folders)
                     {
@@ -1031,6 +1081,7 @@ without him none of this would be possible
                     if (Properties.Settings.Default.deleteAllAfterInstall)
                     {
                         ChangeTitle("Rookie's Sideloader | Deleting game files", false);
+                        ProgressText.Text = "Deleting game files...";
                         try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { MessageBox.Show($"Error deleting game files: {ex.Message}"); }
                     }
 
@@ -1046,6 +1097,7 @@ without him none of this would be possible
             await CheckForDevice();
             ChangeTitlebarToDevice();
             gamesAreDownloading = false;
+            ProgressText.Text = "";
             ShowPrcOutput(output);
         }
 
@@ -1225,11 +1277,17 @@ without him none of this would be possible
 
         private void MountButton_Click(object sender, EventArgs e)
         {
-            if (devicesComboBox.SelectedIndex != -1)
+            if (DeviceConnected)
                 ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
             else
-                FlexibleMessageBox.Show("Connect a device before mounting!");
+                FlexibleMessageBox.Show("You must connect a device before mounting!");
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            UpdateGamesButton.PerformClick();
+        }
+
     }
 
     public static class ControlExtensions

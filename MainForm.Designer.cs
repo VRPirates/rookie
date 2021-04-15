@@ -39,9 +39,9 @@
             this.sideloadFolderButton = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.copyBulkObbButton = new System.Windows.Forms.Button();
-            this.DragDropLbl = new System.Windows.Forms.Label();
             this.downloadInstallGameButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.aboutBtn = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
             this.otherContainer = new System.Windows.Forms.Panel();
@@ -58,10 +58,10 @@
             this.UpdateGamesButton = new System.Windows.Forms.Button();
             this.listApkButton = new System.Windows.Forms.Button();
             this.sideloadDrop = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.etaLabel = new System.Windows.Forms.Label();
-            this.speedLabel = new System.Windows.Forms.Label();
             this.diskLabel = new System.Windows.Forms.Label();
+            this.speedLabel = new System.Windows.Forms.Label();
+            this.etaLabel = new System.Windows.Forms.Label();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.gamesQueListBox = new System.Windows.Forms.ListBox();
             this.freeDisclaimer = new System.Windows.Forms.Label();
             this.devicesComboBox = new System.Windows.Forms.ComboBox();
@@ -69,9 +69,12 @@
             this.gamesListView = new System.Windows.Forms.ListView();
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.gamesPictureBox = new System.Windows.Forms.PictureBox();
-            this.notesRichTextBox = new System.Windows.Forms.RichTextBox();
             this.gamesQueueLabel = new System.Windows.Forms.Label();
             this.MountButton = new System.Windows.Forms.Button();
+            this.ProgressText = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.notesRichTextBox = new System.Windows.Forms.RichTextBox();
+            this.DragDropLbl = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.otherContainer.SuspendLayout();
             this.backupContainer.SuspendLayout();
@@ -89,11 +92,11 @@
             this.m_combo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.m_combo.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.m_combo.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.m_combo.Location = new System.Drawing.Point(224, 11);
+            this.m_combo.Location = new System.Drawing.Point(227, 8);
             this.m_combo.Name = "m_combo";
             this.m_combo.Size = new System.Drawing.Size(745, 26);
             this.m_combo.TabIndex = 19;
-            this.m_combo.Text = "Select an app from here...";
+            this.m_combo.Text = "Select an app to uninstall...";
             // 
             // startsideloadbutton
             // 
@@ -266,9 +269,9 @@
             // 
             this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.progressBar.ForeColor = System.Drawing.Color.Purple;
-            this.progressBar.Location = new System.Drawing.Point(224, 43);
+            this.progressBar.Location = new System.Drawing.Point(227, 555);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(745, 20);
+            this.progressBar.Size = new System.Drawing.Size(745, 25);
             this.progressBar.TabIndex = 20;
             // 
             // copyBulkObbButton
@@ -292,19 +295,6 @@
             this.copyBulkObbButton.UseVisualStyleBackColor = false;
             this.copyBulkObbButton.Click += new System.EventHandler(this.copyBulkObbButton_Click);
             // 
-            // DragDropLbl
-            // 
-            this.DragDropLbl.AutoSize = true;
-            this.DragDropLbl.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.DragDropLbl.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.DragDropLbl.Location = new System.Drawing.Point(214, 753);
-            this.DragDropLbl.Name = "DragDropLbl";
-            this.DragDropLbl.Size = new System.Drawing.Size(320, 55);
-            this.DragDropLbl.TabIndex = 25;
-            this.DragDropLbl.Text = "DragDropLBL";
-            this.DragDropLbl.Visible = false;
-            // 
             // downloadInstallGameButton
             // 
             this.downloadInstallGameButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
@@ -315,9 +305,9 @@
             this.downloadInstallGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadInstallGameButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.downloadInstallGameButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.downloadInstallGameButton.Location = new System.Drawing.Point(224, 69);
+            this.downloadInstallGameButton.Location = new System.Drawing.Point(227, 519);
             this.downloadInstallGameButton.Name = "downloadInstallGameButton";
-            this.downloadInstallGameButton.Size = new System.Drawing.Size(744, 30);
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(745, 30);
             this.downloadInstallGameButton.TabIndex = 22;
             this.downloadInstallGameButton.Text = "Download and Install Game";
             this.downloadInstallGameButton.UseVisualStyleBackColor = false;
@@ -327,6 +317,8 @@
             // 
             this.panel1.AutoScroll = true;
             this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.ButtonColor;
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.aboutBtn);
             this.panel1.Controls.Add(this.settingsButton);
             this.panel1.Controls.Add(this.otherContainer);
@@ -336,6 +328,9 @@
             this.panel1.Controls.Add(this.sideloadContainer);
             this.panel1.Controls.Add(this.sideloadDrop);
             this.panel1.Controls.Add(this.devicesbutton);
+            this.panel1.Controls.Add(this.diskLabel);
+            this.panel1.Controls.Add(this.speedLabel);
+            this.panel1.Controls.Add(this.etaLabel);
             this.panel1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
@@ -343,6 +338,18 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(218, 837);
             this.panel1.TabIndex = 73;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.BackColor = System.Drawing.SystemColors.WindowText;
+            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label1.ForeColor = System.Drawing.SystemColors.Control;
+            this.label1.Location = new System.Drawing.Point(29, 711);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(111, 18);
+            this.label1.TabIndex = 83;
+            this.label1.Text = "Device storage:";
             // 
             // aboutBtn
             // 
@@ -667,6 +674,48 @@
             this.sideloadDrop.UseVisualStyleBackColor = false;
             this.sideloadDrop.Click += new System.EventHandler(this.sideloadContainer_Click);
             // 
+            // diskLabel
+            // 
+            this.diskLabel.AutoSize = true;
+            this.diskLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.diskLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.diskLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.diskLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.diskLabel.Location = new System.Drawing.Point(30, 729);
+            this.diskLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.diskLabel.Name = "diskLabel";
+            this.diskLabel.Size = new System.Drawing.Size(77, 18);
+            this.diskLabel.TabIndex = 77;
+            this.diskLabel.Text = "Disk Label";
+            // 
+            // speedLabel
+            // 
+            this.speedLabel.AutoSize = true;
+            this.speedLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.speedLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.speedLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.speedLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.speedLabel.Location = new System.Drawing.Point(30, 658);
+            this.speedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.speedLabel.Name = "speedLabel";
+            this.speedLabel.Size = new System.Drawing.Size(149, 18);
+            this.speedLabel.TabIndex = 76;
+            this.speedLabel.Text = "DLS: Speed in MBPS";
+            // 
+            // etaLabel
+            // 
+            this.etaLabel.AutoSize = true;
+            this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.etaLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.etaLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.etaLabel.Location = new System.Drawing.Point(30, 676);
+            this.etaLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.etaLabel.Name = "etaLabel";
+            this.etaLabel.Size = new System.Drawing.Size(148, 18);
+            this.etaLabel.TabIndex = 75;
+            this.etaLabel.Text = "ETA: HH:MM:SS Left";
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.Color.Transparent;
@@ -674,54 +723,12 @@
             this.pictureBox1.ErrorImage = null;
             this.pictureBox1.ImageLocation = global::AndroidSideloader.Properties.Settings.Default.BackPicturePath;
             this.pictureBox1.InitialImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(217, 0);
+            this.pictureBox1.Location = new System.Drawing.Point(205, 3);
             this.pictureBox1.Name = "pictureBox1";
             this.pictureBox1.Size = new System.Drawing.Size(768, 834);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
-            // 
-            // etaLabel
-            // 
-            this.etaLabel.AutoSize = true;
-            this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "BigFontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.etaLabel.Font = global::AndroidSideloader.Properties.Settings.Default.BigFontStyle;
-            this.etaLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.etaLabel.Location = new System.Drawing.Point(603, 398);
-            this.etaLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.etaLabel.Name = "etaLabel";
-            this.etaLabel.Size = new System.Drawing.Size(218, 26);
-            this.etaLabel.TabIndex = 75;
-            this.etaLabel.Text = "ETA: HH:MM:SS Left";
-            // 
-            // speedLabel
-            // 
-            this.speedLabel.AutoSize = true;
-            this.speedLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.speedLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "BigFontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.speedLabel.Font = global::AndroidSideloader.Properties.Settings.Default.BigFontStyle;
-            this.speedLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.speedLabel.Location = new System.Drawing.Point(603, 373);
-            this.speedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(222, 26);
-            this.speedLabel.TabIndex = 76;
-            this.speedLabel.Text = "DLS: Speed in MBPS";
-            // 
-            // diskLabel
-            // 
-            this.diskLabel.AutoSize = true;
-            this.diskLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.diskLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "BigFontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.diskLabel.Font = global::AndroidSideloader.Properties.Settings.Default.BigFontStyle;
-            this.diskLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.diskLabel.Location = new System.Drawing.Point(223, 376);
-            this.diskLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.diskLabel.Name = "diskLabel";
-            this.diskLabel.Size = new System.Drawing.Size(114, 26);
-            this.diskLabel.TabIndex = 77;
-            this.diskLabel.Text = "Disk Label";
             // 
             // gamesQueListBox
             // 
@@ -734,10 +741,10 @@
             this.gamesQueListBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesQueListBox.FormattingEnabled = true;
             this.gamesQueListBox.ItemHeight = 18;
-            this.gamesQueListBox.Location = new System.Drawing.Point(228, 677);
+            this.gamesQueListBox.Location = new System.Drawing.Point(600, 586);
             this.gamesQueListBox.Margin = new System.Windows.Forms.Padding(2);
             this.gamesQueListBox.Name = "gamesQueListBox";
-            this.gamesQueListBox.Size = new System.Drawing.Size(740, 74);
+            this.gamesQueListBox.Size = new System.Drawing.Size(373, 110);
             this.gamesQueListBox.TabIndex = 78;
             this.gamesQueListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gamesQueListBox_MouseClick);
             // 
@@ -763,7 +770,7 @@
             this.devicesComboBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.devicesComboBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.devicesComboBox.FormattingEnabled = true;
-            this.devicesComboBox.Location = new System.Drawing.Point(224, 104);
+            this.devicesComboBox.Location = new System.Drawing.Point(227, 39);
             this.devicesComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.devicesComboBox.Name = "devicesComboBox";
             this.devicesComboBox.Size = new System.Drawing.Size(206, 26);
@@ -781,7 +788,7 @@
             this.remotesList.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.remotesList.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.remotesList.FormattingEnabled = true;
-            this.remotesList.Location = new System.Drawing.Point(527, 105);
+            this.remotesList.Location = new System.Drawing.Point(530, 39);
             this.remotesList.Margin = new System.Windows.Forms.Padding(2);
             this.remotesList.Name = "remotesList";
             this.remotesList.Size = new System.Drawing.Size(206, 26);
@@ -796,9 +803,9 @@
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesListView.HideSelection = false;
-            this.gamesListView.Location = new System.Drawing.Point(224, 135);
+            this.gamesListView.Location = new System.Drawing.Point(227, 71);
             this.gamesListView.Name = "gamesListView";
-            this.gamesListView.Size = new System.Drawing.Size(744, 238);
+            this.gamesListView.Size = new System.Drawing.Size(745, 442);
             this.gamesListView.TabIndex = 82;
             this.gamesListView.UseCompatibleStateImageBehavior = false;
             this.gamesListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
@@ -814,36 +821,21 @@
             this.searchTextBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.searchTextBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.searchTextBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.searchTextBox.Location = new System.Drawing.Point(738, 105);
+            this.searchTextBox.Location = new System.Drawing.Point(741, 40);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(230, 24);
+            this.searchTextBox.Size = new System.Drawing.Size(232, 24);
             this.searchTextBox.TabIndex = 83;
+            this.searchTextBox.Text = "Search mirror...";
             this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
             // 
             // gamesPictureBox
             // 
             this.gamesPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.gamesPictureBox.Location = new System.Drawing.Point(228, 454);
+            this.gamesPictureBox.Location = new System.Drawing.Point(227, 586);
             this.gamesPictureBox.Name = "gamesPictureBox";
-            this.gamesPictureBox.Size = new System.Drawing.Size(360, 203);
+            this.gamesPictureBox.Size = new System.Drawing.Size(367, 217);
             this.gamesPictureBox.TabIndex = 84;
             this.gamesPictureBox.TabStop = false;
-            // 
-            // notesRichTextBox
-            // 
-            this.notesRichTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.notesRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.notesRichTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.notesRichTextBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.notesRichTextBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.notesRichTextBox.HideSelection = false;
-            this.notesRichTextBox.Location = new System.Drawing.Point(608, 454);
-            this.notesRichTextBox.Name = "notesRichTextBox";
-            this.notesRichTextBox.ReadOnly = true;
-            this.notesRichTextBox.ShowSelectionMargin = true;
-            this.notesRichTextBox.Size = new System.Drawing.Size(360, 204);
-            this.notesRichTextBox.TabIndex = 85;
-            this.notesRichTextBox.Text = "";
             // 
             // gamesQueueLabel
             // 
@@ -852,7 +844,7 @@
             this.gamesQueueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesQueueLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.gamesQueueLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.gamesQueueLabel.Location = new System.Drawing.Point(225, 660);
+            this.gamesQueueLabel.Location = new System.Drawing.Point(733, 683);
             this.gamesQueueLabel.Name = "gamesQueueLabel";
             this.gamesQueueLabel.Size = new System.Drawing.Size(105, 18);
             this.gamesQueueLabel.TabIndex = 86;
@@ -864,17 +856,71 @@
             this.MountButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.MountButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.MountButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.MountButton.Enabled = false;
             this.MountButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MountButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.MountButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.MountButton.Location = new System.Drawing.Point(435, 104);
+            this.MountButton.Location = new System.Drawing.Point(438, 39);
             this.MountButton.Name = "MountButton";
-            this.MountButton.Size = new System.Drawing.Size(87, 27);
+            this.MountButton.Size = new System.Drawing.Size(87, 25);
             this.MountButton.TabIndex = 87;
             this.MountButton.Text = "Mount";
             this.MountButton.UseVisualStyleBackColor = false;
+            this.MountButton.UseWaitCursor = true;
             this.MountButton.Click += new System.EventHandler(this.MountButton_Click);
+            // 
+            // ProgressText
+            // 
+            this.ProgressText.AutoSize = true;
+            this.ProgressText.BackColor = System.Drawing.Color.Transparent;
+            this.ProgressText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12.25F);
+            this.ProgressText.ForeColor = System.Drawing.Color.White;
+            this.ProgressText.Location = new System.Drawing.Point(224, 580);
+            this.ProgressText.Name = "ProgressText";
+            this.ProgressText.Size = new System.Drawing.Size(14, 20);
+            this.ProgressText.TabIndex = 88;
+            this.ProgressText.Text = " ";
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.BackColor = System.Drawing.SystemColors.WindowText;
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.label2.ForeColor = System.Drawing.SystemColors.Control;
+            this.label2.Location = new System.Drawing.Point(30, 639);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(98, 18);
+            this.label2.TabIndex = 83;
+            this.label2.Text = "Downloading:";
+            // 
+            // notesRichTextBox
+            // 
+            this.notesRichTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
+            this.notesRichTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.notesRichTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.notesRichTextBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.notesRichTextBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.notesRichTextBox.HideSelection = false;
+            this.notesRichTextBox.Location = new System.Drawing.Point(600, 704);
+            this.notesRichTextBox.Name = "notesRichTextBox";
+            this.notesRichTextBox.ReadOnly = true;
+            this.notesRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.ForcedVertical;
+            this.notesRichTextBox.ShowSelectionMargin = true;
+            this.notesRichTextBox.Size = new System.Drawing.Size(373, 96);
+            this.notesRichTextBox.TabIndex = 85;
+            this.notesRichTextBox.Text = "";
+            // 
+            // DragDropLbl
+            // 
+            this.DragDropLbl.AutoSize = true;
+            this.DragDropLbl.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.DragDropLbl.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.DragDropLbl.Location = new System.Drawing.Point(633, 602);
+            this.DragDropLbl.Name = "DragDropLbl";
+            this.DragDropLbl.Size = new System.Drawing.Size(320, 55);
+            this.DragDropLbl.TabIndex = 25;
+            this.DragDropLbl.Text = "DragDropLBL";
+            this.DragDropLbl.Visible = false;
             // 
             // MainForm
             // 
@@ -883,21 +929,19 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.ClientSize = new System.Drawing.Size(980, 837);
+            this.Controls.Add(this.notesRichTextBox);
+            this.Controls.Add(this.DragDropLbl);
+            this.Controls.Add(this.ProgressText);
             this.Controls.Add(this.MountButton);
             this.Controls.Add(this.gamesQueueLabel);
-            this.Controls.Add(this.notesRichTextBox);
             this.Controls.Add(this.gamesPictureBox);
             this.Controls.Add(this.searchTextBox);
             this.Controls.Add(this.gamesListView);
             this.Controls.Add(this.remotesList);
             this.Controls.Add(this.devicesComboBox);
             this.Controls.Add(this.gamesQueListBox);
-            this.Controls.Add(this.diskLabel);
-            this.Controls.Add(this.speedLabel);
-            this.Controls.Add(this.etaLabel);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.downloadInstallGameButton);
-            this.Controls.Add(this.DragDropLbl);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.m_combo);
             this.Controls.Add(this.freeDisclaimer);
@@ -916,6 +960,7 @@
             this.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
             this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
             this.otherContainer.ResumeLayout(false);
             this.backupContainer.ResumeLayout(false);
             this.sideloadContainer.ResumeLayout(false);
@@ -938,7 +983,6 @@
         private System.Windows.Forms.Button sideloadFolderButton;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button copyBulkObbButton;
-        private System.Windows.Forms.Label DragDropLbl;
         private System.Windows.Forms.Button downloadInstallGameButton;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel backupContainer;
@@ -967,10 +1011,14 @@
         private System.Windows.Forms.ListView gamesListView;
         private System.Windows.Forms.TextBox searchTextBox;
         private System.Windows.Forms.PictureBox gamesPictureBox;
-        private System.Windows.Forms.RichTextBox notesRichTextBox;
         private System.Windows.Forms.Button UpdateGamesButton;
         private System.Windows.Forms.Label gamesQueueLabel;
         private System.Windows.Forms.Button MountButton;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label ProgressText;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.RichTextBox notesRichTextBox;
+        private System.Windows.Forms.Label DragDropLbl;
     }
 }
 

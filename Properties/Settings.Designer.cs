@@ -229,7 +229,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 16pt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 14pt")]
         public global::System.Drawing.Font BigFontStyle {
             get {
                 return ((global::System.Drawing.Font)(this["BigFontStyle"]));

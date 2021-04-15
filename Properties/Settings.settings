@@ -54,7 +54,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BigFontStyle" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Microsoft Sans Serif, 16pt</Value>
+      <Value Profile="(Default)">Microsoft Sans Serif, 14pt</Value>
     </Setting>
     <Setting Name="ResignAPKs" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
