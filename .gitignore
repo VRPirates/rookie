@@ -2,6 +2,8 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/bin
-/FodyWeavers.xsd
-/FodyWeavers.xml
+*.pdb
+*.xml
+*.xsd
+bin/
+.vs/
