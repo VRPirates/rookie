@@ -1,3 +1,19 @@
+----Roma is out of town he will be back sunday or monday to sign this with his key ---
+I, HarryeffinPotter have updated VRP essentials so that it does a fresh install every time it is installed, 
+this can lead to those who back up their saves losing data. I have altered Roma's code to send the backups 
+to Documents\RookieBackups now whenever a user clicks on backup game/save data!
+
+
+v2.0-WIP-SU2
+
+-changed Rookie's backup folder location.* 
+
+
+Because of the way the newest VRP Essentials deletes the entire previous installation folder prior to installing, 
+Uninstalling, or reinstalling.
+
+
+
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 

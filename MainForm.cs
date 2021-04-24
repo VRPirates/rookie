@@ -192,7 +192,6 @@ namespace AndroidSideloader
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
-                     ;
                         }
                         else
                         {
@@ -330,13 +329,20 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         private async void backupbutton_Click(object sender, EventArgs e)
         {
             ProcessOutput output = new ProcessOutput("", "");
+            String BackupDir = "";
+
             Thread t1 = new Thread(() =>
             {
-                output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{Environment.CurrentDirectory}\"");
+
+            Directory.CreateDirectory(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RookieBackup"));
+            BackupDir = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "RookieBackup");
+        
+                output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{BackupDir}\"");
 
                 try
                 {
-                    Directory.Move(ADB.adbFolderPath + "\\data", Environment.CurrentDirectory + "\\data");
+                Directory.Move(ADB.adbFolderPath + "\\data", BackupDir);
+
                 }
                 catch (Exception ex)
                 {
@@ -1095,6 +1101,23 @@ without him none of this would be possible
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             RCLONE.killRclone();
+            Application.Exit();
+            System.Diagnostics.Process.GetCurrentProcess().Kill();
+            System.Windows.Forms.Application.Exit();
+            Process cmdSign = new Process();
+            cmdSign.StartInfo.FileName = "cmd.exe";
+            cmdSign.StartInfo.RedirectStandardInput = true;
+            cmdSign.StartInfo.CreateNoWindow = true;
+            cmdSign.StartInfo.UseShellExecute = true;
+            cmdSign.StartInfo.RedirectStandardOutput = true; //
+            cmdSign.StartInfo.RedirectStandardError = true; //
+            cmdSign.Start();
+            cmdSign.StandardInput.WriteLine($"Taskkill /im adb.exe /f /t");
+            cmdSign.StandardInput.Flush();
+            cmdSign.StandardInput.Close();
+            cmdSign.StandardOutput.Close();
+            cmdSign.WaitForExit();
+
         }
 
         private void movieStreamButton_Click(object sender, EventArgs e)
