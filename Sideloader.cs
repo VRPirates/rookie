@@ -158,40 +158,28 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
         public static void downloadFiles()
         {
-            using (var client = new WebClient())
+            var client = new WebClient();
+            ServicePointManager.Expect100Continue = true;
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            try
             {
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-                if (!File.Exists(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\warning.png"))
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/secret", Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\warning.png");
-
-
                 if (!File.Exists("Sideloader Launcher.exe"))
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
 
                 if (!Directory.Exists(ADB.adbFolderPath)) //if there is no adb folder, download and extract
                 {
-                    try
-                    {
-                        client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
-                        Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
-                        File.Delete("adb.7z");
-                    }
-                    catch
-                    {
-
-                    }
-
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
+                    File.Delete("adb.7z");
                 }
 
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
                 {
                     string url;
                     if (Environment.Is64BitOperatingSystem)
-                        url = "https://downloads.rclone.org/v1.53.1/rclone-v1.53.1-windows-amd64.zip";
+                        url = "https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-windows-amd64.zip";
                     else
-                        url = "https://downloads.rclone.org/v1.53.1/rclone-v1.53.1-windows-386.zip";
+                        url = "https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-windows-386.zip";
 
                     client.DownloadFile(url, "rclone.zip");
 
@@ -209,6 +197,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         }
                     }
                 }
+
+            }
+            catch
+            {
+                FlexibleMessageBox.Show("Your internet is not working properly or rclone/github servers are down, some files may be missing (adb, rclone or launcher)");
             }
         }
     }

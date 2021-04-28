@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -253,6 +254,26 @@ namespace AndroidSideloader
             return deviceId;
         }
 
+        public static bool HasInternet = false;
+
+        public static void CheckForInternet()
+        {
+            Ping myPing = new Ping();
+            String host = "8.8.8.8"; //google dns
+            byte[] buffer = new byte[32];
+            int timeout = 1000;
+            PingOptions pingOptions = new PingOptions();
+            try
+            {
+                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
+                if (reply.Status == IPStatus.Success)
+                {
+                    HasInternet = true;
+                }
+            }
+            catch { HasInternet = false; }
+        }
+
         private async void Form1_Load(object sender, EventArgs e)
         {
             gamesListView.View = View.Details;
@@ -268,7 +289,13 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     File.Delete(Sideloader.CrashLogPath);
             }
 
-            Sideloader.downloadFiles(); await Task.Delay(100);
+            CheckForInternet();
+
+            if (HasInternet == true)
+                Sideloader.downloadFiles();
+            else
+                FlexibleMessageBox.Show("Cannont connect to google dns, your internet may be down, won't use rclone or online features!");
+            await Task.Delay(100);
 
             //Delete the Debug file if it is more than 5MB
             if (File.Exists(Logger.logfile))
@@ -680,7 +707,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             });
             t1.SetApartmentState(ApartmentState.STA);
             t1.IsBackground = false;
-            t1.Start();
+            if (HasInternet)
+                t1.Start();
 
             showAvailableSpace();
 
@@ -785,7 +813,7 @@ without him none of this would be possible
             isLoading = true;
 
             progressBar.Style = ProgressBarStyle.Marquee;
-
+            CheckForInternet(); 
             devicesbutton_Click(sender, e);
 
             Thread t1 = new Thread(() =>
@@ -1232,6 +1260,11 @@ without him none of this would be possible
 
         private void UpdateGamesButton_Click(object sender, EventArgs e)
         {
+            if (SideloaderRCLONE.games.Count<1)
+            {
+                FlexibleMessageBox.Show("There are no games in rclone, please check your internet connection and check if the config is working properly");
+                return;
+            }
             string gamesToUpdate = "";
             foreach (string packagename in Sideloader.InstalledPackageNames)
             {

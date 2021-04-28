@@ -30,6 +30,8 @@ namespace AndroidSideloader
 
         public static ProcessOutput runRcloneCommand(string command, string bandwithLimit = "")
         {
+            if (!MainForm.HasInternet) return new ProcessOutput("", "No internet");
+
             Environment.SetEnvironmentVariable("RCLONE_CRYPT_REMOTE", rclonepw);
             Environment.SetEnvironmentVariable("RCLONE_CONFIG_PASS", rclonepw);
             ProcessOutput prcoutput = new ProcessOutput();
