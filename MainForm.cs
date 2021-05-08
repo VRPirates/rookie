@@ -294,7 +294,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             if (HasInternet == true)
                 Sideloader.downloadFiles();
             else
-                FlexibleMessageBox.Show("Cannont connect to google dns, your internet may be down, won't use rclone or online features!");
+                FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
             await Task.Delay(100);
 
             //Delete the Debug file if it is more than 5MB
@@ -359,7 +359,15 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ProcessOutput output = new ProcessOutput("", "");
             Thread t1 = new Thread(() =>
             {
-                output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{Environment.CurrentDirectory}\"");
+                string backups = $"{Environment.SpecialFolder.MyDocuments}\\RookieBackups\\";
+
+                if (!Directory.Exists(backups))
+                {
+                    Directory.CreateDirectory(backups);
+                }
+
+                output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{backups}");
+                MessageBox.Show("All game saves backed up to Documents\\RookieBackups");
 
                 try
                 {
