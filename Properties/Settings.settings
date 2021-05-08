@@ -42,7 +42,7 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="FontStyle" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Microsoft Sans Serif, 11.25pt</Value>
+      <Value Profile="(Default)">Microsoft Sans Serif, 9.25pt</Value>
     </Setting>
     <Setting Name="BackPicturePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

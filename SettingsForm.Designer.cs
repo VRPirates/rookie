@@ -221,7 +221,6 @@
             this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "Settings";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SettingsForm_FormClosing);
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

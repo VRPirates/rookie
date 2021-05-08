@@ -8,14 +8,13 @@ namespace AndroidSideloader
 {
     public partial class themeForm : Form
     {
-        
         public themeForm()
         {
             InitializeComponent();
         }
 
-        
-
+        //Code made by @Gotard#9164 from discord (id 352745203322585088)
+        //Steam profile: https://steamcommunity.com/id/GotardPL/
         private void button4_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
@@ -25,9 +24,7 @@ namespace AndroidSideloader
         private void button1_Click(object sender, EventArgs e)
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
-                Properties.Settings.Default.BackColor = colorDialog1.Color;
-            
-                 
+                Properties.Settings.Default.BackColor = colorDialog1.Color;    
         }
 
         private void button7_Click(object sender, EventArgs e)
@@ -47,10 +44,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.FontStyle = new Font("Microsoft Sans Serif", 11, FontStyle.Regular);
             Properties.Settings.Default.FontColor = Color.White;
             Properties.Settings.Default.Save();
-
         }
-
-        
 
         private void button5_Click(object sender, EventArgs e)
         {
@@ -89,11 +83,6 @@ namespace AndroidSideloader
         {
             if (colorDialog1.ShowDialog() == DialogResult.OK)
                 Properties.Settings.Default.SubButtonColor = colorDialog1.Color;
-        }
-
-        private void themeForm_Load(object sender, EventArgs e)
-        {
-
         }
 
         private void button12_Click(object sender, EventArgs e)

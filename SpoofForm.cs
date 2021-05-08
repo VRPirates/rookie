@@ -23,6 +23,7 @@ namespace AndroidSideloader
             }
             string NewPackageName = PackageNameTextBox.Text;
             string path;
+
             using (OpenFileDialog openFileDialog = new OpenFileDialog())
             {
                 openFileDialog.Filter = "Android apps (*.apk)|*.apk";
@@ -38,6 +39,7 @@ namespace AndroidSideloader
             progressBar1.Style = ProgressBarStyle.Marquee;
 
             string output = "";
+            //Spawn spoofer in a new thread so the ui isn't blocked
             Thread t1 = new Thread(() =>
             {
                 spoofer.Init();

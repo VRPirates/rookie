@@ -14,6 +14,7 @@ namespace AndroidSideloader
         {
             bool ChangesMade = false;
 
+            //Quest 2 settings, might remove them in the future since some of them are broken
             if (RefreshRateComboBox.SelectedIndex != -1)
             {
                 ADB.RunAdbCommandToString($"shell setprop debug.oculus.refreshRate {RefreshRateComboBox.SelectedItem.ToString()}");

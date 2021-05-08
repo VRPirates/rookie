@@ -20,6 +20,7 @@ namespace AndroidSideloader
             intToolTips();
         }
 
+        //Init form objects with values from settings
         private void intSettings()
         {
             checkForUpdatesCheckBox.Checked = Properties.Settings.Default.checkForUpdates;
@@ -46,6 +47,7 @@ namespace AndroidSideloader
             deleteAfterInstallToolTip.SetToolTip(this.deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
         }
 
+        //Apply settings
         private void applyButton_Click(object sender, EventArgs e)
         {
             if (BandwithTextbox.Text.Length > 0 && BandwithTextbox.Text != "0")
@@ -60,11 +62,6 @@ namespace AndroidSideloader
                 Properties.Settings.Default.BandwithLimit = "";
 
             Properties.Settings.Default.Save();
-        }
-
-        private void SettingsForm_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            
         }
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -100,6 +97,7 @@ namespace AndroidSideloader
 
         private void resignGamesCheckbox_CheckedChanged(object sender, EventArgs e)
         {
+            //Check for dependencies
             if (resignGamesCheckbox.Checked && Spoofer.spoofer.HasDependencies())
                 resignGamesCheckbox.Checked = true;
             else if (resignGamesCheckbox.Checked)

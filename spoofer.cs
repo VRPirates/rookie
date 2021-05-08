@@ -15,6 +15,7 @@ namespace Spoofer
 
         public static void Init()
         {
+            //If there is no keystore or details (user and pw for keystore) generate them!
             if ((File.Exists("keystore.key") == false || File.Exists("details.txt") == false) && HasDependencies())
             {
                 var rand = new Random();

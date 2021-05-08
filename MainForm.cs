@@ -294,7 +294,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             if (HasInternet == true)
                 Sideloader.downloadFiles();
             else
-                FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
+                FlexibleMessageBox.Show("Cannont connect to google dns, your internet may be down, won't use rclone or online features!");
             await Task.Delay(100);
 
             //Delete the Debug file if it is more than 5MB
@@ -363,7 +363,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 string date_str = DateTime.Today.ToString("dd.MM.yyyy");
 
                 MessageBox.Show($"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str}");
-                 string backups = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups\\{date_str}");
+                string backups = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups\\{date_str}");
                 Directory.CreateDirectory(backups);
 
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{backups}");
@@ -1084,12 +1084,11 @@ without him none of this would be possible
 
                     Debug.WriteLine(wrDelimiter);
 
-                    ChangeTitle("Installing game obb " + gameName, false);
-
                    string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
                     foreach (string folder in folders)
                     {
+                        ChangeTitle("Installing game obb " + gameName, false);
                         string[] obbs = Directory.GetFiles(folder);
 
                         foreach (string currObb in obbs)
@@ -1116,6 +1115,7 @@ without him none of this would be possible
                     gamesQueueList.RemoveAt(0);
                     gamesQueListBox.DataSource = null;
                     gamesQueListBox.DataSource = gamesQueueList;
+                    ChangeTitlebarToDevice();
                     showAvailableSpace();
                 }
             }
@@ -1131,6 +1131,7 @@ without him none of this would be possible
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            ADB.RunAdbCommandToString("kill-server");
             RCLONE.killRclone();
         }
 
@@ -1315,6 +1316,11 @@ without him none of this would be possible
                 ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
             else
                 FlexibleMessageBox.Show("You must connect a device before mounting!");
+        }
+
+        private void freeDisclaimer_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/nerdunit/androidsideloader");
         }
     }
 

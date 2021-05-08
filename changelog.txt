@@ -1,3 +1,27 @@
+!!!IMPORTANT!!!
+THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
+Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
+Make sure to redownload the entire rclone folder from the config provider!
+
+v2.0-WIP-SU2
+
+Changes
+ = Added anchors
+ = Added some comments
+ 
+
+Date 
+
+VT: 
+
+MD5 Checksum: 
+SHA-1 Checksum: 
+SHA-256 Checksum: 
+SHA-512 Checksum: 
+
+You can always get my public key from miligra.me/pgp
+You can verify the signed message using kleopatra for windows or dark.fail/pgp
+
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 

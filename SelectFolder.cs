@@ -8,6 +8,8 @@ namespace AndroidSideloader
     /// <summary>
     /// Present the Windows Vista-style open file dialog to select a folder. Fall back for older Windows Versions
     /// </summary>
+
+    //Coded by Erike from stackoverflow (https://stackoverflow.com/users/57611/erike)
     public class FolderSelectDialog
     {
         private string _initialDirectory;

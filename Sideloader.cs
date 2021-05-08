@@ -21,6 +21,8 @@ namespace AndroidSideloader
 - Java JDK
 - aapt
 And all of them added to PATH, without ANY of them, the spoofer won't work!";
+
+        //push user.json to device (required for some devices like oculus quest)
         public static void PushUserJsons()
         {
             ADB.WakeDevice();
@@ -32,14 +34,17 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
         }
 
+        //List of all installed package names from connected device
         public static List<string> InstalledPackageNames = new List<string>();
 
+        //Remove folder from device
         public static ProcessOutput RemoveFolder(string path)
         {
             ADB.WakeDevice();
             return ADB.RunAdbCommandToString($"shell rm -r {path}");
         }
 
+        //For games that require manual install, like having another folder that isnt an obb
         public static ProcessOutput RunADBCommandsFromFile(string path, string RunFromPath)
         {
             ADB.WakeDevice();
@@ -62,6 +67,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             return output;
         }
 
+        //Recursive sideload any apk file
         public static ProcessOutput RecursiveOutput = new ProcessOutput();
         public static void RecursiveSideload(string FolderPath)
         {
@@ -81,6 +87,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             catch (Exception ex) { Logger.Log(ex.Message); }
         }
 
+        //Recursive copy any obb folder
         public static void RecursiveCopyOBB(string FolderPath)
         {
             try
@@ -98,6 +105,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             catch (Exception ex) { Logger.Log(ex.Message); }
         }
 
+        //uninstalls an app
         public static ProcessOutput UninstallGame(string GameName)
         {
             ADB.WakeDevice();
@@ -111,12 +119,14 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
             output = ADB.UninstallPackage(packageName);
 
+            //remove both data and obb if there is any
             Sideloader.RemoveFolder("/sdcard/Android/obb/" + packageName);
             Sideloader.RemoveFolder("/sdcard/Android/data/" + packageName);
 
             return output;
         }
 
+        //Extracts apk from device, saves it by package name to sideloader folder
         public static ProcessOutput getApk(string GameName)
         {
             ADB.WakeDevice();
@@ -156,6 +166,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             return gameName;
         }
 
+        //Downloads the required files
         public static void downloadFiles()
         {
             var client = new WebClient();
@@ -180,6 +191,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         url = "https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-windows-amd64.zip";
                     else
                         url = "https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-windows-386.zip";
+                    //Since sideloader is build for x86, it should work on both x86 and x64 so we download the according rclone version
 
                     client.DownloadFile(url, "rclone.zip");
 
@@ -193,7 +205,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         if (folder.Contains("rclone"))
                         {
                             Directory.Move(folder, "rclone");
-                            break;
+                            break; //only 1 rclone folder
                         }
                     }
                 }

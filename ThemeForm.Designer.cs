@@ -209,7 +209,6 @@
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.Name = "themeForm";
             this.Text = "Create Your Theme";
-            this.Load += new System.EventHandler(this.themeForm_Load);
             this.ResumeLayout(false);
 
         }

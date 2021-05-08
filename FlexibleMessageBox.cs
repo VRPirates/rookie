@@ -39,7 +39,13 @@ namespace JR.Utils.GUI.Forms
      *  
      *  FlexibleMessageBox.Show("Some text with a link: www.google.com", 
      *                          "Some caption",
-     *                          MessageBoxButtons.AbortRetryIgnore, 
+     *                          MessageBoxButton
+     *                          
+     *                          
+     *                          
+     *                          
+     *                          
+     *                          s.AbortRetryIgnore, 
      *                          MessageBoxIcon.Information,
      *                          MessageBoxDefaultButton.Button2);
      *  
