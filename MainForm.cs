@@ -359,19 +359,17 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ProcessOutput output = new ProcessOutput("", "");
             Thread t1 = new Thread(() =>
             {
-                string backups = $"{Environment.SpecialFolder.MyDocuments}\\RookieBackups\\";
 
-                if (!Directory.Exists(backups))
-                {
-                    Directory.CreateDirectory(backups);
-                }
+                string date_str = DateTime.Today.ToString("dd.MM.yyyy");
 
-                output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{backups}");
-                MessageBox.Show("All game saves backed up to Documents\\RookieBackups");
+                MessageBox.Show($"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str}");
+                 string backups = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups\\{date_str}");
+                Directory.CreateDirectory(backups);
+                output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/{date_str}\"");
 
                 try
                 {
-                    Directory.Move(ADB.adbFolderPath + "\\data", Environment.CurrentDirectory + "\\data");
+                    Directory.Move(ADB.adbFolderPath, Environment.CurrentDirectory + "");
                 }
                 catch (Exception ex)
                 {
@@ -399,7 +397,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 string path = dialog.FileName;
                 Thread t1 = new Thread(() =>
                 {
-                    output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
+                    output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data");
                 });
                 t1.IsBackground = true;
                 t1.Start();
