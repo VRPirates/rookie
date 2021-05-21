@@ -6,8 +6,12 @@ Make sure to redownload the entire rclone folder from the config provider!
 v2.0-WIP-SU2
 
 Changes
+//TOFIX INSTALL.TXT
+ + Adb tries to uninstall app before sideloading it (keeps user data)
  = Added anchors
  = Added some comments
+ = Fixed Stuff
+ - Removed Auto resign on download setting
  
 
 Date 

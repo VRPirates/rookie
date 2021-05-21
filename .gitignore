@@ -5,5 +5,14 @@
 *.xml
 *.xsd
 bin/
+adb/
+rclone/
+thumbnails/
+notes/
 .vs/
 /.vs/AndroidSideloader/v16/.suo
+/adb/adb.exe
+installedPackages.json
+AndroidSideloader.csproj.user
+AndroidSideloader.csproj.user
+AndroidSideloader.csproj.user

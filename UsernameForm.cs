@@ -30,8 +30,11 @@ namespace AndroidSideloader
                 return;
             }
 
-            //Make and push user json in a new thread to not block the ui
-            Thread t1 = new Thread(() => { createUserJson(textBox1.Text); });
+            Thread t1 = new Thread(() =>
+            {
+                createUserJson(textBox1.Text);
+
+            });
             t1.IsBackground = true;
             t1.Start();
 
@@ -57,7 +60,6 @@ namespace AndroidSideloader
         }
         public static void createUserJsonByName(string username, string jsonName)
         {
-            //Should make a new object or dictionary if there will be more user.json files
             switch (jsonName)
             {
                 case "user.json":
@@ -76,6 +78,6 @@ namespace AndroidSideloader
 
 
         }
-       
+
     }
 }

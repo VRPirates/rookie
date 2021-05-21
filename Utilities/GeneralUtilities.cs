@@ -24,7 +24,6 @@ namespace AndroidSideloader.Utilities
         {
             return $"com.{GeneralUtilities.randomString(rand.Next(3, 8))}.{GeneralUtilities.randomString(rand.Next(3, 8))}";
         }
-        bool isLoading = true;
         public static string CommandOutput = "";
         public static string CommandError = "";
 

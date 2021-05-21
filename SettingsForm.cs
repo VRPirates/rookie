@@ -28,7 +28,6 @@ namespace AndroidSideloader
             deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
             updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
             userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
-            resignGamesCheckbox.Checked = Properties.Settings.Default.ResignAPKs;
             if (Properties.Settings.Default.BandwithLimit.Length>1)
             {
                 BandwithTextbox.Text = Properties.Settings.Default.BandwithLimit.Remove(Properties.Settings.Default.BandwithLimit.Length - 1);
@@ -57,11 +56,14 @@ namespace AndroidSideloader
                     return;
                 }
                 else
+                {
                     Properties.Settings.Default.BandwithLimit = $"{BandwithTextbox.Text.Replace(" ", "")}{BandwithComboBox.Text}";
+                }
             else
                 Properties.Settings.Default.BandwithLimit = "";
 
             Properties.Settings.Default.Save();
+            FlexibleMessageBox.Show("Settings applied!");
         }
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -93,20 +95,6 @@ namespace AndroidSideloader
         private void userJsonOnGameInstall_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.userJsonOnGameInstall = userJsonOnGameInstall.Checked;
-        }
-
-        private void resignGamesCheckbox_CheckedChanged(object sender, EventArgs e)
-        {
-            //Check for dependencies
-            if (resignGamesCheckbox.Checked && Spoofer.spoofer.HasDependencies())
-                resignGamesCheckbox.Checked = true;
-            else if (resignGamesCheckbox.Checked)
-            {
-                MessageBox.Show("You are missing dependencies (install apktool aapt and jarsigner) and then restart the sideloader");
-                resignGamesCheckbox.Checked = false;
-            }
-
-            Properties.Settings.Default.ResignAPKs = resignGamesCheckbox.Checked;
         }
     }
 }

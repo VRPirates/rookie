@@ -13,7 +13,7 @@ namespace AndroidSideloader
 {
     class Sideloader
     {
-
+        public static string TempFolder = Path.Combine(Environment.CurrentDirectory, "temp");
         public static string CrashLogPath = "crashlog.txt";
 
         public static string SpooferWarning = @"Please make sure you have installed:
@@ -35,7 +35,8 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         }
 
         //List of all installed package names from connected device
-        public static List<string> InstalledPackageNames = new List<string>();
+        public static Dictionary<string, string> InstalledPackages = new Dictionary<string, string>(); //Packagename and Version
+        //public static List<string> InstalledPackageNames = new List<string>();
 
         //Remove folder from device
         public static ProcessOutput RemoveFolder(string path)
@@ -43,9 +44,14 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             ADB.WakeDevice();
             return ADB.RunAdbCommandToString($"shell rm -r {path}");
         }
+        public static ProcessOutput RemoveFile(string path)
+        {
+            ADB.WakeDevice();
+            return ADB.RunAdbCommandToString($"shell rm -f {path}");
+        }
 
         //For games that require manual install, like having another folder that isnt an obb
-        public static ProcessOutput RunADBCommandsFromFile(string path, string RunFromPath)
+        public static ProcessOutput RunADBCommandsFromFile(string path)
         {
             ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput();
@@ -54,20 +60,25 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             {
                 if (cmd.StartsWith("adb"))
                 {
-                    var regex = new Regex(Regex.Escape("adb"));
-                    var command = regex.Replace(cmd, $"\"{ADB.adbFilePath}\"", 1);
-
-                    Logger.Log($"Logging command: {command} from file: {path}");
+                    string pattern = "adb";
+                    string replacement = $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}";
+                    Regex rgx = new Regex(pattern);
+                    string result = rgx.Replace(cmd, replacement);
+                    Program.form.ChangeTitle($"Running {result}");
+                    Logger.Log($"Logging command: {result} from file: {path}");
 
                     if (ADB.DeviceID.Length > 1)
-                        command = $" -s {ADB.DeviceID} {command}";
-                    output += Utilities.GeneralUtilities.startProcess("cmd.exe", RunFromPath, command);
+                        output += ADB.RunAdbCommandToStringWOADB(result, path);
                 }
             }
             return output;
         }
+        
 
-        //Recursive sideload any apk file
+
+
+
+        //Recursive sideload any apk fileD
         public static ProcessOutput RecursiveOutput = new ProcessOutput();
         public static void RecursiveSideload(string FolderPath)
         {
@@ -75,7 +86,8 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             {
                 foreach (string f in Directory.GetFiles(FolderPath))
                 {
-                    if (Path.GetExtension(f)==".apk")
+                                        if (Path.GetExtension(f)==".apk")
+
                         RecursiveOutput += ADB.Sideload(f);
                 }
 
@@ -122,6 +134,22 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             //remove both data and obb if there is any
             Sideloader.RemoveFolder("/sdcard/Android/obb/" + packageName);
             Sideloader.RemoveFolder("/sdcard/Android/data/" + packageName);
+
+            return output;
+        }
+
+        public static ProcessOutput DeleteFile(string GameName)
+        {
+            ADB.WakeDevice();
+            ProcessOutput output = new ProcessOutput("", "");
+
+            string packageName = Sideloader.gameNameToPackageName(GameName);
+
+            DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to uninstall custom QU settings for {packageName}? this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            if (dialogResult != DialogResult.Yes)
+                return output;
+
+            output = Sideloader.RemoveFile($"/sdcard/Android/data/{packageName}/private/Config.Json");
 
             return output;
         }
