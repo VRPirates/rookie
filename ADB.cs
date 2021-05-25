@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Windows.Forms;
 using Newtonsoft.Json;
 
@@ -76,19 +77,19 @@ namespace AndroidSideloader
             try
             {
                
-                output = adb.StandardOutput.ReadToEnd();
-                error = adb.StandardError.ReadToEnd();
+               adb.StandardOutput.ReadToEnd();
+               adb.StandardError.ReadToEnd();
 
-
+                Logger.Log(output);
+                Logger.Log(error);
                 if (output.Contains("reserved"))
-                    output = "Install text - line success!\n";
+                    output = "";
                 if (error.Contains("No such"))
                     error = "";
+         
             }
             catch { }
             adb.WaitForExit();
-            Logger.Log(output);
-            Logger.Log(error);
             return new ProcessOutput(output, error);
         }       
         
@@ -149,17 +150,74 @@ namespace AndroidSideloader
 
         public static void WakeDevice()
         {
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+            {
+                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+                string response = ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress).Output;
+                if (response.Contains("refused"))
+                {
+                    DialogResult dialogResult = MessageBox.Show("It seems you have rebooted your Quest, Rookie's wireless ADB will persist past PC reboot, but not for Quest reboot.\n\nHave you assigned your Quest a static IP in your router configuration? If you no longer want to use Wireless ADB just hit cancel!", "DEVICE WAS REBOOTED", MessageBoxButtons.YesNoCancel);
+                    if (dialogResult == DialogResult.Cancel)
+                        return;
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        ADB.WakeDevice();
+                        MessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
+                        ADB.RunAdbCommandToString("devices");
+                        Thread.Sleep(250);
+                        ADB.RunAdbCommandToString("disconnect");
+                        Thread.Sleep(50);
+                        ADB.RunAdbCommandToString("connect");
+                        Thread.Sleep(50);
+                        ADB.RunAdbCommandToString("tcpip 5555");
+                        Thread.Sleep(500);
+                        ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+                    }
+                    if (dialogResult == DialogResult.No)
+                    {
+                        ADB.WakeDevice();
+                        MessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
+                        ADB.RunAdbCommandToString("devices");
+                        ADB.RunAdbCommandToString("tcpip 5555");
+                        MessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OK);
+                        Thread.Sleep(1000);
+                        string input = ADB.RunAdbCommandToString("shell ip route").Output;
+
+
+                        string[] strArrayOne = new string[] { "" };
+                        strArrayOne = input.Split(' ');
+                        if (strArrayOne[0].Length > 7)
+                        {
+                            ADB.WakeDevice();
+                            string IPaddr = strArrayOne[8];
+                            string IPcmnd = "connect " + IPaddr + ":5555";
+                            MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                            Thread.Sleep(2000);
+                            ADB.RunAdbCommandToString(IPcmnd);
+                            Properties.Settings.Default.IPAddress = IPcmnd;
+                            Properties.Settings.Default.Save();
+
+                            MessageBox.Show($"Connected!!", "", MessageBoxButtons.OK);
+                            Program.form.ChangeTitlebarToDevice();
+                        }
+                        else
+                        {
+                            MessageBox.Show("No device connected!");
+                        }
+
+                    }
+
+                }
+            }
             RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
         }
         public static ProcessOutput Sideload(string path, string packagename = "")
         {
 
             WakeDevice();
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-            {
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-            }
+  
             ProcessOutput ret = new ProcessOutput();
+  
             Program.form.ChangeTitle($"Sideloading {path}");
             ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             string out2 = ret.Output + ret.Error;
@@ -171,13 +229,6 @@ namespace AndroidSideloader
                     DialogResult dialogResult2 = MessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (we suggest unchecking delete games after install from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                     if (dialogResult2 == DialogResult.Yes)
                         ADB.WakeDevice();
-
-
-                    if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                    {
-                        ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                    }
-
                 }
                 if (out2.Contains($"INSTALL_FAILED_UPDATE_INCOMPATIBLE") || out2.Contains("INSTALL_FAILED_VERSION_DOWNGRADE"))
                 {
@@ -203,14 +254,13 @@ namespace AndroidSideloader
                     }
                     else
                     {
-                        MessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
-
+                        DialogResult dialogResult = MessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
+                        if (dialogResult == DialogResult.Cancel) 
+                        {
+                            return ret;
+                        }
                     }
                     ADB.WakeDevice();
-                    if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                    {
-                        ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                    }
                     ret += ADB.RunAdbCommandToString("shell pm uninstall " + packagename);
                     ret += RunAdbCommandToString($"install -g -r \"{path}\"");
                     return ret;
@@ -220,9 +270,30 @@ namespace AndroidSideloader
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\Config.Json"))
             {
                 Program.form.ChangeTitle("Pushing Custom QU s3 Patch JSON.");
+
                 RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
                 RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}/private");
-                RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\Config.Json\" /sdcard/android/data/{packagename}/private/Config.Json");
+                
+
+                Random r = new Random();
+                int x = r.Next(999999999);
+                int y = r.Next(9999999);
+
+                var sum = ((long)y * (long)1000000000) + (long)x;
+
+                int x2 = r.Next(999999999);
+                int y2 = r.Next(9999999);
+
+                var sum2 = ((long)y2 * (long)1000000000) + (long)x2;
+                ADB.WakeDevice();
+                Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
+                Properties.Settings.Default.Save();
+                File.WriteAllText("delete_settings", "");
+                string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
+                File.WriteAllText("config.json", boff);
+                ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
+                ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{packagename}/private/");
+
             }
             Program.form.ChangeTitle("Sideload done");
             return ret;
