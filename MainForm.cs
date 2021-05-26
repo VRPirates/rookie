@@ -665,8 +665,13 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
                                 else
-                                    output += Sideloader.RunADBCommandsFromFile(path);
-                                ChangeTitle("Sideloading custom install.txt automatically.");
+                                    ChangeTitle("Sideloading custom install.txt automatically.");
+                                output += Sideloader.RunADBCommandsFromFile(path);
+                                if (output.Error.Contains("mkdir"))
+                                    output.Error = "";
+                                if (output.Error.Contains("reserved"))
+                                    output.Output = "Custon install.txt line succeeded";
+                                ChangeTitle("Done.");
                             }
                     }
                     string[] files = Directory.GetFiles(data);
@@ -699,8 +704,9 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                     return;
                                 else
                                 {
-                                    output += Sideloader.RunADBCommandsFromFile(path);
                                     ChangeTitle("Sideloading custom install.txt automatically.");
+                                    output += Sideloader.RunADBCommandsFromFile(path);
+                                    ChangeTitle("Done.");
                                 }
                             }
                             else
@@ -723,9 +729,9 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
                         if (extension == ".txt")
                         {
-                            MessageBox.Show("Once you press OK the install will start. In order to ensure success please don't do anything else untill you see the Install Finished popup.");
-                            output += Sideloader.RunADBCommandsFromFile(path);
                             ChangeTitle("Sideloading custom install.txt automatically.");
+                            output += Sideloader.RunADBCommandsFromFile(path);
+                            ChangeTitle("Done.");
                         }
                     }
                 }
@@ -1158,8 +1164,9 @@ without him none of this would be possible
 
                     if (File.Exists($"{gameDirectory}\\Install.txt"))
                     {
-                        output += Sideloader.RunADBCommandsFromFile(path);
                         ChangeTitle("Sideloading custom install.txt automatically.");
+                        output += Sideloader.RunADBCommandsFromFile(path);
+                        ChangeTitle("Done.");
                     }
                 });
                 t1.IsBackground = true;
@@ -1263,8 +1270,10 @@ without him none of this would be possible
                         {
                             if (File.Exists($"{gameDirectory}\\Install.txt"))
                             {
+
+                                ChangeTitle("Sideloading custom install.txt automatically.");
                                 output += Sideloader.RunADBCommandsFromFile(path);
-                                ChangeTitle("Sideloading custom Install.txt automatically.");
+                                ChangeTitle("Done.");
                             }
                             Thread apkThread = new Thread(() =>
                             {

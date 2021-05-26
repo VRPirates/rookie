@@ -68,6 +68,7 @@ namespace AndroidSideloader
             adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
             adb.Start();
             adb.StandardInput.WriteLine(command);
+            adb.StandardInput.Flush();
             adb.StandardInput.Close();
 
 
@@ -76,25 +77,23 @@ namespace AndroidSideloader
 
             try
             {
-               
-               adb.StandardOutput.ReadToEnd();
-               adb.StandardError.ReadToEnd();
-
-                Logger.Log(output);
-                Logger.Log(error);
+                output = adb.StandardOutput.ReadToEnd();
+                error = adb.StandardError.ReadToEnd();
                 if (output.Contains("reserved"))
-                    output = "";
-                if (error.Contains("No such"))
+                    output = "Custom command install.\n";
+                if (error.Contains("mkdir"))
                     error = "";
-         
             }
             catch { }
-            adb.WaitForExit();
-            return new ProcessOutput(output, error);
-        }       
-        
 
-        public static ProcessOutput UninstallPackage(string package)
+            adb.WaitForExit();
+            Logger.Log(output);
+            Logger.Log(error);
+            return new ProcessOutput(output, error);
+        }
+
+
+            public static ProcessOutput UninstallPackage(string package)
         {
             WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");

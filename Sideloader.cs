@@ -58,6 +58,12 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             var commands = File.ReadAllLines(path);
             foreach (string cmd in commands)
             {
+                if (cmd.StartsWith("\"7z.exe\""))
+                {
+                    Program.form.ChangeTitle($"Running {cmd}");
+                    Logger.Log($"Logging command: {cmd} from file: {path}");
+                    output += ADB.RunAdbCommandToStringWOADB(cmd, path);
+                }
                 if (cmd.StartsWith("adb"))
                 {
                     string pattern = "adb";
