@@ -1547,11 +1547,8 @@ without him none of this would be possible
             {
                 if (!ADB.DeviceID.Contains(":5555"))
                     MessageBox.Show("Mounting does not work with Wireless ADB, you must plug Quest into PC to mount.");
-                else
-                {
+                
                     ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
-                    ADB.RunAdbCommandToString($"shell svc {Properties.Settings.Default.IPAddress} setFunctions mtp true");
-                }
             }
             else
                 FlexibleMessageBox.Show("You must connect a device before mounting!");
