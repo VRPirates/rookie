@@ -40,7 +40,7 @@ namespace AndroidSideloader
             string error = "";
 
             try
-            {
+            { 
                 output = adb.StandardOutput.ReadToEnd();
                 error = adb.StandardError.ReadToEnd();
             }
@@ -77,12 +77,8 @@ namespace AndroidSideloader
 
             try
             {
-                output = adb.StandardOutput.ReadToEnd();
-                error = adb.StandardError.ReadToEnd();
-                if (output.Contains("reserved"))
-                    output = "Custom command install.\n";
-                if (error.Contains("mkdir"))
-                    error = "";
+               output += adb.StandardOutput.ReadToEnd();
+               error += adb.StandardError.ReadToEnd();
             }
             catch { }
 
@@ -247,7 +243,7 @@ namespace AndroidSideloader
                         MessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Save files found", MessageBoxButtons.OK);
 
                         Directory.CreateDirectory(CurrBackups);
-                        String CurrbackupPaths = CurrBackups + "\\" + date_str + "\\" + packagename + "\\data";
+                        String CurrbackupPaths = CurrBackups + "\\" + packagename + "\\data";
                         Directory.CreateDirectory(CurrbackupPaths);
                         ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrbackupPaths}\"");
                     }

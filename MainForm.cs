@@ -401,7 +401,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             {
                 ADB.WakeDevice();
 
-                string date_str = DateTime.Today.ToString("yyyy.mm.dd");
+                string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(BackupFolder, date_str);
                 MessageBox.Show($"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str} (year.month.date)");
                 Directory.CreateDirectory(CurrBackups);
@@ -410,7 +410,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
                 try
                 {
-                    Directory.Move(ADB.adbFolderPath + "\\data", Environment.CurrentDirectory + "\\data");
+                    Directory.Move(ADB.adbFolderPath + "\\data", CurrBackups + "\\data");
                 }
                 catch (Exception ex)
                 {
@@ -533,31 +533,24 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 FlexibleMessageBox.Show("Please select an app first");
                 return;
             }
-            string date_str = DateTime.Today.ToString("yyyy.mm.dd");
+            string date_str = DateTime.Today.ToString("yyyy.MM.dd");
             string CurrBackups = Path.Combine(BackupFolder, date_str);
 
 
             string GameName = m_combo.SelectedItem.ToString();
             string packagename = Sideloader.gameNameToPackageName(GameName);
-            MessageBox.Show($"Searching for save files...", "Searching!", MessageBoxButtons.OK);
-            if (Directory.Exists($"/sdcard/Android/data/{packagename}"))
-            {
-                MessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Save files found", MessageBoxButtons.OK);
+            MessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Attempting Backup...", MessageBoxButtons.OK);
 
-                Directory.CreateDirectory(CurrBackups);
-                String CurrbackupPaths = CurrBackups + "\\" + date_str + "\\" + packagename + "\\data";
-                Directory.CreateDirectory(CurrbackupPaths);
-                ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrbackupPaths}\"");
-            }
-            else
+            Directory.CreateDirectory(CurrBackups);
+            String CurrbackupPaths = CurrBackups + "\\" + packagename + "\\data";
+            Directory.CreateDirectory(CurrbackupPaths);
+            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrbackupPaths}\"");
+            DialogResult dialogResult = MessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Check for backup.", MessageBoxButtons.OKCancel);
+            if (dialogResult == DialogResult.Cancel)
             {
-                DialogResult dialogResult = MessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
-                if (dialogResult == DialogResult.Cancel)
-                {
-                    return;
-                }
+                return;
             }
-  
+
             ProcessOutput output = new ProcessOutput("", "");
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
@@ -670,7 +663,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                 if (output.Error.Contains("mkdir"))
                                     output.Error = "";
                                 if (output.Error.Contains("reserved"))
-                                    output.Output = "Custon install.txt line succeeded";
+                                    output.Output = "";
                                 ChangeTitle("Done.");
                             }
                     }
@@ -965,7 +958,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HFP Thanks to: Roma/Rookie, Pmow, Sarah, Kaladin, and the mod staff!";
+ - HFP Thanks to: Roma/Rookie, Pmow, Flow, Sarah, Kaladin, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
