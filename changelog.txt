@@ -1,30 +1,52 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 !!!IMPORTANT!!!
-THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
-Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
-Make sure to redownload the entire rclone folder from the config provider!
+THIS VERSION IS A WORK IN PROGRESS DUE TO LACK OF TESTERS!!!
 
-v2.0-WIP-SU2
+v2.1
 
-Changes
-//TOFIX INSTALL.TXT
- + Adb tries to uninstall app before sideloading it (keeps user data)
- = Added anchors
- = Added some comments
- = Fixed Stuff
- - Removed Auto resign on download setting
+- -Changes-
  
++ Backups are now stored in Documents\Rookie Backups\(BackupDate) folder.
++ 404 error fixed.
++ If installing an app that has a different patching method or signature than the previous version did user will now recieve a prompt for the option to upgrade which will backup savedata then uninstall and reinstall the app. NOTE: Not all apps allow backup of savedata.
++ Refresh updates list now loads much faster and refreshes the main update list.
++ Added Wireless ADB functionality.
++ Added Enable Wireless ADB and Remove Wireless ADB buttons to main menu.
++ Added ">" symbols on collapsible and expandable menu items to let user know they can be expanded/collapsed.
++ "Hand/Finger pointer" symbol added above clickable main menu buttons to let user know they're clickable.
++ Added logic to allow entire list to load and compare installed versions with Rclone versions before populating and added informative text of this step to the bottom/title bar.
++ Added QU Settings for their newest patch method. Can be found under Quest Options, this will allow you to change settings for any games that include "-QU" in the version/filename. Click Enable QU Settings box to reveal the options.
+DETAILS: Clicking enable again will remove the settings file, if you re-enable you MUST click apply again for it to work. QU Settings are applied automatically when any games are Downloaded/Installed via Rookie as long as the custom settings been enabled and applied in the Quest Options menu.Once applied they can also be added to any already installed titles by selecting the game you wish to add them to in the menu at the top of RSL in the main window then(the same list used to uninstall games) then clicking on Install QU Setting. To remove a setting for a game select it from the same menu and click Remove QU Setting. If you click Delete Custom Settings in Quest Options it will not delete settings for any games installed while it was enabled, you must do this with the previously mentioned Remove QU Setting option. Clear Settings just clears the values entered in the fields. Settings entered into those fields will persist between instances of RSL.
++ Public key for HarryEffingPotter(Rookie contributor/VRPE dev) added to Rookie directory.
+= Fixed Install.txt automation to make Manual installs automatic.
 
-Date 
+- -HarryEffingPotter-
 
-VT: 
+Released: May 29th 2021
 
-MD5 Checksum: 
-SHA-1 Checksum: 
-SHA-256 Checksum: 
-SHA-512 Checksum: 
 
-You can always get my public key from miligra.me/pgp
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+Public key for Rookie and HarryEffingPotter included in Rookie directory along with Checksum(can be run with QuickSFV.exe)
+
+THIS SOFTWARE IS FREE TO USE, IF YOU PAID FOR IT YOU WERE RIPPED OFF. We can be found on Telegram @ t.me/VRPirates.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmCyMHUACgkQx/Rql1Vo
+czeJ+Q//ZBEopVVZVc/IcmYFS05hUy+xHFd8QWajSCAFsQVyCctEPEzsluOSmwM1
+OQlO0awzMM4s9IWwPIk0/caML7ZgkwDlIxR7KgasgI+BirrFCz1VImILoF1CiSHV
+q5Xj6GQ3NPE0xK1QDe4fCVdXX+VScqQOAnP/ohkfHfuP0ce6KKxZpH/UeafDjh+V
+Birzv6a+1dMnewJHnAwn6xg5Q8jvPT4Iz++t4XBS3k/dg5bMpLg4T6dwPnuJ3zjh
+muThmNzBSw1ICegO/SaF8jhgGrhwVsF7aM9pVv2fvYaFpDbuxITQOcV+jcvO6Orf
+R/LTf26pdguQnuc/KLWMCthMtNr1O7q3tnVF8DGVio5yzL0lKfVkDqjb3Qp+GTYB
+f/lZyrzKZyt1OaVInmxtLsj5wavQtcYRUeJGU9ABd6yb9ecmgJlP6rwPR1RMiZWS
+B/nEC8td1JeTK7qhop/FA1qoQ9Z+2cSVCuILKcKj8B1ushxQzDdIDeqrwPxz98Ta
+5voJKtq8wWtV8gkldVCvZRvlIi3qaIFBLutnY5AqTxmDHgaTdF1l3adauK32alyL
+xUsQits39mBui6bMBw1fCfw1zu3uqh7gylZ/j0t+XLVDJtIC+UcRTjjIpRLeHjM8
+O8gLNx7jFtRtm/vO1jAlS7Zu3LHIxq6I9kwOZsbwNQe7yqfUwPw=
+=iJ4Y
+-----END PGP SIGNATURE-----
+
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256

@@ -860,7 +860,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 }
                 ChangeTitle("Syncing Game Photos");
                 SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                ChangeTitle("Checking for Game Updates");
+                ChangeTitle("Checking for Updates on server...");
                 SideloaderRCLONE.UpdateGameNotes(currentRemote);
                 listappsbtn();
             });
@@ -875,7 +875,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
             while (t1.IsAlive)
                 await Task.Delay(100);
-            ChangeTitle("Loading update/game list, please wait...");
+            ChangeTitle("GREEN = Up to date, ORANGE = Out of date - Checking installed app versions,  please wait...");
        
             initListView();
             ChangeTitle("Loaded");

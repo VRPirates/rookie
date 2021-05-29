@@ -283,10 +283,11 @@ namespace AndroidSideloader
                 ADB.WakeDevice();
                 Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
                 Properties.Settings.Default.Save();
-                File.WriteAllText("delete_settings", "");
                 string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
                 File.WriteAllText("config.json", boff);
-                ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
+                string blank = "";
+                File.WriteAllText("delete_settings", blank);
+                ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\delete_settings\" /sdcard/android/data/{packagename}/private/");
                 ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{packagename}/private/");
 
             }
