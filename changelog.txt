@@ -6,7 +6,7 @@ THIS VERSION IS A WORK IN PROGRESS DUE TO LACK OF TESTERS!!!
 
 v2.1
 
-- -Changes-
+-Changes-
  
 + Backups are now stored in Documents\Rookie Backups\(BackupDate) folder.
 + 404 error fixed.
