@@ -181,7 +181,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 8.5pt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 9.5pt")]
         public global::System.Drawing.Font FontStyle {
             get {
                 return ((global::System.Drawing.Font)(this["FontStyle"]));

@@ -125,7 +125,7 @@ namespace AndroidSideloader
             // 
             this.ResetQU.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.ResetQU.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.ResetQU.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.ResetQU.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             this.ResetQU.ForeColor = System.Drawing.SystemColors.ControlLight;
             this.ResetQU.Location = new System.Drawing.Point(191, 555);
             this.ResetQU.Name = "ResetQU";
@@ -140,7 +140,7 @@ namespace AndroidSideloader
             // 
             this.deleteButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.deleteButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.deleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.deleteButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             this.deleteButton.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.deleteButton.Location = new System.Drawing.Point(13, 606);
             this.deleteButton.Name = "deleteButton";
@@ -155,7 +155,7 @@ namespace AndroidSideloader
             // 
             this.questPics.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.questPics.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.questPics.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.questPics.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             this.questPics.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.questPics.Location = new System.Drawing.Point(17, 265);
             this.questPics.Name = "questPics";
@@ -169,7 +169,7 @@ namespace AndroidSideloader
             // 
             this.questVids.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.questVids.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.questVids.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.questVids.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             this.questVids.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.questVids.Location = new System.Drawing.Point(191, 265);
             this.questVids.Name = "questVids";
@@ -213,7 +213,7 @@ namespace AndroidSideloader
             // 
             this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.5F);
+            this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
             this.button3.Location = new System.Drawing.Point(101, 702);
             this.button3.Name = "button3";

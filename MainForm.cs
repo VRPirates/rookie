@@ -1261,13 +1261,6 @@ without him none of this would be possible
                         string extension = Path.GetExtension(file);
                         if (extension == ".apk")
                         {
-                            if (File.Exists($"{gameDirectory}\\Install.txt"))
-                            {
-
-                                ChangeTitle("Sideloading custom install.txt automatically.");
-                                output += Sideloader.RunADBCommandsFromFile(path);
-                                ChangeTitle("Done.");
-                            }
                             Thread apkThread = new Thread(() =>
                             {
                                 string packagename = "";
@@ -1307,6 +1300,7 @@ without him none of this would be possible
 
                             while (obbThread.IsAlive)
                                 await Task.Delay(100);
+                            ChangeTitle("Done");
                         }
                     }
 

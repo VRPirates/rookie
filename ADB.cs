@@ -55,8 +55,6 @@ namespace AndroidSideloader
         {
 
             string command = result;
-            if (DeviceID.Length > 1)
-                command = $"{command}";
 
             Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = "cmd.exe";
