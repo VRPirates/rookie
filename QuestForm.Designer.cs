@@ -134,7 +134,7 @@ namespace AndroidSideloader
             this.ResetQU.Text = "RESET ALL FIELDS";
             this.ResetQU.UseVisualStyleBackColor = false;
             this.ResetQU.Visible = false;
-            this.ResetQU.Click += new System.EventHandler(this.Clear_click);
+            this.ResetQU.Click += new System.EventHandler(this.ResetQU_click);
             // 
             // deleteButton
             // 

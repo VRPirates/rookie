@@ -75,19 +75,19 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="QUhz" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="QUres" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="QUy" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="QUx" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="QUname" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">Change Me</Value>
     </Setting>
     <Setting Name="QUString" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -100,6 +100,9 @@
     </Setting>
     <Setting Name="delsh" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="CurrPckg" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

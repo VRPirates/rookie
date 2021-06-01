@@ -95,9 +95,10 @@
             this.m_combo.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.m_combo.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.m_combo.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.m_combo.Location = new System.Drawing.Point(227, 8);
+            this.m_combo.Location = new System.Drawing.Point(303, 10);
+            this.m_combo.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.m_combo.Name = "m_combo";
-            this.m_combo.Size = new System.Drawing.Size(745, 24);
+            this.m_combo.Size = new System.Drawing.Size(992, 28);
             this.m_combo.TabIndex = 0;
             this.m_combo.Text = "Select an app to uninstall...";
             // 
@@ -112,10 +113,11 @@
             this.startsideloadbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.startsideloadbutton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.startsideloadbutton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.startsideloadbutton.Location = new System.Drawing.Point(0, 140);
+            this.startsideloadbutton.Location = new System.Drawing.Point(0, 170);
+            this.startsideloadbutton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.startsideloadbutton.Name = "startsideloadbutton";
-            this.startsideloadbutton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.startsideloadbutton.Size = new System.Drawing.Size(218, 28);
+            this.startsideloadbutton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.startsideloadbutton.Size = new System.Drawing.Size(291, 34);
             this.startsideloadbutton.TabIndex = 5;
             this.startsideloadbutton.Text = "Sideload APK";
             this.startsideloadbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -135,8 +137,9 @@
             this.devicesbutton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.devicesbutton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.devicesbutton.Location = new System.Drawing.Point(0, 0);
+            this.devicesbutton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.devicesbutton.Name = "devicesbutton";
-            this.devicesbutton.Size = new System.Drawing.Size(218, 28);
+            this.devicesbutton.Size = new System.Drawing.Size(291, 34);
             this.devicesbutton.TabIndex = 0;
             this.devicesbutton.Text = "RECONNECT DEVICE";
             this.devicesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -155,9 +158,10 @@
             this.obbcopybutton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.obbcopybutton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.obbcopybutton.Location = new System.Drawing.Point(0, 0);
+            this.obbcopybutton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.obbcopybutton.Name = "obbcopybutton";
-            this.obbcopybutton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.obbcopybutton.Size = new System.Drawing.Size(218, 28);
+            this.obbcopybutton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.obbcopybutton.Size = new System.Drawing.Size(291, 34);
             this.obbcopybutton.TabIndex = 0;
             this.obbcopybutton.Text = "Copy OBB";
             this.obbcopybutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -175,10 +179,11 @@
             this.backupbutton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.backupbutton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.backupbutton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.backupbutton.Location = new System.Drawing.Point(0, 28);
+            this.backupbutton.Location = new System.Drawing.Point(0, 34);
+            this.backupbutton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.backupbutton.Name = "backupbutton";
-            this.backupbutton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.backupbutton.Size = new System.Drawing.Size(218, 28);
+            this.backupbutton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.backupbutton.Size = new System.Drawing.Size(291, 34);
             this.backupbutton.TabIndex = 1;
             this.backupbutton.Text = "Backup Gamedata";
             this.backupbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -197,9 +202,10 @@
             this.restorebutton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.restorebutton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.restorebutton.Location = new System.Drawing.Point(0, 0);
+            this.restorebutton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.restorebutton.Name = "restorebutton";
-            this.restorebutton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.restorebutton.Size = new System.Drawing.Size(218, 28);
+            this.restorebutton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.restorebutton.Size = new System.Drawing.Size(291, 34);
             this.restorebutton.TabIndex = 0;
             this.restorebutton.Text = "Restore Gamedata";
             this.restorebutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -217,10 +223,11 @@
             this.getApkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.getApkButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.getApkButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.getApkButton.Location = new System.Drawing.Point(0, 56);
+            this.getApkButton.Location = new System.Drawing.Point(0, 68);
+            this.getApkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.getApkButton.Name = "getApkButton";
-            this.getApkButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.getApkButton.Size = new System.Drawing.Size(218, 28);
+            this.getApkButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.getApkButton.Size = new System.Drawing.Size(291, 34);
             this.getApkButton.TabIndex = 2;
             this.getApkButton.Text = "Extract Apk from device";
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -238,10 +245,11 @@
             this.uninstallAppButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.uninstallAppButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.uninstallAppButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.uninstallAppButton.Location = new System.Drawing.Point(0, 84);
+            this.uninstallAppButton.Location = new System.Drawing.Point(0, 102);
+            this.uninstallAppButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.uninstallAppButton.Name = "uninstallAppButton";
-            this.uninstallAppButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.uninstallAppButton.Size = new System.Drawing.Size(218, 28);
+            this.uninstallAppButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.uninstallAppButton.Size = new System.Drawing.Size(291, 34);
             this.uninstallAppButton.TabIndex = 3;
             this.uninstallAppButton.Text = "Uninstall Selected App";
             this.uninstallAppButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -259,10 +267,11 @@
             this.sideloadFolderButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.sideloadFolderButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.sideloadFolderButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.sideloadFolderButton.Location = new System.Drawing.Point(0, 112);
+            this.sideloadFolderButton.Location = new System.Drawing.Point(0, 136);
+            this.sideloadFolderButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.sideloadFolderButton.Name = "sideloadFolderButton";
-            this.sideloadFolderButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.sideloadFolderButton.Size = new System.Drawing.Size(218, 28);
+            this.sideloadFolderButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.sideloadFolderButton.Size = new System.Drawing.Size(291, 34);
             this.sideloadFolderButton.TabIndex = 4;
             this.sideloadFolderButton.Text = "Sideload Folder (recursive)";
             this.sideloadFolderButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -275,9 +284,10 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.progressBar.ForeColor = System.Drawing.Color.Purple;
-            this.progressBar.Location = new System.Drawing.Point(228, 500);
+            this.progressBar.Location = new System.Drawing.Point(304, 615);
+            this.progressBar.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(367, 25);
+            this.progressBar.Size = new System.Drawing.Size(489, 31);
             this.progressBar.TabIndex = 7;
             // 
             // copyBulkObbButton
@@ -291,10 +301,11 @@
             this.copyBulkObbButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.copyBulkObbButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.copyBulkObbButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.copyBulkObbButton.Location = new System.Drawing.Point(0, 28);
+            this.copyBulkObbButton.Location = new System.Drawing.Point(0, 34);
+            this.copyBulkObbButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.copyBulkObbButton.Name = "copyBulkObbButton";
-            this.copyBulkObbButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.copyBulkObbButton.Size = new System.Drawing.Size(218, 28);
+            this.copyBulkObbButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.copyBulkObbButton.Size = new System.Drawing.Size(291, 34);
             this.copyBulkObbButton.TabIndex = 1;
             this.copyBulkObbButton.Text = "Recursive Copy OBB";
             this.copyBulkObbButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -312,9 +323,10 @@
             this.downloadInstallGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadInstallGameButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.downloadInstallGameButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.downloadInstallGameButton.Location = new System.Drawing.Point(601, 498);
+            this.downloadInstallGameButton.Location = new System.Drawing.Point(801, 613);
+            this.downloadInstallGameButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.downloadInstallGameButton.Name = "downloadInstallGameButton";
-            this.downloadInstallGameButton.Size = new System.Drawing.Size(371, 30);
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(495, 37);
             this.downloadInstallGameButton.TabIndex = 8;
             this.downloadInstallGameButton.Text = "Download and Install Game/Add to Queue";
             this.downloadInstallGameButton.UseVisualStyleBackColor = false;
@@ -341,9 +353,9 @@
             this.panel1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Margin = new System.Windows.Forms.Padding(2);
+            this.panel1.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(218, 775);
+            this.panel1.Size = new System.Drawing.Size(291, 954);
             this.panel1.TabIndex = 73;
             // 
             // downloadingLabel
@@ -352,9 +364,10 @@
             this.downloadingLabel.BackColor = System.Drawing.SystemColors.WindowText;
             this.downloadingLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.downloadingLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.downloadingLabel.Location = new System.Drawing.Point(12, 714);
+            this.downloadingLabel.Location = new System.Drawing.Point(16, 879);
+            this.downloadingLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.downloadingLabel.Name = "downloadingLabel";
-            this.downloadingLabel.Size = new System.Drawing.Size(98, 18);
+            this.downloadingLabel.Size = new System.Drawing.Size(126, 24);
             this.downloadingLabel.TabIndex = 83;
             this.downloadingLabel.Text = "Downloading:";
             // 
@@ -364,9 +377,10 @@
             this.StorageLabel.BackColor = System.Drawing.SystemColors.WindowText;
             this.StorageLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.StorageLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.StorageLabel.Location = new System.Drawing.Point(12, 636);
+            this.StorageLabel.Location = new System.Drawing.Point(16, 783);
+            this.StorageLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.StorageLabel.Name = "StorageLabel";
-            this.StorageLabel.Size = new System.Drawing.Size(111, 18);
+            this.StorageLabel.Size = new System.Drawing.Size(140, 24);
             this.StorageLabel.TabIndex = 83;
             this.StorageLabel.Text = "Device storage:";
             // 
@@ -382,9 +396,10 @@
             this.aboutBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.aboutBtn.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.aboutBtn.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.aboutBtn.Location = new System.Drawing.Point(0, 596);
+            this.aboutBtn.Location = new System.Drawing.Point(0, 732);
+            this.aboutBtn.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.aboutBtn.Name = "aboutBtn";
-            this.aboutBtn.Size = new System.Drawing.Size(218, 28);
+            this.aboutBtn.Size = new System.Drawing.Size(291, 34);
             this.aboutBtn.TabIndex = 5;
             this.aboutBtn.Text = "ABOUT";
             this.aboutBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -403,9 +418,10 @@
             this.settingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.settingsButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.settingsButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.settingsButton.Location = new System.Drawing.Point(0, 568);
+            this.settingsButton.Location = new System.Drawing.Point(0, 698);
+            this.settingsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.settingsButton.Name = "settingsButton";
-            this.settingsButton.Size = new System.Drawing.Size(218, 28);
+            this.settingsButton.Size = new System.Drawing.Size(291, 34);
             this.settingsButton.TabIndex = 4;
             this.settingsButton.Text = "SETTINGS";
             this.settingsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -423,10 +439,10 @@
             this.otherContainer.Controls.Add(this.ADBWirelessEnable);
             this.otherContainer.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.otherContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.otherContainer.Location = new System.Drawing.Point(0, 401);
-            this.otherContainer.Margin = new System.Windows.Forms.Padding(2);
+            this.otherContainer.Location = new System.Drawing.Point(0, 492);
+            this.otherContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.otherContainer.Name = "otherContainer";
-            this.otherContainer.Size = new System.Drawing.Size(218, 167);
+            this.otherContainer.Size = new System.Drawing.Size(291, 206);
             this.otherContainer.TabIndex = 80;
             // 
             // InstallQUset
@@ -440,10 +456,11 @@
             this.InstallQUset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.InstallQUset.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.InstallQUset.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.InstallQUset.Location = new System.Drawing.Point(0, 140);
+            this.InstallQUset.Location = new System.Drawing.Point(0, 170);
+            this.InstallQUset.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.InstallQUset.Name = "InstallQUset";
-            this.InstallQUset.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.InstallQUset.Size = new System.Drawing.Size(218, 28);
+            this.InstallQUset.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.InstallQUset.Size = new System.Drawing.Size(291, 34);
             this.InstallQUset.TabIndex = 5;
             this.InstallQUset.Text = "Install QU Setting";
             this.InstallQUset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -461,10 +478,11 @@
             this.removeQUSetting.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.removeQUSetting.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.removeQUSetting.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.removeQUSetting.Location = new System.Drawing.Point(0, 112);
+            this.removeQUSetting.Location = new System.Drawing.Point(0, 136);
+            this.removeQUSetting.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.removeQUSetting.Name = "removeQUSetting";
-            this.removeQUSetting.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.removeQUSetting.Size = new System.Drawing.Size(218, 28);
+            this.removeQUSetting.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.removeQUSetting.Size = new System.Drawing.Size(291, 34);
             this.removeQUSetting.TabIndex = 4;
             this.removeQUSetting.Text = "Remove QU Setting";
             this.removeQUSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -482,10 +500,11 @@
             this.ThemeChangerButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ThemeChangerButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.ThemeChangerButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.ThemeChangerButton.Location = new System.Drawing.Point(0, 84);
+            this.ThemeChangerButton.Location = new System.Drawing.Point(0, 102);
+            this.ThemeChangerButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ThemeChangerButton.Name = "ThemeChangerButton";
-            this.ThemeChangerButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.ThemeChangerButton.Size = new System.Drawing.Size(218, 28);
+            this.ThemeChangerButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.ThemeChangerButton.Size = new System.Drawing.Size(291, 34);
             this.ThemeChangerButton.TabIndex = 3;
             this.ThemeChangerButton.Text = "Theme Changer";
             this.ThemeChangerButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -503,10 +522,11 @@
             this.QuestOptionsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.QuestOptionsButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.QuestOptionsButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.QuestOptionsButton.Location = new System.Drawing.Point(0, 56);
+            this.QuestOptionsButton.Location = new System.Drawing.Point(0, 68);
+            this.QuestOptionsButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.QuestOptionsButton.Name = "QuestOptionsButton";
-            this.QuestOptionsButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.QuestOptionsButton.Size = new System.Drawing.Size(218, 28);
+            this.QuestOptionsButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.QuestOptionsButton.Size = new System.Drawing.Size(291, 34);
             this.QuestOptionsButton.TabIndex = 2;
             this.QuestOptionsButton.Text = "Quest Options";
             this.QuestOptionsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -524,10 +544,11 @@
             this.ADBWirelessDisable.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.ADBWirelessDisable.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.ADBWirelessDisable.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.ADBWirelessDisable.Location = new System.Drawing.Point(0, 28);
+            this.ADBWirelessDisable.Location = new System.Drawing.Point(0, 34);
+            this.ADBWirelessDisable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ADBWirelessDisable.Name = "ADBWirelessDisable";
-            this.ADBWirelessDisable.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.ADBWirelessDisable.Size = new System.Drawing.Size(218, 28);
+            this.ADBWirelessDisable.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.ADBWirelessDisable.Size = new System.Drawing.Size(291, 34);
             this.ADBWirelessDisable.TabIndex = 1;
             this.ADBWirelessDisable.Text = "Disable WIreless ADB";
             this.ADBWirelessDisable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -546,9 +567,10 @@
             this.ADBWirelessEnable.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.ADBWirelessEnable.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.ADBWirelessEnable.Location = new System.Drawing.Point(0, 0);
+            this.ADBWirelessEnable.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.ADBWirelessEnable.Name = "ADBWirelessEnable";
-            this.ADBWirelessEnable.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.ADBWirelessEnable.Size = new System.Drawing.Size(218, 28);
+            this.ADBWirelessEnable.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.ADBWirelessEnable.Size = new System.Drawing.Size(291, 34);
             this.ADBWirelessEnable.TabIndex = 0;
             this.ADBWirelessEnable.Text = "Enable Wireless ADB";
             this.ADBWirelessEnable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -567,11 +589,11 @@
             this.otherDrop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.otherDrop.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.otherDrop.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.otherDrop.Location = new System.Drawing.Point(0, 373);
-            this.otherDrop.Margin = new System.Windows.Forms.Padding(2);
+            this.otherDrop.Location = new System.Drawing.Point(0, 458);
+            this.otherDrop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.otherDrop.Name = "otherDrop";
-            this.otherDrop.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
-            this.otherDrop.Size = new System.Drawing.Size(218, 28);
+            this.otherDrop.Padding = new System.Windows.Forms.Padding(9, 0, 0, 0);
+            this.otherDrop.Size = new System.Drawing.Size(291, 34);
             this.otherDrop.TabIndex = 3;
             this.otherDrop.Text = "> OTHER";
             this.otherDrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -585,10 +607,10 @@
             this.backupContainer.Controls.Add(this.restorebutton);
             this.backupContainer.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.backupContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.backupContainer.Location = new System.Drawing.Point(0, 313);
-            this.backupContainer.Margin = new System.Windows.Forms.Padding(2);
+            this.backupContainer.Location = new System.Drawing.Point(0, 384);
+            this.backupContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.backupContainer.Name = "backupContainer";
-            this.backupContainer.Size = new System.Drawing.Size(218, 60);
+            this.backupContainer.Size = new System.Drawing.Size(291, 74);
             this.backupContainer.TabIndex = 76;
             // 
             // backupDrop
@@ -603,11 +625,11 @@
             this.backupDrop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.backupDrop.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.backupDrop.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.backupDrop.Location = new System.Drawing.Point(0, 285);
-            this.backupDrop.Margin = new System.Windows.Forms.Padding(2);
+            this.backupDrop.Location = new System.Drawing.Point(0, 350);
+            this.backupDrop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.backupDrop.Name = "backupDrop";
-            this.backupDrop.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
-            this.backupDrop.Size = new System.Drawing.Size(218, 28);
+            this.backupDrop.Padding = new System.Windows.Forms.Padding(9, 0, 0, 0);
+            this.backupDrop.Size = new System.Drawing.Size(291, 34);
             this.backupDrop.TabIndex = 2;
             this.backupDrop.Text = "> BACKUP";
             this.backupDrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -627,10 +649,10 @@
             this.sideloadContainer.Controls.Add(this.obbcopybutton);
             this.sideloadContainer.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.sideloadContainer.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sideloadContainer.Location = new System.Drawing.Point(0, 56);
-            this.sideloadContainer.Margin = new System.Windows.Forms.Padding(2);
+            this.sideloadContainer.Location = new System.Drawing.Point(0, 68);
+            this.sideloadContainer.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.sideloadContainer.Name = "sideloadContainer";
-            this.sideloadContainer.Size = new System.Drawing.Size(218, 229);
+            this.sideloadContainer.Size = new System.Drawing.Size(291, 282);
             this.sideloadContainer.TabIndex = 74;
             // 
             // UpdateGamesButton
@@ -644,10 +666,11 @@
             this.UpdateGamesButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.UpdateGamesButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.UpdateGamesButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.UpdateGamesButton.Location = new System.Drawing.Point(0, 196);
+            this.UpdateGamesButton.Location = new System.Drawing.Point(0, 238);
+            this.UpdateGamesButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.UpdateGamesButton.Name = "UpdateGamesButton";
-            this.UpdateGamesButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.UpdateGamesButton.Size = new System.Drawing.Size(218, 28);
+            this.UpdateGamesButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.UpdateGamesButton.Size = new System.Drawing.Size(291, 34);
             this.UpdateGamesButton.TabIndex = 7;
             this.UpdateGamesButton.Text = "Refresh Update List";
             this.UpdateGamesButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -665,10 +688,11 @@
             this.listApkButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.listApkButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.listApkButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.listApkButton.Location = new System.Drawing.Point(0, 168);
+            this.listApkButton.Location = new System.Drawing.Point(0, 204);
+            this.listApkButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listApkButton.Name = "listApkButton";
-            this.listApkButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.listApkButton.Size = new System.Drawing.Size(218, 28);
+            this.listApkButton.Padding = new System.Windows.Forms.Padding(31, 0, 0, 0);
+            this.listApkButton.Size = new System.Drawing.Size(291, 34);
             this.listApkButton.TabIndex = 6;
             this.listApkButton.Text = "Refresh All";
             this.listApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -687,11 +711,11 @@
             this.sideloadDrop.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.sideloadDrop.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.sideloadDrop.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.sideloadDrop.Location = new System.Drawing.Point(0, 28);
-            this.sideloadDrop.Margin = new System.Windows.Forms.Padding(2);
+            this.sideloadDrop.Location = new System.Drawing.Point(0, 34);
+            this.sideloadDrop.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.sideloadDrop.Name = "sideloadDrop";
-            this.sideloadDrop.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
-            this.sideloadDrop.Size = new System.Drawing.Size(218, 28);
+            this.sideloadDrop.Padding = new System.Windows.Forms.Padding(9, 0, 0, 0);
+            this.sideloadDrop.Size = new System.Drawing.Size(291, 34);
             this.sideloadDrop.TabIndex = 1;
             this.sideloadDrop.Text = "> SIDELOAD";
             this.sideloadDrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -705,10 +729,9 @@
             this.diskLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.diskLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.diskLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.diskLabel.Location = new System.Drawing.Point(13, 654);
-            this.diskLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.diskLabel.Location = new System.Drawing.Point(17, 805);
             this.diskLabel.Name = "diskLabel";
-            this.diskLabel.Size = new System.Drawing.Size(72, 16);
+            this.diskLabel.Size = new System.Drawing.Size(83, 20);
             this.diskLabel.TabIndex = 7;
             this.diskLabel.Text = "Disk Label";
             // 
@@ -719,10 +742,9 @@
             this.speedLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.speedLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.speedLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.speedLabel.Location = new System.Drawing.Point(12, 733);
-            this.speedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.speedLabel.Location = new System.Drawing.Point(16, 902);
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(135, 16);
+            this.speedLabel.Size = new System.Drawing.Size(161, 20);
             this.speedLabel.TabIndex = 76;
             this.speedLabel.Text = "DLS: Speed in MBPS";
             // 
@@ -733,10 +755,9 @@
             this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.etaLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.etaLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.etaLabel.Location = new System.Drawing.Point(12, 751);
-            this.etaLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.etaLabel.Location = new System.Drawing.Point(16, 924);
             this.etaLabel.Name = "etaLabel";
-            this.etaLabel.Size = new System.Drawing.Size(131, 16);
+            this.etaLabel.Size = new System.Drawing.Size(160, 20);
             this.etaLabel.TabIndex = 75;
             this.etaLabel.Text = "ETA: HH:MM:SS Left";
             // 
@@ -749,9 +770,10 @@
             this.freeDisclaimer.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.freeDisclaimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.freeDisclaimer.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.freeDisclaimer.Location = new System.Drawing.Point(287, 624);
+            this.freeDisclaimer.Location = new System.Drawing.Point(383, 768);
+            this.freeDisclaimer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.freeDisclaimer.Name = "freeDisclaimer";
-            this.freeDisclaimer.Size = new System.Drawing.Size(246, 40);
+            this.freeDisclaimer.Size = new System.Drawing.Size(294, 50);
             this.freeDisclaimer.TabIndex = 79;
             this.freeDisclaimer.Text = "This app is FREE!! \r\nClick here to go to the github.";
             this.freeDisclaimer.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -769,11 +791,11 @@
             this.gamesQueListBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.gamesQueListBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesQueListBox.FormattingEnabled = true;
-            this.gamesQueListBox.ItemHeight = 16;
-            this.gamesQueListBox.Location = new System.Drawing.Point(601, 529);
-            this.gamesQueListBox.Margin = new System.Windows.Forms.Padding(2);
+            this.gamesQueListBox.ItemHeight = 20;
+            this.gamesQueListBox.Location = new System.Drawing.Point(801, 651);
+            this.gamesQueListBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.gamesQueListBox.Name = "gamesQueListBox";
-            this.gamesQueListBox.Size = new System.Drawing.Size(372, 114);
+            this.gamesQueListBox.Size = new System.Drawing.Size(495, 122);
             this.gamesQueListBox.TabIndex = 9;
             this.gamesQueListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gamesQueListBox_MouseClick);
             // 
@@ -789,10 +811,10 @@
             this.devicesComboBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.devicesComboBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.devicesComboBox.FormattingEnabled = true;
-            this.devicesComboBox.Location = new System.Drawing.Point(227, 39);
-            this.devicesComboBox.Margin = new System.Windows.Forms.Padding(2);
+            this.devicesComboBox.Location = new System.Drawing.Point(303, 48);
+            this.devicesComboBox.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.devicesComboBox.Name = "devicesComboBox";
-            this.devicesComboBox.Size = new System.Drawing.Size(206, 24);
+            this.devicesComboBox.Size = new System.Drawing.Size(273, 28);
             this.devicesComboBox.TabIndex = 1;
             this.devicesComboBox.Text = "Select your device";
             this.devicesComboBox.SelectedIndexChanged += new System.EventHandler(this.devicesComboBox_SelectedIndexChanged);
@@ -808,10 +830,10 @@
             this.remotesList.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.remotesList.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.remotesList.FormattingEnabled = true;
-            this.remotesList.Location = new System.Drawing.Point(530, 39);
-            this.remotesList.Margin = new System.Windows.Forms.Padding(2);
+            this.remotesList.Location = new System.Drawing.Point(707, 48);
+            this.remotesList.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.remotesList.Name = "remotesList";
-            this.remotesList.Size = new System.Drawing.Size(206, 24);
+            this.remotesList.Size = new System.Drawing.Size(273, 28);
             this.remotesList.TabIndex = 3;
             this.remotesList.Text = "Select a mirror";
             this.remotesList.SelectedIndexChanged += new System.EventHandler(this.remotesList_SelectedIndexChanged);
@@ -826,9 +848,10 @@
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesListView.HideSelection = false;
-            this.gamesListView.Location = new System.Drawing.Point(227, 71);
+            this.gamesListView.Location = new System.Drawing.Point(303, 87);
+            this.gamesListView.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gamesListView.Name = "gamesListView";
-            this.gamesListView.Size = new System.Drawing.Size(745, 423);
+            this.gamesListView.Size = new System.Drawing.Size(992, 520);
             this.gamesListView.TabIndex = 6;
             this.gamesListView.UseCompatibleStateImageBehavior = false;
             this.gamesListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
@@ -845,9 +868,10 @@
             this.searchTextBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.searchTextBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.searchTextBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.searchTextBox.Location = new System.Drawing.Point(741, 40);
+            this.searchTextBox.Location = new System.Drawing.Point(988, 49);
+            this.searchTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(231, 22);
+            this.searchTextBox.Size = new System.Drawing.Size(307, 25);
             this.searchTextBox.TabIndex = 5;
             this.searchTextBox.Text = "Search";
             this.searchTextBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
@@ -856,9 +880,10 @@
             // 
             this.gamesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.gamesPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.gamesPictureBox.Location = new System.Drawing.Point(228, 529);
+            this.gamesPictureBox.Location = new System.Drawing.Point(304, 651);
+            this.gamesPictureBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.gamesPictureBox.Name = "gamesPictureBox";
-            this.gamesPictureBox.Size = new System.Drawing.Size(367, 214);
+            this.gamesPictureBox.Size = new System.Drawing.Size(489, 263);
             this.gamesPictureBox.TabIndex = 84;
             this.gamesPictureBox.TabStop = false;
             // 
@@ -870,9 +895,10 @@
             this.gamesQueueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesQueueLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.gamesQueueLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.gamesQueueLabel.Location = new System.Drawing.Point(597, 628);
+            this.gamesQueueLabel.Location = new System.Drawing.Point(796, 773);
+            this.gamesQueueLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.gamesQueueLabel.Name = "gamesQueueLabel";
-            this.gamesQueueLabel.Size = new System.Drawing.Size(95, 16);
+            this.gamesQueueLabel.Size = new System.Drawing.Size(113, 20);
             this.gamesQueueLabel.TabIndex = 86;
             this.gamesQueueLabel.Text = "Games Queue";
             // 
@@ -888,13 +914,15 @@
             this.MountButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.MountButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.MountButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.MountButton.Location = new System.Drawing.Point(438, 39);
+            this.MountButton.Location = new System.Drawing.Point(584, 48);
+            this.MountButton.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MountButton.Name = "MountButton";
-            this.MountButton.Size = new System.Drawing.Size(87, 26);
+            this.MountButton.Size = new System.Drawing.Size(116, 32);
             this.MountButton.TabIndex = 2;
             this.MountButton.Text = "Mount";
             this.MountButton.UseVisualStyleBackColor = false;
             this.MountButton.Click += new System.EventHandler(this.MountButton_Click);
+            this.MountButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             // 
             // ProgressText
             // 
@@ -903,9 +931,10 @@
             this.ProgressText.BackColor = System.Drawing.Color.Transparent;
             this.ProgressText.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ProgressText.ForeColor = System.Drawing.Color.White;
-            this.ProgressText.Location = new System.Drawing.Point(225, 751);
+            this.ProgressText.Location = new System.Drawing.Point(300, 924);
+            this.ProgressText.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.ProgressText.Name = "ProgressText";
-            this.ProgressText.Size = new System.Drawing.Size(0, 18);
+            this.ProgressText.Size = new System.Drawing.Size(0, 24);
             this.ProgressText.TabIndex = 88;
             // 
             // notesRichTextBox
@@ -918,12 +947,13 @@
             this.notesRichTextBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.notesRichTextBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.notesRichTextBox.HideSelection = false;
-            this.notesRichTextBox.Location = new System.Drawing.Point(601, 652);
+            this.notesRichTextBox.Location = new System.Drawing.Point(801, 802);
+            this.notesRichTextBox.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.notesRichTextBox.Name = "notesRichTextBox";
             this.notesRichTextBox.ReadOnly = true;
             this.notesRichTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
             this.notesRichTextBox.ShowSelectionMargin = true;
-            this.notesRichTextBox.Size = new System.Drawing.Size(371, 91);
+            this.notesRichTextBox.Size = new System.Drawing.Size(493, 111);
             this.notesRichTextBox.TabIndex = 10;
             this.notesRichTextBox.Text = "";
             // 
@@ -934,9 +964,10 @@
             this.DragDropLbl.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DragDropLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 36F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.DragDropLbl.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.DragDropLbl.Location = new System.Drawing.Point(224, 606);
+            this.DragDropLbl.Location = new System.Drawing.Point(299, 746);
+            this.DragDropLbl.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.DragDropLbl.Name = "DragDropLbl";
-            this.DragDropLbl.Size = new System.Drawing.Size(320, 55);
+            this.DragDropLbl.Size = new System.Drawing.Size(394, 69);
             this.DragDropLbl.TabIndex = 25;
             this.DragDropLbl.Text = "DragDropLBL";
             this.DragDropLbl.Visible = false;
@@ -950,9 +981,10 @@
             this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.label1.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.label1.Location = new System.Drawing.Point(598, 730);
+            this.label1.Location = new System.Drawing.Point(797, 898);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(81, 16);
+            this.label1.Size = new System.Drawing.Size(97, 20);
             this.label1.TabIndex = 86;
             this.label1.Text = "Install Notes";
             // 
@@ -966,9 +998,10 @@
             this.pictureBox1.ErrorImage = null;
             this.pictureBox1.ImageLocation = global::AndroidSideloader.Properties.Settings.Default.BackPicturePath;
             this.pictureBox1.InitialImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(217, -1);
+            this.pictureBox1.Location = new System.Drawing.Point(289, -1);
+            this.pictureBox1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(764, 772);
+            this.pictureBox1.Size = new System.Drawing.Size(1019, 950);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
@@ -976,10 +1009,10 @@
             // MainForm
             // 
             this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(980, 775);
+            this.ClientSize = new System.Drawing.Size(1307, 954);
             this.Controls.Add(this.freeDisclaimer);
             this.Controls.Add(this.DragDropLbl);
             this.Controls.Add(this.MountButton);
@@ -999,6 +1032,7 @@
             this.Controls.Add(this.ProgressText);
             this.Controls.Add(this.pictureBox1);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.MaximizeBox = false;
             this.Name = "MainForm";
             this.ShowIcon = false;

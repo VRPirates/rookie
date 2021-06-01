@@ -68,10 +68,10 @@ namespace AndroidSideloader
 
 
 
-        private void Clear_click(object sender, EventArgs e)
+        public void ResetQU_click(object sender, EventArgs e)
         {
             ResBox.Text = ("0");
-            UsrBox.Clear();
+            UsrBox.Text = ("Change Me");
             FOVx.Text = ("0");
             FOVy.Text = ("0");
             QURfrRt.SelectedIndex = 0;
@@ -124,6 +124,7 @@ namespace AndroidSideloader
                 label9.Visible = false;
                 label10.Visible = false;
                 deleteButton.Visible = false;
+                
                 MessageBox.Show("Ok, Deleted your custom settings file.\nIf you would like to re-enable return here and apply settings again");
                 File.Delete($"{Properties.Settings.Default.MainDir}\\Config.Json");
             }

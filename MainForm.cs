@@ -300,12 +300,10 @@ namespace AndroidSideloader
         private async void Form1_Load(object sender, EventArgs e)
         {
             ADB.WakeDevice();
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.MainDir))
-            {
                 Properties.Settings.Default.ADBPath = $"\"{Environment.CurrentDirectory}" + "\\adb\\adb.exe\"";
                 Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
                 Properties.Settings.Default.Save();
-            }
+   
 
             if (File.Exists(Sideloader.CrashLogPath))
             {
@@ -635,6 +633,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ADB.DeviceID = GetDeviceID();
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
+
             {
                 string[] datas = (string[])e.Data.GetData(DataFormats.FileDrop);
                 foreach (string data in datas)
@@ -680,6 +679,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     foreach (string folder in folders)
                     {
                         output += ADB.CopyOBB(folder);
+                        Properties.Settings.Default.CurrPckg = dir;
+                        Properties.Settings.Default.Save();
                     }
                 }
                     //if it's a file
@@ -717,6 +718,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                             Directory.CreateDirectory(foldername);
                             File.Copy(data, foldername + "\\" + filename);
                             output += ADB.CopyOBB(foldername);
+                            Properties.Settings.Default.CurrPckg = foldername;
+                            Properties.Settings.Default.Save();
                             Directory.Delete(foldername, true);
                         }
 
@@ -1532,10 +1535,10 @@ without him none of this would be possible
 
             if (DeviceConnected)
             {
-                if (!ADB.DeviceID.Contains(":5555"))
+                if (ADB.DeviceID.Contains(":5555"))
                     MessageBox.Show("Mounting does not work with Wireless ADB, you must plug Quest into PC to mount.");
                 
-                    ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
+                ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
             }
             else
                 FlexibleMessageBox.Show("You must connect a device before mounting!");

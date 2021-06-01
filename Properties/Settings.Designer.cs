@@ -313,7 +313,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public string QUhz {
             get {
                 return ((string)(this["QUhz"]));
@@ -325,7 +325,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public string QUres {
             get {
                 return ((string)(this["QUres"]));
@@ -337,7 +337,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public string QUy {
             get {
                 return ((string)(this["QUy"]));
@@ -349,7 +349,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
         public string QUx {
             get {
                 return ((string)(this["QUx"]));
@@ -361,7 +361,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Change Me")]
         public string QUname {
             get {
                 return ((string)(this["QUname"]));
@@ -416,6 +416,18 @@ namespace AndroidSideloader.Properties {
             }
             set {
                 this["delsh"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrPckg {
+            get {
+                return ((string)(this["CurrPckg"]));
+            }
+            set {
+                this["CurrPckg"] = value;
             }
         }
     }

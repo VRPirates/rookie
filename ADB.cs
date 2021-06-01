@@ -55,7 +55,6 @@ namespace AndroidSideloader
         {
 
             string command = result;
-
             Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = "cmd.exe";
             adb.StartInfo.RedirectStandardError = true;
@@ -239,11 +238,10 @@ namespace AndroidSideloader
                     if (Directory.Exists($"/sdcard/Android/data/{packagename}"))
                     {
                         MessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Save files found", MessageBoxButtons.OK);
-
                         Directory.CreateDirectory(CurrBackups);
                         String CurrbackupPaths = CurrBackups + "\\" + packagename + "\\data";
                         Directory.CreateDirectory(CurrbackupPaths);
-                        ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrbackupPaths}\"");
+                        ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename} \" \"{CurrbackupPaths}\"");
                     }
                     else
                     {
@@ -262,33 +260,44 @@ namespace AndroidSideloader
             }
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\Config.Json"))
             {
-                Program.form.ChangeTitle("Pushing Custom QU s3 Patch JSON.");
+                if (packagename.Contains("com.*") || Properties.Settings.Default.CurrPckg.Contains("com"))
+                {
+                    if (Properties.Settings.Default.CurrPckg.Contains("com"))
+                        packagename = Properties.Settings.Default.CurrPckg;
+                    Program.form.ChangeTitle("Pushing Custom QU s3 Patch JSON.");
+                    if (!Directory.Exists($"/sdcard/android/data/{packagename}"))
+                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
+                    if (!Directory.Exists($"/sdcard/android/data/{packagename}/private"))
+                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}/private");
 
-                RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
-                RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}/private");
-                
+                    Random r = new Random();
+                    int x = r.Next(999999999);
+                    int y = r.Next(9999999);
 
-                Random r = new Random();
-                int x = r.Next(999999999);
-                int y = r.Next(9999999);
+                    var sum = ((long)y * (long)1000000000) + (long)x;
 
-                var sum = ((long)y * (long)1000000000) + (long)x;
+                    int x2 = r.Next(999999999);
+                    int y2 = r.Next(9999999);
 
-                int x2 = r.Next(999999999);
-                int y2 = r.Next(9999999);
+                    var sum2 = ((long)y2 * (long)1000000000) + (long)x2;
+                    ADB.WakeDevice();
+                    Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
+                    Properties.Settings.Default.Save();
+                    string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
+                    File.WriteAllText("config.json", boff);
+                    string blank = "";
+                    File.WriteAllText("delete_settings", blank);
+                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
+                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
 
-                var sum2 = ((long)y2 * (long)1000000000) + (long)x2;
-                ADB.WakeDevice();
-                Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
-                Properties.Settings.Default.Save();
-                string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
-                File.WriteAllText("config.json", boff);
-                string blank = "";
-                File.WriteAllText("delete_settings", blank);
-                ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\delete_settings\" /sdcard/android/data/{packagename}/private/");
-                ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{packagename}/private/");
 
-            }
+                }
+                else
+                    ret.Output += "QU Settings could not be automatically applied.\nPlease restart Rookie to refresh installed apps.\nThen select the app from the installed apps (Dropdown list above Device ID).\nThen click Install QU Setting";
+
+
+            
+        }
             Program.form.ChangeTitle("Sideload done");
             return ret;
         }

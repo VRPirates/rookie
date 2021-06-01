@@ -72,13 +72,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.ChangeTitle($"Running {result}");
                     Logger.Log($"Logging command: {result} from file: {path}");
-                    if (ADB.DeviceID.Length > 1)
-                        output += ADB.RunAdbCommandToStringWOADB(result, path);
+                    output += ADB.RunAdbCommandToStringWOADB(result, path);
                     if (output.Error.Contains("mkdir"))
                         output.Error = "";
                     if (output.Output.Contains("reserved"))
                         output.Output = "";
-                    
                 }
             }
             output.Output += "Custom install successful!";
