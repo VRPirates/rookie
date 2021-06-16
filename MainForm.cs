@@ -105,13 +105,12 @@ namespace AndroidSideloader
             FlexibleMessageBox.Show(this, message);
         }
 
-        private List<string> Devices = new List<string>();
+        public List<string> Devices = new List<string>();
 
         public async Task<int> CheckForDevice()
         {
 
             Devices.Clear();
-            ADB.WakeDevice();
             string output = string.Empty;
             ADB.DeviceID = GetDeviceID();
             Thread t1 = new Thread(() =>
@@ -168,16 +167,13 @@ namespace AndroidSideloader
 
         private async void obbcopybutton_Click(object sender, EventArgs e)
         {
-            ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");
             var dialog = new FolderSelectDialog
             {
                 Title = "Select your obb folder"
             };
             if (Properties.Settings.Default.IPAddress.Contains("connect"))
-            {
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-            }
+                ADB.WakeDevice();
             if (dialog.Show(Handle))
             {
                 Thread t1 = new Thread(() =>
@@ -198,8 +194,6 @@ namespace AndroidSideloader
 
         public void ChangeTitlebarToDevice()
         {
-
-            ADB.WakeDevice();
             if (!Devices.Contains("unauthorized"))
             {
                 if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
@@ -249,9 +243,6 @@ namespace AndroidSideloader
 
         public async void showAvailableSpace()
         {
-            ADB.WakeDevice();
-
-
             string AvailableSpace = string.Empty;
             ADB.DeviceID = GetDeviceID();
             Thread t1 = new Thread(() =>
@@ -268,7 +259,6 @@ namespace AndroidSideloader
 
         public string GetDeviceID()
         {
-            ADB.WakeDevice();
             string deviceId = string.Empty;
             int index = -1;
             devicesComboBox.Invoke(() => { index = devicesComboBox.SelectedIndex; });
@@ -299,10 +289,9 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            ADB.WakeDevice();
-                Properties.Settings.Default.ADBPath = $"\"{Environment.CurrentDirectory}" + "\\adb\\adb.exe\"";
-                Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
-                Properties.Settings.Default.Save();
+            Properties.Settings.Default.ADBPath = $"\"{Environment.CurrentDirectory}" + "\\adb\\adb.exe\"";
+            Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
+            Properties.Settings.Default.Save();
    
 
             if (File.Exists(Sideloader.CrashLogPath))
@@ -453,7 +442,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
         private string listapps()
         {
-            ADB.WakeDevice();
             ADB.DeviceID = GetDeviceID();
             return ADB.RunAdbCommandToString("shell pm list packages -3").Output;
         }
@@ -642,17 +630,16 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     //if is directory
                     string dir = Path.GetDirectoryName(data);
                     string path = $"{dir}\\Install.txt";
-                    if (Directory.Exists(data))
+                    if (data.StartsWith("com."))
                     {
                         output += ADB.CopyOBB(data);
                         string extension = Path.GetExtension(data);
                         if (extension == ".apk")
                         {
-
+                            output += ADB.Sideload(data);
                             if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
                             {
-                                
-
+                            
                                 DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
@@ -664,6 +651,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                 if (output.Error.Contains("reserved"))
                                     output.Output = "";
                                 ChangeTitle("Done.");
+                               
                             }
                     }
                     string[] files = Directory.GetFiles(data);
@@ -690,6 +678,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                         string extension = Path.GetExtension(data);
                         if (extension == ".apk")
                         {
+                            output += ADB.Sideload(data);
+
                             if (File.Exists($"{dir}\\Install.txt"))
                             {
                     
@@ -702,10 +692,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                     output += Sideloader.RunADBCommandsFromFile(path);
                                     ChangeTitle("Done.");
                                 }
-                            }
-                            else
-                            {
-                                output += ADB.Sideload(data);
                             }
                         }
                         else if (extension == ".obb")
@@ -761,7 +747,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         }
         private void initListView()
         {
-            ADB.WakeDevice();
             gamesListView.Items.Clear();
             gamesListView.Columns.Clear();
             if (!File.Exists("installedPackages.json"))
@@ -890,8 +875,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
         private void initMirrors(bool random)
         {
-            ADB.WakeDevice();
-
             int index = 0;
             remotesList.Invoke(() => { index = remotesList.SelectedIndex; remotesList.Items.Clear(); });
 

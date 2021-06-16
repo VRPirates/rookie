@@ -34,6 +34,7 @@ namespace AndroidSideloader
             adb.Start();
             adb.StandardInput.WriteLine(command);
             adb.StandardInput.Flush();
+
             adb.StandardInput.Close();
 
             string output = "";
@@ -46,7 +47,16 @@ namespace AndroidSideloader
             }
             catch { }
 
-            adb.WaitForExit();
+            if (command.Contains("connect"))
+            {
+                bool graceful = adb.WaitForExit(5000);  //Wait 7 secs.
+                if (!graceful)
+                {
+                    adb.Kill();
+                }
+            }
+            else
+                adb.WaitForExit();
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
@@ -102,7 +112,7 @@ namespace AndroidSideloader
             long usedSize = 0;
 
             long freeSize = 0;
-            WakeDevice();
+
             var output = RunAdbCommandToString("shell df").Output.Split('\n');
 
             foreach (string currLine in output)
@@ -142,18 +152,29 @@ namespace AndroidSideloader
 
         public static void WakeDevice()
         {
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+            if (Properties.Settings.Default.IPAddress.Contains("connect"))
             {
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+                RunAdbCommandToString(Properties.Settings.Default.IPAddress);
                 string response = ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress).Output;
-                if (response.Contains("refused"))
+                RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+                if (response.Contains("cannot"))
                 {
-                    DialogResult dialogResult = MessageBox.Show("It seems you have rebooted your Quest, Rookie's wireless ADB will persist past PC reboot, but not for Quest reboot.\n\nHave you assigned your Quest a static IP in your router configuration? If you no longer want to use Wireless ADB just hit cancel!", "DEVICE WAS REBOOTED", MessageBoxButtons.YesNoCancel);
+                    DialogResult dialogResult = MessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
                     if (dialogResult == DialogResult.Cancel)
-                        return;
-                    if (dialogResult == DialogResult.Yes)
                     {
-                        ADB.WakeDevice();
+                        DialogResult dialogResult2 = MessageBox.Show("Press OK to remove your stored IP address.\nIf your Quest went idle press the HOLD button on the device twice then press CANCEL to reconnect.", "REMOVE STORED IP?", MessageBoxButtons.OKCancel);
+                        if (dialogResult2 == DialogResult.Cancel)
+                            ADB.WakeDevice();
+                        if (dialogResult2 == DialogResult.OK)
+                        {
+                            Properties.Settings.Default.IPAddress = "";
+                            Properties.Settings.Default.Save();
+                            ADB.WakeDevice();
+                        }
+
+                    }
+                    else if (dialogResult == DialogResult.Yes)
+                    {
                         MessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
                         ADB.RunAdbCommandToString("devices");
                         Thread.Sleep(250);
@@ -165,9 +186,8 @@ namespace AndroidSideloader
                         Thread.Sleep(500);
                         ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
                     }
-                    if (dialogResult == DialogResult.No)
+                    else if (dialogResult == DialogResult.No)
                     {
-                        ADB.WakeDevice();
                         MessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
                         ADB.RunAdbCommandToString("devices");
                         ADB.RunAdbCommandToString("tcpip 5555");
@@ -180,7 +200,6 @@ namespace AndroidSideloader
                         strArrayOne = input.Split(' ');
                         if (strArrayOne[0].Length > 7)
                         {
-                            ADB.WakeDevice();
                             string IPaddr = strArrayOne[8];
                             string IPcmnd = "connect " + IPaddr + ":5555";
                             MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
@@ -192,16 +211,13 @@ namespace AndroidSideloader
                             MessageBox.Show($"Connected!!", "", MessageBoxButtons.OK);
                             Program.form.ChangeTitlebarToDevice();
                         }
-                        else
-                        {
-                            MessageBox.Show("No device connected!");
-                        }
 
+                      
                     }
-
+                    
                 }
             }
-            RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+
         }
         public static ProcessOutput Sideload(string path, string packagename = "")
         {
