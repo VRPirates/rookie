@@ -194,28 +194,29 @@ namespace AndroidSideloader
 
         public void ChangeTitlebarToDevice()
         {
-            if (!Devices.Contains("unauthorized"))
+            if (Devices[0].Length > 1 && Devices.Contains("unauthorized") || Devices.Contains("ADB_VENDOR_KEYS"))
             {
-                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
+                DeviceConnected = false;
+                this.Invoke(() =>
                 {
-                    DeviceConnected = false;
-                    this.Invoke(() =>
+                    this.Text = "Device Not Authorized";
+                    DialogResult dialogResult = MessageBox.Show("Device not authorized, check device screen for ALLOW USB DEBUGGING prompt, check \"Always allow\" box and hit OK.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                    if (dialogResult == DialogResult.Retry)
                     {
-                        this.Text = "Device Not Authorized";
-                        DialogResult dialogResult = MessageBox.Show("Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
-                        if (dialogResult == DialogResult.Retry)
-                        {
-                            devicesbutton.PerformClick();
-                            ;
-                        }
-                        else
-                        {
-                            return;
-                        }
+                        devicesbutton.PerformClick();
+                        
+                    }
+                    else
+                    {
+                        return;
+                    }
 
-                    });
-                }
-                else if (Devices[0].Length > 1)
+                });
+            }
+            if (!Devices.Contains("unauthorized"))
+            { 
+
+                if (Devices[0].Length > 1)
                 {
                     this.Invoke(() => { this.Text = "Device Connected with ID | " + Devices[0].Replace("device", ""); });
                     DeviceConnected = true;
@@ -239,6 +240,7 @@ namespace AndroidSideloader
 
                     });
             }
+            
         }
 
         public async void showAvailableSpace()
@@ -289,11 +291,13 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            Properties.Settings.Default.ADBPath = $"\"{Environment.CurrentDirectory}" + "\\adb\\adb.exe\"";
+            if (Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools"))
+                Properties.Settings.Default.ADBPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools";
+            else
+                Properties.Settings.Default.ADBPath = Environment.CurrentDirectory + "\\adb";
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-   
-
+            ADB.RunAdbCommandToString("kill-server");
             if (File.Exists(Sideloader.CrashLogPath))
             {
                 DialogResult dialogResult = FlexibleMessageBox.Show(this, $@"Looks like sideloader crashed last time, please make an issue at https://github.com/nerdunit/androidsideloader/issues
@@ -349,6 +353,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 ADB.WakeDevice();
                 await CheckForDevice();
                 ChangeTitlebarToDevice();
+                ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
             }
             catch { }
         }
@@ -427,7 +432,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 string path = dialog.FileName;
                 Thread t1 = new Thread(() =>
                 {
-                    output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
+                    if (path.Contains("com."))
+                        output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data/");
+                    if (path.Contains("data"))
+                        output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -516,7 +524,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ADB.WakeDevice();
             if (m_combo.SelectedIndex == -1)
             {
-                FlexibleMessageBox.Show("Please select an app first");
+                FlexibleMessageBox.Show("Please select an app first ");
                 return;
             }
             string date_str = DateTime.Today.ToString("yyyy.MM.dd");
@@ -525,12 +533,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
             string GameName = m_combo.SelectedItem.ToString();
             string packagename = Sideloader.gameNameToPackageName(GameName);
-            MessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Attempting Backup...", MessageBoxButtons.OK);
+            MessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}", "Attempting Backup...", MessageBoxButtons.OK);
 
             Directory.CreateDirectory(CurrBackups);
-            String CurrbackupPaths = CurrBackups + "\\" + packagename + "\\data";
-            Directory.CreateDirectory(CurrbackupPaths);
-            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrbackupPaths}\"");
+            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
             DialogResult dialogResult = MessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Check for backup.", MessageBoxButtons.OKCancel);
             if (dialogResult == DialogResult.Cancel)
             {
@@ -1319,6 +1325,7 @@ without him none of this would be possible
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             RCLONE.killRclone();
+            ADB.RunAdbCommandToString("kill-server");
         }
 
         private void ADBWirelessDisable_Click(object sender, EventArgs e)
@@ -1516,15 +1523,12 @@ without him none of this would be possible
         {
             ADB.WakeDevice();
 
-            if (DeviceConnected)
-            {
-                if (ADB.DeviceID.Contains(":5555"))
-                    MessageBox.Show("Mounting does not work with Wireless ADB, you must plug Quest into PC to mount.");
-                
-                ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
+
+            if (ADB.DeviceID.Contains(":5555")) {
+                MessageBox.Show("Mounting does not work with Wireless ADB, you must plug Quest into PC to mount.");
             }
-            else
-                FlexibleMessageBox.Show("You must connect a device before mounting!");
+             
+            ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
         }
 
         private void freeDisclaimer_Click(object sender, EventArgs e)
