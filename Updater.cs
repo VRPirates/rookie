@@ -17,11 +17,10 @@ namespace AndroidSideloader
         private static string RawGitHubUrl;
         private static string GitHubUrl;
 
-        static readonly public string LocalVersion = "2.1.2";
+        static readonly public string LocalVersion = "2.1.2HF";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
-        //Check if there is a new version of the sideloader
         private static bool IsUpdateAvailable()
         {
             HttpClient client = new HttpClient();
@@ -36,8 +35,6 @@ namespace AndroidSideloader
             catch { return false; }
             return LocalVersion != currentVersion;
         }
-
-        //Call this to ask the user if they want to update
         public static void Update()
         {
             RawGitHubUrl = $"https://raw.githubusercontent.com/{Repostory}";
@@ -45,27 +42,25 @@ namespace AndroidSideloader
             if (IsUpdateAvailable())
                 doUpdate();
         }
-
-        //If the user wants to update
         private static void doUpdate()
         {
             DialogResult dialogResult = FlexibleMessageBox.Show($"There is a new update you have version {LocalVersion}, do you want to update?\nCHANGELOG\n{changelog}", $"Version {currentVersion} is available", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
                 return;
 
-            //Download new sideloader with version appended to file name so there is no chance of overwriting the current exe
             try
             {
-                var fileClient = new WebClient();
-                ServicePointManager.Expect100Continue = true;
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                Logger.Log($"Downloading update from {RawGitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
-                fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
-                fileClient.Dispose();
+                using (var fileClient = new WebClient())
+                {
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    Logger.Log($"Downloading update from {RawGitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
+                    fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
+                    fileClient.Dispose();
+                }
 
                 Logger.Log($"Starting {AppName} v{currentVersion}.exe");
                 Process.Start($"{AppName} v{currentVersion}.exe");
-                //Delete current version
                 AndroidSideloader.Utilities.GeneralUtilities.Melt();
             }
             catch { }
