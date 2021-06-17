@@ -1,6 +1,37 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+2.1.2
+
++ Updated logic to use SideQuest adb.exe if present on system, if not RSL will use local adb.exe. This will keep adb.exe up to date as long as SQ is up to date and should fix any adb version issues that were preventing obb's from copying correctly.
++ Added adb kill-server command to launch and exit of RSL. No more adb.exe running in background forever.
+= After PC reboot wireless ADB message should only pop up once or twice now (depending on outside factors) instead of 5x, user can press cancel then "wake" quest before pressing cancel again to reconnect wireless ADB in case of device just being idle, not rebooted.
+= Fixed install.txt not installing APK before following install.txt commands when using Drag and Drop install.
+= Uninstall will now backup saves to
+Documents\Rookie Backups\<Today'sDate>\<PackageName> (e.g.: com.beatgames.beatsaber). 
+Restore process now looks for either data folder (the folder that a full backup of entire Quest will be contained in) or PackageName folder (they all start with com. so if it finds that it will restore it to the appropriate location). Previously RSL would backup individual saves to  
+Documents\Rookie Backups\PackageName\data\PackageName.
+= OBB folders will automatically be copied when drag and dropping even if the folder contains no OBB files.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDLArAACgkQx/Rql1Vo
+czfF5w/+JLiuayS6i7qwK04rxkin8xv81YqPDnfnroOXVtmEZwj70C/474yvK1EA
+ntWdc8guKzqSS5E7aaUEttS8r8xh6h+ZNp1EPHuQqcRkn0BJZqzk4CFT9ZxHRrD1
+UPuo8mlWa27+sEGEywNwasVDFkB4lMNL5cv0OWXxvMwAbaIP5gneITYBA6KzIp3L
+WVnHyqkRGAz6pGHsdoCXurOBdiXs9IEt6TPgZTmjFAbysewEvjIodtfgThHZKSbp
+XQZwMiY0GbSYJWTGWT3wcbi6TE5p7oTb9CbD6a6n8iuCeaRppkMVqvFIik6vDREJ
+4mRsvehM1RWV5b/v9bWi+5Pz0A8+hWxX+VjlgIQD1hLSMHbbpG4vzwRORl0/u8Bc
+H+XZOb7jun0Aiswqm49QPUAYSGqKhKuWkL4Eu2JDL6Fyq0ukmC85/w7MQUt1JF01
+0dGT/QzjOyPfZYuAyPwrBr8MJ9pyn/3gC6XAKFgMEjmOnqM4Ab2P3aXlg+NwvtDB
+8g6lbPxhqDuO49NyZZzhChXURE8ndOIgR9sSLfMjgYs5NaK6ZydNJiV8VRPjx+/J
+wXpPQLhHxP2Onu9c8SFRt1Lf6M01uRmH2dO7LbSxVjh+V+WyDGoPZt0kUMXpa9LJ
+l5S1MO+qe8akmXgoOCXnQYBOniS9iQqg4nmUK4PF7nssahQ6nG0=
+=Le5S
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.1.1
 
 = Fixed QUSettings not working issue.(unused fields in QUSettings MUST have 0's in them or it will not work, reset/clear all fields button now reflect this.)
