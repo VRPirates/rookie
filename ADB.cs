@@ -13,9 +13,9 @@ namespace AndroidSideloader
     {
         static Process adb = new Process();
         public static string adbFolderPath = Properties.Settings.Default.ADBPath;
-        public static string adbFilePath = Properties.Settings.Default.ADBPath + "\\adb.exe";
+        public static string adbFilePath = Properties.Settings.Default.ADBexepath;
         public static string DeviceID = "";
-
+        
         public static ProcessOutput RunAdbCommandToString(string command)
         {
             if (DeviceID.Length > 1)
@@ -30,7 +30,6 @@ namespace AndroidSideloader
             adb.StartInfo.CreateNoWindow = true;
             adb.StartInfo.UseShellExecute = false;
             adb.StartInfo.WorkingDirectory = adbFolderPath;
-
             adb.Start();
             adb.StandardInput.WriteLine(command);
             adb.StandardInput.Flush();
@@ -49,7 +48,7 @@ namespace AndroidSideloader
 
             if (command.Contains("connect"))
             {
-                bool graceful = adb.WaitForExit(5000);  //Wait 7 secs.
+                bool graceful = adb.WaitForExit(3000);  //Wait 3 secs.
                 if (!graceful)
                 {
                     adb.Kill();
@@ -68,7 +67,7 @@ namespace AndroidSideloader
 
             string command = result;
             Logger.Log($"Running command {command}");
-            adb.StartInfo.FileName = "cmd.exe";
+            adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
             adb.StartInfo.RedirectStandardOutput = true;
@@ -97,8 +96,42 @@ namespace AndroidSideloader
             return new ProcessOutput(output, error);
         }
 
+        public static ProcessOutput RunCommandToString(string result, string path)
+        {
 
-            public static ProcessOutput UninstallPackage(string package)
+            string command = result;
+            Logger.Log($"Running command {command}");
+            adb.StartInfo.FileName = "cmd.exe";
+            adb.StartInfo.RedirectStandardError = true;
+            adb.StartInfo.RedirectStandardInput = true;
+            adb.StartInfo.RedirectStandardOutput = true;
+            adb.StartInfo.CreateNoWindow = true;
+            adb.StartInfo.UseShellExecute = false;
+            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
+            adb.Start();
+            adb.StandardInput.WriteLine(command);
+            adb.StandardInput.Flush();
+            adb.StandardInput.Close();
+
+
+            string output = "";
+            string error = "";
+
+            try
+            {
+                output += adb.StandardOutput.ReadToEnd();
+                error += adb.StandardError.ReadToEnd();
+            }
+            catch { }
+
+            adb.WaitForExit();
+            Logger.Log(output);
+            Logger.Log(error);
+            return new ProcessOutput(output, error);
+        }
+
+
+        public static ProcessOutput UninstallPackage(string package)
         {
             WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");

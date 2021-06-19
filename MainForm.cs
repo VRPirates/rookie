@@ -291,12 +291,21 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            if (Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools"))
-                Properties.Settings.Default.ADBPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools";
-            else
-                Properties.Settings.Default.ADBPath = Environment.CurrentDirectory + "\\adb";
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
+
+            if (Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools"))
+            {
+                Properties.Settings.Default.ADBPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools";
+                Properties.Settings.Default.ADBexepath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools\\adb.exe";
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                Properties.Settings.Default.ADBPath = $"{Properties.Settings.Default.MainDir}\\adb";
+                Properties.Settings.Default.ADBexepath = $"{Properties.Settings.Default.MainDir}\\adb\\adb.exe";
+                Properties.Settings.Default.Save();
+            }
             ADB.RunAdbCommandToString("kill-server");
             if (File.Exists(Sideloader.CrashLogPath))
             {

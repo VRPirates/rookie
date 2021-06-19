@@ -27,8 +27,6 @@ namespace AndroidSideloader
             try
             {
                 currentVersion = client.GetStringAsync($"{RawGitHubUrl}/master/version").Result;
-                if (currentVersion.Length > LocalVersion.Length)
-                    currentVersion = currentVersion.Remove(currentVersion.Length - 1);
                 changelog = client.GetStringAsync($"{RawGitHubUrl}/master/changelog.txt").Result;
                 client.Dispose();
             }

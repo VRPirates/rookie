@@ -430,5 +430,17 @@ namespace AndroidSideloader.Properties {
                 this["CurrPckg"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ADBexepath {
+            get {
+                return ((string)(this["ADBexepath"]));
+            }
+            set {
+                this["ADBexepath"] = value;
+            }
+        }
     }
 }

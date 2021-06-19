@@ -62,12 +62,12 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                 {
                     Program.form.ChangeTitle($"Running {cmd}");
                     Logger.Log($"Logging command: {cmd} from file: {path}");
-                    output += ADB.RunAdbCommandToStringWOADB(cmd, path);
+                    output += ADB.RunCommandToString(cmd, path);
                 }
                 if (cmd.StartsWith("adb"))
                 {
                     string pattern = "adb";
-                    string replacement = $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}";
+                    string replacement = $"{Properties.Settings.Default.ADBexepath} -s {ADB.DeviceID}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.ChangeTitle($"Running {result}");
