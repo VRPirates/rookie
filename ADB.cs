@@ -12,8 +12,8 @@ namespace AndroidSideloader
     class ADB
     {
         static Process adb = new Process();
-        public static string adbFolderPath = Properties.Settings.Default.ADBPath;
-        public static string adbFilePath = Properties.Settings.Default.ADBPath + "\\adb.exe";
+        public static string adbFolderPath = Environment.CurrentDirectory + "\\adb";
+        public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
 
         public static ProcessOutput RunAdbCommandToString(string command)
@@ -34,31 +34,19 @@ namespace AndroidSideloader
             adb.Start();
             adb.StandardInput.WriteLine(command);
             adb.StandardInput.Flush();
-
             adb.StandardInput.Close();
 
             string output = "";
             string error = "";
 
             try
-            { 
+            {
                 output = adb.StandardOutput.ReadToEnd();
                 error = adb.StandardError.ReadToEnd();
             }
             catch { }
 
-            if (command.Contains("connect"))
-            {
-                bool graceful = adb.WaitForExit(5000);  //Wait 7 secs.
-                if (!graceful)
-                {
-                    adb.Kill();
-                }
-            }
-            else
             adb.WaitForExit();
-            if (error.Contains("ADB_VENDOR_KEYS"))
-                    MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
@@ -86,19 +74,29 @@ namespace AndroidSideloader
 
             try
             {
-               output += adb.StandardOutput.ReadToEnd();
-               error += adb.StandardError.ReadToEnd();
+                output += adb.StandardOutput.ReadToEnd();
+                error += adb.StandardError.ReadToEnd();
             }
             catch { }
-
-            adb.WaitForExit();
+            if (command.Contains("connect"))
+            {
+                bool graceful = adb.WaitForExit(3000); 
+                if (!graceful)
+                {
+                    adb.Kill();
+                }
+            }
+            else
+                adb.WaitForExit();
+            if (error.Contains("ADB_VENDOR_KEYS"))
+                MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
         }
 
 
-            public static ProcessOutput UninstallPackage(string package)
+        public static ProcessOutput UninstallPackage(string package)
         {
             WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");
@@ -114,7 +112,7 @@ namespace AndroidSideloader
             long usedSize = 0;
 
             long freeSize = 0;
-
+            WakeDevice();
             var output = RunAdbCommandToString("shell df").Output.Split('\n');
 
             foreach (string currLine in output)
