@@ -58,16 +58,20 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             var commands = File.ReadAllLines(path);
             foreach (string cmd in commands)
             {
-                if (cmd.StartsWith("\"7z.exe\""))
+                if (cmd.Contains("7z.exe"))
                 {
                     Program.form.ChangeTitle($"Running {cmd}");
                     Logger.Log($"Logging command: {cmd} from file: {path}");
-                    output += ADB.RunAdbCommandToStringWOADB(cmd, path);
+                    output += ADB.RunCommandToString(cmd, path);
                 }
                 if (cmd.StartsWith("adb"))
                 {
+                    string replacement = "";
                     string pattern = "adb";
-                    string replacement = $"{Properties.Settings.Default.ADBPath}";
+                    if (ADB.DeviceID.Length > 1)
+                    replacement = $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}";
+                    else
+                    replacement = $"{Properties.Settings.Default.ADBPath}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.ChangeTitle($"Running {result}");

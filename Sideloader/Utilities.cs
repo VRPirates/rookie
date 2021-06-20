@@ -6,10 +6,10 @@ namespace AndroidSideloader
     {
         public static bool CheckFolderIsObb(string path)
         {
-            string[] files = Directory.GetDirectories(path);
+            string[] files = Directory.GetFiles(path);
 
             foreach (string file in files)
-                if (file.StartsWith("com."))
+                if (file.EndsWith(".obb"))
                     return true;
             return false;
         }

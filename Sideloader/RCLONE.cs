@@ -115,7 +115,7 @@ namespace AndroidSideloader
             catch { return 0; }
         }
 
-        public static async Task updateConfig(string remote)
+        public static void updateConfig(string remote)
         {
             string localHash = "";
             try { localHash = File.ReadAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt"); } catch { } //file may not exist

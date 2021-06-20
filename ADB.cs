@@ -15,9 +15,11 @@ namespace AndroidSideloader
         public static string adbFolderPath = Environment.CurrentDirectory + "\\adb";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
-        
+        public static string package = "";
         public static ProcessOutput RunAdbCommandToString(string command)
         {
+            Properties.Settings.Default.ADBPath = adbFilePath;
+            Properties.Settings.Default.Save();
             if (DeviceID.Length > 1)
                 command = $" -s {DeviceID} {command}";
             Logger.Log($"Running command {command}");
@@ -60,12 +62,14 @@ namespace AndroidSideloader
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
             string command = result;
-            if (DeviceID.Length > 1)
-               command = $" -s {DeviceID} {command}";
-  
+            Properties.Settings.Default.ADBPath = adbFilePath;
+            Properties.Settings.Default.Save();
+;
+
+
+
             Logger.Log($"Running command {command}");
-            adb.StartInfo.FileName = @"C:\windows\system32\cmd.exe";
-            adb.StartInfo.Arguments = @"/c " + command;
+            adb.StartInfo.FileName = "cmd.exe";
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
             adb.StartInfo.RedirectStandardOutput = true;
@@ -90,6 +94,52 @@ namespace AndroidSideloader
             if (command.Contains("connect"))
             {
                 bool graceful = adb.WaitForExit(3000); 
+                if (!graceful)
+                {
+                    adb.Kill();
+                }
+            }
+            else
+                adb.WaitForExit();
+            if (error.Contains("ADB_VENDOR_KEYS"))
+                MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
+            Logger.Log(output);
+            Logger.Log(error);
+            return new ProcessOutput(output, error);
+        }
+
+        public static ProcessOutput RunCommandToString(string result, string path)
+        {
+            string command = result;
+
+
+            Logger.Log($"Running command {command}");
+            adb.StartInfo.FileName = @"C:\windows\system32\cmd.exe";
+            adb.StartInfo.Arguments = command;
+            adb.StartInfo.RedirectStandardError = true;
+            adb.StartInfo.RedirectStandardInput = true;
+            adb.StartInfo.RedirectStandardOutput = true;
+            adb.StartInfo.CreateNoWindow = true;
+            adb.StartInfo.UseShellExecute = false;
+            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
+            adb.Start();
+            adb.StandardInput.WriteLine(command);
+            adb.StandardInput.Flush();
+            adb.StandardInput.Close();
+
+
+            string output = "";
+            string error = "";
+
+            try
+            {
+                output += adb.StandardOutput.ReadToEnd();
+                error += adb.StandardError.ReadToEnd();
+            }
+            catch { }
+            if (command.Contains("connect"))
+            {
+                bool graceful = adb.WaitForExit(3000);
                 if (!graceful)
                 {
                     adb.Kill();
@@ -235,6 +285,7 @@ namespace AndroidSideloader
             WakeDevice();
   
             ProcessOutput ret = new ProcessOutput();
+            package = packagename;
   
             Program.form.ChangeTitle($"Sideloading {path}");
             ret += RunAdbCommandToString($"install -g -r \"{path}\"");
@@ -276,7 +327,7 @@ namespace AndroidSideloader
                         }
                     }
                     ADB.WakeDevice();
-                    ret += ADB.RunAdbCommandToString("shell pm uninstall " + packagename);
+                    ret += ADB.RunAdbCommandToString("shell pm uninstall " + package);
                     ret += RunAdbCommandToString($"install -g -r \"{path}\"");
                     return ret;
                 }
@@ -284,15 +335,13 @@ namespace AndroidSideloader
             }
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\Config.Json"))
             {
-                if (packagename.Contains("com.*") || Properties.Settings.Default.CurrPckg.Contains("com"))
-                {
-                    if (Properties.Settings.Default.CurrPckg.Contains("com"))
-                        packagename = Properties.Settings.Default.CurrPckg;
+
+                       
                     Program.form.ChangeTitle("Pushing Custom QU s3 Patch JSON.");
-                    if (!Directory.Exists($"/sdcard/android/data/{packagename}"))
-                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
-                    if (!Directory.Exists($"/sdcard/android/data/{packagename}/private"))
-                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}/private");
+                    if (!Directory.Exists($"/sdcard/android/data/{package}"))
+                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{package}");
+                    if (!Directory.Exists($"/sdcard/android/data/{package}/private"))
+                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{package}/private");
 
                     Random r = new Random();
                     int x = r.Next(999999999);
@@ -311,15 +360,8 @@ namespace AndroidSideloader
                     File.WriteAllText("config.json", boff);
                     string blank = "";
                     File.WriteAllText("delete_settings", blank);
-                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
-                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
-
-
-                }
-                else
-                    ret.Output += "QU Settings could not be automatically applied.\nPlease restart Rookie to refresh installed apps.\nThen select the app from the installed apps (Dropdown list above Device ID).\nThen click Install QU Setting";
-
-
+                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\delete_settings\" /sdcard/android/data/{package}/private/delete_settings");
+                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{package}/private/config.json");
             
         }
             Program.form.ChangeTitle("Sideload done");

@@ -632,62 +632,57 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     //if is directory
                     string dir = Path.GetDirectoryName(data);
                     string path = $"{dir}\\Install.txt";
-                    if (data.StartsWith("com."))
+                    if (Directory.Exists(data))
                     {
                         output += ADB.CopyOBB(data);
- 
-                    }
-                    string extension = Path.GetExtension(data);
-                    if (extension == ".apk")
-                    {
-                        output += ADB.Sideload(data);
-                        if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
+                        string extension = Path.GetExtension(data);
+                        if (extension == ".apk")
                         {
 
-                            DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
-                            if (dialogResult == DialogResult.Cancel)
-                                return;
-                            else
-                                ChangeTitle("Sideloading custom install.txt automatically.");
-                            output += Sideloader.RunADBCommandsFromFile(path);
-                            if (output.Error.Contains("mkdir"))
-                                output.Error = "";
-                            if (output.Error.Contains("reserved"))
-                                output.Output = "";
-                            ChangeTitle("Done.");
+                            if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
+                            {
 
+
+                                DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
+                                if (dialogResult == DialogResult.Cancel)
+                                    return;
+                                else
+                                    ChangeTitle("Sideloading custom install.txt automatically.");
+                                output += Sideloader.RunADBCommandsFromFile(path);
+                                if (output.Error.Contains("mkdir"))
+                                    output.Error = "";
+                                if (output.Error.Contains("reserved"))
+                                    output.Output = "";
+                                ChangeTitle("Done.");
+                            }
                         }
-                    
-
-                    string[] files = Directory.GetFiles(data);
-                    foreach (string file in files)
-                    {
+                        string[] files = Directory.GetFiles(data);
+                        foreach (string file in files)
+                        {
                             if (File.Exists(file))
                                 if (file.EndsWith(".apk"))
                                 {
                                     output += ADB.Sideload(file);
                                 }
+                        }
+                        string[] folders = Directory.GetDirectories(data);
+                        foreach (string folder in folders)
+                        {
+                            output += ADB.CopyOBB(folder);
+                            Properties.Settings.Default.CurrPckg = dir;
+                            Properties.Settings.Default.Save();
+                        }
                     }
-                    string[] folders = Directory.GetDirectories(data);
-                    foreach (string folder in folders)
-                    {
-                        output += ADB.CopyOBB(folder);
-                        Properties.Settings.Default.CurrPckg = dir;
-                        Properties.Settings.Default.Save();
-                    }
-                }
                     //if it's a file
                     else if (File.Exists(data))
                     {
 
-                        string extension2 = Path.GetExtension(data);
-                        if (extension2 == ".apk")
+                        string extension = Path.GetExtension(data);
+                        if (extension == ".apk")
                         {
-                            output += ADB.Sideload(data);
-
                             if (File.Exists($"{dir}\\Install.txt"))
                             {
-                    
+
                                 DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
@@ -697,6 +692,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                     output += Sideloader.RunADBCommandsFromFile(path);
                                     ChangeTitle("Done.");
                                 }
+                            }
+                            else
+                            {
+                                output += ADB.Sideload(data);
                             }
                         }
                         else if (extension == ".obb")
@@ -1479,7 +1478,7 @@ without him none of this would be possible
                 FlexibleMessageBox.Show("There are no games in rclone, please check your internet connection and check if the config is working properly");
                 return;
             }
-            string gamesToUpdate = "";
+
             foreach (string packagename in Sideloader.InstalledPackages.Keys)
             {
                 foreach (var release in SideloaderRCLONE.games)
