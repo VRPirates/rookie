@@ -12,13 +12,8 @@ namespace AndroidSideloader
     class ADB
     {
         static Process adb = new Process();
-<<<<<<< HEAD
         public static string adbFolderPath = Environment.CurrentDirectory + "\\adb";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
-=======
-        public static string adbFolderPath = Properties.Settings.Default.ADBPath;
-        public static string adbFilePath = Properties.Settings.Default.ADBexepath;
->>>>>>> c2b4fb499c2b6958447ff18ee014c56b98c55223
         public static string DeviceID = "";
         
         public static ProcessOutput RunAdbCommandToString(string command)
@@ -49,9 +44,6 @@ namespace AndroidSideloader
                 error = adb.StandardError.ReadToEnd();
             }
             catch { }
-
-<<<<<<< HEAD
-=======
             if (command.Contains("connect"))
             {
                 bool graceful = adb.WaitForExit(3000);  //Wait 3 secs.
@@ -61,7 +53,6 @@ namespace AndroidSideloader
                 }
             }
             else
->>>>>>> c2b4fb499c2b6958447ff18ee014c56b98c55223
             adb.WaitForExit();
             Logger.Log(output);
             Logger.Log(error);

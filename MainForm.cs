@@ -289,31 +289,12 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-<<<<<<< HEAD
             
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.ADBPath = $"{Properties.Settings.Default.MainDir}\\adb\\adb.exe";
-            Properties.Settings.Default.Save();
-   
 
-=======
-            Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
-            Properties.Settings.Default.Save();
-
-            if (Directory.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools"))
-            {
-                Properties.Settings.Default.ADBPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools";
-                Properties.Settings.Default.ADBexepath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\SideQuest\\platform-tools\\adb.exe";
-                Properties.Settings.Default.Save();
-            }
-            else
-            {
-                Properties.Settings.Default.ADBPath = $"{Properties.Settings.Default.MainDir}\\adb";
-                Properties.Settings.Default.ADBexepath = $"{Properties.Settings.Default.MainDir}\\adb\\adb.exe";
-                Properties.Settings.Default.Save();
-            }
+         
             ADB.RunAdbCommandToString("kill-server");
->>>>>>> c2b4fb499c2b6958447ff18ee014c56b98c55223
             if (File.Exists(Sideloader.CrashLogPath))
             {
                 DialogResult dialogResult = FlexibleMessageBox.Show(this, $@"Looks like sideloader crashed last time, please make an issue at https://github.com/nerdunit/androidsideloader/issues
