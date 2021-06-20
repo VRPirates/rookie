@@ -421,14 +421,17 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ProcessOutput output = new ProcessOutput("", "");
             var dialog = new FolderSelectDialog
             {
-                Title = "Select your obb folder"
+                Title = "Select full backup or packagename backup folder"
             };
             if (dialog.Show(Handle))
             {
                 string path = dialog.FileName;
                 Thread t1 = new Thread(() =>
                 {
-                    output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
+                    if (path.Contains("data"))
+                      output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
+                    else 
+                      output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data/");
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -526,12 +529,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
             string GameName = m_combo.SelectedItem.ToString();
             string packagename = Sideloader.gameNameToPackageName(GameName);
-            MessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Attempting Backup...", MessageBoxButtons.OK);
+            MessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Attempting Backup...", MessageBoxButtons.OK);
 
             Directory.CreateDirectory(CurrBackups);
-            String CurrbackupPaths = CurrBackups + "\\" + packagename + "\\data";
-            Directory.CreateDirectory(CurrbackupPaths);
-            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrbackupPaths}\"");
+            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
             DialogResult dialogResult = MessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Check for backup.", MessageBoxButtons.OKCancel);
             if (dialogResult == DialogResult.Cancel)
             {
@@ -634,8 +635,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     if (data.StartsWith("com."))
                     {
                         output += ADB.CopyOBB(data);
-                        string extension = Path.GetExtension(data);
-                        if (extension == ".apk")
+ 
+                    }
+                    string extension = Path.GetExtension(data);
+                    if (extension == ".apk")
                         {
                             output += ADB.Sideload(data);
                             if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
@@ -1228,7 +1231,6 @@ without him none of this would be possible
                 }
                 if (quotaError == false)
                 {
-                    ADB.WakeDevice();
                     ADB.DeviceID = GetDeviceID();
                     quotaTries = 0;
                     progressBar.Value = 0;
@@ -1268,7 +1270,6 @@ without him none of this would be possible
                     }
 
                     Debug.WriteLine(wrDelimiter);
-                    ADB.WakeDevice();
                     string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
                     foreach (string folder in folders)

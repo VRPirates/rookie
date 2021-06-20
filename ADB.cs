@@ -286,7 +286,7 @@ namespace AndroidSideloader
                     ret.Output = string.Empty;
 
 
-                    MessageBox.Show($"In-place upgrade for {packagename} failed.  We will need to upgrade by uninstalling, and keeping savedata isn't guaranteed.  Continue?", "UPGRADE FAILED!", MessageBoxButtons.OKCancel);
+                    MessageBox.Show($"In place upgrade for {packagename} failed.  We will need to upgrade by uninstalling, and keeping savedata isn't guaranteed.  Continue?", "UPGRADE FAILED!", MessageBoxButtons.OKCancel);
 
                     string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                     string CurrBackups = Path.Combine(BackupFolder, date_str);
@@ -295,9 +295,9 @@ namespace AndroidSideloader
                     MessageBox.Show($"Searching for save files...", "Searching!", MessageBoxButtons.OK);
                     if (Directory.Exists($"/sdcard/Android/data/{packagename}"))
                     {
-                        MessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(year.month.date)\\{packagename}\\data", "Save files found", MessageBoxButtons.OK);
+                        MessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Save files found", MessageBoxButtons.OK);
                         Directory.CreateDirectory(CurrBackups);
-                        ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename} \" \"{CurrBackups}\"");
+                        ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
                     }
                     else
                     {
