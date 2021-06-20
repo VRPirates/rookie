@@ -67,7 +67,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                 if (cmd.StartsWith("adb"))
                 {
                     string pattern = "adb";
-                    string replacement = $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}";
+                    string replacement = $"{Properties.Settings.Default.ADBPath}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.ChangeTitle($"Running {result}");

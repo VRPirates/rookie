@@ -20,9 +20,8 @@ namespace AndroidSideloader
         {
             if (DeviceID.Length > 1)
                 command = $" -s {DeviceID} {command}";
-
             Logger.Log($"Running command {command}");
-            adb.StartInfo.FileName = adbFilePath;
+            adb.StartInfo.FileName = @adbFilePath;
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
@@ -60,10 +59,13 @@ namespace AndroidSideloader
         }
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
-
             string command = result;
+            if (DeviceID.Length > 1)
+               command = $" -s {DeviceID} {command}";
+  
             Logger.Log($"Running command {command}");
-            adb.StartInfo.FileName = adbFilePath;
+            adb.StartInfo.FileName = @"C:\windows\system32\cmd.exe";
+            adb.StartInfo.Arguments = @"/c " + command;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
             adb.StartInfo.RedirectStandardOutput = true;
@@ -97,40 +99,6 @@ namespace AndroidSideloader
                 adb.WaitForExit();
             if (error.Contains("ADB_VENDOR_KEYS"))
                 MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
-            Logger.Log(output);
-            Logger.Log(error);
-            return new ProcessOutput(output, error);
-        }
-
-        public static ProcessOutput RunCommandToString(string result, string path)
-        {
-
-            string command = result;
-            Logger.Log($"Running command {command}");
-            adb.StartInfo.FileName = "cmd.exe";
-            adb.StartInfo.RedirectStandardError = true;
-            adb.StartInfo.RedirectStandardInput = true;
-            adb.StartInfo.RedirectStandardOutput = true;
-            adb.StartInfo.CreateNoWindow = true;
-            adb.StartInfo.UseShellExecute = false;
-            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
-            adb.Start();
-            adb.StandardInput.WriteLine(command);
-            adb.StandardInput.Flush();
-            adb.StandardInput.Close();
-
-
-            string output = "";
-            string error = "";
-
-            try
-            {
-                output += adb.StandardOutput.ReadToEnd();
-                error += adb.StandardError.ReadToEnd();
-            }
-            catch { }
-
-            adb.WaitForExit();
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
