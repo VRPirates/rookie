@@ -289,11 +289,33 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            
+            string adbFile = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\RSL\\2.14HF4\\adb\\adb.exe";
+            string adbDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\RSL\\2.14HF4\\adb";
+            string fileName = "";
+            string destFile = "";
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
-            Properties.Settings.Default.ADBPath = $"{Properties.Settings.Default.MainDir}\\adb\\adb.exe";
+            Properties.Settings.Default.Save();
+            if (!File.Exists(adbFile))
+            {
+                Directory.CreateDirectory(adbDir);
+                if (System.IO.Directory.Exists($"{Environment.CurrentDirectory}\\adb"))
+                {
+                    string[] ADBfiles = System.IO.Directory.GetFiles($"{Properties.Settings.Default.MainDir}\\adb");
 
-         
+                    // Copy the files and overwrite destination files if they already exist.
+                    foreach (string s in ADBfiles)
+                    {
+                        fileName = System.IO.Path.GetFileName(s);
+                        destFile = System.IO.Path.Combine(adbDir, fileName);
+                        System.IO.File.Copy(s, destFile, true);
+                    }
+                }
+
+            }
+            Properties.Settings.Default.ADBPath = adbFile;
+            Properties.Settings.Default.Save();
+
+
             ADB.RunAdbCommandToString("kill-server");
             if (File.Exists(Sideloader.CrashLogPath))
             {
@@ -1321,6 +1343,7 @@ without him none of this would be possible
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             RCLONE.killRclone();
+            ADB.RunAdbCommandToString("kill-server");
         }
 
         private void ADBWirelessDisable_Click(object sender, EventArgs e)

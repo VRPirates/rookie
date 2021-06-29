@@ -12,7 +12,7 @@ namespace AndroidSideloader
     class ADB
     {
         static Process adb = new Process();
-        public static string adbFolderPath = Environment.CurrentDirectory + "\\adb";
+        public static string adbFolderPath = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\RSL\\2.14HF4\\ADB";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
         public static string package = "";
