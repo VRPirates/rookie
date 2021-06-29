@@ -28,9 +28,6 @@ namespace AndroidSideloader
             try
             {
                 currentVersion = client.GetStringAsync($"{RawGitHubUrl}/master/version").Result;
-                if (currentVersion.Length > LocalVersion.Length)
-                    currentVersion = currentVersion.Remove(currentVersion.Length - 1);
-                currentVersion = currentVersion.Replace("\n", "");
                 changelog = client.GetStringAsync($"{RawGitHubUrl}/master/changelog.txt").Result;
                 client.Dispose();
             }
@@ -41,8 +38,8 @@ namespace AndroidSideloader
         //Call this to ask the user if they want to update
         public static void Update()
         {
-            RawGitHubUrl = $"https://raw.githubusercontent.com/{Repostory}";
-            GitHubUrl = $"https://github.com/{Repostory}";
+            RawGitHubUrl = $"https://raw.githubusercontent.com/nerdunit/androidsideloader";
+            GitHubUrl = $"https://github.com/nerdunit/androidsideloader";
             if (IsUpdateAvailable())
                 doUpdate();
         }
