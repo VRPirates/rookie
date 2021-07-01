@@ -289,8 +289,8 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            string adbFile = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\RSL\\2.14HF4\\adb\\adb.exe";
-            string adbDir = $"{Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)}\\RSL\\2.14HF4\\adb";
+            string adbFile = "C:\\RSL\\2.14HF5\\adb\\adb.exe";
+            string adbDir = "C:\\RSL\\2.14HF5\\adb";
             string fileName = "";
             string destFile = "";
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
