@@ -174,7 +174,6 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             ProcessOutput output = new ProcessOutput("", "");
 
             string packageName = Sideloader.gameNameToPackageName(GameName);
-
             output = ADB.RunAdbCommandToString("shell pm path " + packageName);
 
             string apkPath = output.Output; //Get apk
@@ -185,14 +184,10 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
 
-            string currApkPath = apkPath;
-            while (currApkPath.Contains("/"))
-                currApkPath = currApkPath.Substring(currApkPath.IndexOf("/") + 1);
+            if (File.Exists(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk"))
+                File.Delete(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
 
-            if (File.Exists(Environment.CurrentDirectory + "\\" + packageName + ".apk"))
-                File.Delete(Environment.CurrentDirectory + "\\" + packageName + ".apk");
-
-            File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + packageName + ".apk");
+            File.Move(Properties.Settings.Default.ADBFolder + "\\base.apk", Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
 
             return output;
         }
@@ -201,7 +196,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
+                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]) || gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
             }
             return gameName;

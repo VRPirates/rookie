@@ -12,14 +12,16 @@ namespace AndroidSideloader
     class ADB
     {
         static Process adb = new Process();
-        public static string adbFolderPath = "C:\\RSL\\2.14HF5\\ADB";
+        public static string adbFolderPath = "C:\\RSL\\2.1HF5\\ADB";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
         public static string package = "";
         public static ProcessOutput RunAdbCommandToString(string command)
         {
+            Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
+
             if (DeviceID.Length > 1)
                 command = $" -s {DeviceID} {command}";
             Logger.Log($"Running command {command}");
@@ -62,9 +64,10 @@ namespace AndroidSideloader
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
             string command = result;
+            Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
-;
+            
 
 
 
@@ -108,10 +111,12 @@ namespace AndroidSideloader
             return new ProcessOutput(output, error);
         }
 
-        public static ProcessOutput RunCommandToString(string result, string path)
+        public static ProcessOutput RunCommandToString(string result, string path = "")
         {
             string command = result;
-
+            Properties.Settings.Default.ADBFolder = adbFolderPath;
+            Properties.Settings.Default.ADBPath = adbFilePath;
+            Properties.Settings.Default.Save();
 
             Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = @"C:\windows\system32\cmd.exe";
@@ -210,70 +215,94 @@ namespace AndroidSideloader
 
         public static void WakeDevice()
         {
-            if (Properties.Settings.Default.IPAddress.Contains("connect"))
+            RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+            string devicesout = RunAdbCommandToString("devices").Output;
+            if (!devicesout.Contains("found"))
             {
-                RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                string response = ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress).Output;
-
-                RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
-                if (response.Contains("cannot"))
+                if (Properties.Settings.Default.IPAddress.Contains("connect"))
                 {
-                    DialogResult dialogResult = MessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
-                    if (dialogResult == DialogResult.Cancel)
+
+                    RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+                    string response = ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress).Output;
+
+                    if (response.Contains("cannot"))
                     {
-                        DialogResult dialogResult2 = MessageBox.Show("Press OK to remove your stored IP address.\nIf your Quest went idle press the HOLD button on the device twice then press CANCEL to reconnect.", "REMOVE STORED IP?", MessageBoxButtons.OKCancel);
-                        if (dialogResult2 == DialogResult.Cancel)
-                            ADB.WakeDevice();
-                        if (dialogResult2 == DialogResult.OK)
+                        DialogResult dialogResult = MessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
+                        if (dialogResult == DialogResult.Cancel)
                         {
-                            Properties.Settings.Default.IPAddress = "";
-                            Properties.Settings.Default.Save();
-                            ADB.WakeDevice();
+                            DialogResult dialogResult2 = MessageBox.Show("Press OK to remove your stored IP address.\nIf your Quest went idle press the HOLD button on the device twice then press CANCEL to reconnect.", "REMOVE STORED IP?", MessageBoxButtons.OKCancel);
+                            if (dialogResult2 == DialogResult.Cancel)
+                                ADB.WakeDevice();
+                            if (dialogResult2 == DialogResult.OK)
+                            {
+                                Properties.Settings.Default.IPAddress = "";
+                                Properties.Settings.Default.Save();
+                                ADB.WakeDevice();
+                            }
+
                         }
-
-                    }
-                    else if (dialogResult == DialogResult.Yes)
-                    {
-                        MessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
-                        ADB.RunAdbCommandToString("devices");
-                        Thread.Sleep(250);
-                        ADB.RunAdbCommandToString("disconnect");
-                        Thread.Sleep(50);
-                        ADB.RunAdbCommandToString("connect");
-                        Thread.Sleep(50);
-                        ADB.RunAdbCommandToString("tcpip 5555");
-                        Thread.Sleep(500);
-                        ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                    }
-                    else if (dialogResult == DialogResult.No)
-                    {
-                        MessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
-                        ADB.RunAdbCommandToString("devices");
-                        ADB.RunAdbCommandToString("tcpip 5555");
-                        MessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OK);
-                        Thread.Sleep(1000);
-                        string input = ADB.RunAdbCommandToString("shell ip route").Output;
-
-
-                        string[] strArrayOne = new string[] { "" };
-                        strArrayOne = input.Split(' ');
-                        if (strArrayOne[0].Length > 7)
+                        else if (dialogResult == DialogResult.Yes)
                         {
-                            string IPaddr = strArrayOne[8];
-                            string IPcmnd = "connect " + IPaddr + ":5555";
-                            MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
-                            Thread.Sleep(2000);
-                            ADB.RunAdbCommandToString(IPcmnd);
-                            Properties.Settings.Default.IPAddress = IPcmnd;
-                            Properties.Settings.Default.Save();
+                            MessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
+                            ADB.RunAdbCommandToString("devices");
+                            Thread.Sleep(250);
+                            ADB.RunAdbCommandToString("disconnect");
+                            Thread.Sleep(50);
+                            ADB.RunAdbCommandToString("connect");
+                            Thread.Sleep(50);
+                            ADB.RunAdbCommandToString("tcpip 5555");
+                            Thread.Sleep(500);
+                            ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+                            MessageBox.Show($"Connected! We can now automatically enable wake on wifi. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot just like wireless ADB functionality.\n\n After testing with this setting off and on the difference in battery usage seems nonexistent. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger OR wake your device and then put it back on hold before using Rookie wirelessly. Do you want to enable wake on wifi?", "Enable Wake on Wifi?", MessageBoxButtons.YesNo);
+                            if (dialogResult == DialogResult.Yes)
+                            {
 
-                            MessageBox.Show($"Connected!!", "", MessageBoxButtons.OK);
-                            Program.form.ChangeTitlebarToDevice();
+                                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+                            }
+                            if (dialogResult == DialogResult.No)
+                            {
+
+                                Program.form.ChangeTitlebarToDevice();
+                                return;
+                            }
                         }
+                        else if (dialogResult == DialogResult.No)
+                        {
+                            MessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
+                            ADB.RunAdbCommandToString("devices");
+                            ADB.RunAdbCommandToString("tcpip 5555");
+                            MessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OK);
+                            Thread.Sleep(1000);
+                            string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
-                      
+                            Properties.Settings.Default.WirelessADB = true;
+                            Properties.Settings.Default.Save();
+                            string[] strArrayOne = new string[] { "" };
+                            strArrayOne = input.Split(' ');
+                            if (strArrayOne[0].Length > 7)
+                            {
+                                string IPaddr = strArrayOne[8];
+                                string IPcmnd = "connect " + IPaddr + ":5555";
+                                MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                                Thread.Sleep(2000);
+                                ADB.RunAdbCommandToString(IPcmnd);
+                                Properties.Settings.Default.IPAddress = IPcmnd;
+                                Properties.Settings.Default.Save();
+
+                                MessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
+                                if (dialogResult == DialogResult.Yes)
+                                {
+
+                                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+                                }
+                                Program.form.ChangeTitlebarToDevice();
+                            }
+
+                        }
                     }
-                    
+
                 }
             }
 
@@ -284,8 +313,6 @@ namespace AndroidSideloader
             WakeDevice();
   
             ProcessOutput ret = new ProcessOutput();
-            package = packagename;
-  
             Program.form.ChangeTitle($"Sideloading {path}");
             ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             string out2 = ret.Output + ret.Error;
@@ -294,7 +321,7 @@ namespace AndroidSideloader
                 string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
                 if (out2.Contains("offline"))
                 {
-                    DialogResult dialogResult2 = MessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (we suggest unchecking delete games after install from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
+                    DialogResult dialogResult2 = MessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                     if (dialogResult2 == DialogResult.Yes)
                         ADB.WakeDevice();
                 }
@@ -336,11 +363,11 @@ namespace AndroidSideloader
             {
 
                        
-                    Program.form.ChangeTitle("Pushing Custom QU s3 Patch JSON.");
-                    if (!Directory.Exists($"/sdcard/android/data/{package}"))
-                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{package}");
-                    if (!Directory.Exists($"/sdcard/android/data/{package}/private"))
-                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{package}/private");
+                    Program.form.ChangeTitle("Pushing Custom QU S3 Config.JSON.");
+                    if (!Directory.Exists($"/sdcard/android/data/{packagename}"))
+                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
+                    if (!Directory.Exists($"/sdcard/android/data/{packagename}/private"))
+                        RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}/private");
 
                     Random r = new Random();
                     int x = r.Next(999999999);
@@ -356,11 +383,11 @@ namespace AndroidSideloader
                     Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
                     Properties.Settings.Default.Save();
                     string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
-                    File.WriteAllText("config.json", boff);
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\config.json", boff);
                     string blank = "";
-                    File.WriteAllText("delete_settings", blank);
-                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\delete_settings\" /sdcard/android/data/{package}/private/delete_settings");
-                    ret += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{package}/private/config.json");
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\delete_settings", blank);
+                    ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
+                    ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
             
         }
             Program.form.ChangeTitle("Sideload done");

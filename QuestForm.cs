@@ -282,8 +282,8 @@ namespace AndroidSideloader
         private void questVids_Click(object sender, EventArgs e)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            if (!Directory.Exists($"{path}\\Quest ScreenShots"))
-                Directory.CreateDirectory($"{path}\\Quest ScreenShots");
+            if (!Directory.Exists($"{path}\\Quest VideoShots"))
+                Directory.CreateDirectory($"{path}\\Quest VideoShots");
             MessageBox.Show("Please wait until you get the message that the transfer has finished.");
             ADB.WakeDevice();
             Program.form.ChangeTitle("Pulling files...");
