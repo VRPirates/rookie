@@ -17,7 +17,11 @@ namespace AndroidSideloader
         private static string RawGitHubUrl;
         private static string GitHubUrl;
 
+<<<<<<< HEAD
         static readonly public string LocalVersion = "2.1.1HF1";
+=======
+        static readonly public string LocalVersion = "2.1.1";
+>>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
