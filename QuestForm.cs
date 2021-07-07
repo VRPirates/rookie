@@ -166,9 +166,9 @@ namespace AndroidSideloader
                 Properties.Settings.Default.QUString = $"\"refresh_rate\":{selected},\"eye_texture_width\":{ResBox.Text},\"fov_x\":{FOVx.Text},\"fov_y\":{FOVy.Text},\"username\":\"{UsrBox.Text}\"}}";
                 Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
                 Properties.Settings.Default.Save();
-                File.WriteAllText("delete_settings", "");
+                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\delete_settings", "");
                 string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
-                File.WriteAllText("config.json", boff);
+                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\config.json", boff);
             }
             
 
