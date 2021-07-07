@@ -62,6 +62,10 @@ namespace AndroidSideloader
                 MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
                 ADB.WakeDevice();
             }
+            if (error.Contains("not enough storage space"))
+            {
+                MessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
+            }
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
