@@ -1,6 +1,66 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.1.1HF1
+
++ Prepended each line of debuglog.txt with Hour and Minute in UTC time. 
++ Added DATE + TIME to Debuglog.txt each time user launches RSL.
++ Added DATE + TIME to CrashLog.txt each time program crashes.
+= Simplified crashlog.txt delete message on boot.
+= Fixed unhandled exception crashes (I hope).
+= Fixed rare QU settings error.
+= Cleaned up code order.
+= Cleaned up Install.txt logic.
+= Other bugfixes.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDl8XUACgkQx/Rql1Vo
+czfl3w//QQmRaVj8IGyevA3fKBB3jdKVZDCbKrRsxTS8MfvVxLeCczDwCJemmu1u
+oF+8TXj0knOLA2FmgVtJAuBjTQLzlL3KGFdZjctfV+7II+LnwvNO01agxfVITAUh
+nivRDsGqu7p3pDQly3dAOAjuUNl9qEy5iI3g1bVHUNK0qk+zI1DFi2AP2q3309df
+O4bE14erPzDz+ELY1PA5oki7T5CyKUakcoYsA6ee4la1ClE2gYBmZym0NdlCu2ay
+9iq+K47D7yHi2J5lIks/RHvmWQwAnrii9J6Ftcl+AsB3DzT8nPgDUx6empDzKgN6
+8XhjF4sxGWVRbxUZe00f5QGLGS0FZjwCCXS2TjZJ3s9+mdHqQuWybYG+oO0Nk6XP
+IOWXsvzMoyo8c8S7oatUuOAPaIx94BdiVS9WOJvQLEk7/HLzsT2jafJBacb/mM2y
+HmLi4VFjhjxvptek+nCFgtiA+zt79/DX11luSfFNA8P2jdV7ECwRMebg0rc05SI3
+DKD35f00yAsIDt/GJjP3PhiUgmlBwkmJ7GiQPNRwif6J7t3LRootA03FWTI3kHbM
+MdNkI0QV6qOZFK+j6T/Xwt8J3EhJR0MNFUuzKg+9pfzeGAPiPXaCbr6BajgPiEPe
+z1m2udFCNYt+bYKvbxc1ALpfkKiegwlh40IF/eAz3iPH4lLOlRs=
+=dL8Y
+-----END PGP SIGNATURE-----
+
+
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+RSL 2.1.1
+
++ Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
++ RSL will now automatically choose any Oculus device over devices made by other manufacturers if more than one ADB device is present.
+= Fixed Download+Install QUSettings application if QUSettings are set.
+= Fixed Pull APK from device.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDjcnQACgkQx/Rql1Vo
+czchqg//WStjc1ANHJK1P06ormJ4ArZFA70UkL0Xd7QUcwJhEiR2/uIIHpOCeCdZ
+ymf6fvsqcyMkAMMq2YA1sNd5fPTFgcaqWZhkir+TywPBfrpcMJYP2lcJGXuhcmjm
+GJo4uymOjci9SBrjb7o8Z5q3cxInRPLfgksgRVN+b3Y965yqETm0OcSXBrCuDyXV
+SqgAJzAFNqElE91LRtz3BqOJ8eNXmEbmC9iSFnllwC9fSYwDefNkIRAVfmD5inqs
+acSW/6URwF4xnF578mnHfdhKlhROqt7XJ/dqIrrh1o0/kV7VbOR4J7rq8vD1nHrZ
+uOAZ+zBKnk37Px61F4XWtUmX0MDHoTuJChAZqKzdZkIUy9Dq/l5asMFufGaGLrHa
+OGjuXNQOTGzSKzp6SNsrU+BkBAJDW4NBWrgacC9PqgE+uZSgedreDZb86UWtZ6ZA
+MR7MFiqaKBGx0GMfbO/JWu/REa9GkdCghwbSKrnPCIK2wsY7zECFflmIaf/BQWzw
+p6hicDZc5053Cu+ZHPy8AiKbv+3FB5AWiujYbl/QkBifoEL03tHepCREAHMD6MBn
+OqgnRU2gwtqke2FSnThyx1qgnnXLLi2M4we171DreBziF9DE23W/hcE+RU3WtucR
+QflQ1p4c5o1q8B2QDkDSjcsCfCXRnfQ52YRv0N7cdKZ9M56GAF0=
+=KqGL
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 Update RSL2.1HF5
 
 Fixed ADB path for usernames containing spaces. ADB now located at c:\RSL\VersionNumber\ADB
