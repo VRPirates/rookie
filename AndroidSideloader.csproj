@@ -258,8 +258,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="changelog.txt" />
-    <None Include="orangekey.png" />
-    <None Include="greenkey.png" />
     <Content Include="icon.ico" />
   </ItemGroup>
   <ItemGroup>
