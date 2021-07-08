@@ -8,7 +8,10 @@ namespace AndroidSideloader
     static class Program
     {
         /// <summary>
-        /// The main entry point for the application.
+        /// The main entry point for the appli
+        /// 
+        /// 
+        /// ion.
         /// </summary>
         [STAThread]
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
@@ -28,7 +31,8 @@ namespace AndroidSideloader
         static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
-            File.WriteAllText(Sideloader.CrashLogPath, $"Message: {e.Message}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}");
+            string date_time = DateTime.UtcNow.ToString("dddd, MMMM dd @ hh:mmtt UTC");
+            File.WriteAllText(Sideloader.CrashLogPath, $"\n\n################\nDate/Time of crash: {date_time}################\n\nMessage: {e.Message}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}");
         }
     }
 }

@@ -12,7 +12,9 @@ using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows.Forms;
+
 
 namespace AndroidSideloader
 {
@@ -34,267 +36,28 @@ namespace AndroidSideloader
         public MainForm()
 
         {
+            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+            t.Interval = 840000; // 14 mins between wakeup commands
+            t.Tick += new EventHandler(timer_Tick);
+            t.Start();
             InitializeComponent();
-            lvwColumnSorter = new ListViewColumnSorter();
-            this.gamesListView.ListViewItemSorter = lvwColumnSorter;
         }
 
         private string oldTitle = "";
 
-        public async void ChangeTitle(string txt, bool reset = true)
-        {
-            this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
-            ProgressText.Invoke(() => { ProgressText.Text = txt; });
-            if (!reset)
-                return;
-            await Task.Delay(TimeSpan.FromSeconds(5));
-            this.Invoke(() => { this.Text = "Rookie's Sideloader | " + oldTitle; });
-            ProgressText.Invoke(() => { ProgressText.Text = oldTitle; });
-        }
 
-        private void ShowSubMenu(Panel subMenu)
-        {
-            if (subMenu.Visible == false)
-                subMenu.Visible = true;
-            else
-                subMenu.Visible = false;
-        }
-
-        private async void startsideloadbutton_Click(object sender, EventArgs e)
-        {
-            ADB.WakeDevice();
-            ProcessOutput output = new ProcessOutput("", "");
-            string path = string.Empty;
-            using (OpenFileDialog openFileDialog = new OpenFileDialog())
-            {
-                openFileDialog.Filter = "Android apps (*.apk)|*.apk";
-                openFileDialog.FilterIndex = 2;
-                openFileDialog.RestoreDirectory = true;
-
-                if (openFileDialog.ShowDialog() == DialogResult.OK)
-                    path = openFileDialog.FileName;
-                else
-                    return;
-            }
-            if (Properties.Settings.Default.IPAddress.Contains("connect"))
-            {
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-            }
-            ADB.DeviceID = GetDeviceID();
-
-            Thread t1 = new Thread(() =>
-            {
-                output += ADB.Sideload(path);
-            });
-            t1.IsBackground = true;
-            t1.Start();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
-
-            showAvailableSpace();
-
-            ShowPrcOutput(output);
-        }
-
-        public void ShowPrcOutput(ProcessOutput prcout)
-        {
-            string message = $"Output: {prcout.Output}";
-            if (prcout.Error.Length != 0)
-                message += $"\nError: {prcout.Error}";
-            FlexibleMessageBox.Show(this, message);
-        }
-
-        public List<string> Devices = new List<string>();
-
-        public async Task<int> CheckForDevice()
-        {
-
-            Devices.Clear();
-            string output = string.Empty;
-            ADB.DeviceID = GetDeviceID();
-            Thread t1 = new Thread(() =>
-            {
-                output = ADB.RunAdbCommandToString("devices").Output;
-            });
-            t1.Start();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
-
-            var line = output.Split('\n');
-
-            int i = 0;
-
-            devicesComboBox.Items.Clear();
-
-            Logger.Log("Devices:");
-            foreach (string currLine in line)
-            {
-                if (i > 0 && currLine.Length > 0)
-                {
-                    Devices.Add(currLine.Split('	')[0]);
-                    devicesComboBox.Items.Add(currLine.Split('	')[0]);
-                    Logger.Log(currLine.Split('	')[0] + "\n", false);
-                }
-                Debug.WriteLine(currLine);
-                i++;
-            }
-
-            if (devicesComboBox.Items.Count > 0)
-                devicesComboBox.SelectedIndex = 0;
-
-            return devicesComboBox.SelectedIndex;
-        }
-
-
-        public async void devicesbutton_Click(object sender, EventArgs e)
-        {
-            ADB.WakeDevice();
-
-            await CheckForDevice();
-
-            ChangeTitlebarToDevice();
-
-            showAvailableSpace();
-        }
-
-        public static void notify(string message)
-        {
-            if (Properties.Settings.Default.enableMessageBoxes == true)
-                FlexibleMessageBox.Show(new Form { TopMost = true, StartPosition = FormStartPosition.CenterScreen }, message);
-        }
-
-        private async void obbcopybutton_Click(object sender, EventArgs e)
-        {
-            ProcessOutput output = new ProcessOutput("", "");
-            var dialog = new FolderSelectDialog
-            {
-                Title = "Select your obb folder"
-            };
-            if (Properties.Settings.Default.IPAddress.Contains("connect"))
-                ADB.WakeDevice();
-            if (dialog.Show(Handle))
-            {
-                Thread t1 = new Thread(() =>
-                {
-                    output += ADB.CopyOBB(dialog.FileName);
-                });
-                t1.IsBackground = true;
-                t1.Start();
-
-                while (t1.IsAlive)
-                    await Task.Delay(100);
-
-                showAvailableSpace();
-
-                ShowPrcOutput(output);
-            }
-        }
-
-        public void ChangeTitlebarToDevice()
-        {
-            if (!Devices.Contains("unauthorized"))
-            {
-                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
-                {
-                    DeviceConnected = false;
-                    this.Invoke(() =>
-                    {
-                        this.Text = "Device Not Authorized";
-                        DialogResult dialogResult = MessageBox.Show("Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
-                        if (dialogResult == DialogResult.Retry)
-                        {
-                            devicesbutton.PerformClick();
-                            ;
-                        }
-                        else
-                        {
-                            return;
-                        }
-
-                    });
-                }
-                else if (Devices[0].Length > 1)
-                {
-                    this.Invoke(() => { this.Text = "Device Connected with ID | " + Devices[0].Replace("device", ""); });
-                    DeviceConnected = true;
-                }
-                else
-                    this.Invoke(() =>
-                    {
-                        DeviceConnected = false;
-                        this.Text = "No Device Connected";
-                        DialogResult dialogResult = MessageBox.Show("No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
-                        if (dialogResult == DialogResult.Retry)
-                        {
-                            devicesbutton.PerformClick();
-                        }
-                        else
-                        {
-                            return;
-                        }
-
-
-
-                    });
-            }
-        }
-
-        public async void showAvailableSpace()
-        {
-            string AvailableSpace = string.Empty;
-            ADB.DeviceID = GetDeviceID();
-            Thread t1 = new Thread(() =>
-            {
-                AvailableSpace = ADB.GetAvailableSpace();
-            });
-            t1.Start();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
-
-            diskLabel.Invoke(() => { diskLabel.Text = AvailableSpace; });
-        }
-
-        public string GetDeviceID()
-        {
-            string deviceId = string.Empty;
-            int index = -1;
-            devicesComboBox.Invoke(() => { index = devicesComboBox.SelectedIndex; });
-            if (index != -1)
-                devicesComboBox.Invoke(() => { deviceId = devicesComboBox.SelectedItem.ToString(); });
-            return deviceId;
-        }
-
-        public static bool HasInternet = false;
-
-        public static void CheckForInternet()
-        {
-            Ping myPing = new Ping();
-            String host = "8.8.8.8"; //google dns
-            byte[] buffer = new byte[32];
-            int timeout = 1000;
-            PingOptions pingOptions = new PingOptions();
-            try
-            {
-                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
-                if (reply.Status == IPStatus.Success)
-                {
-                    HasInternet = true;
-                }
-            }
-            catch { HasInternet = false; }
-        }
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            string adbFile = "C:\\RSL\\2.14HF5\\adb\\adb.exe";
-            string adbDir = "C:\\RSL\\2.14HF5\\adb";
+            string adbFile = "C:\\RSL\\2.1.1\\adb\\adb.exe";
+            string adbDir = "C:\\RSL\\2.1.1\\adb";
             string fileName = "";
             string destFile = "";
+            string date_time = DateTime.UtcNow.ToString("dddd, MMMM dd @ hhhh:mmtt UTC");
+            Logger.Log($"\n\n##############\n##############\n##############\n\nAPP LAUNCH DATE/TIME: " + date_time + "\n\n##############\n##############\n##############\n\n");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
+
             if (!File.Exists(adbFile))
             {
                 Directory.CreateDirectory(adbDir);
@@ -314,14 +77,9 @@ namespace AndroidSideloader
             }
             Properties.Settings.Default.ADBPath = adbFile;
             Properties.Settings.Default.Save();
-
-
-            ADB.RunAdbCommandToString("kill-server");
             if (File.Exists(Sideloader.CrashLogPath))
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(this, $@"Looks like sideloader crashed last time, please make an issue at https://github.com/nerdunit/androidsideloader/issues
-Please don't forget to post the crash.log and fill in any details you can
-Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this message will not appear when you start the sideloader but please first report this issue)", "Crash Detected", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPlease report issue @ https://github.com/nerdunit/androidsideloader/issues OR send the crashlog to a mod or dev.\n\n(Crashlog.txt is located here: {Path.GetFullPath(Sideloader.CrashLogPath)})\n\nIf you've already sent it press YES to delete it and prevent this message. Press NO if you'd still like to send it.", "Crash Detected", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                     File.Delete(Sideloader.CrashLogPath);
             }
@@ -369,12 +127,68 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
             try
             {
+                ADB.RunAdbCommandToString("kill-server");
                 ADB.WakeDevice();
                 await CheckForDevice();
-                ChangeTitlebarToDevice();
+
             }
             catch { }
         }
+
+
+        private async void Form1_Shown(object sender, EventArgs e)
+        {
+            new Thread(() =>
+            {
+                Thread.Sleep(10000);
+                freeDisclaimer.Invoke(() => { freeDisclaimer.Dispose(); });
+            }).Start();
+
+            Thread t1 = new Thread(() =>
+            {
+                if (!debugMode && Properties.Settings.Default.checkForUpdates)
+                {
+                    Updater.AppName = "AndroidSideloader";
+                    Updater.Repostory = "nerdunit/androidsideloader";
+                    Updater.Update();
+                }
+                progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
+                ChangeTitle("Initializing Mirrors");
+                initMirrors(true);
+                ChangeTitle("Initializing Games");
+                SideloaderRCLONE.initGames(currentRemote);
+                if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
+                {
+                    MessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
+                }
+                ChangeTitle("Syncing Game Photos");
+                SideloaderRCLONE.UpdateGamePhotos(currentRemote);
+                ChangeTitle("Checking for Updates on server...");
+                SideloaderRCLONE.UpdateGameNotes(currentRemote);
+                listappsbtn();
+            });
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.IsBackground = false;
+            if (HasInternet)
+                t1.Start();
+
+            showAvailableSpace();
+
+            intToolTips();
+
+            while (t1.IsAlive)
+                await Task.Delay(100);
+            ChangeTitle("GREEN = Up to date, ORANGE = Out of date - Checking installed app versions,  please wait...");
+
+            initListView();
+            ChangeTitle("Loaded");
+            downloadInstallGameButton.Enabled = true;
+
+            progressBar.Style = ProgressBarStyle.Continuous;
+            isLoading = false;
+        }
+
+
 
         private void intToolTips()
         {
@@ -401,6 +215,292 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             ToolTip dlsToolTip = new ToolTip();
             dlsToolTip.SetToolTip(this.speedLabel, "Current download speed, updates every second, in mbps");
         }
+
+
+
+
+        void timer_Tick(object sender, EventArgs e)
+        {
+
+            ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+        }
+
+
+
+
+        public async void ChangeTitle(string txt, bool reset = true)
+        {
+            this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
+            ProgressText.Invoke(() => { ProgressText.Text = txt; });
+            if (!reset)
+                return;
+            await Task.Delay(TimeSpan.FromSeconds(5));
+            this.Invoke(() => { this.Text = "Rookie's Sideloader | " + oldTitle; });
+            ProgressText.Invoke(() => { ProgressText.Text = oldTitle; });
+        }
+
+
+
+
+        private void ShowSubMenu(Panel subMenu)
+        {
+            if (subMenu.Visible == false)
+                subMenu.Visible = true;
+            else
+                subMenu.Visible = false;
+        }
+
+
+
+
+        private async void startsideloadbutton_Click(object sender, EventArgs e)
+        {
+            ADB.WakeDevice();
+            ProcessOutput output = new ProcessOutput("", "");
+            string path = string.Empty;
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.Filter = "Android apps (*.apk)|*.apk";
+                openFileDialog.FilterIndex = 2;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                    path = openFileDialog.FileName;
+                else
+                    return;
+            }
+            if (Properties.Settings.Default.IPAddress.Contains("connect"))
+            {
+                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+            }
+            ADB.DeviceID = GetDeviceID();
+
+            Thread t1 = new Thread(() =>
+            {
+                output += ADB.Sideload(path);
+            });
+            t1.IsBackground = true;
+            t1.Start();
+
+            while (t1.IsAlive)
+                await Task.Delay(100);
+
+            showAvailableSpace();
+
+            ShowPrcOutput(output);
+        }
+
+
+
+
+        public void ShowPrcOutput(ProcessOutput prcout)
+        {
+            string message = $"Output: {prcout.Output}";
+            if (prcout.Error.Length != 0)
+                message += $"\nError: {prcout.Error}";
+            FlexibleMessageBox.Show(this, message);
+        }
+
+
+
+
+        public List<string> Devices = new List<string>();
+
+
+
+
+        public async Task<int> CheckForDevice()
+        {
+
+            Devices.Clear();
+            string output = string.Empty;
+            string error = string.Empty;
+            ADB.DeviceID = GetDeviceID();
+            Thread t1 = new Thread(() =>
+            {
+                output = ADB.RunAdbCommandToString("devices").Output;
+                
+            });
+
+
+            t1.Start();
+
+            while (t1.IsAlive)
+                await Task.Delay(100);
+
+            var line = output.Split('\n');
+
+            int i = 0;
+
+            devicesComboBox.Items.Clear();
+
+            Logger.Log("Devices:");
+            foreach (string currLine in line)
+            {
+                if (i > 0 && currLine.Length > 0)
+                {
+                    Devices.Add(currLine.Split('	')[0]);
+                    devicesComboBox.Items.Add(currLine.Split('	')[0]);
+                    Logger.Log(currLine.Split('	')[0] + "\n", false);
+                }
+                Debug.WriteLine(currLine);
+                i++;
+            }
+
+            if (devicesComboBox.Items.Count > 0)
+                devicesComboBox.SelectedIndex = 0;
+
+            return devicesComboBox.SelectedIndex;
+        }
+
+
+
+
+
+        public async void devicesbutton_Click(object sender, EventArgs e)
+        {
+            ADB.WakeDevice();
+
+            await CheckForDevice();
+
+            ChangeTitlebarToDevice();
+
+            showAvailableSpace();
+        }
+
+        public static void notify(string message)
+        {
+            if (Properties.Settings.Default.enableMessageBoxes == true)
+                FlexibleMessageBox.Show(new Form { TopMost = true, StartPosition = FormStartPosition.CenterScreen }, message);
+        }
+
+        private async void obbcopybutton_Click(object sender, EventArgs e)
+        {
+            ProcessOutput output = new ProcessOutput("", "");
+            var dialog = new FolderSelectDialog
+            {
+                Title = "Select your obb folder"
+            };
+            if (Properties.Settings.Default.IPAddress.Contains("connect"))
+                ADB.WakeDevice();
+            if (dialog.Show(Handle))
+            {
+                Thread t1 = new Thread(() =>
+                {
+                    output += ADB.CopyOBB(dialog.FileName);
+                });
+                t1.IsBackground = true;
+                t1.Start();
+
+                while (t1.IsAlive)
+                    await Task.Delay(100);
+
+                showAvailableSpace();
+
+                ShowPrcOutput(output);
+            }
+        }
+
+      public void ChangeTitlebarToDevice()
+        {
+            ADB.WakeDevice();
+            if (!Devices.Contains("unauthorized"))
+            {
+                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
+                {
+                    DeviceConnected = false;
+                    this.Invoke(() =>
+                    {
+                        this.Text = "Device Not Authorized";
+                        DialogResult dialogResult = MessageBox.Show("Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            devicesbutton.PerformClick();
+                            ;
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+                    });
+                }
+                else if (Devices[0].Length > 1)
+                {
+                    this.Invoke(() => { this.Text = "Device Connected with ID | " + Devices[0].Replace("device", ""); });
+                    DeviceConnected = true;
+                }
+                else
+                    this.Invoke(() =>
+                    {
+                        DeviceConnected = false;
+                        this.Text = "No Device Connected";
+                        DialogResult dialogResult = MessageBox.Show("No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            devicesbutton.PerformClick();
+                        }
+                        else
+                        {
+                            return;
+                        }
+
+
+
+                    });
+            }
+        }
+
+
+        public async void showAvailableSpace()
+        {
+            string AvailableSpace = string.Empty;
+            ADB.DeviceID = GetDeviceID();
+            Thread t1 = new Thread(() =>
+            {
+                AvailableSpace = ADB.GetAvailableSpace();
+            });
+            t1.Start();
+
+            while (t1.IsAlive)
+                await Task.Delay(100);
+
+            diskLabel.Invoke(() => { diskLabel.Text = AvailableSpace; });
+        }
+
+        public string GetDeviceID()
+        {
+            string deviceId = string.Empty;
+            int index = -1;
+            devicesComboBox.Invoke(() => { index = devicesComboBox.SelectedIndex; });
+            if (index != -1)
+                devicesComboBox.Invoke(() => { deviceId = devicesComboBox.SelectedItem.ToString(); });
+            return deviceId;
+        }
+
+        public static bool HasInternet = false;
+
+        public static void CheckForInternet()
+        {
+            Ping myPing = new Ping();
+            String host = "8.8.8.8"; //google dns
+            byte[] buffer = new byte[32];
+            int timeout = 1000;
+            PingOptions pingOptions = new PingOptions();
+            try
+            {
+                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
+                if (reply.Status == IPStatus.Success)
+                {
+                    HasInternet = true;
+                }
+            }
+            catch { HasInternet = false; }
+        }
+
+
+
+      
         public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
 
         public static string taa = "";
@@ -474,13 +574,9 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
         public void listappsbtn()
         {
-            ADB.WakeDevice();
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
             var line = listapps().Split('\n');
-            string forsettings = String.Join("", line);
-            Properties.Settings.Default.InstalledApps = forsettings;
-            Properties.Settings.Default.Save();
             
             for (int i = 0; i < line.Length; i++)
             {
@@ -488,15 +584,11 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                 {
                     line[i] = line[i].Remove(0, 8);
                     line[i] = line[i].Remove(line[i].Length - 1);
-                    if (!Sideloader.InstalledPackages.ContainsKey(line[i]))
-                        Sideloader.InstalledPackages.Add(line[i], "");
                     foreach (var game in SideloaderRCLONE.games)
                         if (line[i].Length > 0 && game[3].Contains(line[i]))
                             line[i] = game[0];
                 }
             }
-
-            File.WriteAllText("installedPackages.json", JsonConvert.SerializeObject(Sideloader.InstalledPackages));
 
             Array.Sort(line);
 
@@ -653,7 +745,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     string directory = Path.GetDirectoryName(data);
                     //if is directory
                     string dir = Path.GetDirectoryName(data);
-                    string path = $"{dir}\\Install.txt";
+                    string file = $"{dir}\\Install.txt";
                     if (Directory.Exists(data))
                     {
                         output += ADB.CopyOBB(data);
@@ -670,7 +762,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                                     return;
                                 else
                                     ChangeTitle("Sideloading custom install.txt automatically.");
-                                output += Sideloader.RunADBCommandsFromFile(path);
+                                output += Sideloader.RunADBCommandsFromFile(file);
                                 if (output.Error.Contains("mkdir"))
                                     output.Error = "";
                                 if (output.Error.Contains("reserved"))
@@ -679,12 +771,12 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                             }
                         }
                         string[] files = Directory.GetFiles(data);
-                        foreach (string file in files)
+                        foreach (string file2 in files)
                         {
-                            if (File.Exists(file))
-                                if (file.EndsWith(".apk"))
+                            if (File.Exists(file2))
+                                if (file2.EndsWith(".apk"))
                                 {
-                                    output += ADB.Sideload(file);
+                                    output += ADB.Sideload(file2);
                                 }
                         }
                         string[] folders = Directory.GetDirectories(data);
@@ -704,14 +796,14 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                         {
                             if (File.Exists($"{dir}\\Install.txt"))
                             {
-
+                                file = data;
                                 DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
                                 else
                                 {
                                     ChangeTitle("Sideloading custom install.txt automatically.");
-                                    output += Sideloader.RunADBCommandsFromFile(path);
+                                    output += Sideloader.RunADBCommandsFromFile(file);
                                     ChangeTitle("Done.");
                                 }
                             }
@@ -738,7 +830,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                         if (extension == ".txt")
                         {
                             ChangeTitle("Sideloading custom install.txt automatically.");
-                            output += Sideloader.RunADBCommandsFromFile(path);
+                            output += Sideloader.RunADBCommandsFromFile(file);
                             ChangeTitle("Done.");
                         }
                     }
@@ -775,10 +867,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         {
             gamesListView.Items.Clear();
             gamesListView.Columns.Clear();
-            if (!File.Exists("installedPackages.json"))
-                File.Create("installedPackages.json");
-            if (File.Exists("instlledPackages.json"))
-            Sideloader.InstalledPackages = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("installedPackages.json"));
             foreach (string column in SideloaderRCLONE.gameProperties)
             {
                 gamesListView.Columns.Add(column, 150);
@@ -804,18 +892,13 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     {
                         Game.BackColor = Color.Green;
                         string InstalledVersionCode;
-                        if (Sideloader.InstalledPackages.ContainsKey(packagename) && Sideloader.InstalledPackages[packagename] != "")
-                        {
-                            InstalledVersionCode = Sideloader.InstalledPackages[packagename];
-                        }
-                        else
-                        {
-                            InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
 
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                            Sideloader.InstalledPackages[packagename] = InstalledVersionCode;
-                        }
+
+                        InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
+
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+
 
                         try
                         {
@@ -837,7 +920,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                         }
                     }
                 }
-                File.WriteAllText("installedPackages.json", JsonConvert.SerializeObject(Sideloader.InstalledPackages));
                 GameList.Add(Game);
             }
 
@@ -845,58 +927,6 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             gamesListView.BeginUpdate();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
-        }
-
-        private async void Form1_Shown(object sender, EventArgs e)
-        {
-            new Thread(() =>
-            {
-                Thread.Sleep(10000);
-                freeDisclaimer.Invoke(() => { freeDisclaimer.Dispose(); });
-            }).Start();
-
-            Thread t1 = new Thread(() =>
-            {
-                if (!debugMode && Properties.Settings.Default.checkForUpdates)
-                {
-                    Updater.AppName = "AndroidSideloader";
-                    Updater.Repostory = "nerdunit/androidsideloader";
-                    Updater.Update();
-                }
-                progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
-                ChangeTitle("Initializing Mirrors");
-                initMirrors(true);
-                ChangeTitle("Initializing Games");
-                SideloaderRCLONE.initGames(currentRemote);
-                if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
-                {
-                    MessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
-                }
-                ChangeTitle("Syncing Game Photos");
-                SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                ChangeTitle("Checking for Updates on server...");
-                SideloaderRCLONE.UpdateGameNotes(currentRemote);
-                listappsbtn();
-            });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = false;
-            if (HasInternet)
-                t1.Start();
-
-            showAvailableSpace();
-
-            intToolTips();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
-            ChangeTitle("GREEN = Up to date, ORANGE = Out of date - Checking installed app versions,  please wait...");
-       
-            initListView();
-            ChangeTitle("Loaded");
-            downloadInstallGameButton.Enabled = true;
-
-            progressBar.Style = ProgressBarStyle.Continuous;
-            isLoading = false;
         }
 
         private void initMirrors(bool random)
@@ -977,6 +1007,7 @@ without him none of this would be possible
 
         private async void ADBWirelessEnable_Click(object sender, EventArgs e)
         {
+
             ADB.WakeDevice();
             DialogResult dialogResult = MessageBox.Show("Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
             if (dialogResult == DialogResult.Cancel)
@@ -989,28 +1020,33 @@ without him none of this would be possible
             Thread.Sleep(1000);
             string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
+            Properties.Settings.Default.WirelessADB = true;
+            Properties.Settings.Default.Save();
+            string[] strArrayOne = new string[] { "" };
+            strArrayOne = input.Split(' ');
+            if (strArrayOne[0].Length > 7)
             {
-                string[] strArrayOne = new string[] { "" };
-                strArrayOne = input.Split(' ');
-                if (strArrayOne[0].Length > 7)
+                string IPaddr = strArrayOne[8];
+                string IPcmnd = "connect " + IPaddr + ":5555";
+                MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                Thread.Sleep(2000);
+                ADB.RunAdbCommandToString(IPcmnd);
+                await Program.form.CheckForDevice();
+                Program.form.ChangeTitlebarToDevice();
+                Program.form.showAvailableSpace();
+                Properties.Settings.Default.IPAddress = IPcmnd;
+                Properties.Settings.Default.Save();
+                 
+                MessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
                 {
-                    string IPaddr = strArrayOne[8];
-                    string IPcmnd = "connect " + IPaddr + ":5555";
-                    MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
-                    Thread.Sleep(2000);
-                    ADB.RunAdbCommandToString(IPcmnd);
-                    await Program.form.CheckForDevice();
-                    Program.form.ChangeTitlebarToDevice();
-                    Program.form.showAvailableSpace();
-                    Properties.Settings.Default.IPAddress = IPcmnd;
-                    Properties.Settings.Default.Save();
-
-                    MessageBox.Show($"Connected!!", "", MessageBoxButtons.OK);
-                    Program.form.ChangeTitlebarToDevice();
+                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                 }
-                else
-                    MessageBox.Show("No device connected!");
             }
+            else
+                MessageBox.Show("No device connected!");
+
         }
 
         private async void listApkButton_Click(object sender, EventArgs e)
@@ -1142,7 +1178,6 @@ without him none of this would be possible
             //Do user json on firsttime
             if (Properties.Settings.Default.userJsonOnGameInstall)
             {
-                ADB.WakeDevice();
                 Thread userJsonThread = new Thread(() => { ChangeTitle("Pushing user.json"); Sideloader.PushUserJsons(); });
                 userJsonThread.IsBackground = true;
                 userJsonThread.Start();
@@ -1156,23 +1191,14 @@ without him none of this would be possible
             {
                 gameName = gamesQueueList.ToArray()[0];
                 string dir = Path.GetDirectoryName(gameName);
-          
                 string gameDirectory = Environment.CurrentDirectory + "\\" + gameName;
-                string path = $"{gameDirectory}\\Install.txt";
+                string path = gameDirectory;
                 Directory.CreateDirectory(gameDirectory);
                 ProcessOutput gameDownloadOutput = new ProcessOutput("", "");
 
                 Thread t1 = new Thread(() =>
                 {
-                    ADB.WakeDevice();
                     gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
-
-                    if (File.Exists($"{gameDirectory}\\Install.txt"))
-                    {
-                        ChangeTitle("Sideloading custom install.txt automatically.");
-                        output += Sideloader.RunADBCommandsFromFile(path);
-                        ChangeTitle("Done.");
-                    }
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -1253,6 +1279,7 @@ without him none of this would be possible
                 }
                 if (quotaError == false)
                 {
+                    ADB.WakeDevice();
                     ADB.DeviceID = GetDeviceID();
                     quotaTries = 0;
                     progressBar.Value = 0;
@@ -1264,6 +1291,7 @@ without him none of this would be possible
                     string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
                     Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
+                    string packagename = Sideloader.gameNameToPackageName(gameName);
 
                     Debug.WriteLine("FILES IN GAME FOLDER: ");
                     foreach (string file in files)
@@ -1274,14 +1302,7 @@ without him none of this would be possible
                         {
                             Thread apkThread = new Thread(() =>
                             {
-                                string packagename = "";
-                                foreach (var release in SideloaderRCLONE.games)
-                                {
-                                    if (string.Equals(release[SideloaderRCLONE.ReleaseNameIndex], gameName))
-                                        packagename = release[SideloaderRCLONE.PackageNameIndex];
-                                }
                                 ADB.WakeDevice();
-
                                 output += ADB.Sideload(file, packagename);
                             });
 
@@ -1289,9 +1310,28 @@ without him none of this would be possible
                             while (apkThread.IsAlive)
                                 await Task.Delay(100);
                         }
+                        if (extension == ".txt")
+                        {
+                            string fullname = Path.GetFileName(file);
+                            if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                            {
+                                Thread installtxtThread = new Thread(() =>
+                                {
+                                    ADB.WakeDevice();
+                                    output += Sideloader.RunADBCommandsFromFile(file);
+                                    ChangeTitle("Sideloading custom install.txt automatically.");
+                                });
+
+                                installtxtThread.Start();
+                                while (installtxtThread.IsAlive)
+                                    await Task.Delay(100);
+                            }
+                        }
                     }
+                    
 
                     Debug.WriteLine(wrDelimiter);
+                    ADB.WakeDevice();
                     string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
                     foreach (string folder in folders)
@@ -1310,7 +1350,6 @@ without him none of this would be possible
 
                             while (obbThread.IsAlive)
                                 await Task.Delay(100);
-                            ChangeTitle("Done");
                         }
                     }
 
@@ -1326,8 +1365,6 @@ without him none of this would be possible
                     gamesQueListBox.DataSource = gamesQueueList;
                     ChangeTitlebarToDevice();
                     showAvailableSpace();
-                    listappsbtn(); //reload list to reflect newly installed games
-                    initListView();
                 }
             }
             progressBar.Style = ProgressBarStyle.Continuous;
@@ -1338,6 +1375,7 @@ without him none of this would be possible
             ChangeTitlebarToDevice();
             gamesAreDownloading = false;
             ShowPrcOutput(output);
+            listappsbtn();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -1502,29 +1540,6 @@ without him none of this would be possible
                 return;
             }
 
-            foreach (string packagename in Sideloader.InstalledPackages.Keys)
-            {
-                foreach (var release in SideloaderRCLONE.games)
-                {
-                    if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
-                    {
-                        //only keep numbers from 0 to 9 remove everything else then try to compare
-                        //FlexibleMessageBox.Show($"You have {packagename} installed on your device");
-                        string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode\"").Output;
-                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                        ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                        ulong cloudVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
-
-                        if (installedVersionInt < cloudVersionInt)
-                        {
-                            //games.Add(release[SideloaderRCLONE.ReleaseNameIndex]);
-                            string IVC = InstalledVersionCode.Replace("versionCode=", "");
-                  //        gamesToUpdate = $"{release[SideloaderRCLONE.GameNameIndex]} is outdated, you have version {IVC} while version {release[SideloaderRCLONE.VersionCodeIndex]} is available\n{gamesToUpdate}";
-                        }
-                    }
-                }
-            }
          // if (gamesToUpdate.Length > 0)
          //     FlexibleMessageBox.Show(gamesToUpdate);
         //  else
@@ -1541,15 +1556,7 @@ without him none of this would be possible
         {
             ADB.WakeDevice();
 
-            if (DeviceConnected)
-            {
-                if (ADB.DeviceID.Contains(":5555"))
-                    MessageBox.Show("Mounting does not work with Wireless ADB, you must plug Quest into PC to mount.");
-                
-                ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
-            }
-            else
-                FlexibleMessageBox.Show("You must connect a device before mounting!");
+            ADB.RunAdbCommandToString("shell svc usb setFunctions mtp true");
         }
 
         private void freeDisclaimer_Click(object sender, EventArgs e)
