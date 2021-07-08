@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 
 namespace AndroidSideloader
 {
@@ -9,19 +8,11 @@ namespace AndroidSideloader
 
         public static bool Log(string text, bool ret = true)
         {
-            if (text.Length > 0)
-            {
-                string time = DateTime.UtcNow.ToString("hh:mmtt(UTC): ");
-                string newline = "\n";
-                if (text.Length > 40 && text.Contains("\n"))
-                    newline += "\n\n";
-                text = time += text;
-                try { File.AppendAllText(logfile, text + newline); } catch { }
-                return ret;
-            }
-            else
-                return ret;
-            
+            string newline = "\n";
+            if (text.Length > 40 && text.Contains("\n"))
+                newline += "\n\n";
+            try { File.AppendAllText(logfile, text + newline); } catch { }
+            return ret;
         }
     }
 }

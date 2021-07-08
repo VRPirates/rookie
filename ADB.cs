@@ -191,6 +191,7 @@ namespace AndroidSideloader
             long usedSize = 0;
 
             long freeSize = 0;
+            WakeDevice();
             var output = RunAdbCommandToString("shell df").Output.Split('\n');
 
             foreach (string currLine in output)
