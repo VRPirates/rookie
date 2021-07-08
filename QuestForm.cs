@@ -166,9 +166,9 @@ namespace AndroidSideloader
                 Properties.Settings.Default.QUString = $"\"refresh_rate\":{selected},\"eye_texture_width\":{ResBox.Text},\"fov_x\":{FOVx.Text},\"fov_y\":{FOVy.Text},\"username\":\"{UsrBox.Text}\"}}";
                 Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
                 Properties.Settings.Default.Save();
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\delete_settings", "");
+                File.WriteAllText("delete_settings", "");
                 string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\config.json", boff);
+                File.WriteAllText("config.json", boff);
             }
             
 
@@ -282,8 +282,8 @@ namespace AndroidSideloader
         private void questVids_Click(object sender, EventArgs e)
         {
             string path = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
-            if (!Directory.Exists($"{path}\\Quest VideoShots"))
-                Directory.CreateDirectory($"{path}\\Quest VideoShots");
+            if (!Directory.Exists($"{path}\\Quest ScreenShots"))
+                Directory.CreateDirectory($"{path}\\Quest ScreenShots");
             MessageBox.Show("Please wait until you get the message that the transfer has finished.");
             ADB.WakeDevice();
             Program.form.ChangeTitle("Pulling files...");
