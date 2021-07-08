@@ -34,10 +34,6 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
         }
 
-        //List of all installed package names from connected device
-        public static Dictionary<string, string> InstalledPackages = new Dictionary<string, string>(); //Packagename and Version
-        //public static List<string> InstalledPackageNames = new List<string>();
-
         //Remove folder from device
         public static ProcessOutput RemoveFolder(string path)
         {
@@ -51,18 +47,18 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         }
 
         //For games that require manual install, like having another folder that isnt an obb
-        public static ProcessOutput RunADBCommandsFromFile(string path)
+        public static ProcessOutput RunADBCommandsFromFile(string file)
         {
             ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput();
-            var commands = File.ReadAllLines(path);
+            var commands = File.ReadAllLines(file);
             foreach (string cmd in commands)
             {
                 if (cmd.Contains("7z.exe"))
                 {
                     Program.form.ChangeTitle($"Running {cmd}");
-                    Logger.Log($"Logging command: {cmd} from file: {path}");
-                    output += ADB.RunCommandToString(cmd, path);
+                    Logger.Log($"Logging command: {cmd} from file: {file}");
+                    output += ADB.RunCommandToString(cmd, file);
                 }
                 if (cmd.StartsWith("adb"))
                 {
@@ -75,8 +71,8 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.ChangeTitle($"Running {result}");
-                    Logger.Log($"Logging command: {result} from file: {path}");
-                    output += ADB.RunAdbCommandToStringWOADB(result, path);
+                    Logger.Log($"Logging command: {result} from file: {file}");
+                    output += ADB.RunAdbCommandToStringWOADB(result, file);
                     if (output.Error.Contains("mkdir"))
                         output.Error = "";
                     if (output.Output.Contains("reserved"))
@@ -174,7 +170,6 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             ProcessOutput output = new ProcessOutput("", "");
 
             string packageName = Sideloader.gameNameToPackageName(GameName);
-
             output = ADB.RunAdbCommandToString("shell pm path " + packageName);
 
             string apkPath = output.Output; //Get apk
@@ -185,14 +180,10 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
 
-            string currApkPath = apkPath;
-            while (currApkPath.Contains("/"))
-                currApkPath = currApkPath.Substring(currApkPath.IndexOf("/") + 1);
+            if (File.Exists(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk"))
+                File.Delete(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
 
-            if (File.Exists(Environment.CurrentDirectory + "\\" + packageName + ".apk"))
-                File.Delete(Environment.CurrentDirectory + "\\" + packageName + ".apk");
-
-            File.Move(Environment.CurrentDirectory + "\\adb\\" + currApkPath, Environment.CurrentDirectory + "\\" + packageName + ".apk");
+            File.Move(Properties.Settings.Default.ADBFolder + "\\base.apk", Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
 
             return output;
         }
@@ -201,7 +192,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
+                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]) || gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
             }
             return gameName;
