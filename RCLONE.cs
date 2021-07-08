@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Text;
 using System.IO;
+using System.Windows.Forms;
 
 namespace AndroidSideloader
 {
@@ -84,7 +85,7 @@ namespace AndroidSideloader
             rclone.WaitForExit();
 
             //if there is one of these errors, we switch the mirrors
-            if (error.Contains("cannot fetch token") || error.Contains("authError") || (error.Contains("quota") && error.Contains("exceeded")))
+            if (error.Contains("cannot fetch token") || error.Contains("authError") || (error.Contains("quota") || error.Contains("exceeded")))
             {
                 string oldRemote = MainForm.currentRemote;
                 try
@@ -102,8 +103,12 @@ namespace AndroidSideloader
                 prcoutput.Output = output;
                 prcoutput.Error = error;
             }
+            if (!output.Contains("Game Name;Release Name;Release APK Path;Package Name;Version Code;Version Name"))
             Logger.Log($"Rclone error: {error}\nRclone Output: {output}");
-            return prcoutput;
+            if (error.Contains("There is not enough space"))
+                MessageBox.Show("There isn't enough space on your PC to properly install this game. Please have at least 2x the size of the game you are trying to download/install available on the drive where Rookie is installed.", "NOT ENOUGH SPACE");
+                return prcoutput;
+
         }
     }
 }

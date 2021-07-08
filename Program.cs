@@ -28,7 +28,8 @@ namespace AndroidSideloader
         static void MyHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
-            File.WriteAllText(Sideloader.CrashLogPath, $"Message: {e.Message}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}");
+            string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
+            File.WriteAllText(Sideloader.CrashLogPath, $"\n\n################\nDate/Time of crash: {date_time}################\n\nMessage: {e.Message}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}");
         }
     }
 }

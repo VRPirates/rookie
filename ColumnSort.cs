@@ -30,7 +30,7 @@ public class ListViewColumnSorter : IComparer
         ColumnToSort = 0;
 
         // Initialize the sort order to 'none'
-        OrderOfSort = SortOrder.None;
+        OrderOfSort = SortOrder.Ascending;
 
         // Initialize the CaseInsensitiveComparer object
         ObjectCompare = new CaseInsensitiveComparer();
