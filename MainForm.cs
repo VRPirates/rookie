@@ -41,6 +41,9 @@ namespace AndroidSideloader
             t.Tick += new EventHandler(timer_Tick);
             t.Start();
             InitializeComponent();
+            InitializeComponent();
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.gamesListView.ListViewItemSorter = lvwColumnSorter;
         }
 
         private string oldTitle = "";
