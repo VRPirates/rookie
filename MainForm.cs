@@ -53,7 +53,7 @@ namespace AndroidSideloader
             string adbDir = "C:\\RSL\\2.1.1\\adb";
             string fileName = "";
             string destFile = "";
-            string date_time = DateTime.UtcNow.ToString("dddd, MMMM dd @ hhhh:mmtt UTC");
+            string date_time = DateTime.Today.ToString("dddd, MMMM dd @ hh:mmtt");
             Logger.Log($"\n\n##############\n##############\n##############\n\nAPP LAUNCH DATE/TIME: " + date_time + "\n\n##############\n##############\n##############\n\n");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
@@ -79,7 +79,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.Save();
             if (File.Exists(Sideloader.CrashLogPath))
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPlease report issue @ https://github.com/nerdunit/androidsideloader/issues OR send the crashlog to a mod or dev.\n\n(Crashlog.txt is located here: {Path.GetFullPath(Sideloader.CrashLogPath)})\n\nIf you've already sent it press YES to delete it and prevent this message. Press NO if you'd still like to send it.", "Crash Detected", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPlease report issue @ https://github.com/nerdunit/androidsideloader/issues + send the crashlog to a mod or dev.\n\n(Crashlog.txt is located here: {Path.GetFullPath(Sideloader.CrashLogPath)})\n\nIf you've already sent it press YES to delete it and prevent this message. Press NO if you'd still like to send it.", "Crash Detected", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                     File.Delete(Sideloader.CrashLogPath);
             }
