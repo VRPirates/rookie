@@ -550,9 +550,13 @@ namespace AndroidSideloader
                 Thread t1 = new Thread(() =>
                 {
                     if (path.Contains("data"))
-                      output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
-                    else 
-                      output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data/");
+                    {
+                        output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
+                    }
+                    else
+                    {
+                        output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data/");
+                    }  
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -1555,7 +1559,21 @@ without him none of this would be possible
                 label4.Visible = true;
                 searchTextBox.Focus();
             }
-            return base.ProcessCmdKey(ref msg, keyData);
+            if (keyData == (Keys.Control | Keys.P))
+            {
+                DialogResult dialogResult = MessageBox.Show("Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    Properties.Settings.Default.PackageNameToCB = true;
+                    Properties.Settings.Default.Save();
+                }
+                if (dialogResult == DialogResult.No)
+                {
+                    Properties.Settings.Default.PackageNameToCB = false;
+                    Properties.Settings.Default.Save();
+                }
+            }
+                return base.ProcessCmdKey(ref msg, keyData);
         }
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -1567,13 +1585,15 @@ without him none of this would be possible
                 ListViewItem foundItem = gamesListView.FindItemWithText(searchTextBox.Text, true, 0, true);
                 if (foundItem != null)
                 {
+                    foundItem.Selected = true;
                     gamesListView.TopItem = foundItem;
                     if (foundItem == gamesListView.TopItem)
                     {
                         gamesListView.TopItem.Selected = true;
+     
                     }
                     else
-                        gamesListView.SelectedItems.Clear();
+                        foundItem.Selected = true;
 
                     if (searchTextBox.Text.Length == 0)
                           gamesListView.SelectedItems.Clear();
@@ -1590,15 +1610,18 @@ without him none of this would be possible
 
         public void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
+           
             if (gamesListView.SelectedItems.Count < 1)
                 return;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
             string CurrentReleaseName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
 
-            taa = CurrentPackageName;
+            if(Properties.Settings.Default.PackageNameToCB)
+            Clipboard.SetText(CurrentPackageName);
 
             string ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
+            
             if (gamesPictureBox.BackgroundImage != null)
                 gamesPictureBox.BackgroundImage.Dispose();
             if (File.Exists(ImagePath))

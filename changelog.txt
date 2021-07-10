@@ -1,6 +1,46 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+2.1.3.1
+
+= Fixed issue where if using Quick Search and game was near bottom of list it wouldn't be selected.
++ Added hidden CTRL+P shortcut that copies the packagename of selected game to clipboard (for ease of finding OBB/Save folders or adding images for games).
+
+2.1.3
++ Added Quicksearch
++ Added shortcut (CTRL+F) to open Quicksearch
++ Crashlog window can now open folder directory with crashlog if user selects NO.
++ Get APK from device will now open folder where APK is extracted automatically after extraction.
++ Added timestamps to Dialogbox
++ Added pictures for all current titles.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDp024ACgkQx/Rql1Vo
+czcYvA/9EqVDtGRprPp2q/K+NPTPmMPmtsoiRNU/LEDmkwiEOCcRoPNwnLbRFz7S
+uoM7Trh05aquLgadTVQmoPLZriJPYwUUT5KBJBso1UT5fVyJ5bkfh6+MBQqxOx2j
+YDyqFHdPVQL6QqMQig/XEoyJIWaqHPD60DR0I63E5GOK88cbxPBD94KEQDNhXvcO
+mcJXwr9TmyEqOT5IgsoIfOwMQotB+MnrMO7bSFitpl8sAcxSMpoURz/KOAdR8+f8
+K+OwUTNzuI01C+WRNa9xOhxSp7rRhYoPoNZgxR1/3NOMtNeSU4dEPOk7n/hpEnDS
+MM8DtXIZJ0o26Oo+uL60a61zxUZ1P1w8ks/IGEG3nzqc5b1Fh0LilgBzUtwh1eEs
+g9LcXKALwStJbfYFTzpjhKDQfUlGFRZUSE52BFCcZ4MlgIjbR5buVF4l+QfnR6BW
+PGW50NoTsA/U+Yqxg5xRXRkyKc9+wBFJj3r4dISNJj8psqzbtKgvodjJbMqKmJjL
+ZE0lWp2bx/DP19IZjn5FVRzBSqYfBmilyLRx53syNmpDQQ1l2v1YdgXLxcbeL4JO
+f2nfjyMTM2BrEztpevNb2s4oKm5zYjUCNxmJy1PUCt0RBMNCBKPVRa9KEE/se5UU
+ZDbqfFJx1oqL1vcLH9CNTIhiA2Ar2SJEtBzB0GutoYkIdGo8dJY=
+=dYs/
+-----END PGP SIGNATURE-----
+
+
+
+
+
+
+
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.1.2 
 
 + Added quick search (ctrl+f or click magnifying glass), Automatically selects whatever game it finds, user can press ENTER to start DL+Install

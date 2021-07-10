@@ -466,5 +466,17 @@ namespace AndroidSideloader.Properties {
                 this["CurrentGamename"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PackageNameToCB {
+            get {
+                return ((bool)(this["PackageNameToCB"]));
+            }
+            set {
+                this["PackageNameToCB"] = value;
+            }
+        }
     }
 }
