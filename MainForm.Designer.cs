@@ -948,7 +948,6 @@
             this.DragDropLbl.TabIndex = 25;
             this.DragDropLbl.Text = "DragDropLBL";
             this.DragDropLbl.Visible = false;
-            this.DragDropLbl.Click += new System.EventHandler(this.DragDropLbl_Click);
             // 
             // label1
             // 

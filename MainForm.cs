@@ -1650,10 +1650,6 @@ without him none of this would be possible
             Process.Start("https://github.com/nerdunit/androidsideloader");
         }
 
-        private void DragDropLbl_Click(object sender, EventArgs e)
-        {
-            this.Visible = false;
-        }
 
         private async void removeQUSetting_Click(object sender, EventArgs e)
         {
