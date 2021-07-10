@@ -43,6 +43,8 @@ namespace AndroidSideloader
             t.Start();
             lvwColumnSorter = new ListViewColumnSorter();
             this.gamesListView.ListViewItemSorter = lvwColumnSorter;
+            if (searchTextBox.Visible)
+                searchTextBox.Focus();
 
         }
 
@@ -251,7 +253,6 @@ namespace AndroidSideloader
             else
                 subMenu.Visible = false;
         }
-
 
 
 
@@ -1125,6 +1126,7 @@ without him none of this would be possible
 
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
+            ChangeTitle("Checking filesize...");
             long selectedGamesSize = 0;
             int count = 0;
             string[] GameSizeGame = new string[1];
@@ -1169,8 +1171,10 @@ without him none of this would be possible
 
             DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download the selected game(s)? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
+            {
+                ChangeTitle("");
                 return;
-
+            }
             //Add games to the queue
             if (gamesToAddList.Count > 0)
                 gamesQueueList.AddRange(gamesToAddList);
@@ -1468,6 +1472,17 @@ without him none of this would be possible
         private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             remotesList.Invoke(() => { currentRemote = remotesList.SelectedItem.ToString(); });
+            if (remotesList.Text.Contains("VRP"))
+            {
+                string lines = remotesList.Text;
+                string pattern = "VRP-mirror";
+                string replacement = "";
+                Regex rgx = new Regex(pattern);
+                string result = rgx.Replace(lines, replacement);
+                char[] delims = new[] { '\r', '\n' };
+                string[] strings = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                remotesList.Text = result;
+            }
         }
 
         private void QuestOptionsButton_Click(object sender, EventArgs e)
@@ -1510,15 +1525,65 @@ without him none of this would be possible
             this.gamesListView.Sort();
         }
 
+        private void CheckEnter(object sender, System.Windows.Forms.KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                searchTextBox.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+            }
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                searchTextBox.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+            }
+        }
+        protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
+        {
+            if (keyData == (Keys.Control | Keys.F))
+            {
+
+                //show search
+                searchTextBox.Clear();
+                searchTextBox.Visible = true;
+                label2.Visible = true;
+                label3.Visible = true;
+                label4.Visible = true;
+                searchTextBox.Focus();
+            }
+            return base.ProcessCmdKey(ref msg, keyData);
+        }
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
+            gamesListView.SelectedItems.Clear();
+            this.searchTextBox.KeyPress += new
+            System.Windows.Forms.KeyPressEventHandler(CheckEnter);
             if (gamesListView.Items.Count > 0)
             {
                 ListViewItem foundItem = gamesListView.FindItemWithText(searchTextBox.Text, true, 0, true);
                 if (foundItem != null)
                 {
                     gamesListView.TopItem = foundItem;
+                    if (foundItem == gamesListView.TopItem)
+                    {
+                        gamesListView.TopItem.Selected = true;
+                    }
+                    else
+                        gamesListView.SelectedItems.Clear();
+
+                    if (searchTextBox.Text.Length == 0)
+                          gamesListView.SelectedItems.Clear();
+
+                    searchTextBox.Focus();
+                    this.searchTextBox.KeyPress += new
+                    System.Windows.Forms.KeyPressEventHandler(CheckEnter);
                 }
+                else
+                    gamesListView.SelectedItems.Clear();
             }
         }
     
@@ -1672,6 +1737,42 @@ without him none of this would be possible
             ShowPrcOutput(output);
             listappsbtn();
             initListView();
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            searchTextBox.Clear();
+            searchTextBox.Visible = true;
+            label2.Visible = true;
+            label3.Visible = true;
+            label4.Visible = true;
+            searchTextBox.Focus();
+        }
+
+        private void searchTextBox_Leave(object sender, EventArgs e)
+        {
+            if (searchTextBox.Visible)
+                searchTextBox.Focus();
+            else
+                gamesListView.Focus();
+        }
+
+        private void gamesListView_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                if (gamesListView.SelectedItems.Count > 0)
+                    downloadInstallGameButton_Click(sender, e);
+            }
+            }
+
+        private void searchTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Enter)
+            {
+                if (gamesListView.SelectedItems.Count > 0)
+                    downloadInstallGameButton_Click(sender, e);
+            }
         }
     }
     }

@@ -259,6 +259,9 @@
   <ItemGroup>
     <Content Include="changelog.txt" />
     <Content Include="icon.ico" />
+    <None Include="Resources\greenkey.png" />
+    <None Include="Resources\orangekey.png" />
+    <None Include="Resources\SearchGlass.PNG" />
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5.2">
