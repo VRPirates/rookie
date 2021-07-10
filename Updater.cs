@@ -16,7 +16,7 @@ namespace AndroidSideloader
         public static string Repostory { get; set; }
         private static string RawGitHubUrl;
         private static string GitHubUrl;
-        static readonly public string LocalVersion = "2.1.2";
+        static readonly public string LocalVersion = "2.1.2H";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 

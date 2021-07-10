@@ -61,7 +61,6 @@ namespace AndroidSideloader
             Logger.Log($"\n\n##############\n##############\n##############\n\nAPP LAUNCH DATE/TIME: " + date_time + "\n\n##############\n##############\n##############\n\n");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-            ADB.RunAdbCommandToString("kill-server");
 
             if (!File.Exists(adbFile))
             {
@@ -80,6 +79,7 @@ namespace AndroidSideloader
                 }
 
             }
+            ADB.RunAdbCommandToString("kill-server");
             Properties.Settings.Default.ADBPath = adbFile;
             Properties.Settings.Default.Save();
             if (File.Exists(Sideloader.CrashLogPath))
