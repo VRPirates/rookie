@@ -454,5 +454,17 @@ namespace AndroidSideloader.Properties {
                 this["WirelessADB"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string CurrentGamename {
+            get {
+                return ((string)(this["CurrentGamename"]));
+            }
+            set {
+                this["CurrentGamename"] = value;
+            }
+        }
     }
 }

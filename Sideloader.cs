@@ -34,6 +34,10 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
         }
 
+        //List of all installed package names from connected device
+        public static Dictionary<string, string> InstalledPackages = new Dictionary<string, string>(); //Packagename and Version
+        //public static List<string> InstalledPackageNames = new List<string>();
+
         //Remove folder from device
         public static ProcessOutput RemoveFolder(string path)
         {
@@ -47,32 +51,32 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         }
 
         //For games that require manual install, like having another folder that isnt an obb
-        public static ProcessOutput RunADBCommandsFromFile(string file)
+        public static ProcessOutput RunADBCommandsFromFile(string path)
         {
             ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput();
-            var commands = File.ReadAllLines(file);
+            var commands = File.ReadAllLines(path);
             foreach (string cmd in commands)
             {
                 if (cmd.Contains("7z.exe"))
                 {
                     Program.form.ChangeTitle($"Running {cmd}");
-                    Logger.Log($"Logging command: {cmd} from file: {file}");
-                    output += ADB.RunCommandToString(cmd, file);
+                    Logger.Log($"Logging command: {cmd} from file: {path}");
+                    output += ADB.RunCommandToString(cmd, path);
                 }
                 if (cmd.StartsWith("adb"))
                 {
                     string replacement = "";
                     string pattern = "adb";
                     if (ADB.DeviceID.Length > 1)
-                    replacement = $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}";
+                        replacement = $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}";
                     else
-                    replacement = $"{Properties.Settings.Default.ADBPath}";
+                        replacement = $"{Properties.Settings.Default.ADBPath}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.ChangeTitle($"Running {result}");
-                    Logger.Log($"Logging command: {result} from file: {file}");
-                    output += ADB.RunAdbCommandToStringWOADB(result, file);
+                    Logger.Log($"Logging command: {result} from file: {path}");
+                    output += ADB.RunAdbCommandToStringWOADB(result, path);
                     if (output.Error.Contains("mkdir"))
                         output.Error = "";
                     if (output.Output.Contains("reserved"))
@@ -82,7 +86,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             output.Output += "Custom install successful!";
             return output;
         }
-        
+
 
 
 
@@ -95,7 +99,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             {
                 foreach (string f in Directory.GetFiles(FolderPath))
                 {
-                                        if (Path.GetExtension(f)==".apk")
+                    if (Path.GetExtension(f) == ".apk")
 
                         RecursiveOutput += ADB.Sideload(f);
                 }
@@ -170,6 +174,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             ProcessOutput output = new ProcessOutput("", "");
 
             string packageName = Sideloader.gameNameToPackageName(GameName);
+
             output = ADB.RunAdbCommandToString("shell pm path " + packageName);
 
             string apkPath = output.Output; //Get apk
@@ -180,10 +185,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
 
-            if (File.Exists(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk"))
-                File.Delete(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
 
-            File.Move(Properties.Settings.Default.ADBFolder + "\\base.apk", Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
+            if (File.Exists(Properties.Settings.Default.ADBFolder + "\\" + packageName + ".apk"))
+                File.Delete(Properties.Settings.Default.ADBFolder + "\\" + packageName + ".apk");
+
+            File.Move(Properties.Settings.Default.ADBFolder + "\\base.apk", Environment.CurrentDirectory + "\\" + packageName + ".apk");
 
             return output;
         }
@@ -192,7 +198,9 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]) || gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
+                    return game[SideloaderRCLONE.PackageNameIndex];
+                if (gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
             }
             return gameName;
@@ -250,5 +258,5 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         }
     }
 
-    
+
 }

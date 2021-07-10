@@ -36,20 +36,17 @@ namespace AndroidSideloader
         public MainForm()
 
         {
+            InitializeComponent();
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-<<<<<<< HEAD
-=======
-
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
             t.Start();
-            InitializeComponent();
+            lvwColumnSorter = new ListViewColumnSorter();
+            this.gamesListView.ListViewItemSorter = lvwColumnSorter;
+
         }
 
         private string oldTitle = "";
-
-<<<<<<< HEAD
 
 
         private async void Form1_Load(object sender, EventArgs e)
@@ -58,10 +55,11 @@ namespace AndroidSideloader
             string adbDir = "C:\\RSL\\2.1.1\\adb";
             string fileName = "";
             string destFile = "";
-            string date_time = DateTime.Today.ToString("dddd, MMMM dd @ hh:mmtt");
+            string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
             Logger.Log($"\n\n##############\n##############\n##############\n\nAPP LAUNCH DATE/TIME: " + date_time + "\n\n##############\n##############\n##############\n\n");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
+            ADB.RunAdbCommandToString("kill-server");
 
             if (!File.Exists(adbFile))
             {
@@ -87,6 +85,8 @@ namespace AndroidSideloader
                 DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPlease report issue @ https://github.com/nerdunit/androidsideloader/issues + send the crashlog to a mod or dev.\n\n(Crashlog.txt is located here: {Path.GetFullPath(Sideloader.CrashLogPath)})\n\nIf you've already sent it press YES to delete it and prevent this message. Press NO if you'd still like to send it.", "Crash Detected", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                     File.Delete(Sideloader.CrashLogPath);
+                else
+                    Process.Start("explorer.exe", Properties.Settings.Default.MainDir);
             }
             CheckForInternet();
 
@@ -132,9 +132,9 @@ namespace AndroidSideloader
 
             try
             {
-                ADB.RunAdbCommandToString("kill-server");
                 ADB.WakeDevice();
                 await CheckForDevice();
+                ChangeTitlebarToDevice();
 
             }
             catch { }
@@ -224,20 +224,12 @@ namespace AndroidSideloader
 
 
 
-=======
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
         void timer_Tick(object sender, EventArgs e)
         {
 
             ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
         }
 
-
-<<<<<<< HEAD
-
-
-=======
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
         public async void ChangeTitle(string txt, bool reset = true)
         {
             this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
@@ -328,12 +320,8 @@ namespace AndroidSideloader
             ADB.DeviceID = GetDeviceID();
             Thread t1 = new Thread(() =>
             {
-<<<<<<< HEAD
-                output = ADB.RunAdbCommandToString("devices").Output;
-                
-=======
             output = ADB.RunAdbCommandToString("devices").Output;
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
+            output = ADB.RunAdbCommandToString("devices").Output;
             });
 
 
@@ -363,12 +351,7 @@ namespace AndroidSideloader
 
             if (devicesComboBox.Items.Count > 0)
                 devicesComboBox.SelectedIndex = 0;
-            foreach(var item in devicesComboBox.Items)
-            {
-                string result = $"{Properties.Settings.Default.ADBPath} shell -s {item} getprop ro.product.system.manufacturer";
-                if (ADB.RunCommandToString(result).Output.Contains("Oculus"))
-                    devicesComboBox.SelectedItem = item;
-            }   
+
             return devicesComboBox.SelectedIndex;
         }
 
@@ -420,9 +403,8 @@ namespace AndroidSideloader
             }
         }
 
-      public void ChangeTitlebarToDevice()
+        public void ChangeTitlebarToDevice()
         {
-            ADB.WakeDevice();
             if (!Devices.Contains("unauthorized"))
             {
                 if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
@@ -516,92 +498,7 @@ namespace AndroidSideloader
             }
             catch { HasInternet = false; }
         }
-
-<<<<<<< HEAD
-=======
-        private async void Form1_Load(object sender, EventArgs e)
-        {
-            string adbFile = "C:\\RSL\\2.1HF5\\adb\\adb.exe";
-            string adbDir = "C:\\RSL\\2.1HF5\\adb";
-            string fileName = "";
-            string destFile = "";
-            Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
-            Properties.Settings.Default.Save();
-            if (!File.Exists(adbFile))
-            {
-                Directory.CreateDirectory(adbDir);
-                if (System.IO.Directory.Exists($"{Environment.CurrentDirectory}\\adb"))
-                {
-                    string[] ADBfiles = System.IO.Directory.GetFiles($"{Properties.Settings.Default.MainDir}\\adb");
-
-                    // Copy the files and overwrite destination files if they already exist.
-                    foreach (string s in ADBfiles)
-                    {
-                        fileName = System.IO.Path.GetFileName(s);
-                        destFile = System.IO.Path.Combine(adbDir, fileName);
-                        System.IO.File.Copy(s, destFile, true);
-                    }
-                }
-
-            }
-            Properties.Settings.Default.ADBPath = adbFile;
-            Properties.Settings.Default.Save();
-
-
-            ADB.RunAdbCommandToString("kill-server");
-            if (File.Exists(Sideloader.CrashLogPath))
-            {
-                DialogResult dialogResult = FlexibleMessageBox.Show(this, $@"Looks like sideloader crashed last time, please make an issue at https://github.com/nerdunit/androidsideloader/issues
-Please don't forget to post the crash.log and fill in any details you can
-Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this message will not appear when you start the sideloader but please first report this issue)", "Crash Detected", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                    File.Delete(Sideloader.CrashLogPath);
-            }
-            CheckForInternet();
-
-            if (HasInternet == true)
-                Sideloader.downloadFiles();
-            else
-                FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
-            await Task.Delay(100);
-
-            if (!Directory.Exists(BackupFolder))
-                Directory.CreateDirectory(BackupFolder);
-
-            if (Directory.Exists(Sideloader.TempFolder))
-            {
-                Directory.Delete(Sideloader.TempFolder, true);
-                Directory.CreateDirectory(Sideloader.TempFolder);
-            }
-
-            //Delete the Debug file if it is more than 5MB
-            if (File.Exists(Logger.logfile))
-            {
-                long length = new System.IO.FileInfo(Logger.logfile).Length;
-                if (length > 5000000) File.Delete(Logger.logfile);
-            }
-
-            RCLONE.Init();
-            try { Spoofer.spoofer.Init(); } catch { }
-
-            if (Properties.Settings.Default.CallUpgrade)
-            {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.CallUpgrade = false;
-                Properties.Settings.Default.Save();
-            }
-
-            this.CenterToScreen();
-            gamesListView.View = View.Details;
-            gamesListView.FullRowSelect = true;
-            gamesListView.GridLines = true;
-            etaLabel.Text = "";
-            speedLabel.Text = "";
-            diskLabel.Text = "";
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
-
-
-      
+     
         public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
 
         public static string taa = "";
@@ -675,21 +572,29 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
         public void listappsbtn()
         {
+            ADB.WakeDevice();
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
             var line = listapps().Split('\n');
-            
+            string forsettings = String.Join("", line);
+            Properties.Settings.Default.InstalledApps = forsettings;
+            Properties.Settings.Default.Save();
+
             for (int i = 0; i < line.Length; i++)
             {
                 if (line[i].Length > 9)
                 {
                     line[i] = line[i].Remove(0, 8);
                     line[i] = line[i].Remove(line[i].Length - 1);
+                    if (!Sideloader.InstalledPackages.ContainsKey(line[i]))
+                        Sideloader.InstalledPackages.Add(line[i], "");
                     foreach (var game in SideloaderRCLONE.games)
                         if (line[i].Length > 0 && game[3].Contains(line[i]))
                             line[i] = game[0];
                 }
             }
+
+            File.WriteAllText("installedPackages.json", JsonConvert.SerializeObject(Sideloader.InstalledPackages));
 
             Array.Sort(line);
 
@@ -715,7 +620,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
 
             string GameName = m_combo.SelectedItem.ToString();
             ProcessOutput output = new ProcessOutput("", "");
-
+            ChangeTitle("Extracting APK....");
             Thread t1 = new Thread(() =>
             {
                 output = Sideloader.getApk(GameName);
@@ -726,7 +631,8 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             while (t1.IsAlive)
                 await Task.Delay(100);
             progressBar.Style = ProgressBarStyle.Continuous;
-
+            ChangeTitle("APK Extracted to " + Properties.Settings.Default.MainDir +". Opening folder now.");
+            Process.Start("explorer.exe", Properties.Settings.Default.MainDir);
             ShowPrcOutput(output);
         }
 
@@ -968,6 +874,10 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
         {
             gamesListView.Items.Clear();
             gamesListView.Columns.Clear();
+            if (!File.Exists("installedPackages.json"))
+                File.Create("installedPackages.json");
+            if (File.Exists("instlledPackages.json"))
+                Sideloader.InstalledPackages = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("installedPackages.json"));
             foreach (string column in SideloaderRCLONE.gameProperties)
             {
                 gamesListView.Columns.Add(column, 150);
@@ -993,13 +903,18 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                     {
                         Game.BackColor = Color.Green;
                         string InstalledVersionCode;
+                        if (Sideloader.InstalledPackages.ContainsKey(packagename) && Sideloader.InstalledPackages[packagename] != "")
+                        {
+                            InstalledVersionCode = Sideloader.InstalledPackages[packagename];
+                        }
+                        else
+                        {
+                            InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
 
-
-                        InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
-
-                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-
+                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                            Sideloader.InstalledPackages[packagename] = InstalledVersionCode;
+                        }
 
                         try
                         {
@@ -1021,6 +936,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
                         }
                     }
                 }
+                File.WriteAllText("installedPackages.json", JsonConvert.SerializeObject(Sideloader.InstalledPackages));
                 GameList.Add(Game);
             }
 
@@ -1030,62 +946,7 @@ Do you want to delete the {Sideloader.CrashLogPath} (if you press yes, this mess
             gamesListView.EndUpdate();
         }
 
-<<<<<<< HEAD
-=======
 
-        private async void Form1_Shown(object sender, EventArgs e)
-        {
-            new Thread(() =>
-            {
-                Thread.Sleep(10000);
-                freeDisclaimer.Invoke(() => { freeDisclaimer.Dispose(); });
-            }).Start();
-
-            Thread t1 = new Thread(() =>
-            {
-                if (!debugMode && Properties.Settings.Default.checkForUpdates)
-                {
-                    Updater.AppName = "AndroidSideloader";
-                    Updater.Repostory = "nerdunit/androidsideloader";
-                    Updater.Update();
-                }
-                progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
-                ChangeTitle("Initializing Mirrors");
-                initMirrors(true);
-                ChangeTitle("Initializing Games");
-                SideloaderRCLONE.initGames(currentRemote);
-                if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
-                {
-                    MessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
-                }
-                ChangeTitle("Syncing Game Photos");
-                SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                ChangeTitle("Checking for Updates on server...");
-                SideloaderRCLONE.UpdateGameNotes(currentRemote);
-                listappsbtn();
-            });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = false;
-            if (HasInternet)
-                t1.Start();
-
-            showAvailableSpace();
-
-            intToolTips();
-
-            while (t1.IsAlive)
-                await Task.Delay(100);
-            ChangeTitle("GREEN = Up to date, ORANGE = Out of date - Checking installed app versions,  please wait...");
-       
-            initListView();
-            ChangeTitle("Loaded");
-            downloadInstallGameButton.Enabled = true;
-
-            progressBar.Style = ProgressBarStyle.Continuous;
-            isLoading = false;
-        }
-
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
         private void initMirrors(bool random)
         {
             int index = 0;
@@ -1157,7 +1018,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HFP Thanks to: Roma/Rookie, Pmow, Flow, Sarah, Kaladin, and the mod staff!";
+ - HFP Thanks to: Roma/Rookie, Pmow, Flow, Kaladin, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
@@ -1193,28 +1054,23 @@ without him none of this would be possible
                 Program.form.showAvailableSpace();
                 Properties.Settings.Default.IPAddress = IPcmnd;
                 Properties.Settings.Default.Save();
-                 
+
                 MessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-<<<<<<< HEAD
                     ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                     ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                 }
-=======
 
-                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
-                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
-                }
-                Program.form.ChangeTitlebarToDevice();
->>>>>>> + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
+                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
             }
             else
                 MessageBox.Show("No device connected!");
 
         }
 
-        private async void listApkButton_Click(object sender, EventArgs e)
+    private async void listApkButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
 
@@ -1457,8 +1313,6 @@ without him none of this would be possible
                     string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
                     Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
-                    string packagename = Sideloader.gameNameToPackageName(gameName);
-
                     Debug.WriteLine("FILES IN GAME FOLDER: ");
                     foreach (string file in files)
                     {
@@ -1542,6 +1396,7 @@ without him none of this would be possible
             gamesAreDownloading = false;
             ShowPrcOutput(output);
             listappsbtn();
+            initListView();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)

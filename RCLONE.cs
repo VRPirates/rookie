@@ -103,7 +103,7 @@ namespace AndroidSideloader
                 prcoutput.Output = output;
                 prcoutput.Error = error;
             }
-            if (!output.Contains("Game Name;Release APK Path;"))
+            if (!output.Contains("Game Name;Release Name;"))
             Logger.Log($"Rclone error: {error}\nRclone Output: {output}");
             if (error.Contains("There is not enough space"))
                 MessageBox.Show("There isn't enough space on your PC to properly install this game. Please have at least 2x the size of the game you are trying to download/install available on the drive where Rookie is installed.", "NOT ENOUGH SPACE");
