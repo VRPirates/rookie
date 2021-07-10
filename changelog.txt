@@ -1,6 +1,36 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.1.2 
+
++ Added quick search (ctrl+f or click magnifying glass), Automatically selects whatever game it finds, user can press ENTER to start DL+Install
+= Fixed massive issues caused by accidental branch merge.
+= UI Improvements
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDpZykACgkQx/Rql1Vo
+czckmxAAl1my1ZUALewOuh1JQbDQhdSDrtRDo9Bx2z9u6FXfp4BKC3w7O8p6B+cT
+wcWruppIiC2MkN11Ls8i7OjE3f6xYnRo8E8FDH5UMcful/SFJ3XjD9CMf+2e1Mxu
+VYVGXWRltYdklGy4IOWfvRXbaYUYYlznVUz1lDxsp8w4h4Csz5IiLKWlivsFoPSl
+tQgcDC1FPKxH0HwSxxBLsygqNFi5GXawF85SyRMB3EpWySWrkYKjMfxub965f2by
+zP3mn5HigPgS26tOq1u9zVC7TktwJotoPxjgarsBm0IMXggMFZZ2xuCanMXoZ1xK
+gEw/Ni6tlM8N/CkpZJuQnPajIOHa7TYWOP8cQM38VPmS3cT0ifmqqGpTKMUYEJ8W
+Hx/QhABpUnhNeIUIAHj0q9BX0zOdebne831SWO8aMUE1+xw0n6ljuVwam/AyiOtJ
+1uCL+axDpWN8TncOqvoPIrFFSS4Ya8Ml5DQzs7/qI7EXM4lK3/m34Vhekh/ctnY7
+HAa+io1phPyBb89zgdjfODFVyoadS5pokBs0VUIV78NlZjMx8Dsfh95tVuAhZHYr
+1smOeqAVZhDsUR5R2hNRH7z1LfY7YKKF+XAFT+XeecG/qK0CuRnrYdrBh8zHmkhV
+U2ZH6JayNiZ9Eq2QgTYY8M9bo9J+CK2hCTFoXozk8a+eHD1aqk4=
+=Pdkb
+-----END PGP SIGNATURE-----
+
+
+
+
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.1.1
 
 + Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
