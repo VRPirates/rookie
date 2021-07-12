@@ -16,10 +16,12 @@ namespace AndroidSideloader
         public static string Repostory { get; set; }
         private static string RawGitHubUrl;
         private static string GitHubUrl;
+
         static readonly public string LocalVersion = "2.1.4";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
+        //Check if there is a new version of the sideloader
         private static bool IsUpdateAvailable()
         {
             HttpClient client = new HttpClient();
@@ -32,6 +34,8 @@ namespace AndroidSideloader
             catch { return false; }
             return LocalVersion != currentVersion;
         }
+
+        //Call this to ask the user if they want to update
         public static void Update()
         {
             RawGitHubUrl = $"https://raw.githubusercontent.com/nerdunit/androidsideloader";
@@ -40,11 +44,14 @@ namespace AndroidSideloader
                 doUpdate();
         }
 
+        //If the user wants to update
         private static void doUpdate()
         {
             DialogResult dialogResult = FlexibleMessageBox.Show($"There is a new update you have version {LocalVersion}, do you want to update?\nCHANGELOG\n{changelog}", $"Version {currentVersion} is available", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
                 return;
+
+            //Download new sideloader with version appended to file name so there is no chance of overwriting the current exe
             try
             {
                 var fileClient = new WebClient();
@@ -56,6 +63,7 @@ namespace AndroidSideloader
 
                 Logger.Log($"Starting {AppName} v{currentVersion}.exe");
                 Process.Start($"{AppName} v{currentVersion}.exe");
+                //Delete current version
                 AndroidSideloader.Utilities.GeneralUtilities.Melt();
             }
             catch { }
