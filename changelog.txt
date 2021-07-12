@@ -1,6 +1,33 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.1.3.2
+
++ Added checkbox to enable Enter to Download+Install.
+= Fixed crash that occurred when user held down up arrow or down arrow on gamelist.
+= Fixed all issues with Install.txt path.
+= Clicking out of search box now closes it.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDsFZ8ACgkQx/Rql1Vo
+czcwJg/+PFiXfh6PPZNIRf2Zeht7WN8oxuUFV907KnD5+gKD0rzNd1NzgrcPOgAh
+/oJakvY6ryLyaopJFZ8bm7++tQ3w6mbnzPaGweNoOF7/oLDb9NKVlK5/VjA3JPPN
+QtOebRgBsigoRGGTq0s7ZRZV99vtSm2R1+1z9qlEu5Fm2hEiIggLvSBdGWDhbGnZ
+jnvAZixeYgR+R6x4MZTsDao+qIYMio7heiVdN03gQ4hAaPbZ/I6s3cS+K33k02Nz
+IEATqkwoLOevmN/D773A0cMzh/ZQWs557E3aKtwB+EHo/0ucCk0WaMSt4WdH8Qqe
+WWF6+UT8FEEN2M76SQrg80xBj3QxzfIi92c231rVvtHMiVn5qUhTrDYb2wqx7J99
+cJeMgANBmWSBZRBNW7jwhAxUVXE9vE8eqBza9MarXbJaLtq3Mf0ECLWvFPllA8dU
+lnBcdSuTESvZkBAokkCwEJOb7sootBpEz5BZtE268mZEfsHUGWo3/VZDrJ7lLXJW
+mEE2aCcHpNWysa9CsSee/QWNgLH2v+9PM3r/1SJyQ23C2hwyQI+F2lkch8Ar5Qfn
+YxMWnhAcYXTRtcxY0s7xuhpUr/TGc6m9QY6NeVYMvb3g1gbmGOyyN/MELNOkEF/l
+FXnrY4AfaNTs6EL6/id/viGcHc1MnnjgzlTNg5rgoxtFrHdVwP4=
+=o0TQ
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 2.1.3.1
 
 = Fixed issue where if using Quick Search and game was near bottom of list it wouldn't be selected.

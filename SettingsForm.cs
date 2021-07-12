@@ -1,5 +1,6 @@
 ﻿using JR.Utils.GUI.Forms;
 using System;
+using System.IO;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -45,6 +46,41 @@ namespace AndroidSideloader
             ToolTip deleteAfterInstallToolTip = new ToolTip();
             deleteAfterInstallToolTip.SetToolTip(this.deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
         }
+
+
+
+
+
+        private void DebugLogCopy_click(object sender, EventArgs e)
+        {
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\debuglog.txt"))
+            {
+                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\debuglog.txt"))
+                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\debuglog.txt");
+                System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\debuglog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\debuglog.txt", true);
+                MessageBox.Show("debuglog.txt copied to your desktop!");
+
+            }
+        }
+
+        private void CrashLogCopy_click(object sender, EventArgs e)
+        {
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\crashlog.txt"))
+            {
+                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt"))
+                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt");
+                System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\crashlog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt", true);
+                MessageBox.Show("crashlog.txt copied to your desktop!");
+           
+
+        }
+            else
+                MessageBox.Show("No crashlog found!");
+        }
+
+
+
+
 
         //Apply settings
         private void applyButton_Click(object sender, EventArgs e)
@@ -96,5 +132,6 @@ namespace AndroidSideloader
         {
             Properties.Settings.Default.userJsonOnGameInstall = userJsonOnGameInstall.Checked;
         }
+
     }
 }

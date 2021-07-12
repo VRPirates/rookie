@@ -38,6 +38,8 @@
             this.BandwithTextbox = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.BandwithComboBox = new System.Windows.Forms.ComboBox();
+            this.DebugLogCopy = new System.Windows.Forms.Button();
+            this.CrashLogCopy = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -62,7 +64,7 @@
             this.applyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.applyButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.applyButton.Location = new System.Drawing.Point(12, 185);
+            this.applyButton.Location = new System.Drawing.Point(12, 178);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(101, 31);
             this.applyButton.TabIndex = 5;
@@ -92,7 +94,7 @@
             this.resetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.resetSettingsButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.resetSettingsButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.resetSettingsButton.Location = new System.Drawing.Point(119, 185);
+            this.resetSettingsButton.Location = new System.Drawing.Point(119, 178);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Size = new System.Drawing.Size(101, 31);
             this.resetSettingsButton.TabIndex = 4;
@@ -147,9 +149,9 @@
             this.BandwithTextbox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.BandwithTextbox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.BandwithTextbox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.BandwithTextbox.Location = new System.Drawing.Point(12, 155);
+            this.BandwithTextbox.Location = new System.Drawing.Point(12, 148);
             this.BandwithTextbox.Name = "BandwithTextbox";
-            this.BandwithTextbox.Size = new System.Drawing.Size(177, 21);
+            this.BandwithTextbox.Size = new System.Drawing.Size(177, 22);
             this.BandwithTextbox.TabIndex = 11;
             // 
             // label1
@@ -157,7 +159,7 @@
             this.label1.AutoSize = true;
             this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.label1.Location = new System.Drawing.Point(10, 134);
+            this.label1.Location = new System.Drawing.Point(10, 127);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(224, 16);
             this.label1.TabIndex = 12;
@@ -178,17 +180,51 @@
             "K",
             "M",
             "G"});
-            this.BandwithComboBox.Location = new System.Drawing.Point(195, 153);
+            this.BandwithComboBox.Location = new System.Drawing.Point(195, 146);
             this.BandwithComboBox.Name = "BandwithComboBox";
-            this.BandwithComboBox.Size = new System.Drawing.Size(55, 23);
+            this.BandwithComboBox.Size = new System.Drawing.Size(55, 24);
             this.BandwithComboBox.TabIndex = 13;
+            // 
+            // DebugLogCopy
+            // 
+            this.DebugLogCopy.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.DebugLogCopy.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DebugLogCopy.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DebugLogCopy.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.DebugLogCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.DebugLogCopy.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.DebugLogCopy.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.DebugLogCopy.Location = new System.Drawing.Point(12, 215);
+            this.DebugLogCopy.Name = "DebugLogCopy";
+            this.DebugLogCopy.Size = new System.Drawing.Size(285, 31);
+            this.DebugLogCopy.TabIndex = 5;
+            this.DebugLogCopy.Text = "Copy DebugLog to Desktop";
+            this.DebugLogCopy.UseVisualStyleBackColor = false;
+            this.DebugLogCopy.Click += new System.EventHandler(this.DebugLogCopy_click);
+            // 
+            // CrashLogCopy
+            // 
+            this.CrashLogCopy.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.CrashLogCopy.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.CrashLogCopy.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.CrashLogCopy.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.CrashLogCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.CrashLogCopy.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.CrashLogCopy.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.CrashLogCopy.Location = new System.Drawing.Point(12, 252);
+            this.CrashLogCopy.Name = "CrashLogCopy";
+            this.CrashLogCopy.Size = new System.Drawing.Size(285, 31);
+            this.CrashLogCopy.TabIndex = 5;
+            this.CrashLogCopy.Text = "Copy CrashLog to Desktop";
+            this.CrashLogCopy.UseVisualStyleBackColor = false;
+            this.CrashLogCopy.Click += new System.EventHandler(this.CrashLogCopy_click);
             // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(315, 237);
+            this.ClientSize = new System.Drawing.Size(313, 291);
             this.Controls.Add(this.BandwithComboBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BandwithTextbox);
@@ -196,13 +232,14 @@
             this.Controls.Add(this.updateConfigCheckBox);
             this.Controls.Add(this.deleteAfterInstallCheckBox);
             this.Controls.Add(this.enableMessageBoxesCheckBox);
+            this.Controls.Add(this.CrashLogCopy);
+            this.Controls.Add(this.DebugLogCopy);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.checkForUpdatesCheckBox);
             this.Controls.Add(this.resetSettingsButton);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.ForeColor = System.Drawing.Color.White;
-            this.MaximumSize = new System.Drawing.Size(331, 276);
-            this.MinimumSize = new System.Drawing.Size(331, 276);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
             this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "Settings";
@@ -224,5 +261,7 @@
         private System.Windows.Forms.TextBox BandwithTextbox;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ComboBox BandwithComboBox;
+        private System.Windows.Forms.Button DebugLogCopy;
+        private System.Windows.Forms.Button CrashLogCopy;
     }
 }

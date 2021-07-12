@@ -27,6 +27,7 @@ namespace AndroidSideloader
         public static bool debugMode = true;
         public bool DeviceConnected = false;
 #else
+        public bool keyheld;
         public static bool debugMode = false;
         public bool DeviceConnected = false;
 #endif
@@ -37,16 +38,22 @@ namespace AndroidSideloader
 
         {
             InitializeComponent();
+
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
-            t.Start();
+            t.Start();            
+            System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer();
+            t2.Interval = 100; // 14 mins between wakeup commands
+            t2.Tick += new EventHandler(timer_Tick2);
+            t2.Start();
             lvwColumnSorter = new ListViewColumnSorter();
             this.gamesListView.ListViewItemSorter = lvwColumnSorter;
             if (searchTextBox.Visible)
                 searchTextBox.Focus();
 
         }
+
 
         private string oldTitle = "";
 
@@ -61,6 +68,7 @@ namespace AndroidSideloader
             Logger.Log($"\n\n##############\n##############\n##############\n\nAPP LAUNCH DATE/TIME: " + date_time + "\n\n##############\n##############\n##############\n\n");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
+
 
             if (!File.Exists(adbFile))
             {
@@ -145,6 +153,7 @@ namespace AndroidSideloader
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            EnterInstallBox.Checked = Properties.Settings.Default.EnterKeyInstall;
             new Thread(() =>
             {
                 Thread.Sleep(10000);
@@ -230,6 +239,12 @@ namespace AndroidSideloader
         {
 
             ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+        }
+
+        void timer_Tick2(object sender, EventArgs e)
+        {
+
+            keyheld = false;
         }
 
         public async void ChangeTitle(string txt, bool reset = true)
@@ -577,7 +592,6 @@ namespace AndroidSideloader
 
         public void listappsbtn()
         {
-            ADB.WakeDevice();
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
             var line = listapps().Split('\n');
@@ -757,7 +771,7 @@ namespace AndroidSideloader
                     string directory = Path.GetDirectoryName(data);
                     //if is directory
                     string dir = Path.GetDirectoryName(data);
-                    string file = $"{dir}\\Install.txt";
+                    string path = $"{dir}\\Install.txt";
                     if (Directory.Exists(data))
                     {
                         output += ADB.CopyOBB(data);
@@ -774,7 +788,7 @@ namespace AndroidSideloader
                                     return;
                                 else
                                     ChangeTitle("Sideloading custom install.txt automatically.");
-                                output += Sideloader.RunADBCommandsFromFile(file);
+                                output += Sideloader.RunADBCommandsFromFile(path);
                                 if (output.Error.Contains("mkdir"))
                                     output.Error = "";
                                 if (output.Error.Contains("reserved"))
@@ -808,15 +822,15 @@ namespace AndroidSideloader
                         {
                             if (File.Exists($"{dir}\\Install.txt"))
                             {
-                                file = data;
                                 DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
                                 else
                                 {
                                     ChangeTitle("Sideloading custom install.txt automatically.");
-                                    output += Sideloader.RunADBCommandsFromFile(file);
+                                    output += Sideloader.RunADBCommandsFromFile(path);
                                     ChangeTitle("Done.");
+
                                 }
                             }
                             else
@@ -842,7 +856,7 @@ namespace AndroidSideloader
                         if (extension == ".txt")
                         {
                             ChangeTitle("Sideloading custom install.txt automatically.");
-                            output += Sideloader.RunADBCommandsFromFile(file);
+                            output += Sideloader.RunADBCommandsFromFile(path);
                             ChangeTitle("Done.");
                         }
                     }
@@ -1330,7 +1344,6 @@ without him none of this would be possible
                         {
                             Thread apkThread = new Thread(() =>
                             {
-                                ADB.WakeDevice();
                                 output += ADB.Sideload(file, packagename);
                             });
 
@@ -1345,7 +1358,6 @@ without him none of this would be possible
                             {
                                 Thread installtxtThread = new Thread(() =>
                                 {
-                                    ADB.WakeDevice();
                                     output += Sideloader.RunADBCommandsFromFile(file);
                                     ChangeTitle("Sideloading custom install.txt automatically.");
                                 });
@@ -1359,7 +1371,6 @@ without him none of this would be possible
                     
 
                     Debug.WriteLine(wrDelimiter);
-                    ADB.WakeDevice();
                     string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
                     foreach (string folder in folders)
@@ -1572,8 +1583,11 @@ without him none of this would be possible
                     Properties.Settings.Default.PackageNameToCB = false;
                     Properties.Settings.Default.Save();
                 }
+
             }
+
                 return base.ProcessCmdKey(ref msg, keyData);
+            
         }
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -1595,40 +1609,41 @@ without him none of this would be possible
                     else
                         foundItem.Selected = true;
 
-                    if (searchTextBox.Text.Length == 0)
-                          gamesListView.SelectedItems.Clear();
 
                     searchTextBox.Focus();
                     this.searchTextBox.KeyPress += new
                     System.Windows.Forms.KeyPressEventHandler(CheckEnter);
                 }
-                else
-                    gamesListView.SelectedItems.Clear();
             }
         }
-    
+
 
         public void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-           
+          
             if (gamesListView.SelectedItems.Count < 1)
                 return;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
             string CurrentReleaseName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
 
-            if(Properties.Settings.Default.PackageNameToCB)
-            Clipboard.SetText(CurrentPackageName);
+            if (!keyheld)
+            {
 
-            string ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
-            string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
-            
-            if (gamesPictureBox.BackgroundImage != null)
-                gamesPictureBox.BackgroundImage.Dispose();
-            if (File.Exists(ImagePath))
-                gamesPictureBox.BackgroundImage = Image.FromFile(ImagePath);
+                if (Properties.Settings.Default.PackageNameToCB)
+                    Clipboard.SetText(CurrentPackageName);
+                string ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
+                if (gamesPictureBox.BackgroundImage != null)
+                    gamesPictureBox.BackgroundImage.Dispose();
+                if (File.Exists(ImagePath) && !keyheld)
+                {
+                    gamesPictureBox.BackgroundImage = Image.FromFile(ImagePath);
+                   
+                }
+                keyheld = true;
+            }
             else
                 gamesPictureBox.BackgroundImage = new Bitmap(360, 203);
-
+            string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             if (File.Exists(NotePath))
                 notesRichTextBox.Text = File.ReadAllText(NotePath);
             else
@@ -1767,11 +1782,19 @@ without him none of this would be possible
             label4.Visible = true;
             searchTextBox.Focus();
         }
-
+        private void EnterInstallBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.EnterKeyInstall = EnterInstallBox.Checked;
+        }
         private void searchTextBox_Leave(object sender, EventArgs e)
         {
             if (searchTextBox.Visible)
-                searchTextBox.Focus();
+            {
+                searchTextBox.Visible = false;
+                label2.Visible = false;
+                label3.Visible = false;
+                label4.Visible = false;
+            }
             else
                 gamesListView.Focus();
         }
@@ -1780,20 +1803,36 @@ without him none of this would be possible
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (gamesListView.SelectedItems.Count > 0)
-                    downloadInstallGameButton_Click(sender, e);
-            }
+                if (Properties.Settings.Default.EnterKeyInstall)
+                {
+                    if (gamesListView.SelectedItems.Count > 0)
+                        downloadInstallGameButton_Click(sender, e);
+                }
+                }
             }
 
         private void searchTextBox_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (gamesListView.SelectedItems.Count > 0)
-                    downloadInstallGameButton_Click(sender, e);
-            }
+                if (Properties.Settings.Default.EnterKeyInstall)
+                {
+                    if (gamesListView.SelectedItems.Count > 0)
+                        downloadInstallGameButton_Click(sender, e);
+                }
+                }
         }
-    }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void EnterInstallBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.EnterKeyInstall = EnterInstallBox.Checked;
+            Properties.Settings.Default.Save();
+        }
     }
 
     public static class ControlExtensions
@@ -1810,3 +1849,4 @@ without him none of this would be possible
             }
         }
     }
+ }

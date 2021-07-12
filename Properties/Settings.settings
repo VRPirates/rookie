@@ -42,7 +42,7 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="FontStyle" Type="System.Drawing.Font" Scope="User">
-      <Value Profile="(Default)">Microsoft Sans Serif, 9.5pt</Value>
+      <Value Profile="(Default)">Microsoft Sans Serif, 10pt, style=Bold</Value>
     </Setting>
     <Setting Name="BackPicturePath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
@@ -114,6 +114,12 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PackageNameToCB" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="EnterKeyInstall" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="DownUpHeld" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>

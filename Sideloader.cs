@@ -186,9 +186,10 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
 
 
-            if (File.Exists(Properties.Settings.Default.ADBFolder + "\\" + packageName + ".apk"))
-                File.Delete(Properties.Settings.Default.ADBFolder + "\\" + packageName + ".apk");
+            if (File.Exists(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk"))
+                File.Delete(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
 
+            MessageBox.Show("APK is named" + packageName + ".apk. Opening containing folder now.");
             File.Move(Properties.Settings.Default.ADBFolder + "\\base.apk", Environment.CurrentDirectory + "\\" + packageName + ".apk");
 
             return output;

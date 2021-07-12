@@ -23,8 +23,11 @@ namespace AndroidSideloader
             Properties.Settings.Default.Save();
 
             if (DeviceID.Length > 1)
-                command = $" -s {DeviceID} {command}";
-            Logger.Log($"Running command {command}");
+            { 
+                    command = $" -s {DeviceID} {command}";
+            }
+            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages"))
+                Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
@@ -66,11 +69,12 @@ namespace AndroidSideloader
             {
                 MessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
+            if (!output.Contains("version"))
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
         }
-        public static ProcessOutput RunAdbCommandToStringWOADB(string result, string file)
+        public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
             string command = result;
             Properties.Settings.Default.ADBFolder = adbFolderPath;
@@ -87,7 +91,7 @@ namespace AndroidSideloader
             adb.StartInfo.RedirectStandardOutput = true;
             adb.StartInfo.CreateNoWindow = true;
             adb.StartInfo.UseShellExecute = false;
-            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(file);
+            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
             adb.Start();
             adb.StandardInput.WriteLine(command);
             adb.StandardInput.Flush();
@@ -122,7 +126,7 @@ namespace AndroidSideloader
             Logger.Log(error);
             return new ProcessOutput(output, error);
         }
-        public static ProcessOutput RunCommandToString(string result, string path = "", string file = "")
+        public static ProcessOutput RunCommandToString(string result, string path)
         {
             string command = result;
             Properties.Settings.Default.ADBFolder = adbFolderPath;
@@ -230,8 +234,7 @@ namespace AndroidSideloader
 
         public static void WakeDevice()
         {
-            RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
-            string devicesout = RunAdbCommandToString("devices").Output;
+            string devicesout = RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP").Output;
             if (!devicesout.Contains("found"))
             {
                 if (Properties.Settings.Default.IPAddress.Contains("connect"))
@@ -240,7 +243,7 @@ namespace AndroidSideloader
                     RunAdbCommandToString(Properties.Settings.Default.IPAddress);
                     string response = RunAdbCommandToString(Properties.Settings.Default.IPAddress).Output;
 
-                    if (response.Contains("cannot"))
+                    if (response.Contains("cannot") || String.IsNullOrEmpty(response))
                     {
                         DialogResult dialogResult = MessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
                         if (dialogResult == DialogResult.Cancel)
@@ -328,7 +331,7 @@ namespace AndroidSideloader
 
             WakeDevice();
             ProcessOutput ret = new ProcessOutput();
-            Program.form.ChangeTitle($"Sideloading {path}");
+            Program.form.ChangeTitle($"Sideloading {Path.GetFileName(path)}");
             ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             string out2 = ret.Output + ret.Error;
             if (out2.Contains("failed"))
@@ -413,7 +416,7 @@ namespace AndroidSideloader
         public static ProcessOutput CopyOBB(string path)
         {
             WakeDevice();
-            if (SideloaderUtilities.CheckFolderIsObb(path))
+            if (path.Contains(".") && !path.Contains("_data"))
                 return RunAdbCommandToString($"push \"{path}\" /sdcard/Android/obb");
             return new ProcessOutput();
         }
