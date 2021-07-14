@@ -26,7 +26,7 @@ namespace AndroidSideloader
             { 
                     command = $" -s {DeviceID} {command}";
             }
-            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages"))
+            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP"))
                 Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
@@ -69,7 +69,7 @@ namespace AndroidSideloader
             {
                 MessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
-            if (!output.Contains("version"))
+            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:"))
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
@@ -377,7 +377,8 @@ namespace AndroidSideloader
                 }
                 ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             }
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\Config.Json"))
+            string gamenameforQU = Sideloader.PackageNametoGameName(packagename); 
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\Config.Json") && gamenameforQU.Contains("-QU") || path.Contains("-QU"))
             {
                 string gameName = packagename;
                 packagename = Sideloader.gameNameToPackageName(gameName);
@@ -409,15 +410,18 @@ namespace AndroidSideloader
                     ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
             
         }
-            Program.form.ChangeTitle("Sideload done");
+            Program.form.ChangeTitle("");
             return ret;
         }
 
         public static ProcessOutput CopyOBB(string path)
         {
             WakeDevice();
-            if (path.Contains(".") && !path.Contains("_data"))
+            if (Path.GetDirectoryName(path).Contains(".") && !Path.GetDirectoryName(path).Contains("_data") || path.Contains("."))
+            {
+                Program.form.ChangeTitle($"Copying obb ({Path.GetFileName(path)}) to device...");
                 return RunAdbCommandToString($"push \"{path}\" /sdcard/Android/obb");
+            }
             return new ProcessOutput();
         }
     }

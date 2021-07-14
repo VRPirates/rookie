@@ -199,10 +199,32 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
+                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
-                if (gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
+                if (gameName.Contains(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
+            }
+            return gameName;
+        }
+
+        public static string PackageNametoGameName(string gameName)
+        {
+            foreach (string[] game in SideloaderRCLONE.games)
+            {
+                if (gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
+                    return game[SideloaderRCLONE.ReleaseNameIndex];
+            }
+            return gameName;
+        }
+
+        public static string gameNameToSimpleName(string gameName)
+        {
+            foreach (string[] game in SideloaderRCLONE.games)
+            {
+                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]))
+                    return game[SideloaderRCLONE.GameNameIndex];
+                if (gameName.Contains(game[SideloaderRCLONE.ReleaseNameIndex]))
+                    return game[SideloaderRCLONE.GameNameIndex];
             }
             return gameName;
         }

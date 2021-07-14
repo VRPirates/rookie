@@ -28,6 +28,7 @@ namespace AndroidSideloader
         public bool DeviceConnected = false;
 #else
         public bool keyheld;
+        public bool keyheld2;
         public static bool debugMode = false;
         public bool DeviceConnected = false;
 #endif
@@ -44,9 +45,13 @@ namespace AndroidSideloader
             t.Tick += new EventHandler(timer_Tick);
             t.Start();            
             System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer();
-            t2.Interval = 100; // 14 mins between wakeup commands
+            t2.Interval = 30; // 30ms
             t2.Tick += new EventHandler(timer_Tick2);
             t2.Start();
+            System.Windows.Forms.Timer t3 = new System.Windows.Forms.Timer();
+            t3.Interval = 350; // 1 second before clipboard copy is allowed
+            t3.Tick += new EventHandler(timer_Tick3);
+            t3.Start();
             lvwColumnSorter = new ListViewColumnSorter();
             this.gamesListView.ListViewItemSorter = lvwColumnSorter;
             if (searchTextBox.Visible)
@@ -237,7 +242,6 @@ namespace AndroidSideloader
 
         void timer_Tick(object sender, EventArgs e)
         {
-
             ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
         }
 
@@ -247,6 +251,10 @@ namespace AndroidSideloader
             keyheld = false;
         }
 
+        void timer_Tick3(object sender, EventArgs e)
+        {
+            keyheld2 = false;
+        }
         public async void ChangeTitle(string txt, bool reset = true)
         {
             this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
@@ -406,6 +414,7 @@ namespace AndroidSideloader
                 Thread t1 = new Thread(() =>
                 {
                     output += ADB.CopyOBB(dialog.FileName);
+                    Program.form.ChangeTitle("");
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -775,6 +784,7 @@ namespace AndroidSideloader
                     if (Directory.Exists(data))
                     {
                         output += ADB.CopyOBB(data);
+                        Program.form.ChangeTitle("");
                         string extension = Path.GetExtension(data);
                         if (extension == ".apk")
                         {
@@ -793,7 +803,7 @@ namespace AndroidSideloader
                                     output.Error = "";
                                 if (output.Error.Contains("reserved"))
                                     output.Output = "";
-                                ChangeTitle("Done.");
+                                ChangeTitle("");
                             }
                         }
                         string[] files = Directory.GetFiles(data);
@@ -808,7 +818,9 @@ namespace AndroidSideloader
                         string[] folders = Directory.GetDirectories(data);
                         foreach (string folder in folders)
                         {
+                          
                             output += ADB.CopyOBB(folder);
+                            Program.form.ChangeTitle("");
                             Properties.Settings.Default.CurrPckg = dir;
                             Properties.Settings.Default.Save();
                         }
@@ -829,13 +841,16 @@ namespace AndroidSideloader
                                 {
                                     ChangeTitle("Sideloading custom install.txt automatically.");
                                     output += Sideloader.RunADBCommandsFromFile(path);
-                                    ChangeTitle("Done.");
+                                    ChangeTitle("");
 
                                 }
                             }
                             else
+
                             {
+                                ChangeTitle($"Installing {Path.GetFileName(data)}...");
                                 output += ADB.Sideload(data);
+                                ChangeTitle("");
                             }
                         }
                         else if (extension == ".obb")
@@ -847,17 +862,17 @@ namespace AndroidSideloader
                             foldername = Environment.CurrentDirectory + "\\" + foldername;
                             Directory.CreateDirectory(foldername);
                             File.Copy(data, foldername + "\\" + filename);
-                            output += ADB.CopyOBB(foldername);
-                            Properties.Settings.Default.CurrPckg = foldername;
-                            Properties.Settings.Default.Save();
+                            path = foldername;
+                            output += ADB.CopyOBB(path);
                             Directory.Delete(foldername, true);
+                            ChangeTitle("");
                         }
 
-                        if (extension == ".txt")
+                        else if (extension == ".txt")
                         {
                             ChangeTitle("Sideloading custom install.txt automatically.");
                             output += Sideloader.RunADBCommandsFromFile(path);
-                            ChangeTitle("Done.");
+                            ChangeTitle("");
                         }
                     }
                 }
@@ -1144,278 +1159,285 @@ without him none of this would be possible
 
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
-            ChangeTitle("Checking filesize...");
-            long selectedGamesSize = 0;
-            int count = 0;
-            string[] GameSizeGame = new string[1];
-            if (gamesToAddList.Count > 0)
             {
-                count = gamesToAddList.Count;
-                GameSizeGame = new string[count];
-                for (int i = 0; i < count; i++)
-                    GameSizeGame[i] = gamesToAddList[i];
-            }
-            else if (gamesListView.SelectedItems.Count > 0)
-            {
-                count = gamesListView.SelectedItems.Count;
-                GameSizeGame = new string[count];
-                for (int i = 0; i < count; i++)
-                    GameSizeGame[i] = gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
-            }
-            else return;
-
-            bool HadError = false;
-            Thread gameSizeThread = new Thread(() =>
-            {
-                for (int i = 0; i < count; i++)
-                {
-                    selectedGamesSize += SideloaderRCLONE.GetFolderSize(GameSizeGame[i], currentRemote);
-                    if (selectedGamesSize == 0)
-                    {
-                        FlexibleMessageBox.Show($"Couldnt find release {GameSizeGame[i]} on rclone, please deselect and try again or switch mirrors");
-                        HadError = true;
-                        return;
-                    }
-                }
-
-            });
-            gameSizeThread.Start();
-
-            while (gameSizeThread.IsAlive)
-                await Task.Delay(100);
-
-            if (HadError)
-                return;
-
-            DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download the selected game(s)? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
-            if (dialogResult != DialogResult.Yes)
-            {
-                ChangeTitle("");
-                return;
-            }
-            //Add games to the queue
-            if (gamesToAddList.Count > 0)
-                gamesQueueList.AddRange(gamesToAddList);
-            else
-            {
-                for (int i = 0; i < gamesListView.SelectedItems.Count; i++)
-                    gamesQueueList.Add(gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text);
-            }
-            gamesToAddList.Clear();
-            gamesQueListBox.DataSource = null;
-            gamesQueListBox.DataSource = gamesQueueList;
-
-            if (gamesAreDownloading)
-                return;
-            gamesAreDownloading = true;
-
-            if (updatedConfig == false && Properties.Settings.Default.autoUpdateConfig == true) //check for config only once per program open and if setting enabled
-            {
-                updatedConfig = true;
-                ChangeTitle("Checking if config is updated and updating config");
                 progressBar.Style = ProgressBarStyle.Marquee;
-                await Task.Run(() => SideloaderRCLONE.updateConfig(currentRemote));
-                progressBar.Style = ProgressBarStyle.Continuous;
-            }
-
-            //Do user json on firsttime
-            if (Properties.Settings.Default.userJsonOnGameInstall)
-            {
-                Thread userJsonThread = new Thread(() => { ChangeTitle("Pushing user.json"); Sideloader.PushUserJsons(); });
-                userJsonThread.IsBackground = true;
-                userJsonThread.Start();
-
-            }
-
-            ProcessOutput output = new ProcessOutput("", "");
-
-            string gameName = "";
-            while (gamesQueueList.Count > 0)
-            {
-                gameName = gamesQueueList.ToArray()[0];
-                string packagename = Sideloader.gameNameToPackageName(gameName);
-                string dir = Path.GetDirectoryName(gameName);
-                string gameDirectory = Environment.CurrentDirectory + "\\" + gameName;
-                string path = gameDirectory;
-                Directory.CreateDirectory(gameDirectory);
-                ProcessOutput gameDownloadOutput = new ProcessOutput("", "");
-
-                Thread t1 = new Thread(() =>
+                string namebox = gamesListView.SelectedItems[0].ToString();
+                string nameboxtranslated = Sideloader.gameNameToSimpleName(namebox);
+                ChangeTitle($"Checking filesize of {nameboxtranslated}...");
+                long selectedGamesSize = 0;
+                int count = 0;
+                string[] GameSizeGame = new string[1];
+                if (gamesToAddList.Count > 0)
                 {
-                    gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
+                    count = gamesToAddList.Count;
+                    GameSizeGame = new string[count];
+                    for (int i = 0; i < count; i++)
+                        GameSizeGame[i] = gamesToAddList[i];
+                }
+                else if (gamesListView.SelectedItems.Count > 0)
+                {
+                    count = gamesListView.SelectedItems.Count;
+                    GameSizeGame = new string[count];
+                    for (int i = 0; i < count; i++)
+                        GameSizeGame[i] = gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
+                }
+                else return;
+
+                bool HadError = false;
+                Thread gameSizeThread = new Thread(() =>
+                {
+                    for (int i = 0; i < count; i++)
+                    {
+                        selectedGamesSize += SideloaderRCLONE.GetFolderSize(GameSizeGame[i], currentRemote);
+                        if (selectedGamesSize == 0)
+                        {        
+                            FlexibleMessageBox.Show($"Couldnt find release {GameSizeGame[i]} on rclone, please deselect and try again or switch mirrors");
+                            HadError = true;
+                            return;
+                        }
+                    }
+
                 });
-                t1.IsBackground = true;
-                t1.Start();
+                gameSizeThread.Start();
 
-                ChangeTitle("Downloading game " + gameName, false);
+                while (gameSizeThread.IsAlive)
+                    await Task.Delay(100);
 
-                int i = 0;
-                //Download
-                while (t1.IsAlive)
+                if (HadError)
+                    return;
+                progressBar.Value = 0;
+                progressBar.Style = ProgressBarStyle.Continuous;
+                DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download {nameboxtranslated}? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
+                if (dialogResult != DialogResult.Yes)
                 {
-                    try
-                    {
-                        HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
-
-                        string foo = await response.Content.ReadAsStringAsync();
-
-                        Debug.WriteLine("RESP CONTENT " + foo);
-                        dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
-
-                        float downloadSpeed = results.speed.ToObject<float>();
-
-                        long allSize = 0;
-
-                        long downloaded = 0;
-
-                        dynamic check = results.transferring;
-
-                        if (results["transferring"] != null)
-                        {
-                            foreach (var obj in results.transferring)
-                            {
-                                allSize += obj["size"].ToObject<long>();
-                                downloaded += obj["bytes"].ToObject<long>();
-                            }
-                            allSize /= 1000000;
-                            downloaded /= 1000000;
-                            Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (((double)downloaded / (double)allSize) * 100));
-                            try { progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100)); } catch { }
-
-                            i++;
-                            downloadSpeed /= 1000000;
-                            if (i == 4)
-                            {
-                                i = 0;
-                                float seconds = (allSize - downloaded) / downloadSpeed;
-                                TimeSpan time = TimeSpan.FromSeconds(seconds);
-                                etaLabel.Text = "ETA: " + time.ToString(@"hh\:mm\:ss") + " left";
-                            }
-
-                            speedLabel.Text = "DLS: " + String.Format("{0:0.00}", downloadSpeed) + " mbps";
-                        }
-                    }
-                    catch { }
-
-                    await Task.Delay(1000);
-
-
+                    ChangeTitle("");
+                    return;
                 }
-
-                //Quota Errors
-                bool quotaError = false;
-                if (gameDownloadOutput.Error.Length > 0)
+                //Add games to the queue
+                if (gamesToAddList.Count > 0)
+                    gamesQueueList.AddRange(gamesToAddList);
+                else
                 {
-                    string err = gameDownloadOutput.Error.ToLower();
-                    if (err.Contains("quota") && err.Contains("exceeded"))
-                    {
-                        FlexibleMessageBox.Show("The download Quota has been reached for this mirror, trying to switch mirrors...");
-                        quotaError = true;
-
-
-                        SwitchMirrors();
-
-                        gamesQueueList.RemoveAt(0);
-                        gamesQueListBox.DataSource = null;
-                        gamesQueListBox.DataSource = gamesQueueList;
-                    }
-                    else if (!gameDownloadOutput.Error.Contains("localhost")) FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
+                    for (int i = 0; i < gamesListView.SelectedItems.Count; i++)
+                        gamesQueueList.Add(gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text);
                 }
-                if (quotaError == false)
+                gamesToAddList.Clear();
+                gamesQueListBox.DataSource = null;
+                gamesQueListBox.DataSource = gamesQueueList;
+
+                if (gamesAreDownloading)
+                    return;
+                gamesAreDownloading = true;
+
+                if (updatedConfig == false && Properties.Settings.Default.autoUpdateConfig == true) //check for config only once per program open and if setting enabled
                 {
-                    ADB.WakeDevice();
-                    ADB.DeviceID = GetDeviceID();
-                    quotaTries = 0;
-                    progressBar.Value = 0;
+                    updatedConfig = true;
+                    ChangeTitle("Checking if config is updated and updating config");
                     progressBar.Style = ProgressBarStyle.Marquee;
-                    ChangeTitle("Installing game apk " + gameName, false);
-                    etaLabel.Text = "ETA: Wait for install...";
-                    speedLabel.Text = "DLS: Done downloading";
+                    await Task.Run(() => SideloaderRCLONE.updateConfig(currentRemote));
+                    progressBar.Style = ProgressBarStyle.Continuous;
+                }
 
-                    string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
+                //Do user json on firsttime
+                if (Properties.Settings.Default.userJsonOnGameInstall)
+                {
+                    Thread userJsonThread = new Thread(() => { ChangeTitle("Pushing user.json"); Sideloader.PushUserJsons(); });
+                    userJsonThread.IsBackground = true;
+                    userJsonThread.Start();
 
-                    Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
-                    Debug.WriteLine("FILES IN GAME FOLDER: ");
-                    foreach (string file in files)
+                }
+
+                ProcessOutput output = new ProcessOutput("", "");
+
+                string gameName = "";
+                while (gamesQueueList.Count > 0)
+                {
+                    gameName = gamesQueueList.ToArray()[0];
+                    string packagename = Sideloader.gameNameToPackageName(gameName);
+                    string dir = Path.GetDirectoryName(gameName);
+                    string gameDirectory = Environment.CurrentDirectory + "\\" + gameName;
+                    string path = gameDirectory;
+                    Directory.CreateDirectory(gameDirectory);
+                    ProcessOutput gameDownloadOutput = new ProcessOutput("", "");
+
+                    Thread t1 = new Thread(() =>
                     {
-                        Debug.WriteLine(file);
-                        string extension = Path.GetExtension(file);
-                        if (extension == ".apk")
-                        {
-                            Thread apkThread = new Thread(() =>
-                            {
-                                output += ADB.Sideload(file, packagename);
-                            });
+                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
+                    });
+                    t1.IsBackground = true;
+                    t1.Start();
 
-                            apkThread.Start();
-                            while (apkThread.IsAlive)
-                                await Task.Delay(100);
-                        }
-                        if (extension == ".txt")
+                    ChangeTitle("Downloading game " + gameName, false);
+
+                    int i = 0;
+                    //Download
+                    while (t1.IsAlive)
+                    {
+                        try
                         {
-                            string fullname = Path.GetFileName(file);
-                            if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                            HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
+
+                            string foo = await response.Content.ReadAsStringAsync();
+
+                            Debug.WriteLine("RESP CONTENT " + foo);
+                            dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
+
+                            float downloadSpeed = results.speed.ToObject<float>();
+
+                            long allSize = 0;
+
+                            long downloaded = 0;
+
+                            dynamic check = results.transferring;
+
+                            if (results["transferring"] != null)
                             {
-                                Thread installtxtThread = new Thread(() =>
+                                foreach (var obj in results.transferring)
                                 {
-                                    output += Sideloader.RunADBCommandsFromFile(file);
-                                    ChangeTitle("Sideloading custom install.txt automatically.");
+                                    allSize += obj["size"].ToObject<long>();
+                                    downloaded += obj["bytes"].ToObject<long>();
+                                }
+                                allSize /= 1000000;
+                                downloaded /= 1000000;
+                                Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (((double)downloaded / (double)allSize) * 100));
+                                try { progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100)); } catch { }
+
+                                i++;
+                                downloadSpeed /= 1000000;
+                                if (i == 4)
+                                {
+                                    i = 0;
+                                    float seconds = (allSize - downloaded) / downloadSpeed;
+                                    TimeSpan time = TimeSpan.FromSeconds(seconds);
+                                    etaLabel.Text = "ETA: " + time.ToString(@"hh\:mm\:ss") + " left";
+                                }
+
+                                speedLabel.Text = "DLS: " + String.Format("{0:0.00}", downloadSpeed) + " MB/s";
+                            }
+                        }
+                        catch { }
+
+                        await Task.Delay(1000);
+
+
+                    }
+
+                    //Quota Errors
+                    bool quotaError = false;
+                    if (gameDownloadOutput.Error.Length > 0)
+                    {
+                        string err = gameDownloadOutput.Error.ToLower();
+                        if (err.Contains("quota") && err.Contains("exceeded"))
+                        {
+                            FlexibleMessageBox.Show("The download Quota has been reached for this mirror, trying to switch mirrors...");
+                            quotaError = true;
+
+
+                            SwitchMirrors();
+
+                            gamesQueueList.RemoveAt(0);
+                            gamesQueListBox.DataSource = null;
+                            gamesQueListBox.DataSource = gamesQueueList;
+                        }
+                        else if (!gameDownloadOutput.Error.Contains("localhost")) FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
+                    }
+                    if (quotaError == false)
+                    {
+                        ADB.WakeDevice();
+                        ADB.DeviceID = GetDeviceID();
+                        quotaTries = 0;
+                        progressBar.Value = 0;
+                        progressBar.Style = ProgressBarStyle.Marquee;
+                        ChangeTitle("Installing game apk " + gameName, false);
+                        etaLabel.Text = "ETA: Wait for install...";
+                        speedLabel.Text = "DLS: Done downloading";
+
+                        string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
+
+                        Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
+                        Debug.WriteLine("FILES IN GAME FOLDER: ");
+                        foreach (string file in files)
+                        {
+                            Debug.WriteLine(file);
+                            string extension = Path.GetExtension(file);
+                            if (extension == ".apk")
+                            {
+                                Thread apkThread = new Thread(() =>
+                                {
+                                    output += ADB.Sideload(file, packagename);
                                 });
 
-                                installtxtThread.Start();
-                                while (installtxtThread.IsAlive)
+                                apkThread.Start();
+                                while (apkThread.IsAlive)
+                                    await Task.Delay(100);
+                            }
+                            if (extension == ".txt")
+                            {
+                                string fullname = Path.GetFileName(file);
+                                if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                                {
+                                    Thread installtxtThread = new Thread(() =>
+                                    {
+                                        output += Sideloader.RunADBCommandsFromFile(file);
+                                        ChangeTitle("Sideloading custom install.txt automatically.");
+                                    });
+
+                                    installtxtThread.Start();
+                                    while (installtxtThread.IsAlive)
+                                        await Task.Delay(100);
+                                }
+                            }
+                        }
+
+
+                        Debug.WriteLine(wrDelimiter);
+                        string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
+
+                        foreach (string folder in folders)
+                        {
+                            ChangeTitle("Installing game obb " + gameName, false);
+                            string[] obbs = Directory.GetFiles(folder);
+
+                            foreach (string currObb in obbs)
+                            {
+                                Thread obbThread = new Thread(() =>
+                                {
+                                    output += ADB.CopyOBB(folder);
+                                    Program.form.ChangeTitle("");
+                                });
+                                obbThread.IsBackground = true;
+                                obbThread.Start();
+
+                                while (obbThread.IsAlive)
                                     await Task.Delay(100);
                             }
                         }
-                    }
-                    
 
-                    Debug.WriteLine(wrDelimiter);
-                    string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
-
-                    foreach (string folder in folders)
-                    {
-                        ChangeTitle("Installing game obb " + gameName, false);
-                        string[] obbs = Directory.GetFiles(folder);
-
-                        foreach (string currObb in obbs)
+                        if (Properties.Settings.Default.deleteAllAfterInstall)
                         {
-                            Thread obbThread = new Thread(() =>
-                            {
-                                output += ADB.CopyOBB(folder);
-                            });
-                            obbThread.IsBackground = true;
-                            obbThread.Start();
-
-                            while (obbThread.IsAlive)
-                                await Task.Delay(100);
+                            ChangeTitle("Deleting game files", false);
+                            try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { MessageBox.Show($"Error deleting game files: {ex.Message}"); }
                         }
-                    }
 
-                    if (Properties.Settings.Default.deleteAllAfterInstall)
-                    {
-                        ChangeTitle("Deleting game files", false);
-                        try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { MessageBox.Show($"Error deleting game files: {ex.Message}"); }
+                        //Remove current game
+                        gamesQueueList.RemoveAt(0);
+                        gamesQueListBox.DataSource = null;
+                        gamesQueListBox.DataSource = gamesQueueList;
+                        ChangeTitlebarToDevice();
+                        showAvailableSpace();
                     }
-
-                    //Remove current game
-                    gamesQueueList.RemoveAt(0);
-                    gamesQueListBox.DataSource = null;
-                    gamesQueListBox.DataSource = gamesQueueList;
-                    ChangeTitlebarToDevice();
-                    showAvailableSpace();
                 }
+                progressBar.Style = ProgressBarStyle.Continuous;
+                etaLabel.Text = "ETA: Finished Queue";
+                speedLabel.Text = "DLS: Finished Queue";
+                ProgressText.Text = "";
+                await CheckForDevice();
+                ChangeTitlebarToDevice();
+                gamesAreDownloading = false;
+                ShowPrcOutput(output);
+                listappsbtn();
+                initListView();
             }
-            progressBar.Style = ProgressBarStyle.Continuous;
-            etaLabel.Text = "ETA: Finished Queue";
-            speedLabel.Text = "DLS: Finished Queue";
-            ProgressText.Text = "";
-            await CheckForDevice();
-            ChangeTitlebarToDevice();
-            gamesAreDownloading = false;
-            ShowPrcOutput(output);
-            listappsbtn();
-            initListView();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -1625,12 +1647,14 @@ without him none of this would be possible
                 return;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
             string CurrentReleaseName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
-
-            if (!keyheld)
+            if (!keyheld2)
             {
-
                 if (Properties.Settings.Default.PackageNameToCB)
                     Clipboard.SetText(CurrentPackageName);
+                keyheld2 = true;
+            }
+            if (!keyheld)
+            {
                 string ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
                 if (gamesPictureBox.BackgroundImage != null)
                     gamesPictureBox.BackgroundImage.Dispose();
@@ -1642,7 +1666,7 @@ without him none of this would be possible
                 keyheld = true;
             }
             else
-                gamesPictureBox.BackgroundImage = new Bitmap(360, 203);
+                gamesPictureBox.BackgroundImage = new Bitmap(367, 214);
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             if (File.Exists(NotePath))
                 notesRichTextBox.Text = File.ReadAllText(NotePath);
