@@ -1,3 +1,28 @@
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+RSL 2.1.6 
+= Fixed bug that occurred if image isn't available for game.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDuxAsACgkQx/Rql1Vo
+czdf5w/+NsRI6Sq2EOJ5SQ4z+AsET0ydR4Dw5505z2uuM3R5OajPc1TvzmI1vehz
+E5I7gDtw1gMbDofKj88oC3E/pdRi1mRuc8swkJJLJUrDG2z9oVdiBu9ccESOImbV
+Yk8CtaTjNvIAEXHr4zQwS+JLy+0suLmQpw5zp2IXugWAbGVE8lQ9ZF3J3p+LEooQ
+Lf1eG1V+Y68LCdeStI5kEBfgUgsB5mHXbcKG7LPxtCDjdhiV8rZNjBD8qsreNjfi
+oWvncIwZRZv5q7/InEYUq7X2nLVE8Twpdj4jtYt7tOlwk6uodidTVhp49/HQ03ni
+ieDAwV72ZqNTqvW0Jzb5yOjBtSFxOMyaiNvyuVQExaYrOege7LbH4+fJm5Lu3w8t
+3Fowf/SPj9ep6CZ8snhfyEeyYPLyhLAPcojn0LH9wc3+fDe1tCWW6IajMFQaG07u
+wx1/eLR+TEI1/qVEc7/YK/bw+nArTysTKMI9Gi0aoJcU6jUsHwhJI9o5zDEtDh7i
+6S4y++dHuobMiMw9ZF98TlSnxu8W5YtlJO59N99W9DHFm1hFamITg6fLpwCoBrHT
+nqpLG6GyQ8zmUs34RcdAx1e8niADuU/UGk90zrqAHpKd66PE7N03Ay9fDS2emAgF
+EZk2pJEqLi9g63wBfGVMFDT9GlTtL7qmgzf1oOVp0gG3cNTbAuk=
+=4zcr
+-----END PGP SIGNATURE-----
+
+
+
+
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256

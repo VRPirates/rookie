@@ -1663,10 +1663,12 @@ without him none of this would be possible
                     gamesPictureBox.BackgroundImage = Image.FromFile(ImagePath);
                    
                 }
+                else
+                    gamesPictureBox.BackgroundImage = new Bitmap(367, 214);
                 keyheld = true;
+       
             }
-            else
-                gamesPictureBox.BackgroundImage = new Bitmap(367, 214);
+           
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             if (File.Exists(NotePath))
                 notesRichTextBox.Text = File.ReadAllText(NotePath);
