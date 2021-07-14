@@ -1,3 +1,34 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+RSL 2.1.5
+
++ Added Releasename to installing messages and download size message.
+= Mulitple bugfixes.
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDums0ACgkQx/Rql1Vo
+czc+PRAAmKSXHjNqO6JXpUKIQczrs3q15yZztgmOQMULNUImis3+/ykOxsMJit1A
+W6ORtj3i2VH0TDBx/hhRghMPo+dNilyKnCWm928mXc3taMOEOKu+Dz8WfhnuNp0A
+ENmV5fKfuChqrn/6jkUY8UG12NM0eu3A+7fH6LvRADxRxESVH81JUtcf4bSAlier
+JuL/q67nv8mThFS3tRtjjvmu0nQMCUcvagfwRNFOUW0aob7NBAp6wxTsbxZo0yEq
+oVOxyTAOR84IGHpWeDKDyMw+AySMnHQXl9Ty385zg4eHZr/l1uQcK61uNfiqVCK+
+Pag6I1+vLs/3Z3v6qD84iUnis/RV2lqiZcenNeTHQgBKzSsxegB5t0WaID7qlnec
+655QnEUbLbIxENS7HodMR1+CzWKgmmYpIH9jV+vH0+mTaKnAYmW56q/ae8OmjXqw
+6NXSfog3Dv7U8Imq21Q8glxt/CXh1fY0I8JLxpMjbwEDm56fvvzdRAeE3TeXJR0y
+CD9HbH/G8oH/OhLaj1UR5y9FR3PLIBhHmnl9VHtxcvv/nrHMQHbM9bAjPUpNdnSg
+30yZxPw/eqv8KLhGxxc+cBnXv3p5bNf2j27gY1Q8XbgcL8PAM6NlVBN/9oaDQ5cL
+r5Cc4d5r9F+Q+QrhpZlw3jshHdoVKqgc4ut6xBAWulztNWNvLok=
+=tySN
+-----END PGP SIGNATURE-----
+
+
+
+
+
+
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
