@@ -1179,7 +1179,6 @@ without him none of this would be possible
 
         private bool gamesAreDownloading = false;
         private List<string> gamesQueueList = new List<string>();
-        private List<string> gamesToAddList = new List<string>();
         private int quotaTries = 0;
 
         public void SwitchMirrors()
@@ -1212,20 +1211,13 @@ without him none of this would be possible
                 ChangeTitle($"Checking filesize of {nameboxtranslated}...");
                 long selectedGamesSize = 0;
                 int count = 0;
-                string[] GameSizeGame = new string[1];
-                if (gamesToAddList.Count > 0)
-                {
-                    count = gamesToAddList.Count;
-                    GameSizeGame = new string[count];
-                    for (int i = 0; i < count; i++)
-                        GameSizeGame[i] = gamesToAddList[i];
-                }
-                else if (gamesListView.SelectedItems.Count > 0)
+                string[] gamesToDownload;
+                if (gamesListView.SelectedItems.Count > 0)
                 {
                     count = gamesListView.SelectedItems.Count;
-                    GameSizeGame = new string[count];
+                    gamesToDownload = new string[count];
                     for (int i = 0; i < count; i++)
-                        GameSizeGame[i] = gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
+                        gamesToDownload[i] = gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
                 }
                 else return;
 
@@ -1234,10 +1226,10 @@ without him none of this would be possible
                 {
                     for (int i = 0; i < count; i++)
                     {
-                        selectedGamesSize += SideloaderRCLONE.GetFolderSize(GameSizeGame[i], currentRemote);
+                        selectedGamesSize += SideloaderRCLONE.GetFolderSize(gamesToDownload[i], currentRemote);
                         if (selectedGamesSize == 0)
                         {
-                            FlexibleMessageBox.Show($"Couldnt find release {GameSizeGame[i]} on rclone, please deselect and try again or switch mirrors");
+                            FlexibleMessageBox.Show($"Couldnt find release {gamesToDownload[i]} on rclone, please deselect and try again or switch mirrors");
                             HadError = true;
                             return;
                         }
@@ -1253,21 +1245,26 @@ without him none of this would be possible
                     return;
                 progressBar.Value = 0;
                 progressBar.Style = ProgressBarStyle.Continuous;
-                DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download {nameboxtranslated}? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
+                string game;
+                if (gamesToDownload.Length == 1)
+                {
+                    game = $"\"{gamesToDownload[0]}\"";
+                }
+                else
+                {
+                    game = "the selected games";
+                }
+                DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download {game}? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
+                
                 if (dialogResult != DialogResult.Yes)
                 {
                     ChangeTitle("");
                     return;
                 }
                 //Add games to the queue
-                if (gamesToAddList.Count > 0)
-                    gamesQueueList.AddRange(gamesToAddList);
-                else
-                {
-                    for (int i = 0; i < gamesListView.SelectedItems.Count; i++)
-                        gamesQueueList.Add(gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text);
-                }
-                gamesToAddList.Clear();
+                for (int i = 0; i < gamesToDownload.Length; i++)
+                    gamesQueueList.Add(gamesToDownload[i]);
+
                 gamesQueListBox.DataSource = null;
                 gamesQueListBox.DataSource = gamesQueueList;
 
