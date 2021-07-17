@@ -284,13 +284,28 @@ namespace AndroidSideloader
         }
         public async void ChangeTitle(string txt, bool reset = true)
         {
-            this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
-            ProgressText.Invoke(() => { ProgressText.Text = txt; });
-            if (!reset)
-                return;
-            await Task.Delay(TimeSpan.FromSeconds(5));
-            this.Invoke(() => { this.Text = "Rookie's Sideloader | " + oldTitle; });
-            ProgressText.Invoke(() => { ProgressText.Text = oldTitle; });
+            try
+            {
+                if (ProgressText.IsDisposed) return;
+                this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
+                ProgressText.Invoke(() =>
+                {
+                    if (!ProgressText.IsDisposed)
+                        ProgressText.Text = txt;
+                });
+                if (!reset)
+                    return;
+                await Task.Delay(TimeSpan.FromSeconds(5));
+                this.Invoke(() => { this.Text = "Rookie's Sideloader | " + oldTitle; });
+                ProgressText.Invoke(() =>
+                {
+                    if (!ProgressText.IsDisposed)
+                        ProgressText.Text = oldTitle;
+                });
+            } catch
+            {
+
+            }
         }
 
 
@@ -1190,6 +1205,8 @@ without him none of this would be possible
         {
             {
                 progressBar.Style = ProgressBarStyle.Marquee;
+                if (gamesListView.SelectedItems.Count == 0) return;
+
                 string namebox = gamesListView.SelectedItems[0].ToString();
                 string nameboxtranslated = Sideloader.gameNameToSimpleName(namebox);
                 ChangeTitle($"Checking filesize of {nameboxtranslated}...");
