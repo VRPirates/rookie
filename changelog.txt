@@ -1,6 +1,50 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.2
+
++ Added custom naming scheme to Debug Log. Debug Log now uses 2 random nouns as its name when generated.
++ Added shortcut commands. Press F1 to see list of shortcuts.
+
+  F1  = Shortcuts List
+  F2  = Search
+  F3  = Quest Options
+  F4  = Rookie Settings
+  F5  = Refresh Games List
+  F11 = Copy Debug log to Desktop.
+  F12 = Copy Crash Log to Desktop (if one exists).
+ 
+  CTRL + R  = Run custom ADB command.
+  CTRL + F  = Search
+  CTRL + P  = Copy package name of selected game to Clipboard.
+  CTRL + F4 = Restart program.
+
++ Added ability to upload debug logs to remote server (the server should be updated to reflect this sometime this week!)
+= If Install.txt exists apk install and Obb copy will only be run from install.txt - this is to prevent double copy of obb files or double install of APKS.
+= Fixed issue where if user started DL+install on one title then quickly selected a different title in the games list it would download the newly selected item instead of the originally intended item.
+= Fixed issue that caused download progress bar to not work if multiple items were queued.
+= Fixed other obb copying issues.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDzKesACgkQx/Rql1Vo
+czeiXQ/+OsH5CdnShheJR85/uIkVLGDf75Hkybj7k+5gV688imYwWbCRarudqa8k
+aVC5g69mdKD8rD8DzWjccpFwxvOSq5MRQMWB/Nl/M2142Rnr1M4WdP6xEmMq1qmQ
+X39T3tdpgxxKyDPIt4EX/iLT6qSHdB69qFtMeEoOsHmisqGDFDCHGs835VUUL9FU
+PaZ218Dd07r9/W9cJKX5EI/ihWZ5lv+0defBofQu2A8GCOXzuWIudLtcG5uYIJwO
+9frevYIKteuq+MmcXedgu3uWUb0CnQ+tEyShPYjTdrFdMJYgFrOzIIlogBWK5fm3
+cp8YSzeHJpBnD8qQar/W92WTTzvWd7I9vk7YB/Pdn6MIzzTJX540R2fu2rwsYBCG
+DciqA8+V5sDx5eRmrcUxrmxrsDMPlbpqos0R+yujCHyiLHzt1d/oEohZ/mNw24y4
+3MrjGyzlJqRZZFnaMLGNooLBrT9EeGcTXk/MgJjSO1XQjCVAWmrrsEHCXqcKwi8i
+IW5OMKld80wqWr79LRF6dPxjcuwRgVE8mNd6G6qedX5TXvqjHUEVymMLFFvhVQnQ
+QnOHX0HzWXF/64ghD6r3OR4pQ8C5xb7Z6tEwXX7soQVo610m7nJT1zaHm2m9HSJN
+AA1bdfK9SEKXl3KJT7SCEnQ/2ED6Qr/VBFXcJB/10Il/n8AdJ2o=
+=DFRR
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.1.6 
 = Fixed bug that occurred if image isn't available for game.
 -----BEGIN PGP SIGNATURE-----

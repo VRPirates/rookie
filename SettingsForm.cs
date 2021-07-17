@@ -41,12 +41,12 @@ namespace AndroidSideloader
             deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
             updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
             userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
-            if (Properties.Settings.Default.BandwithLimit.Length>1)
+            if (Properties.Settings.Default.BandwithLimit.Length > 1)
             {
                 BandwithTextbox.Text = Properties.Settings.Default.BandwithLimit.Remove(Properties.Settings.Default.BandwithLimit.Length - 1);
-                BandwithComboBox.Text = Properties.Settings.Default.BandwithLimit[Properties.Settings.Default.BandwithLimit.Length-1].ToString();
+                BandwithComboBox.Text = Properties.Settings.Default.BandwithLimit[Properties.Settings.Default.BandwithLimit.Length - 1].ToString();
             }
-            
+
         }
 
         void intToolTips()
@@ -82,9 +82,9 @@ namespace AndroidSideloader
                     File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt");
                 System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\crashlog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt", true);
                 MessageBox.Show("crashlog.txt copied to your desktop!");
-           
 
-        }
+
+            }
             else
                 MessageBox.Show("No crashlog found!");
         }
@@ -144,5 +144,36 @@ namespace AndroidSideloader
             Properties.Settings.Default.userJsonOnGameInstall = userJsonOnGameInstall.Checked;
         }
 
+        private void SettingsForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+
+        private void SettingsForm_Leave(object sender, EventArgs e)
+        {
+            this.Close();
+        }
+
+
+        private void Form_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Escape)
+            {
+                this.Close();
+            }
+        }
+        protected override bool ProcessDialogKey(Keys keyData)
+        {
+            if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
+            {
+                this.Close();
+                return true;
+            }
+            return base.ProcessDialogKey(keyData);
+        }
     }
 }
+

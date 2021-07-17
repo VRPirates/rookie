@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
@@ -226,7 +227,6 @@ namespace AndroidSideloader
 
             while (t1.IsAlive)
                 await Task.Delay(100);
-            ChangeTitle("GREEN = Up to date, ORANGE = Out of date - Checking installed app versions,  please wait...");
 
             initListView();
             ChangeTitle("Loaded");
@@ -447,26 +447,33 @@ namespace AndroidSideloader
             ProcessOutput output = new ProcessOutput("", "");
             var dialog = new FolderSelectDialog
             {
-                Title = "Select your obb folder"
+                Title = "Select OBB folder (must be direct OBB folder, E.G: com.Company.AppName)"
             };
-            if (Properties.Settings.Default.IPAddress.Contains("connect"))
-                ADB.WakeDevice();
+       
+            ADB.WakeDevice();
             if (dialog.Show(Handle))
             {
+                progressBar.Style = ProgressBarStyle.Marquee;
+                string path = dialog.FileName;
+                string dirname = Path.GetFileName(path);
+               
                 Thread t1 = new Thread(() =>
                 {
-                    output += ADB.CopyOBB(dialog.FileName);
-                    Program.form.ChangeTitle("");
+
+                    output += ADB.RunAdbCommandToString($"push -p \"{path}\" \"/sdcard/Android/obb\"");
                 });
                 t1.IsBackground = true;
                 t1.Start();
-
+                ChangeTitle($"Copying {dirname} obb to device...");
                 while (t1.IsAlive)
+                {
                     await Task.Delay(100);
-
+                }
+                Program.form.ChangeTitle("Done.");
                 showAvailableSpace();
 
                 ShowPrcOutput(output);
+                Program.form.ChangeTitle("");
             }
         }
 
@@ -1255,7 +1262,7 @@ without him none of this would be possible
                     game = "the selected games";
                 }
                 DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download {game}? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
-                
+                ChangeTitle($"");
                 if (dialogResult != DialogResult.Yes)
                 {
                     ChangeTitle("");
@@ -1395,7 +1402,10 @@ without him none of this would be possible
                         ChangeTitle("Installing game apk " + gameName, false);
                         etaLabel.Text = "ETA: Wait for install...";
                         speedLabel.Text = "DLS: Done downloading";
-
+                        if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\install.txt"))
+                            isinstalltxt = true;
+                        if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\Install.txt"))
+                           isinstalltxt = true;
                         string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
                         Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
@@ -1404,27 +1414,15 @@ without him none of this would be possible
                         {
                             Debug.WriteLine(file);
                             string extension = Path.GetExtension(file);
-                            if (extension == ".apk")
-                            {
-                                Thread apkThread = new Thread(() =>
-                                {
-                                    output += ADB.Sideload(file, packagename);
-                                });
-
-                                apkThread.Start();
-                                while (apkThread.IsAlive)
-                                    await Task.Delay(100);
-                            }
                             if (extension == ".txt")
                             {
-                                isinstalltxt = true;
                                 string fullname = Path.GetFileName(file);
                                 if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
                                 {
                                     Thread installtxtThread = new Thread(() =>
                                     {
                                         output += Sideloader.RunADBCommandsFromFile(file);
-                                        ChangeTitle("Sideloading custom install.txt automatically.");
+                                        ChangeTitle("");
                                     });
 
                                     installtxtThread.Start();
@@ -1432,32 +1430,50 @@ without him none of this would be possible
                                         await Task.Delay(100);
                                 }
                             }
-                            if (!isinstalltxt)
+                            else
                             {
-                                Debug.WriteLine(wrDelimiter);
-                                string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
-
-                                foreach (string folder in folders)
+                                if (!isinstalltxt)
                                 {
-                                    ChangeTitle("Installing game obb " + gameName, false);
-                                    string[] obbs = Directory.GetFiles(folder);
-
-                                    foreach (string currObb in obbs)
+                                    if (extension == ".apk")
                                     {
-                                        Thread obbThread = new Thread(() =>
+                                        Thread apkThread = new Thread(() =>
                                         {
-                                            output += ADB.CopyOBB(folder);
-                                            Program.form.ChangeTitle("");
+                                            output += ADB.Sideload(file, packagename);
                                         });
-                                        obbThread.IsBackground = true;
-                                        obbThread.Start();
 
-                                        while (obbThread.IsAlive)
+                                        apkThread.Start();
+                                        while (apkThread.IsAlive)
                                             await Task.Delay(100);
+                                    }
+
+
+
+                                    Debug.WriteLine(wrDelimiter);
+                                    string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
+
+                                    foreach (string folder in folders)
+                                    {
+                                        ChangeTitle("Installing game obb " + gameName, false);
+                                        string[] obbs = Directory.GetFiles(folder);
+
+                                        foreach (string currObb in obbs)
+                                        {
+                                            Thread obbThread = new Thread(() =>
+                                            {
+                                                string obbcontainingdir = Path.GetFileName(folder);
+                                                ChangeTitle($"Copying {obbcontainingdir} obb to device...");
+                                                output += ADB.CopyOBB(folder);
+                                                Program.form.ChangeTitle("");
+                                            });
+                                            obbThread.IsBackground = true;
+                                            obbThread.Start();
+
+                                            while (obbThread.IsAlive)
+                                                await Task.Delay(100);
+                                        }
                                     }
                                 }
                             }
-
                         }
 
 
@@ -1621,17 +1637,21 @@ without him none of this would be possible
                 label2.Visible = false;
                 label3.Visible = false;
                 label4.Visible = false;
-                if (ADBcommandbox.Visible && !ADBcommandbox.Equals(null))
+
+                if (ADBcommandbox.Visible)
                 {
-                    string output2 = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
-                    ChangeTitle($"Running entered ADB command: ADB {ADBcommandbox.Text}");
-                    ChangeTitle($"Command Output: {output2}");
+
+                    ChangeTitle($"Entered command: ADB {ADBcommandbox.Text}");
+                    ADB.RunAdbCommandToString(ADBcommandbox.Text);
+                    ChangeTitle("");
 
                 }
                 ChangeTitle($"{ADB.RunAdbCommandToString(ADBcommandbox.Text)}");
                 ADBcommandbox.Visible = false;
-                label10.Visible = false;
+                label9.Visible = false;
                 label11.Visible = false;
+                label2.Visible = false;
+
             }
             if (e.KeyChar == (char)Keys.Escape)
             {
@@ -1640,8 +1660,10 @@ without him none of this would be possible
                 label3.Visible = false;
                 label4.Visible = false;
                 ADBcommandbox.Visible = false;
-                label10.Visible = false;
+                label9.Visible = false;
                 label11.Visible = false;
+                label2.Visible = false;
+
             }
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -1661,9 +1683,9 @@ without him none of this would be possible
             {
                 ADBcommandbox.Visible = true;
                 ADBcommandbox.Clear();
-                label2.Visible = true;
-                label10.Visible = true;
+                label9.Visible = true;
                 label11.Visible = true;
+                label2.Visible = true;
                 ADBcommandbox.Focus();
 
             }
@@ -1692,13 +1714,20 @@ without him none of this would be possible
                 { }
             if (keyData == (Keys.F3))
             {
-                QuestForm Form = new QuestForm();
-                Form.Show();
+                if (Application.OpenForms.OfType<QuestForm>().Count() == 0)
+                {
+                    QuestForm Form = new QuestForm();
+                    Form.Show();
+                }
+             
             }
             if (keyData == (Keys.F4))
             {
-                SettingsForm Form = new SettingsForm();
-                Form.Show();
+                if (Application.OpenForms.OfType<SettingsForm>().Count() == 0)
+                {
+                    SettingsForm Form = new SettingsForm();
+                    Form.Show();
+                }
             }
             if (keyData == (Keys.F5))
             {
@@ -1709,10 +1738,12 @@ without him none of this would be possible
                 initListView();
             }
 
-            if (keyData == (Keys.F1))
+            bool dialogisup = false;
+            if (keyData == (Keys.F1) && !dialogisup)
             {
-                MessageBox.Show("Shortcuts:\nF1 ----- Shortcuts/Help\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Open RSL Settings\nF4 -------- Quest Options\nF5: ------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12: ------ Copy Debuglog to Desktop\n\nCTRL+P: Copy packagename to clipboard on game select.\n\n\n\nTROUBLESHOOTING:\nCTRL + F4 = Instantly relaunch Rookie's Sideloader.");
-                
+                dialogisup = true;
+                MessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12 ------ Copy Debuglog to Desktop\n\nCTRL+R - Run custom ADB command.\nCTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie's Sideloader.");
+                dialogisup = false;
             }
 
 
@@ -2025,19 +2056,21 @@ without him none of this would be possible
             if (e.KeyChar == (char)Keys.Enter)
 
             {
-                string adbboxout = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
-                MessageBox.Show($"Ran adb command: ADB {ADBcommandbox.Text}, Output: {adbboxout}");
+                Program.form.ChangeTitle($"Running adb command: ADB {ADBcommandbox.Text}");
+                string output = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
+                MessageBox.Show($"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
                 ADBcommandbox.Visible = false;
-                label10.Visible = false;
+                label9.Visible = false;
                 label11.Visible = false;
                 label2.Visible = false;
                 gamesListView.Focus();
+                Program.form.ChangeTitle("");
             }
             if (e.KeyChar == (char)Keys.Escape)
             {
                 ADBcommandbox.Visible = false;
-                label10.Visible = false;
                 label11.Visible = false;
+                label9.Visible = false;
                 label2.Visible = false;
                 gamesListView.Focus();
             }
@@ -2048,7 +2081,7 @@ without him none of this would be possible
 
             label2.Visible = false;
             ADBcommandbox.Visible = false;
-            label10.Visible = false;
+            label9.Visible = false;
             label11.Visible = false;
         }
 

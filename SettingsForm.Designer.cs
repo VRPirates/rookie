@@ -49,10 +49,9 @@
             this.checkForUpdatesCheckBox.AutoSize = true;
             this.checkForUpdatesCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkForUpdatesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(17, 16);
-            this.checkForUpdatesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(13, 13);
             this.checkForUpdatesCheckBox.Name = "checkForUpdatesCheckBox";
-            this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(210, 29);
+            this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(175, 24);
             this.checkForUpdatesCheckBox.TabIndex = 0;
             this.checkForUpdatesCheckBox.Text = "Check for updates";
             this.checkForUpdatesCheckBox.UseVisualStyleBackColor = true;
@@ -67,10 +66,9 @@
             this.applyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.applyButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.applyButton.Location = new System.Drawing.Point(16, 219);
-            this.applyButton.Margin = new System.Windows.Forms.Padding(4);
+            this.applyButton.Location = new System.Drawing.Point(12, 178);
             this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(135, 38);
+            this.applyButton.Size = new System.Drawing.Size(101, 31);
             this.applyButton.TabIndex = 5;
             this.applyButton.Text = "Apply";
             this.applyButton.UseVisualStyleBackColor = false;
@@ -81,10 +79,9 @@
             this.enableMessageBoxesCheckBox.AutoSize = true;
             this.enableMessageBoxesCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.enableMessageBoxesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(17, 44);
-            this.enableMessageBoxesCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(13, 36);
             this.enableMessageBoxesCheckBox.Name = "enableMessageBoxesCheckBox";
-            this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(442, 29);
+            this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(367, 24);
             this.enableMessageBoxesCheckBox.TabIndex = 1;
             this.enableMessageBoxesCheckBox.Text = "Enable Message Boxes on task completed";
             this.enableMessageBoxesCheckBox.UseVisualStyleBackColor = true;
@@ -99,10 +96,9 @@
             this.resetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.resetSettingsButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.resetSettingsButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.resetSettingsButton.Location = new System.Drawing.Point(159, 219);
-            this.resetSettingsButton.Margin = new System.Windows.Forms.Padding(4);
+            this.resetSettingsButton.Location = new System.Drawing.Point(119, 178);
             this.resetSettingsButton.Name = "resetSettingsButton";
-            this.resetSettingsButton.Size = new System.Drawing.Size(135, 38);
+            this.resetSettingsButton.Size = new System.Drawing.Size(101, 31);
             this.resetSettingsButton.TabIndex = 4;
             this.resetSettingsButton.Text = "Reset Settings";
             this.resetSettingsButton.UseVisualStyleBackColor = false;
@@ -113,10 +109,9 @@
             this.deleteAfterInstallCheckBox.AutoSize = true;
             this.deleteAfterInstallCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.deleteAfterInstallCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(17, 73);
-            this.deleteAfterInstallCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(13, 59);
             this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
-            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(417, 29);
+            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(350, 24);
             this.deleteAfterInstallCheckBox.TabIndex = 3;
             this.deleteAfterInstallCheckBox.Text = "Delete games after download and install";
             this.deleteAfterInstallCheckBox.UseVisualStyleBackColor = true;
@@ -127,10 +122,9 @@
             this.updateConfigCheckBox.AutoSize = true;
             this.updateConfigCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.updateConfigCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.updateConfigCheckBox.Location = new System.Drawing.Point(17, 102);
-            this.updateConfigCheckBox.Margin = new System.Windows.Forms.Padding(4);
+            this.updateConfigCheckBox.Location = new System.Drawing.Point(13, 83);
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
-            this.updateConfigCheckBox.Size = new System.Drawing.Size(299, 29);
+            this.updateConfigCheckBox.Size = new System.Drawing.Size(251, 24);
             this.updateConfigCheckBox.TabIndex = 6;
             this.updateConfigCheckBox.Text = "Update config automatically";
             this.updateConfigCheckBox.UseVisualStyleBackColor = true;
@@ -141,10 +135,9 @@
             this.userJsonOnGameInstall.AutoSize = true;
             this.userJsonOnGameInstall.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.userJsonOnGameInstall.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.userJsonOnGameInstall.Location = new System.Drawing.Point(17, 130);
-            this.userJsonOnGameInstall.Margin = new System.Windows.Forms.Padding(4);
+            this.userJsonOnGameInstall.Location = new System.Drawing.Point(13, 106);
             this.userJsonOnGameInstall.Name = "userJsonOnGameInstall";
-            this.userJsonOnGameInstall.Size = new System.Drawing.Size(347, 29);
+            this.userJsonOnGameInstall.Size = new System.Drawing.Size(288, 24);
             this.userJsonOnGameInstall.TabIndex = 9;
             this.userJsonOnGameInstall.Text = "Push random user.json on install";
             this.userJsonOnGameInstall.UseVisualStyleBackColor = true;
@@ -158,10 +151,9 @@
             this.BandwithTextbox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.BandwithTextbox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.BandwithTextbox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.BandwithTextbox.Location = new System.Drawing.Point(16, 182);
-            this.BandwithTextbox.Margin = new System.Windows.Forms.Padding(4);
+            this.BandwithTextbox.Location = new System.Drawing.Point(12, 148);
             this.BandwithTextbox.Name = "BandwithTextbox";
-            this.BandwithTextbox.Size = new System.Drawing.Size(235, 30);
+            this.BandwithTextbox.Size = new System.Drawing.Size(177, 26);
             this.BandwithTextbox.TabIndex = 11;
             // 
             // label1
@@ -169,10 +161,9 @@
             this.label1.AutoSize = true;
             this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.label1.Location = new System.Drawing.Point(13, 156);
-            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.label1.Location = new System.Drawing.Point(10, 127);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(358, 25);
+            this.label1.Size = new System.Drawing.Size(298, 20);
             this.label1.TabIndex = 12;
             this.label1.Text = "Download speed limiter, 0 to disable";
             // 
@@ -191,10 +182,9 @@
             "K",
             "M",
             "G"});
-            this.BandwithComboBox.Location = new System.Drawing.Point(260, 180);
-            this.BandwithComboBox.Margin = new System.Windows.Forms.Padding(4);
+            this.BandwithComboBox.Location = new System.Drawing.Point(195, 146);
             this.BandwithComboBox.Name = "BandwithComboBox";
-            this.BandwithComboBox.Size = new System.Drawing.Size(72, 33);
+            this.BandwithComboBox.Size = new System.Drawing.Size(55, 28);
             this.BandwithComboBox.TabIndex = 13;
             // 
             // DebugLogCopy
@@ -206,10 +196,9 @@
             this.DebugLogCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DebugLogCopy.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.DebugLogCopy.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.DebugLogCopy.Location = new System.Drawing.Point(16, 274);
-            this.DebugLogCopy.Margin = new System.Windows.Forms.Padding(4);
+            this.DebugLogCopy.Location = new System.Drawing.Point(12, 223);
             this.DebugLogCopy.Name = "DebugLogCopy";
-            this.DebugLogCopy.Size = new System.Drawing.Size(380, 38);
+            this.DebugLogCopy.Size = new System.Drawing.Size(285, 31);
             this.DebugLogCopy.TabIndex = 5;
             this.DebugLogCopy.Text = "Send DebugLog to server.";
             this.DebugLogCopy.UseVisualStyleBackColor = false;
@@ -224,10 +213,9 @@
             this.CrashLogCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.CrashLogCopy.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.CrashLogCopy.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.CrashLogCopy.Location = new System.Drawing.Point(16, 364);
-            this.CrashLogCopy.Margin = new System.Windows.Forms.Padding(4);
+            this.CrashLogCopy.Location = new System.Drawing.Point(12, 296);
             this.CrashLogCopy.Name = "CrashLogCopy";
-            this.CrashLogCopy.Size = new System.Drawing.Size(380, 38);
+            this.CrashLogCopy.Size = new System.Drawing.Size(285, 31);
             this.CrashLogCopy.TabIndex = 5;
             this.CrashLogCopy.Text = "Copy CrashLog to Desktop";
             this.CrashLogCopy.UseVisualStyleBackColor = false;
@@ -237,25 +225,27 @@
             // 
             this.debuglogID.AutoSize = true;
             this.debuglogID.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.debuglogID.Location = new System.Drawing.Point(20, 320);
+            this.debuglogID.Location = new System.Drawing.Point(15, 260);
+            this.debuglogID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.debuglogID.Name = "debuglogID";
-            this.debuglogID.Size = new System.Drawing.Size(0, 24);
+            this.debuglogID.Size = new System.Drawing.Size(0, 18);
             this.debuglogID.TabIndex = 14;
             // 
             // crashlogID
             // 
             this.crashlogID.AutoSize = true;
-            this.crashlogID.Location = new System.Drawing.Point(17, 410);
+            this.crashlogID.Location = new System.Drawing.Point(13, 333);
+            this.crashlogID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.crashlogID.Name = "crashlogID";
-            this.crashlogID.Size = new System.Drawing.Size(0, 17);
+            this.crashlogID.Size = new System.Drawing.Size(0, 13);
             this.crashlogID.TabIndex = 15;
             // 
             // SettingsForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(417, 458);
+            this.ClientSize = new System.Drawing.Size(313, 372);
             this.Controls.Add(this.crashlogID);
             this.Controls.Add(this.debuglogID);
             this.Controls.Add(this.BandwithComboBox);
@@ -273,11 +263,12 @@
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Margin = new System.Windows.Forms.Padding(4);
             this.Name = "SettingsForm";
             this.ShowIcon = false;
             this.Text = "Settings";
             this.Load += new System.EventHandler(this.SettingsForm_Load);
+            this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SettingsForm_KeyPress);
+            this.Leave += new System.EventHandler(this.SettingsForm_Leave);
             this.ResumeLayout(false);
             this.PerformLayout();
 

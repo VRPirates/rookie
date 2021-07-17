@@ -21,14 +21,13 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
-            string loggedcommand = "";
             if (DeviceID.Length > 1)
             {
                 command = $" -s {DeviceID} {command}";
             }
             if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP")) 
             {
-                loggedcommand = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "adb.exe");
+                string loggedcommand = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "adb.exe");
                 Logger.Log($"Running command{loggedcommand}");
             }
             adb.StartInfo.FileName = adbFilePath;

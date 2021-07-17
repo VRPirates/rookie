@@ -88,7 +88,7 @@
             this.EnterInstallBox = new System.Windows.Forms.CheckBox();
             this.ADBcommandbox = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
-            this.label10 = new System.Windows.Forms.Label();
+            this.label9 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.otherContainer.SuspendLayout();
             this.backupContainer.SuspendLayout();
@@ -825,7 +825,7 @@
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesListView.HideSelection = false;
-            this.gamesListView.Location = new System.Drawing.Point(227, 69);
+            this.gamesListView.Location = new System.Drawing.Point(228, 68);
             this.gamesListView.Name = "gamesListView";
             this.gamesListView.Size = new System.Drawing.Size(745, 366);
             this.gamesListView.TabIndex = 6;
@@ -865,7 +865,7 @@
             this.gamesQueueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesQueueLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.gamesQueueLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.gamesQueueLabel.Location = new System.Drawing.Point(597, 590);
+            this.gamesQueueLabel.Location = new System.Drawing.Point(597, 594);
             this.gamesQueueLabel.Name = "gamesQueueLabel";
             this.gamesQueueLabel.Size = new System.Drawing.Size(124, 20);
             this.gamesQueueLabel.TabIndex = 86;
@@ -972,7 +972,7 @@
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.label2.Location = new System.Drawing.Point(457, 193);
+            this.label2.Location = new System.Drawing.Point(465, 196);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(271, 120);
             this.label2.TabIndex = 89;
@@ -1002,7 +1002,7 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(522, 284);
+            this.label4.Location = new System.Drawing.Point(532, 284);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(132, 17);
             this.label4.TabIndex = 90;
@@ -1149,7 +1149,7 @@
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label11.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label11.Location = new System.Drawing.Point(523, 283);
+            this.label11.Location = new System.Drawing.Point(528, 285);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(143, 17);
             this.label11.TabIndex = 90;
@@ -1157,21 +1157,21 @@
             this.label11.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.label11.Visible = false;
             // 
-            // label10
+            // label9
             // 
-            this.label10.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label10.AutoSize = true;
-            this.label10.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label10.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label10.Location = new System.Drawing.Point(621, 622);
-            this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(39, 17);
-            this.label10.TabIndex = 90;
-            this.label10.Text = "ADB";
-            this.label10.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label10.Visible = false;
+            this.label9.AutoSize = true;
+            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.label9.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.label9.Location = new System.Drawing.Point(514, 206);
+            this.label9.Name = "label9";
+            this.label9.Size = new System.Drawing.Size(178, 68);
+            this.label9.TabIndex = 90;
+            this.label9.Text = "Type command without \r\n\"adb\" prefix.\r\n\r\n\r\n";
+            this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label9.Visible = false;
             // 
             // MainForm
             // 
@@ -1193,7 +1193,7 @@
             this.Controls.Add(this.label4);
             this.Controls.Add(this.ADBcommandbox);
             this.Controls.Add(this.searchTextBox);
-            this.Controls.Add(this.label10);
+            this.Controls.Add(this.label9);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.freeDisclaimer);
             this.Controls.Add(this.DragDropLbl);
@@ -1300,7 +1300,7 @@
         private System.Windows.Forms.CheckBox EnterInstallBox;
         private System.Windows.Forms.TextBox ADBcommandbox;
         private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label9;
     }
 }
 
