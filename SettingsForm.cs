@@ -65,12 +65,11 @@ namespace AndroidSideloader
 
         public void DebugLogCopy_click(object sender, EventArgs e)
         {
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\debuglog.txt"))
+            if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
             {
-                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\debuglog.txt"))
-                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\debuglog.txt");
-                System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\debuglog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\debuglog.txt", true);
-                MessageBox.Show("debuglog.txt copied to your desktop!");
+                RCLONE.runRcloneCommand($"copy \"{Environment.CurrentDirectory}\\{Properties.Settings.Default.CurrentLogTitle}\" RSL-debuglog: --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
+
+                MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID to the Mods\n\nDebugLog ID - {Properties.Settings.Default.CurrentLogName}");
 
             }
         }

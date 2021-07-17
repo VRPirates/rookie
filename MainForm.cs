@@ -1394,7 +1394,7 @@ without him none of this would be possible
                         ADB.DeviceID = GetDeviceID();
                         quotaTries = 0;
                         progressBar.Value = 0;
-                        progressBar.Style = ProgressBarStyle.Marquee;
+                        progressBar.Style = ProgressBarStyle.Continuous;
                         ChangeTitle("Installing game apk " + gameName, false);
                         etaLabel.Text = "ETA: Wait for install...";
                         speedLabel.Text = "DLS: Done downloading";
@@ -1714,7 +1714,7 @@ without him none of this would be possible
 
             if (keyData == (Keys.F1))
             {
-                MessageBox.Show("Shortcuts:\nF1:Shortcuts (this list)\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Open RSL Settings\nF4 -------- Quest Options\nF5: ------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12: ------ Copy Debuglog to Desktop\n\nCTRL+P: Copy packagename to clipboard on game select.\n\n\n\nTROUBLESHOOTING:\nCTRL + F4 = Instantly relaunch Rookie's Sideloader.");
+                MessageBox.Show("Shortcuts:\nF1 ----- Shortcuts/Help\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Open RSL Settings\nF4 -------- Quest Options\nF5: ------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12: ------ Copy Debuglog to Desktop\n\nCTRL+P: Copy packagename to clipboard on game select.\n\n\n\nTROUBLESHOOTING:\nCTRL + F4 = Instantly relaunch Rookie's Sideloader.");
                 
             }
 
