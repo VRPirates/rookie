@@ -39,11 +39,27 @@ namespace AndroidSideloader
 
         {
             InitializeComponent();
+            if (!File.Exists(Properties.Settings.Default.CurrentLogTitle))
+            {
+                Random r = new Random();
+                int x = r.Next(6806);
+                int y = r.Next(6806);
+                if (File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                {
+                    string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
 
+                    if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                        File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
+                    string randomnoun = lines[new Random(x).Next(lines.Length)];
+                    string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                    Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
+                    Properties.Settings.Default.Save();
+                }
+            }
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
-            t.Start();            
+            t.Start();
             System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer();
             t2.Interval = 30; // 30ms
             t2.Tick += new EventHandler(timer_Tick2);
@@ -65,6 +81,9 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+
+
+
             string adbFile = "C:\\RSL\\2.1.1\\adb\\adb.exe";
             string adbDir = "C:\\RSL\\2.1.1\\adb";
             string fileName = "";
@@ -121,10 +140,18 @@ namespace AndroidSideloader
             }
 
             //Delete the Debug file if it is more than 5MB
-            if (File.Exists(Logger.logfile))
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\{Properties.Settings.Default.CurrentLogTitle}"))
             {
-                long length = new System.IO.FileInfo(Logger.logfile).Length;
-                if (length > 5000000) File.Delete(Logger.logfile);
+                long length = new System.IO.FileInfo($"{Properties.Settings.Default.MainDir}\\{ Properties.Settings.Default.CurrentLogTitle}").Length;
+                if (length > 5000000)
+                {
+                    string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes2\\nouns.txt");
+                    string randomnoun = lines[new Random().Next(lines.Length)];
+                    string randomnoun2 = lines[new Random().Next(lines.Length)];
+                    Properties.Settings.Default.CurrentLogTitle = randomnoun + "-" + randomnoun2;
+                    Properties.Settings.Default.Save();
+                }
+                File.Delete($"{Properties.Settings.Default.MainDir}\\{ Properties.Settings.Default.CurrentLogTitle}");
             }
 
             RCLONE.Init();
@@ -344,8 +371,8 @@ namespace AndroidSideloader
             ADB.DeviceID = GetDeviceID();
             Thread t1 = new Thread(() =>
             {
-            output = ADB.RunAdbCommandToString("devices").Output;
-            output = ADB.RunAdbCommandToString("devices").Output;
+                output = ADB.RunAdbCommandToString("devices").Output;
+                output = ADB.RunAdbCommandToString("devices").Output;
             });
 
 
@@ -364,12 +391,12 @@ namespace AndroidSideloader
             foreach (string currLine in line)
             {
                 if (i > 0 && currLine.Length > 0)
-                        {
-                            Devices.Add(currLine.Split('	')[0]);
-                            devicesComboBox.Items.Add(currLine.Split('	')[0]);
-                            Logger.Log(currLine.Split('	')[0] + "\n", false);
-                        }
-                        Debug.WriteLine(currLine);
+                {
+                    Devices.Add(currLine.Split('	')[0]);
+                    devicesComboBox.Items.Add(currLine.Split('	')[0]);
+                    Logger.Log(currLine.Split('	')[0] + "\n", false);
+                }
+                Debug.WriteLine(currLine);
                 i++;
             }
 
@@ -523,7 +550,7 @@ namespace AndroidSideloader
             }
             catch { HasInternet = false; }
         }
-     
+
         public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
 
         public static string taa = "";
@@ -580,7 +607,7 @@ namespace AndroidSideloader
                     else
                     {
                         output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data/");
-                    }  
+                    }
                 });
                 t1.IsBackground = true;
                 t1.Start();
@@ -659,7 +686,7 @@ namespace AndroidSideloader
             while (t1.IsAlive)
                 await Task.Delay(100);
             progressBar.Style = ProgressBarStyle.Continuous;
-            ChangeTitle("APK Extracted to " + Properties.Settings.Default.MainDir +". Opening folder now.");
+            ChangeTitle("APK Extracted to " + Properties.Settings.Default.MainDir + ". Opening folder now.");
             Process.Start("explorer.exe", Properties.Settings.Default.MainDir);
             ShowPrcOutput(output);
         }
@@ -737,7 +764,7 @@ namespace AndroidSideloader
                 ShowPrcOutput(Sideloader.RecursiveOutput);
             }
         }
-    
+
         private async void copyBulkObbButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
@@ -818,7 +845,7 @@ namespace AndroidSideloader
                         string[] folders = Directory.GetDirectories(data);
                         foreach (string folder in folders)
                         {
-                          
+
                             output += ADB.CopyOBB(folder);
                             Program.form.ChangeTitle("");
                             Properties.Settings.Default.CurrPckg = dir;
@@ -1104,7 +1131,7 @@ without him none of this would be possible
 
         }
 
-    private async void listApkButton_Click(object sender, EventArgs e)
+        private async void listApkButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
 
@@ -1151,7 +1178,9 @@ without him none of this would be possible
                     Application.Exit();
                 }
                 if (remotesList.Items.Count > remotesList.SelectedIndex)
+                {
                     remotesList.SelectedIndex++;
+                }
                 else
                     remotesList.SelectedIndex = 0;
             });
@@ -1190,7 +1219,7 @@ without him none of this would be possible
                     {
                         selectedGamesSize += SideloaderRCLONE.GetFolderSize(GameSizeGame[i], currentRemote);
                         if (selectedGamesSize == 0)
-                        {        
+                        {
                             FlexibleMessageBox.Show($"Couldnt find release {GameSizeGame[i]} on rclone, please deselect and try again or switch mirrors");
                             HadError = true;
                             return;
@@ -1323,6 +1352,7 @@ without him none of this would be possible
                     }
 
                     //Quota Errors
+                    bool isinstalltxt = false;
                     bool quotaError = false;
                     if (gameDownloadOutput.Error.Length > 0)
                     {
@@ -1373,6 +1403,7 @@ without him none of this would be possible
                             }
                             if (extension == ".txt")
                             {
+                                isinstalltxt = true;
                                 string fullname = Path.GetFileName(file);
                                 if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
                                 {
@@ -1387,31 +1418,37 @@ without him none of this would be possible
                                         await Task.Delay(100);
                                 }
                             }
-                        }
-
-
-                        Debug.WriteLine(wrDelimiter);
-                        string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
-
-                        foreach (string folder in folders)
-                        {
-                            ChangeTitle("Installing game obb " + gameName, false);
-                            string[] obbs = Directory.GetFiles(folder);
-
-                            foreach (string currObb in obbs)
+                            if (!isinstalltxt)
                             {
-                                Thread obbThread = new Thread(() =>
-                                {
-                                    output += ADB.CopyOBB(folder);
-                                    Program.form.ChangeTitle("");
-                                });
-                                obbThread.IsBackground = true;
-                                obbThread.Start();
+                                Debug.WriteLine(wrDelimiter);
+                                string[] folders = Directory.GetDirectories(Environment.CurrentDirectory + "\\" + gameName);
 
-                                while (obbThread.IsAlive)
-                                    await Task.Delay(100);
+                                foreach (string folder in folders)
+                                {
+                                    ChangeTitle("Installing game obb " + gameName, false);
+                                    string[] obbs = Directory.GetFiles(folder);
+
+                                    foreach (string currObb in obbs)
+                                    {
+                                        Thread obbThread = new Thread(() =>
+                                        {
+                                            output += ADB.CopyOBB(folder);
+                                            Program.form.ChangeTitle("");
+                                        });
+                                        obbThread.IsBackground = true;
+                                        obbThread.Start();
+
+                                        while (obbThread.IsAlive)
+                                            await Task.Delay(100);
+                                    }
+                                }
                             }
+
                         }
+
+
+
+
 
                         if (Properties.Settings.Default.deleteAllAfterInstall)
                         {
@@ -1570,6 +1607,17 @@ without him none of this would be possible
                 label2.Visible = false;
                 label3.Visible = false;
                 label4.Visible = false;
+                if (ADBcommandbox.Visible && !ADBcommandbox.Equals(null))
+                {
+                    string output2 = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
+                    ChangeTitle($"Running entered ADB command: ADB {ADBcommandbox.Text}");
+                    ChangeTitle($"Command Output: {output2}");
+
+                }
+                ChangeTitle($"{ADB.RunAdbCommandToString(ADBcommandbox.Text)}");
+                ADBcommandbox.Visible = false;
+                label10.Visible = false;
+                label11.Visible = false;
             }
             if (e.KeyChar == (char)Keys.Escape)
             {
@@ -1577,6 +1625,9 @@ without him none of this would be possible
                 label2.Visible = false;
                 label3.Visible = false;
                 label4.Visible = false;
+                ADBcommandbox.Visible = false;
+                label10.Visible = false;
+                label11.Visible = false;
             }
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
@@ -1592,6 +1643,71 @@ without him none of this would be possible
                 label4.Visible = true;
                 searchTextBox.Focus();
             }
+            if (keyData == (Keys.Control | Keys.R))
+            {
+                ADBcommandbox.Visible = true;
+                ADBcommandbox.Clear();
+                label2.Visible = true;
+                label10.Visible = true;
+                label11.Visible = true;
+                ADBcommandbox.Focus();
+
+            }
+            if (keyData == (Keys.F2))
+            {
+                searchTextBox.Clear();
+                searchTextBox.Visible = true;
+                label2.Visible = true;
+                label3.Visible = true;
+                label4.Visible = true;
+                searchTextBox.Focus();
+            }
+
+
+            if (keyData == (Keys.Control | Keys.F4))
+                try
+                {
+                    //run the program again and close this one
+                    Process.Start(Application.StartupPath + "\\Sideloader Launcher.exe");
+                    //or you can use Application.ExecutablePath
+
+                    //close this one
+                    Process.GetCurrentProcess().Kill();
+                }
+                catch
+                { }
+            if (keyData == (Keys.Control | Keys.S))
+            {
+                QuestForm Form = new QuestForm();
+                Form.Show();
+            }
+            if (keyData == (Keys.Control | Keys.Q))
+            {
+                SettingsForm Form = new SettingsForm();
+                Form.Show();
+            }
+            if (keyData == (Keys.F5))
+            {
+                ADB.WakeDevice();
+                GetDeviceID();
+                MessageBox.Show("If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+                listappsbtn();
+                initListView();
+            }
+            if (keyData == (Keys.F2))
+            {
+
+
+
+            }
+            if (keyData == (Keys.F1))
+            {
+                MessageBox.Show("Shortcuts:\nF1:Shortcuts (this list)\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Open RSL Settings\nF4 -------- Quest Options\nF5: ------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12: ------ Copy Debuglog to Desktop\n\nCTRL+P: Copy packagename to clipboard on game select.\n\n\n\nTROUBLESHOOTING:\nCTRL + F4 = Instantly relaunch Rookie's Sideloader.");
+                
+            }
+
+
+
             if (keyData == (Keys.Control | Keys.P))
             {
                 DialogResult dialogResult = MessageBox.Show("Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
@@ -1607,9 +1723,31 @@ without him none of this would be possible
                 }
 
             }
+            if (keyData == (Keys.F11))
+                if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
+                {
+                    if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
+                        if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
+                            System.IO.File.Copy($"{Properties.Settings.Default.CurrentLogTitle}", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{Properties.Settings.Default.CurrentLogName}.txt", true);
+                    MessageBox.Show($"{Properties.Settings.Default.CurrentLogName}.txt copied to your desktop!");
 
-                return base.ProcessCmdKey(ref msg, keyData);
-            
+                }
+
+
+
+            if (keyData == (Keys.F12))
+                if (File.Exists($"{Properties.Settings.Default.MainDir}\\crashlog.txt"))
+                {
+                    if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt"))
+                        File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt");
+                    System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\crashlog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt", true);
+                    MessageBox.Show("crashlog.txt copied to your desktop!");
+                }
+                else
+                    MessageBox.Show("No CrashLog found in Rookie directory.");
+
+            return base.ProcessCmdKey(ref msg, keyData);
+
         }
         private void searchTextBox_TextChanged(object sender, EventArgs e)
         {
@@ -1637,6 +1775,17 @@ without him none of this would be possible
                     System.Windows.Forms.KeyPressEventHandler(CheckEnter);
                 }
             }
+        }
+
+
+
+        private void ADBcommandbox_Enter(object sender, EventArgs e)
+        {
+            this.searchTextBox.KeyPress += new
+                    System.Windows.Forms.KeyPressEventHandler(CheckEnter);
+            ADBcommandbox.Focus();
+
+
         }
 
 
@@ -1676,7 +1825,7 @@ without him none of this would be possible
                 notesRichTextBox.Text = "";
         }
 
-        private void UpdateGamesButton_Click(object sender, EventArgs e)
+        public void UpdateGamesButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
             GetDeviceID();
@@ -1714,9 +1863,9 @@ without him none of this would be possible
             Process.Start("https://github.com/nerdunit/androidsideloader");
         }
 
-
         private async void removeQUSetting_Click(object sender, EventArgs e)
         {
+  
             if (m_combo.SelectedIndex == -1)
             {
                 FlexibleMessageBox.Show("Please select an app first");
@@ -1859,6 +2008,41 @@ without him none of this would be possible
             Properties.Settings.Default.EnterKeyInstall = EnterInstallBox.Checked;
             Properties.Settings.Default.Save();
         }
+
+        private void ADBcommandbox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            this.searchTextBox.KeyPress += new
+            System.Windows.Forms.KeyPressEventHandler(CheckEnter);
+            if (e.KeyChar == (char)Keys.Enter)
+
+            {
+                string adbboxout = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
+                MessageBox.Show($"Ran adb command: ADB {ADBcommandbox.Text}, Output: {adbboxout}");
+                ADBcommandbox.Visible = false;
+                label10.Visible = false;
+                label11.Visible = false;
+                label2.Visible = false;
+                gamesListView.Focus();
+            }
+            if (e.KeyChar == (char)Keys.Escape)
+            {
+                ADBcommandbox.Visible = false;
+                label10.Visible = false;
+                label11.Visible = false;
+                label2.Visible = false;
+                gamesListView.Focus();
+            }
+        }
+
+        private void ADBcommandbox_Leave(object sender, EventArgs e)
+        {
+
+            label2.Visible = false;
+            ADBcommandbox.Visible = false;
+            label10.Visible = false;
+            label11.Visible = false;
+        }
+
     }
 
     public static class ControlExtensions

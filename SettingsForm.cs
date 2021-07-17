@@ -15,9 +15,21 @@ namespace AndroidSideloader
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             this.CenterToParent();
+            if (!Properties.Settings.Default.CurrentLogName.Equals(null))
+            {
+                if (!Properties.Settings.Default.CurrentLogTitle.Equals(null))
+                {
+                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogTitle.Replace($"{Environment.CurrentDirectory}\\", "");
+                    Properties.Settings.Default.Save();
+                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace($".txt", "");
+                    Properties.Settings.Default.Save();
+                }
+            }
+
+
+            debuglogID.Text = "DEBUGLOG ID: " + Properties.Settings.Default.CurrentLogName;
 
             intSettings();
-
             intToolTips();
         }
 
@@ -51,7 +63,7 @@ namespace AndroidSideloader
 
 
 
-        private void DebugLogCopy_click(object sender, EventArgs e)
+        public void DebugLogCopy_click(object sender, EventArgs e)
         {
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\debuglog.txt"))
             {
@@ -63,7 +75,7 @@ namespace AndroidSideloader
             }
         }
 
-        private void CrashLogCopy_click(object sender, EventArgs e)
+        public void CrashLogCopy_click(object sender, EventArgs e)
         {
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\crashlog.txt"))
             {

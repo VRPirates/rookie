@@ -21,13 +21,16 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
-
+            string loggedcommand = "";
             if (DeviceID.Length > 1)
-            { 
-                    command = $" -s {DeviceID} {command}";
+            {
+                command = $" -s {DeviceID} {command}";
             }
-            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP"))
-                Logger.Log($"Running command {command}");
+            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP")) 
+            {
+                loggedcommand = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "adb.exe");
+                Logger.Log($"Running command{loggedcommand}");
+            }
             adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
@@ -69,7 +72,7 @@ namespace AndroidSideloader
             {
                 MessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
-            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:"))
+            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null)) 
             Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
@@ -419,8 +422,11 @@ namespace AndroidSideloader
             WakeDevice();
             if (Path.GetDirectoryName(path).Contains(".") && !Path.GetDirectoryName(path).Contains("_data") || path.Contains("."))
             {
-                Program.form.ChangeTitle($"Copying obb ({Path.GetFileName(path)}) to device...");
-                return RunAdbCommandToString($"push \"{path}\" /sdcard/Android/obb");
+                var ext = System.IO.Path.GetExtension(path);
+                if (ext == String.Empty)
+                    return RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"");
+                else
+                    return RunAdbCommandToString($"push \"{Path.GetDirectoryName(path)}\" /sdcard/Android/obb");
             }
             return new ProcessOutput();
         }
