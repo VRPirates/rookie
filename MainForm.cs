@@ -1022,7 +1022,7 @@ namespace AndroidSideloader
                 if (mirror.Contains("mirror"))
                 {
                     Logger.Log(mirror.Remove(mirror.Length - 1));
-                    remotesList.Invoke(() => { remotesList.Items.Add(mirror.Remove(mirror.Length - 1)); });
+                    remotesList.Invoke(() => { remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); });
                     itemsCount++;
                 }
             }
@@ -1035,7 +1035,7 @@ namespace AndroidSideloader
                 remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = index;
-                    currentRemote = remotesList.SelectedItem.ToString();
+                    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
                 });
             }
         }
@@ -1545,7 +1545,7 @@ without him none of this would be possible
 
         private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            remotesList.Invoke(() => { currentRemote = remotesList.SelectedItem.ToString(); });
+            remotesList.Invoke(() => { currentRemote = "VRP-mirror" +  remotesList.SelectedItem.ToString(); });
             if (remotesList.Text.Contains("VRP"))
             {
                 string lines = remotesList.Text;
