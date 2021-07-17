@@ -1676,12 +1676,12 @@ without him none of this would be possible
                 }
                 catch
                 { }
-            if (keyData == (Keys.Control | Keys.S))
+            if (keyData == (Keys.F3))
             {
                 QuestForm Form = new QuestForm();
                 Form.Show();
             }
-            if (keyData == (Keys.Control | Keys.Q))
+            if (keyData == (Keys.F4))
             {
                 SettingsForm Form = new SettingsForm();
                 Form.Show();
@@ -1694,12 +1694,7 @@ without him none of this would be possible
                 listappsbtn();
                 initListView();
             }
-            if (keyData == (Keys.F2))
-            {
 
-
-
-            }
             if (keyData == (Keys.F1))
             {
                 MessageBox.Show("Shortcuts:\nF1:Shortcuts (this list)\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Open RSL Settings\nF4 -------- Quest Options\nF5: ------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12: ------ Copy Debuglog to Desktop\n\nCTRL+P: Copy packagename to clipboard on game select.\n\n\n\nTROUBLESHOOTING:\nCTRL + F4 = Instantly relaunch Rookie's Sideloader.");
