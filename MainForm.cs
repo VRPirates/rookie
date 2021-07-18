@@ -1350,7 +1350,10 @@ without him none of this would be possible
                                 allSize /= 1000000;
                                 downloaded /= 1000000;
                                 Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (((double)downloaded / (double)allSize) * 100));
-                                try { progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100)); } catch { }
+                                try {
+                                    progressBar.Style = ProgressBarStyle.Continuous;
+                                    progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100));
+                                } catch { }
 
                                 i++;
                                 downloadSpeed /= 1000000;
