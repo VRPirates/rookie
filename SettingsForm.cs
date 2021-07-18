@@ -88,8 +88,36 @@ namespace AndroidSideloader
             else
                 MessageBox.Show("No crashlog found!");
         }
+        public void button1_click(object sender, EventArgs e)
+        {
 
+            if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
+                File.Delete($"{Properties.Settings.Default.CurrentLogTitle}");
+            if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
+                File.Delete($"{Environment.CurrentDirectory}\\debuglog.txt");
+            if (!File.Exists(Properties.Settings.Default.CurrentLogTitle))
+            {
+                Random r = new Random();
+                int x = r.Next(6806);
+                int y = r.Next(6806);
+                if (File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                {
+                    string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
 
+                    if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                        File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
+                    string randomnoun = lines[new Random(x).Next(lines.Length)];
+                    string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                    Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
+                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
+                    Properties.Settings.Default.Save();
+                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace($".txt", "");
+                    Properties.Settings.Default.Save();
+                    debuglogID.Text = "DEBUGLOG ID: " + Properties.Settings.Default.CurrentLogName;
+                }
+            }
+
+        }
 
 
 

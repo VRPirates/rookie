@@ -54,6 +54,7 @@ namespace AndroidSideloader
                     string randomnoun = lines[new Random(x).Next(lines.Length)];
                     string randomnoun2 = lines[new Random(y).Next(lines.Length)];
                     Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
+                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
                     Properties.Settings.Default.Save();
                 }
             }
@@ -1101,7 +1102,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HFP Thanks to: Roma/Rookie, Pmow, Flow, Kaladin, and the mod staff!";
+ - HFP Thanks to: Roma/Rookie, Pmow, Flow, Sam Hoque, Kaladin, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
