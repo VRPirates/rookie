@@ -14,6 +14,8 @@ namespace AndroidSideloader
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
+            if (File.Exists($"{Environment.CurrentDirectory}\\{Properties.Settings.Default.CurrentCrashName}.txt"))
+                textBox1.Text = Properties.Settings.Default.CurrentCrashName;
             this.CenterToParent();
             if (!Properties.Settings.Default.CurrentLogName.Equals(null))
             {
@@ -27,8 +29,9 @@ namespace AndroidSideloader
             }
 
 
-            debuglogID.Text = "DEBUGLOG ID: " + Properties.Settings.Default.CurrentLogName;
-
+            debuglogID.Text = "This is your DebugLogID. Click on your DebugLogID to copy it to your clipboard.";
+            DebugID.Text = Properties.Settings.Default.CurrentLogName;
+            textBox1.Text = Properties.Settings.Default.CurrentCrashName;
             intSettings();
             intToolTips();
         }
@@ -67,10 +70,10 @@ namespace AndroidSideloader
         {
             if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
             {
-                RCLONE.runRcloneCommand($"copy \"{Environment.CurrentDirectory}\\{Properties.Settings.Default.CurrentLogTitle}\" RSL-debuglog: --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
+                RCLONE.runRcloneCommand($"copy \"{Environment.CurrentDirectory}\\{Properties.Settings.Default.CurrentLogName}.txt\" RSL-debuglogs:DebugLogs");
 
-                MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID to the Mods\n\nDebugLog ID - {Properties.Settings.Default.CurrentLogName}");
-
+                MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
+                Clipboard.SetText(DebugID.Text);
             }
         }
 
@@ -112,10 +115,16 @@ namespace AndroidSideloader
                     Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
                     Properties.Settings.Default.Save();
                     Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace($".txt", "");
+                    DebugID.Text = Properties.Settings.Default.CurrentLogName;
                     Properties.Settings.Default.Save();
-                    debuglogID.Text = "DEBUGLOG ID: " + Properties.Settings.Default.CurrentLogName;
+                    
                 }
+                this.Close();
             }
+
+            DebugID.Text = Properties.Settings.Default.CurrentLogName;
+            SettingsForm Form = new SettingsForm();
+            Form.Show();
 
         }
 
@@ -201,6 +210,18 @@ namespace AndroidSideloader
                 return true;
             }
             return base.ProcessDialogKey(keyData);
+        }
+
+        private void DebugID_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(DebugID.Text);
+            MessageBox.Show("DebugLogID copied to clipboard! Paste it to a moderator/helper for assistance!");
+        }
+
+        private void textBox1_Click(object sender, EventArgs e)
+        {
+            Clipboard.SetText(textBox1.Text);
+            MessageBox.Show("CrashLogID copied to clipboard! Paste it to a moderator/helper for assistance!");
         }
     }
 }

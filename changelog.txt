@@ -1,3 +1,35 @@
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+RSL 2.3
+
++ Added UniqueID naming system and LOG uupload options for DebugLog and CrashLogs to help fix user problems much faster and systematically.
+NOTE: You must Download+Install at least one game game to update the remote config before tyrying to submit any Logs!
+
+= Fixed MAJOR obb copy bug. 
+IMPORTANT: Please Mount your Quest and check your /sdcard/android/obb folder for any folders that aren't formatted a website like this: com.blah.blah, if you have some there, delete them they are not supposed to be there.
+
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD0uooACgkQx/Rql1Vo
+czcQig/6AkstnLYRNJBToM+cKF9bA/1Fu/HLPVahRYIgix10JKka1Lq+jbe/wQm+
+taa29k7e4YQWwWQJqO0exrK9oaXX8kavVcB/mRG9OR0Bn4xWAdC6GwKA4SKX9rog
+xdEh+zEuaOa2AsPQwjwxrFma9aYOtkIYpCcKTukZNrmmkIL71hKJJLD/dnhj7HLR
+VvMjdrASrMOO19apDMcSaceEbJ0leDbLTj6nrLxb9dNbrBUcC+lGJ8ZXrrwd1pai
+um0uHMXboYbZ7KXMzgXX9lRjt5Csl0XkOPLmmhoGSolazfmdFvswgQ4bouq2SwYw
+Fme0hQlyZjr6wmnOFI16ZKDRgTl6tnMch+oAeU9kf6NxMqKFiFDKPp7EEeNBfMKk
+olyWS4D16UYEE7e+R9xA2rD+WwyrZsv5J5OghgIXjcfuHY8nXzSITlgvt+igOt3Q
+OWC8AHI5L/PgYwv/Z6vIDjEcPbMvsVpEpvE2KL8KIA1+2JAkSNxGpdv1h2pxixSr
+sqXeMASTfKBVIZu5mNsWSG/MHYFk7/rgEpWnTjF8Dmw0ZHxPd9OMOu8jZ3EH0gBz
+lYLAcZcpSC8itMN1hxdluwYT9MvXqJ5+NBEYdCUy1rhHOuoad1cnkizqgiHuOVqw
+ZF9xcPCZdA+5HhEqASlt60+kFQ3Z53j68kOsCLNDU2cwWF+rxO4=
+=L7zi
+-----END PGP SIGNATURE-----
+
+
+
 2.2.1
 Turned bold font off.
 -----BEGIN PGP SIGNED MESSAGE-----
@@ -865,7 +897,12 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
  + Disk space label and check
  + Checks game size before download
  = Download and install game button outputs adb log now
- - Launch package name button and textbox
+ - Launch package name button and 
+
+
+
+
+
 
 1.5
  + Added ETA, based on CURRENT DOWNLOAD SPEED NOT DELTA OF IT

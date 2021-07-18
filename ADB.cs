@@ -421,11 +421,7 @@ namespace AndroidSideloader
             WakeDevice();
             if (Path.GetDirectoryName(path).Contains(".") && !Path.GetDirectoryName(path).Contains("_data") || path.Contains("."))
             {
-                var ext = System.IO.Path.GetExtension(path);
-                if (ext == String.Empty)
-                    return RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"");
-                else
-                    return RunAdbCommandToString($"push \"{Path.GetDirectoryName(path)}\" /sdcard/Android/obb");
+             return RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"");
             }
             return new ProcessOutput();
         }

@@ -40,13 +40,22 @@ namespace AndroidSideloader
 
         {
             InitializeComponent();
+
             if (!File.Exists(Properties.Settings.Default.CurrentLogTitle))
             {
-                Random r = new Random();
-                int x = r.Next(6806);
-                int y = r.Next(6806);
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+
+                string[] RookieDirFiles = System.IO.Directory.GetFiles($"{Properties.Settings.Default.MainDir}");
+
+                // Copy the files and overwrite destination files if they already exist.
+                foreach (string s in RookieDirFiles)
                 {
+                    if (s.EndsWith(".txt") || s.Contains("debuglog.txt"))
+                        File.Delete(s);
+
+                    Random r = new Random();
+                    int x = r.Next(6806);
+                    int y = r.Next(6806);
+
                     string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
 
                     if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
@@ -56,8 +65,18 @@ namespace AndroidSideloader
                     Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
                     Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
                     Properties.Settings.Default.Save();
+
+
                 }
+
             }
+            else
+            {
+                Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
+                Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(".txt", "");
+                Properties.Settings.Default.Save();
+            }
+
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
@@ -118,11 +137,44 @@ namespace AndroidSideloader
             Properties.Settings.Default.Save();
             if (File.Exists(Sideloader.CrashLogPath))
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPlease report issue @ https://github.com/nerdunit/androidsideloader/issues + send the crashlog to a mod or dev.\n\n(Crashlog.txt is located here: {Path.GetFullPath(Sideloader.CrashLogPath)})\n\nIf you've already sent it press YES to delete it and prevent this message. Press NO if you'd still like to send it.", "Crash Detected", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                    File.Delete(Sideloader.CrashLogPath);
-                else
-                    Process.Start("explorer.exe", Properties.Settings.Default.MainDir);
+                DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPress OK to send your crashlog.", "Crash Detected", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.OK)
+                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt"))
+                    {
+                        Random r = new Random();
+                        int x = r.Next(6806);
+                        int y = r.Next(6806);
+
+                        string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
+
+                        if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                            File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
+                        string randomnoun = lines[new Random(x).Next(lines.Length)];
+                        string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                        string combined = randomnoun + "-" + randomnoun2 + ".txt";
+
+                        System.IO.File.Move("crashlog.txt", combined);
+
+                        Properties.Settings.Default.CurrentCrashName = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
+                        Properties.Settings.Default.Save();
+                        Clipboard.SetText(combined);
+                        MessageBox.Show("Your Crash Log ID is:\n\n" + combined + "\n\nThe file will now be uploaded and your CrashLog ID has been automatically copied to your clipboard. Please post it to a mod for assistance.\n\nNote: You can always find your most recent Crash Log ID in the Settings menu.");
+                        RCLONE.runRcloneCommand($"copy \"{Environment.CurrentDirectory}\\{combined}.txt\" RSL-debuglogs:CrashLogs");
+                        Properties.Settings.Default.CurrentCrashName = combined.Replace(".txt", "");
+                        Properties.Settings.Default.Save();
+                        File.Delete(combined);
+
+
+
+                    }
+                    else
+                    {
+                        Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
+                        Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(".txt", "");
+                        Properties.Settings.Default.Save();
+                    }
+                File.Delete(Sideloader.CrashLogPath);
+
             }
             CheckForInternet();
 
