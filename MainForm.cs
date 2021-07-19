@@ -51,23 +51,23 @@ namespace AndroidSideloader
                 {
                     if (s.EndsWith(".txt") || s.Contains("debuglog.txt"))
                         File.Delete(s);
-
-                    Random r = new Random();
-                    int x = r.Next(6806);
-                    int y = r.Next(6806);
-
-                    string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
-
-                    if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
-                        File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
-                    string randomnoun = lines[new Random(x).Next(lines.Length)];
-                    string randomnoun2 = lines[new Random(y).Next(lines.Length)];
-                    Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
-                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
-                    Properties.Settings.Default.Save();
-
-
                 }
+                Random r = new Random();
+                int x = r.Next(6806);
+                int y = r.Next(6806);
+
+                string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
+
+                if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                    File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
+                string randomnoun = lines[new Random(x).Next(lines.Length)];
+                string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
+                Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
+                Properties.Settings.Default.Save();
+
+
+
 
             }
             else
@@ -139,8 +139,8 @@ namespace AndroidSideloader
             {
                 DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPress OK to send your crashlog.", "Crash Detected", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.OK)
-                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt"))
-                    {
+                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt") && File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
+                        {
                         Random r = new Random();
                         int x = r.Next(6806);
                         int y = r.Next(6806);
