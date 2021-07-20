@@ -107,6 +107,7 @@ namespace AndroidSideloader
                 FOVy.Text = Properties.Settings.Default.QUy;
                 FOVx.Text = Properties.Settings.Default.QUx;
                 QURfrRt.SelectedValue = Properties.Settings.Default.QUhz;
+                Properties.Settings.Default.QUturnedon = true;
             }
             else if (!QUon.Checked)
             {
@@ -124,9 +125,10 @@ namespace AndroidSideloader
                 label9.Visible = false;
                 label10.Visible = false;
                 deleteButton.Visible = false;
-                
+                Properties.Settings.Default.QUturnedon = false;
                 MessageBox.Show("Ok, Deleted your custom settings file.\nIf you would like to re-enable return here and apply settings again");
-                File.Delete($"{Properties.Settings.Default.MainDir}\\Config.Json");
+                File.Delete($"{Environment.CurrentDirectory}\\Config.Json");
+                File.Delete($"{Environment.CurrentDirectory}\\delete_settings");
             }
 
         }
@@ -146,7 +148,7 @@ namespace AndroidSideloader
             MessageBox.Show("OK, any -QU packages installed will have these settings applied!\nTo delete settings: goto main app window, select a game with top menu, and click \"Remove QU Setting\"");
             if (QUon.Checked)
             {
-
+                Properties.Settings.Default.QUturnedon = true;
                 Random r = new Random();
 
                 int x = r.Next(999999999);
@@ -169,6 +171,10 @@ namespace AndroidSideloader
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\delete_settings", "");
                 string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\config.json", boff);
+            }
+            else
+            {
+                Properties.Settings.Default.QUturnedon = false;
             }
             
 

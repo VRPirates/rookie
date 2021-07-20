@@ -550,5 +550,17 @@ namespace AndroidSideloader.Properties {
                 this["CurrentCrashName"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool QUturnedon {
+            get {
+                return ((bool)(this["QUturnedon"]));
+            }
+            set {
+                this["QUturnedon"] = value;
+            }
+        }
     }
 }

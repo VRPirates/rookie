@@ -210,6 +210,10 @@ namespace AndroidSideloader
 
                     }
                 }
+                else
+                {
+                    File.Delete($"{Environment.CurrentDirectory}\\crashlog.txt");
+                }
             }
         }
 

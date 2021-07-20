@@ -379,13 +379,15 @@ namespace AndroidSideloader
                 }
                 ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             }
-            string gamenameforQU = Sideloader.PackageNametoGameName(packagename); 
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\Config.Json") && gamenameforQU.Contains("-QU") || path.Contains("-QU"))
+            string gamenameforQU = Sideloader.PackageNametoGameName(packagename);
+            if (Properties.Settings.Default.QUturnedon)
             {
-                string gameName = packagename;
-                packagename = Sideloader.gameNameToPackageName(gameName);
+                if (gamenameforQU.Contains("-QU") || path.Contains("-QU"))
+                {
+                    string gameName = packagename;
+                    packagename = Sideloader.gameNameToPackageName(gameName);
 
-                Program.form.ChangeTitle("Pushing Custom QU S3 Config.JSON.");
+                    Program.form.ChangeTitle("Pushing Custom QU S3 Config.JSON.");
                     if (!Directory.Exists($"/sdcard/android/data/{packagename}"))
                         RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
                     if (!Directory.Exists($"/sdcard/android/data/{packagename}/private"))
@@ -410,8 +412,10 @@ namespace AndroidSideloader
                     File.WriteAllText($"{Properties.Settings.Default.MainDir}\\delete_settings", blank);
                     ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
                     ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
+                }
+            }
             
-        }
+        
             Program.form.ChangeTitle("");
             return ret;
         }
