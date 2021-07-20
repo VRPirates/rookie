@@ -17,7 +17,7 @@ namespace AndroidSideloader
                 string newline = "\n";
                 if (text.Length > 40 && text.Contains("\n"))
                     newline += "\n\n";
-                try { File.AppendAllText(Properties.Settings.Default.CurrentLogPath, time + text + newline); } catch { }
+                try {File.AppendAllText(Properties.Settings.Default.CurrentLogPath, time + text + newline); } catch { }
                 return ret;
             }
             return ret;

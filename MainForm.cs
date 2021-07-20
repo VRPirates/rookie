@@ -41,7 +41,35 @@ namespace AndroidSideloader
         {
             InitializeComponent();
 
+            if (!File.Exists(Properties.Settings.Default.CurrentLogPath))
+            {
 
+                if (File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
+                {
+                    string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
+                    Random r = new Random();
+                    int x = r.Next(6806);
+                    int y = r.Next(6806);
+
+
+                    string randomnoun = lines[new Random(x).Next(lines.Length)];
+                    string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                    string combined = randomnoun + "-" + randomnoun2;
+                    Properties.Settings.Default.CurrentLogPath = Environment.CurrentDirectory + "\\" + combined + ".txt";
+                    Properties.Settings.Default.CurrentLogName = combined;
+                    Properties.Settings.Default.Save();
+                    if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
+                        System.IO.File.Move("debuglog.txt", combined + ".txt");
+                    Properties.Settings.Default.Save();
+                }
+                else
+                {
+                    MessageBox.Show("Cannot generate debug log until RSL is done syncing with the server. Once RSL has fully loaded please reset your DebugLog in Settings.");
+                    Properties.Settings.Default.CurrentLogPath = $"{Environment.CurrentDirectory}\\debuglog.txt";
+                }
+
+            }
+          
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
@@ -113,6 +141,7 @@ namespace AndroidSideloader
                 Directory.CreateDirectory(BackupFolder);
 
             if (Directory.Exists(Sideloader.TempFolder))
+
             {
                 Directory.Delete(Sideloader.TempFolder, true);
                 Directory.CreateDirectory(Sideloader.TempFolder);
@@ -236,29 +265,7 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
         
-            if (!File.Exists(Properties.Settings.Default.CurrentLogPath))
-            {
-
-                if (File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
-                {
-                    string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
-                    Random r = new Random();
-                    int x = r.Next(6806);
-                    int y = r.Next(6806);
-
-
-                    string randomnoun = lines[new Random(x).Next(lines.Length)];
-                    string randomnoun2 = lines[new Random(y).Next(lines.Length)];
-                    string combined = randomnoun + "-" + randomnoun2;
-                    Properties.Settings.Default.CurrentLogPath = Environment.CurrentDirectory + "\\" + combined + ".txt";
-                    Properties.Settings.Default.CurrentLogName = combined;
-                    Properties.Settings.Default.Save();
-                    if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
-                        System.IO.File.Move("debuglog.txt", combined + ".txt");
-                    Properties.Settings.Default.Save();
-                }
-
-            }
+           
 
         }
 
