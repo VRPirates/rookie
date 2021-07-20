@@ -100,47 +100,7 @@ namespace AndroidSideloader
             ADB.RunAdbCommandToString("kill-server");
             Properties.Settings.Default.ADBPath = adbFile;
             Properties.Settings.Default.Save();
-            if (File.Exists(Sideloader.CrashLogPath))
-            {
-                DialogResult dialogResult = FlexibleMessageBox.Show(this, $"Sideloader crashed during your last use.\nPress OK to send your crashlog.", "Crash Detected", MessageBoxButtons.OKCancel);
-                if (dialogResult == DialogResult.OK)
-                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt") && File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
-                        {
-                        Random r = new Random();
-                        int x = r.Next(6806);
-                        int y = r.Next(6806);
-
-                        string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
-
-                        if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
-                            File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
-                        string randomnoun = lines[new Random(x).Next(lines.Length)];
-                        string randomnoun2 = lines[new Random(y).Next(lines.Length)];
-                        string combined = randomnoun + "-" + randomnoun2 + ".txt";
-
-                        System.IO.File.Move("crashlog.txt", combined);
-
-                        Properties.Settings.Default.CurrentCrashName = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
-                        Properties.Settings.Default.Save();
-                        Clipboard.SetText(combined);
-                        MessageBox.Show("Your Crash Log ID is:\n\n" + combined + "\n\nThe file will now be uploaded and your CrashLog ID has been automatically copied to your clipboard. Please post it to a mod for assistance.\n\nNote: You can always find your most recent Crash Log ID in the Settings menu.");
-                        RCLONE.runRcloneCommand($"copy \"{Environment.CurrentDirectory}\\{combined}\" RSL-debuglogs:CrashLogs");
-                        Properties.Settings.Default.CurrentCrashName = combined.Replace(".txt", "");
-                        Properties.Settings.Default.Save();
-                        File.Delete(combined);
-
-
-
-                    }
-                    else
-                    {
-                        Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
-                        Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(".txt", "");
-                        Properties.Settings.Default.Save();
-                    }
-                File.Delete(Sideloader.CrashLogPath);
-
-            }
+           
             CheckForInternet();
 
             if (HasInternet == true)
@@ -159,18 +119,11 @@ namespace AndroidSideloader
             }
 
             //Delete the Debug file if it is more than 5MB
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\{Properties.Settings.Default.CurrentLogTitle}"))
+            if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
             {
-                long length = new System.IO.FileInfo($"{Properties.Settings.Default.MainDir}\\{ Properties.Settings.Default.CurrentLogTitle}").Length;
-                if (length > 5000000)
-                {
-                    string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes2\\nouns.txt");
-                    string randomnoun = lines[new Random().Next(lines.Length)];
-                    string randomnoun2 = lines[new Random().Next(lines.Length)];
-                    Properties.Settings.Default.CurrentLogTitle = randomnoun + "-" + randomnoun2;
-                    Properties.Settings.Default.Save();
-                }
-                File.Delete($"{Properties.Settings.Default.MainDir}\\{ Properties.Settings.Default.CurrentLogTitle}");
+                long length = new System.IO.FileInfo(Properties.Settings.Default.CurrentLogPath).Length;
+                if (length > 5000000)  
+                File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
             }
 
             RCLONE.Init();
@@ -199,6 +152,36 @@ namespace AndroidSideloader
 
             }
             catch { }
+            if (File.Exists("crashlog.txt"))
+            {
+                DialogResult dialogResult = FlexibleMessageBox.Show($"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.OK)
+                {
+                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt") && File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
+                    {
+                        Random r = new Random();
+                        int x = r.Next(6806);
+                        int y = r.Next(6806);
+
+                        string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
+                        string randomnoun = lines[new Random(x).Next(lines.Length)];
+                        string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                        string combined = randomnoun + "-" + randomnoun2;
+
+                        System.IO.File.Move("crashlog.txt", $"{Environment.CurrentDirectory}\\{combined}.txt");
+                        Properties.Settings.Default.CurrentCrashPath = $"{Environment.CurrentDirectory}\\{combined}.txt";
+                        Properties.Settings.Default.CurrentCrashName = combined;
+                        Properties.Settings.Default.Save();
+
+                            Clipboard.SetText(combined);
+                            RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
+                            MessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
+                            Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
+
+
+                    }
+                }
+            }
         }
 
 
@@ -252,24 +235,12 @@ namespace AndroidSideloader
 
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
-
-            if (!File.Exists(Properties.Settings.Default.CurrentLogTitle))
+        
+            if (!File.Exists(Properties.Settings.Default.CurrentLogPath))
             {
-                if (File.Exists(Environment.CurrentDirectory + "\\nouns" + "nouns.txt"))
+
+                if (File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
                 {
-
-                    string[] RookieDirFiles = System.IO.Directory.GetFiles($"{Properties.Settings.Default.MainDir}");
-
-                    // Copy the files and overwrite destination files if they already exist.
-                    foreach (string s in RookieDirFiles)
-                    {
-                        if (s.EndsWith(".txt") || s.Contains("debuglog.txt"))
-                            File.Delete(s);
-                    }
-
-                    if (!File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
-                        File.WriteAllText("NOUNS.TXT MISSING", $"{Environment.CurrentDirectory}\\notes\\nouns.txt");
-
                     string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
                     Random r = new Random();
                     int x = r.Next(6806);
@@ -278,20 +249,17 @@ namespace AndroidSideloader
 
                     string randomnoun = lines[new Random(x).Next(lines.Length)];
                     string randomnoun2 = lines[new Random(y).Next(lines.Length)];
-                    Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
-                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
+                    string combined = randomnoun + "-" + randomnoun2;
+                    Properties.Settings.Default.CurrentLogPath = Environment.CurrentDirectory + "\\" + combined + ".txt";
+                    Properties.Settings.Default.CurrentLogName = combined;
                     Properties.Settings.Default.Save();
-
-
+                    if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
+                        System.IO.File.Move("debuglog.txt", combined + ".txt");
+                    Properties.Settings.Default.Save();
                 }
 
             }
-            else
-            {
-                Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
-                Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(".txt", "");
-                Properties.Settings.Default.Save();
-            }
+
         }
 
 
@@ -1825,27 +1793,24 @@ without him none of this would be possible
 
             }
             if (keyData == (Keys.F11))
-                if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
+                if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
                 {
-                    if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
-                        if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
-                            System.IO.File.Copy($"{Properties.Settings.Default.CurrentLogTitle}", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{Properties.Settings.Default.CurrentLogName}.txt", true);
-                    MessageBox.Show($"{Properties.Settings.Default.CurrentLogName}.txt copied to your desktop!");
-
+                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" RSL-debuglogs:DebugLogs");
+                    MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
+                    Clipboard.SetText(Properties.Settings.Default.CurrentLogName);
                 }
 
 
 
             if (keyData == (Keys.F12))
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\crashlog.txt"))
+                if (File.Exists($"{Properties.Settings.Default.CurrentCrashPath}"))
                 {
-                    if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt"))
-                        File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt");
-                    System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\crashlog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt", true);
-                    MessageBox.Show("crashlog.txt copied to your desktop!");
+                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
+                    MessageBox.Show($"Your CrashLog has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
+                    Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
                 }
-                else
-                    MessageBox.Show("No CrashLog found in Rookie directory.");
+            else
+            MessageBox.Show("No CrashLog found in Rookie directory.");
 
             return base.ProcessCmdKey(ref msg, keyData);
 

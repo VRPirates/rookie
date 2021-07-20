@@ -14,24 +14,12 @@ namespace AndroidSideloader
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            if (File.Exists($"{Environment.CurrentDirectory}\\{Properties.Settings.Default.CurrentCrashName}.txt"))
-                textBox1.Text = Properties.Settings.Default.CurrentCrashName;
             this.CenterToParent();
-            if (!Properties.Settings.Default.CurrentLogName.Equals(null))
-            {
-                if (!Properties.Settings.Default.CurrentLogTitle.Equals(null))
-                {
-                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogTitle.Replace($"{Environment.CurrentDirectory}\\", "");
-                    Properties.Settings.Default.Save();
-                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace($".txt", "");
-                    Properties.Settings.Default.Save();
-                }
-            }
-
-
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogName))
+                textBox1.Text = Properties.Settings.Default.CurrentCrashName;
+            if (!string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
+                    DebugID.Text = Properties.Settings.Default.CurrentLogName;
             debuglogID.Text = "This is your DebugLogID. Click on your DebugLogID to copy it to your clipboard.";
-            DebugID.Text = Properties.Settings.Default.CurrentLogName;
-            textBox1.Text = Properties.Settings.Default.CurrentCrashName;
             intSettings();
             intToolTips();
         }
@@ -68,63 +56,41 @@ namespace AndroidSideloader
 
         public void DebugLogCopy_click(object sender, EventArgs e)
         {
-            if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
+            if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
             {
-                RCLONE.runRcloneCommand($"copy \"{Environment.CurrentDirectory}\\{Properties.Settings.Default.CurrentLogName}.txt\" RSL-debuglogs:DebugLogs");
+                RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" RSL-debuglogs:DebugLogs/");
 
                 MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
-                Clipboard.SetText(DebugID.Text);
             }
         }
 
-        public void CrashLogCopy_click(object sender, EventArgs e)
-        {
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\crashlog.txt"))
-            {
-                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt"))
-                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt");
-                System.IO.File.Copy($"{Properties.Settings.Default.MainDir}\\crashlog.txt", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\crashlog.txt", true);
-                MessageBox.Show("crashlog.txt copied to your desktop!");
 
-
-            }
-            else
-                MessageBox.Show("No crashlog found!");
-        }
         public void button1_click(object sender, EventArgs e)
         {
 
-            if (File.Exists($"{Properties.Settings.Default.CurrentLogTitle}"))
-                File.Delete($"{Properties.Settings.Default.CurrentLogTitle}");
+            if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
+                File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
             if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
                 File.Delete($"{Environment.CurrentDirectory}\\debuglog.txt");
-            if (!File.Exists(Properties.Settings.Default.CurrentLogTitle))
+
+
+            if (File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
             {
+                string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
                 Random r = new Random();
                 int x = r.Next(6806);
                 int y = r.Next(6806);
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
-                {
-                    string[] lines = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
-
-                    if (!File.Exists($"{Properties.Settings.Default.MainDir}\\notes\\nouns.txt"))
-                        File.WriteAllText("NOUNS.TXT MISSING", $"{ Properties.Settings.Default.MainDir}\\notes\\nouns.txt");
-                    string randomnoun = lines[new Random(x).Next(lines.Length)];
-                    string randomnoun2 = lines[new Random(y).Next(lines.Length)];
-                    Properties.Settings.Default.CurrentLogTitle = Properties.Settings.Default.MainDir + "\\" + randomnoun + "-" + randomnoun2 + ".txt";
-                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace(Properties.Settings.Default.MainDir, "");
-                    Properties.Settings.Default.Save();
-                    Properties.Settings.Default.CurrentLogName = Properties.Settings.Default.CurrentLogName.Replace($".txt", "");
-                    DebugID.Text = Properties.Settings.Default.CurrentLogName;
-                    Properties.Settings.Default.Save();
-                    
-                }
+                string randomnoun = lines[new Random(x).Next(lines.Length)];
+                string randomnoun2 = lines[new Random(y).Next(lines.Length)];
+                string combined = randomnoun + "-" + randomnoun2;
+                Properties.Settings.Default.CurrentLogPath = Environment.CurrentDirectory + "\\" + combined + ".txt";
+                Properties.Settings.Default.CurrentLogName = combined;
+                Properties.Settings.Default.Save();
+                DebugID.Text = combined;
                 this.Close();
+                SettingsForm Form = new SettingsForm();
+                Form.Show();
             }
-
-            DebugID.Text = Properties.Settings.Default.CurrentLogName;
-            SettingsForm Form = new SettingsForm();
-            Form.Show();
 
         }
 
@@ -214,14 +180,18 @@ namespace AndroidSideloader
 
         private void DebugID_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(DebugID.Text);
+            if (File.Exists(Environment.CurrentDirectory + "\\" + Properties.Settings.Default.CurrentLogName + ".txt"))
+                Clipboard.SetText(DebugID.Text);
             MessageBox.Show("DebugLogID copied to clipboard! Paste it to a moderator/helper for assistance!");
         }
 
         private void textBox1_Click(object sender, EventArgs e)
         {
-            Clipboard.SetText(textBox1.Text);
-            MessageBox.Show("CrashLogID copied to clipboard! Paste it to a moderator/helper for assistance!");
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.CurrentCrashName))
+            {
+                Clipboard.SetText(textBox1.Text);
+                MessageBox.Show("CrashLogID copied to clipboard! Paste it to a moderator/helper for assistance!");
+            }
         }
     }
 }

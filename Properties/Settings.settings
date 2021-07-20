@@ -122,13 +122,13 @@
     <Setting Name="DownUpHeld" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="CurrentLogTitle" Type="System.String" Scope="User">
+    <Setting Name="CurrentLogPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="CurrentLogName" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
-    <Setting Name="CurrentCrashTitle" Type="System.String" Scope="User">
+    <Setting Name="CurrentCrashPath" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="CurrentCrashName" Type="System.String" Scope="User">

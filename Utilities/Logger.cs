@@ -6,7 +6,7 @@ namespace AndroidSideloader
 {
     class Logger
     {
-       public string logfile = Properties.Settings.Default.CurrentLogTitle;
+       public string logfile = Properties.Settings.Default.CurrentLogPath;
         public static bool Log(string text, bool ret = true)
         {
    
@@ -17,7 +17,7 @@ namespace AndroidSideloader
                 string newline = "\n";
                 if (text.Length > 40 && text.Contains("\n"))
                     newline += "\n\n";
-                try { File.AppendAllText(Properties.Settings.Default.CurrentLogTitle, time + text + newline); } catch { }
+                try { File.AppendAllText(Properties.Settings.Default.CurrentLogPath, time + text + newline); } catch { }
                 return ret;
             }
             return ret;

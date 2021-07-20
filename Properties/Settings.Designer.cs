@@ -506,12 +506,12 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentLogTitle {
+        public string CurrentLogPath {
             get {
-                return ((string)(this["CurrentLogTitle"]));
+                return ((string)(this["CurrentLogPath"]));
             }
             set {
-                this["CurrentLogTitle"] = value;
+                this["CurrentLogPath"] = value;
             }
         }
         
@@ -530,12 +530,12 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string CurrentCrashTitle {
+        public string CurrentCrashPath {
             get {
-                return ((string)(this["CurrentCrashTitle"]));
+                return ((string)(this["CurrentCrashPath"]));
             }
             set {
-                this["CurrentCrashTitle"] = value;
+                this["CurrentCrashPath"] = value;
             }
         }
         
