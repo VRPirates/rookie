@@ -41,7 +41,7 @@ namespace AndroidSideloader
         {
             InitializeComponent();
 
-            if (!File.Exists(Properties.Settings.Default.CurrentLogPath))
+            if (String.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
 
                 if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))

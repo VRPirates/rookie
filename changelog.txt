@@ -1,6 +1,31 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.4.5
+
+= fixed issue where removing userfolder from adb command changes broke install.txt
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD4fqgACgkQx/Rql1Vo
+czd4+g/9ErNeHrdTMIMjCaaQ10ywDyWuoRSMeIik7p+ihaqv6iVDCEeyctjRQ6xF
+eSS52USKMq+4bwnxNHDJsgtALzcKcvxVfVnyPh37t+9CRogNvGx3xWF5JVSBLbSz
+TUpnlhKYkmgwxRLQ+vEnH2GOS4eJb/uuQJA3kSMJeXuocTUhFwQ3QRTdVJAv7U8H
+RuB0qBwCXjU/0MmJqjzRm9nlIuln8zAFGGuGid+dC+hlcoGxgNeADB/7eUma3S+N
+p05E+SCDQKtKDjktiiOXHFAuu9+GR9zlfN6yYoampwEqRYukWje6iMol2ht5atQR
++QgcotrurrZDk/uBrfD2/Q4bhs9ugOCbXns59HHoC01+TyErDgpO3sr5RUSkaY/Y
+JSZ+3AaJPPqNMvrkK9usl1Uv2yNb66VIqQf6FYgt7+PAg5uFJVA1AxquwdisKtm3
+7jFdCri0afBcCd1wYwJg2uajg4xWZsu4KcOZTuJ6vrTi8BZOJQ9LIRU87c6gWhfu
+CdQqajGVpDN/dPEIraCoZwcdQTMJIfKYQEbUOWjavVkEpEA8evIoMpLS+zuqbLa/
+39Dj8DIuP1xv8ZdW/I18Sz21YFL2xZm52M3EKZ4xrDQygK9G70cn9M2o922ZzQHb
+VrxFSBWrhtz2XgrBajXtQy5+fdKAcT1lwUakSd5jBP5ZX//s30w=
+=hKFE
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.4.4
 
 = Updated logs to remove all instances of windows user folder for privacy purposes.

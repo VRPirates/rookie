@@ -87,11 +87,6 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
 
-            if (DeviceID.Length > 1)
-            {
-                command = $" -s {DeviceID} {command}";
-            }
-
             string logcmd = command;
             if (logcmd.Contains(Environment.CurrentDirectory))
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
@@ -144,11 +139,6 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
-
-            if (DeviceID.Length > 1)
-            {
-                command = $" -s {DeviceID} {command}";
-            }
 
             string logcmd = command;
             if (logcmd.Contains(Environment.CurrentDirectory))
