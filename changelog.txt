@@ -1,6 +1,31 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.4.3
+
+= Moved nouns.txt library to a more suitable location.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD4T5kACgkQx/Rql1Vo
+czd9Ew/+LvPnoSuNl3ynFRAjTs8Yo1r2FCY82UfWLLddYTc4waH4s2HZQkUyFBGo
+emkvZUa/TZuYGzNLAB4JpPDYYONyF2LmOx8z0Pwtp1+RoEJbGe7WsZa3oF+PQ2AU
++1+hE0u8RW546uaGdzyToX3N5JnPAA2MctG0+3X5J+k8C+CHWgMJyoDnoz62b2Qb
+gER2HZMBlrebJwSJto+tKeLRDk2FI4UmQDu2CQpvlwkQMwa98ORRrulaO4LOEH3I
+z5S6WyxlcF0Cy4dwD5PVsx4YTHn7Rjy9HHniMYe+vv7LQOz6w+DZZQv6x1BZ2xSF
+ZqS76T3x5XAVpcH2JX7gce7dTFVpft/P/C/vOVAa8E2pUp3stuUFoIyVoeWPwgvJ
+3wkJFeoG4umlLQZY934Mb6Hb2tu38xlcQd/xsO3aZRPUOZBuYMcbpf8V7qv7f+p+
+YDSXwI92ostB3RNkXlUy2onSWrXoLQF70lq3zaNcUeyQt6HILc80h1pXC6VWnITz
+RRH9ojt6CWLyzIXKgqdKWKVJJQ5GIR0YITk4kMyGqM/CP3pUPCUKPAVbWK4ajoGA
+1A2JBniQwYmCj+vkfQDpwkacK3zmYy/JRpTYdyj7BuOXjGnPpberjdd+jpgGBRCH
+IeOpD/kmWaKm5lH1KmEOPGe86bhpQstOba7EsiBM4/x6QpoqVOU=
+=yWnO
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.4HF
 
 = Fixed issues with debuglog and crashlog upload. Both can now be shared with moderation staff without issue.
@@ -20,10 +45,6 @@ ztaMHsXZhs1Ls7cVPXaxlAjwY2gAVHJMOn/5okc8qEFAzF4Qcfu6YXfYvWXzaeK0
 LhdoFfG5FLbk2cwKGVmMCPnjAAUJCGZCpmeMaSQscd73j3ezJ3c=
 =bnNu
 -----END PGP SIGNATURE-----
-
-
-
-
 
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
@@ -53,8 +74,6 @@ lYLAcZcpSC8itMN1hxdluwYT9MvXqJ5+NBEYdCUy1rhHOuoad1cnkizqgiHuOVqw
 ZF9xcPCZdA+5HhEqASlt60+kFQ3Z53j68kOsCLNDU2cwWF+rxO4=
 =L7zi
 -----END PGP SIGNATURE-----
-
-
 
 2.2.1
 Turned bold font off.

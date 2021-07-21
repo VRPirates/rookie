@@ -44,9 +44,9 @@ namespace AndroidSideloader
             if (!File.Exists(Properties.Settings.Default.CurrentLogPath))
             {
 
-                if (File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
+                if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))
                 {
-                    string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
+                    string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\nouns.txt");
                     Random r = new Random();
                     int x = r.Next(6806);
                     int y = r.Next(6806);
@@ -186,13 +186,13 @@ namespace AndroidSideloader
                 DialogResult dialogResult = FlexibleMessageBox.Show($"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.OK)
                 {
-                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt") && File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
+                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt") && File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))
                     {
                         Random r = new Random();
                         int x = r.Next(6806);
                         int y = r.Next(6806);
 
-                        string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
+                        string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\nouns.txt");
                         string randomnoun = lines[new Random(x).Next(lines.Length)];
                         string randomnoun2 = lines[new Random(y).Next(lines.Length)];
                         string combined = randomnoun + "-" + randomnoun2;
@@ -238,6 +238,7 @@ namespace AndroidSideloader
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
+                SideloaderRCLONE.UpdateNouns(currentRemote);
                 ChangeTitle("Initializing Games");
                 SideloaderRCLONE.initGames(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))

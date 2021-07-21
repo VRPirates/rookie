@@ -32,9 +32,15 @@ namespace AndroidSideloader
          */
         public static List<string[]> games = new List<string[]>();
 
+        public static string Nouns = Environment.CurrentDirectory + "\\nouns";
         public static string ThumbnailsFolder = Environment.CurrentDirectory + "\\thumbnails";
         public static string NotesFolder = Environment.CurrentDirectory + "\\notes";
 
+        public static void UpdateNouns(string remote)
+        {
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");  
+        }   
+        
         public static void UpdateGamePhotos(string remote)
         {
             RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");  

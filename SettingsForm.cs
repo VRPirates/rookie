@@ -74,9 +74,9 @@ namespace AndroidSideloader
                 File.Delete($"{Environment.CurrentDirectory}\\debuglog.txt");
 
 
-            if (File.Exists($"{Environment.CurrentDirectory}\\notes\\nouns.txt"))
+            if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))
             {
-                string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\notes\\nouns.txt");
+                string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\nouns.txt");
                 Random r = new Random();
                 int x = r.Next(6806);
                 int y = r.Next(6806);
