@@ -60,8 +60,12 @@ namespace AndroidSideloader
             //set rclonepw
             if (rclonepw.Length > 0)
                 command += " --ask-password=false";
-
-            Logger.Log($"Running Rclone command: {command}");
+            string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
+            if (logcmd.Contains($"\"{Properties.Settings.Default.CurrentLogPath}\""))
+                logcmd = logcmd.Replace($"\"{Properties.Settings.Default.CurrentLogPath}\"", $"\"{Properties.Settings.Default.CurrentLogName}\"");
+            if (logcmd.Contains(Environment.CurrentDirectory))
+                logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
+            Logger.Log($"Running Rclone command: {logcmd}");
 
             rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
             rclone.StartInfo.Arguments = command;

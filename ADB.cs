@@ -27,8 +27,12 @@ namespace AndroidSideloader
             }
             if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP")) 
             {
-                string loggedcommand = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "adb.exe");
-                Logger.Log($"Running command{loggedcommand}");
+
+                string logcmd = command;
+
+                if (logcmd.Contains(Environment.CurrentDirectory))
+                    logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
+                Logger.Log($"Running command: {logcmd}");
             }
             adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
@@ -82,11 +86,17 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
-            
 
+            if (DeviceID.Length > 1)
+            {
+                command = $" -s {DeviceID} {command}";
+            }
 
+            string logcmd = command;
+            if (logcmd.Contains(Environment.CurrentDirectory))
+                logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
+            Logger.Log($"Running command: {logcmd}");
 
-            Logger.Log($"Running command {command}");
             adb.StartInfo.FileName = "cmd.exe";
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
@@ -135,7 +145,15 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
 
-            Logger.Log($"Running command {command}");
+            if (DeviceID.Length > 1)
+            {
+                command = $" -s {DeviceID} {command}";
+            }
+
+            string logcmd = command;
+            if (logcmd.Contains(Environment.CurrentDirectory))
+                logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
+            Logger.Log($"Running command: {logcmd}");
             adb.StartInfo.FileName = @"C:\windows\system32\cmd.exe";
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
