@@ -1,6 +1,32 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.4.6
+
++ Added a colorblind mode for the update list. It can be found in the SETTINGS menu.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD7Q1UACgkQx/Rql1Vo
+czeuyw/9Grjaeaz0fpM1eq4luU2sKUGReCEjRzZlWv++KqJoLY5BxUZ7rkrrb5jD
+oZ5yK88er1lgsii1YBMBjr4ub7K7LEJ13KCagCUJX2wjG1FUGbGtiIdfFf+ryFky
+2+OfA3thCxmVCbRRHKzYQ7fks0rd1D62S4qQO/xFE1QbckPSFInLz6wno++WP4iT
+Ht7g4us8IKs51kGbjGx5EuA9suG5bDQrrx6QoUMORIEGMVJdoUX286KIUpS6iy1G
+nMS/kQePg45+2Y6GDDgCtfRDjqie4J2U3UpXaBQnYAr0tcW116Q54VB9d6aArmKu
+DfC/JnUCes3eN9Y/vxHXytoy7RLy+VRQiZw0C6deX4N+XrmPXSGsZboU/YMpFKsV
+/6q5EXc0SPDK409HSiFCi5GinIp8mnuGJnIRcwWFFxU9kYBMOjTBA2wHSEcneoZa
+8aDYd0fTLNyh/W/vwYnH989ihXWg+reHAyeGym+0u9TUqeWAwbGzyoYaLCri36pK
+Pp0pQGOQgt/+s+9evKtMt7YcvnadvdoA2FowVp71HlR23fZb9yLctRPI/cJd6U57
+3DBOiPJDb8U4pCo7xf3GZgluBRc/KMGqMysi4S3Hpez2yZ68gvGJh5F7f8OVyGHt
+CwVhODnbDlX5W8hYMF23K4B8zSaZpnVJQXYQS5SCzPagg/Pbt8E=
+=Glvg
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.4.5
 
 = fixed issue where removing userfolder from adb command changes broke install.txt

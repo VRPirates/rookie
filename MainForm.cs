@@ -238,8 +238,8 @@ namespace AndroidSideloader
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
-                SideloaderRCLONE.UpdateNouns(currentRemote);
                 ChangeTitle("Initializing Games");
+                SideloaderRCLONE.UpdateNouns(currentRemote);
                 SideloaderRCLONE.initGames(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
@@ -1022,6 +1022,9 @@ namespace AndroidSideloader
                 {
                     if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                     {
+                        if (Properties.Settings.Default.QblindOn)
+                            Game.BackColor = Color.FromArgb(0, 112, 138);
+                        else
                         Game.BackColor = Color.Green;
                         string InstalledVersionCode;
                         if (Sideloader.InstalledPackages.ContainsKey(packagename) && Sideloader.InstalledPackages[packagename] != "")
@@ -1045,6 +1048,9 @@ namespace AndroidSideloader
                             //Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
                             if (installedVersionInt < cloudVersionInt)
                             {
+                                if (Properties.Settings.Default.QblindOn)
+                                Game.BackColor = Color.FromArgb(120, 0, 0);     
+                                else
                                 Game.BackColor = Color.FromArgb(102, 77, 0);
                             }
                         }

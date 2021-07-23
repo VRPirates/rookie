@@ -260,6 +260,8 @@
   <ItemGroup>
     <Content Include="changelog.txt" />
     <Content Include="icon.ico" />
+    <Content Include="Resources\bluekey.png" />
+    <Content Include="Resources\redkey.png" />
     <None Include="Resources\greenkey.png" />
     <None Include="Resources\orangekey.png" />
     <None Include="Resources\SearchGlass.PNG" />

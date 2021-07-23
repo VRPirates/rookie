@@ -1026,6 +1026,9 @@
             // pictureBox3
             // 
             this.pictureBox3.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            if (Properties.Settings.Default.QblindOn)
+                this.pictureBox3.Image = global::AndroidSideloader.Properties.Resources.redkey;
+            else
             this.pictureBox3.Image = global::AndroidSideloader.Properties.Resources.orangekey;
             this.pictureBox3.Location = new System.Drawing.Point(803, 10);
             this.pictureBox3.Name = "pictureBox3";
@@ -1057,6 +1060,9 @@
             // pictureBox4
             // 
             this.pictureBox4.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            if (Properties.Settings.Default.QblindOn)
+                this.pictureBox4.Image = global::AndroidSideloader.Properties.Resources.bluekey;
+            else
             this.pictureBox4.Image = global::AndroidSideloader.Properties.Resources.greenkey;
             this.pictureBox4.Location = new System.Drawing.Point(803, 39);
             this.pictureBox4.Name = "pictureBox4";

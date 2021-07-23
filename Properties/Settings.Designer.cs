@@ -562,5 +562,17 @@ namespace AndroidSideloader.Properties {
                 this["QUturnedon"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool QblindOn {
+            get {
+                return ((bool)(this["QblindOn"]));
+            }
+            set {
+                this["QblindOn"] = value;
+            }
+        }
     }
 }
