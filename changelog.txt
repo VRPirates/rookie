@@ -1,9 +1,45 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+
+RSL 2.4.7
+
++ Added battery percentage to stats on bottom left.
+= Fixed using ENTER key to install option.
+= Fixed  using Enter to install from Quick Search.
+= Fixed install feed message when using Enter to Install.
+= All important message boxes will remain on top
+until user selects an option..
+= Settings form and Quest Options form will remain on top
+until closed.
+= Fixed changelog formatting so updater box isn't so wide.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD9N54ACgkQx/Rql1Vo
+czfz2g/+OEMxQBKrmWaeXpe4CD1jXs92P/JMU6DPBepNNiKtE+ltX1iG/I1Ft/04
+JzFLJqqQsVKP9HceZBkNie87C4YdTu5Z3LUEOS626IVlEx1t0cxXilsVeXWrFSSJ
+IyAgRbXZKQRVF+nhR0yXLUSjAQqlxLTuu9kxCXOHBPSqw+MmDCukUat9SoJUFpRO
++bteP/Y+ihUHHaBcD9AizJJpTzuCgKrKUtyNDPcXPIcOoosx459+tsG+mOAilEay
+UHMwQoe21//mJJSsaCPPNYOWkY/BV1JNA4dDE+eBoK02U+SXVyh50eO1LFlV1wDd
+0XL0O2npdVKjhszpWk2LuyErhaRB6EDMJvNvA8RgWHMF8gR20NPPM183ui79XRr1
+bPpAXWbNEVn1OOOcAD+wTwLB6BCc1ryuI4zTHejQufWLQdVMaWKxhREo7bqTWTh+
+4WPLZEC3JOy4uODb2tTJLz0qCBaxXNdr0usVxbO5OaGSKOBsJ2GsBlfBTNCr6If6
+tMMi2DXSTYAuIgESCqFo4cEz2YGEmOrIqQ7nx9tBhGV2bfnClBbbiYAmM15ifRHG
+QHmGhak7h/NFTawOGrS4BV2HfViBR1ef7FJ9v3T4chVJN+ED9tLpfMNKuTLOZ3at
+dwUOnA4jfDJL2g5YV8ebiAzPS75FSSrQ2wfcyYYyywTdlBc5K58=
+=0eX4
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.4.6
 
-+ Added a colorblind mode for the update list. It can be found in the SETTINGS menu.
++ Added a colorblind mode for the update list. It can be found 
+in the SETTINGS menu.
 
 HFP
 -----BEGIN PGP SIGNATURE-----
@@ -29,7 +65,8 @@ Hash: SHA256
 
 RSL 2.4.5
 
-= fixed issue where removing userfolder from adb command changes broke install.txt
+= fixed issue where removing userfolder from adb command changes
+broke install.txt
 
 HFP
 -----BEGIN PGP SIGNATURE-----
@@ -54,7 +91,8 @@ Hash: SHA256
 
 RSL 2.4.4
 
-= Updated logs to remove all instances of windows user folder for privacy purposes.
+= Updated logs to remove all instances of windows user folder 
+for privacy purposes.
 
 HFP
 -----BEGIN PGP SIGNATURE-----
@@ -104,7 +142,8 @@ Hash: SHA256
 
 RSL 2.4HF
 
-= Fixed issues with debuglog and crashlog upload. Both can now be shared with moderation staff without issue.
+= Fixed issues with debuglog and crashlog upload. Both can now be 
+shared with moderation staff without issue.
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD2W+cACgkQx/Rql1Vo
@@ -127,11 +166,16 @@ Hash: SHA256
 
 RSL 2.3
 
-+ Added UniqueID naming system and LOG uupload options for DebugLog and CrashLogs to help fix user problems much faster and systematically.
-NOTE: You must Download+Install at least one game game to update the remote config before tyrying to submit any Logs!
++ Added UniqueID naming system and LOG uupload options for DebugLog 
+and CrashLogs to help fix user problems much faster and systematically.
+NOTE: You must Download+Install at least one game game to update the 
+remote config before tyrying to submit any Logs!
 
 = Fixed MAJOR obb copy bug. 
-IMPORTANT: Please Mount your Quest and check your /sdcard/android/obb folder for any folders that aren't formatted a website like this: com.blah.blah, if you have some there, delete them they are not supposed to be there.
+IMPORTANT: Please Mount your Quest and check your /sdcard/android/obb 
+folder for any folders that aren't formatted a website like this:
+com.blah.blah, if you have some there, delete them they are not 
+supposed to be there.
 
 
 -----BEGIN PGP SIGNATURE-----
@@ -151,14 +195,13 @@ ZF9xcPCZdA+5HhEqASlt60+kFQ3Z53j68kOsCLNDU2cwWF+rxO4=
 =L7zi
 -----END PGP SIGNATURE-----
 
-2.2.1
-Turned bold font off.
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
 RSL 2.2
 
-+ Added custom naming scheme to Debug Log. Debug Log now uses 2 random nouns as its name when generated.
++ Added custom naming scheme to Debug Log. Debug Log now uses 2 random 
+nouns as its name when generated.
 + Added shortcut commands. Press F1 to see list of shortcuts.
 
   F1  = Shortcuts List
@@ -174,53 +217,16 @@ RSL 2.2
   CTRL + P  = Copy package name of selected game to Clipboard.
   CTRL + F4 = Restart program.
 
-+ Added ability to upload debug logs to remote server (the server should be updated to reflect this sometime this week!)
-= If Install.txt exists apk install and Obb copy will only be run from install.txt - this is to prevent double copy of obb files or double install of APKS.
-= Fixed issue where if user started DL+install on one title then quickly selected a different title in the games list it would download the newly selected item instead of the originally intended item.
-= Fixed issue that caused download progress bar to not work if multiple items were queued.
-= Fixed other obb copying issues.
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDzKesACgkQx/Rql1Vo
-czeiXQ/+OsH5CdnShheJR85/uIkVLGDf75Hkybj7k+5gV688imYwWbCRarudqa8k
-aVC5g69mdKD8rD8DzWjccpFwxvOSq5MRQMWB/Nl/M2142Rnr1M4WdP6xEmMq1qmQ
-X39T3tdpgxxKyDPIt4EX/iLT6qSHdB69qFtMeEoOsHmisqGDFDCHGs835VUUL9FU
-PaZ218Dd07r9/W9cJKX5EI/ihWZ5lv+0defBofQu2A8GCOXzuWIudLtcG5uYIJwO
-9frevYIKteuq+MmcXedgu3uWUb0CnQ+tEyShPYjTdrFdMJYgFrOzIIlogBWK5fm3
-cp8YSzeHJpBnD8qQar/W92WTTzvWd7I9vk7YB/Pdn6MIzzTJX540R2fu2rwsYBCG
-DciqA8+V5sDx5eRmrcUxrmxrsDMPlbpqos0R+yujCHyiLHzt1d/oEohZ/mNw24y4
-3MrjGyzlJqRZZFnaMLGNooLBrT9EeGcTXk/MgJjSO1XQjCVAWmrrsEHCXqcKwi8i
-IW5OMKld80wqWr79LRF6dPxjcuwRgVE8mNd6G6qedX5TXvqjHUEVymMLFFvhVQnQ
-QnOHX0HzWXF/64ghD6r3OR4pQ8C5xb7Z6tEwXX7soQVo610m7nJT1zaHm2m9HSJN
-AA1bdfK9SEKXl3KJT7SCEnQ/2ED6Qr/VBFXcJB/10Il/n8AdJ2o=
-=DFRR
------END PGP SIGNATURE-----
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-RSL 2.2
-
-+ Added custom naming scheme to Debug Log. Debug Log now uses 2 random nouns as its name when generated.
-+ Added shortcut commands. Press F1 to see list of shortcuts.
-
-  F1  = Shortcuts List
-  F2  = Search
-  F3  = Quest Options
-  F4  = Rookie Settings
-  F5  = Refresh Games List
-  F11 = Copy Debug log to Desktop.
-  F12 = Copy Crash Log to Desktop (if one exists).
- 
-  CTRL + R  = Run custom ADB command.
-  CTRL + F  = Search
-  CTRL + P  = Copy package name of selected game to Clipboard.
-  CTRL + F4 = Restart program.
-
-+ Added ability to upload debug logs to remote server (the server should be updated to reflect this sometime this week!)
-= If Install.txt exists apk install and Obb copy will only be run from install.txt - this is to prevent double copy of obb files or double install of APKS.
-= Fixed issue where if user started DL+install on one title then quickly selected a different title in the games list it would download the newly selected item instead of the originally intended item.
-= Fixed issue that caused download progress bar to not work if multiple items were queued.
++ Added ability to upload debug logs to remote server (the server 
+should be updated to reflect this sometime this week!)
+= If Install.txt exists apk install and Obb copy will only be run 
+from install.txt - this is to prevent double copy of obb files or
+double install of APKS.
+= Fixed issue where if user started DL+install on one title then
+quickly selected a different title in the games list it would 
+download the newly selected item instead of the originally 
+intended item.= Fixed issue that caused download progress bar
+to not work if multiple items were queued.
 = Fixed other obb copying issues.
 -----BEGIN PGP SIGNATURE-----
 
@@ -271,7 +277,8 @@ Hash: SHA256
 
 RSL 2.1.5
 
-+ Added Releasename to installing messages and download size message.
++ Added Releasename to installing messages and download size
+message.
 = Mulitple bugfixes.
 
 -----BEGIN PGP SIGNATURE-----
@@ -302,7 +309,8 @@ Hash: SHA256
 RSL 2.1.3.2
 
 + Added checkbox to enable Enter to Download+Install.
-= Fixed crash that occurred when user held down up arrow or down arrow on gamelist.
+= Fixed crash that occurred when user held down up arrow or down 
+arrow on gamelist.
 = Fixed all issues with Install.txt path.
 = Clicking out of search box now closes it.
 -----BEGIN PGP SIGNATURE-----
@@ -328,14 +336,19 @@ Hash: SHA256
 
 2.1.3.1
 
-= Fixed issue where if using Quick Search and game was near bottom of list it wouldn't be selected.
-+ Added hidden CTRL+P shortcut that copies the packagename of selected game to clipboard (for ease of finding OBB/Save folders or adding images for games).
+= Fixed issue where if using Quick Search and game was near bottom of 
+list it wouldn't be selected.
++ Added hidden CTRL+P shortcut that copies the packagename of selected 
+game to clipboard (for ease of finding OBB/Save folders or adding images 
+for games).
 
 2.1.3
 + Added Quicksearch
 + Added shortcut (CTRL+F) to open Quicksearch
-+ Crashlog window can now open folder directory with crashlog if user selects NO.
-+ Get APK from device will now open folder where APK is extracted automatically after extraction.
++ Crashlog window can now open folder directory with crashlog if user 
+selects NO.
++ Get APK from device will now open folder where APK is extracted 
+automatically after extraction.
 + Added timestamps to Dialogbox
 + Added pictures for all current titles.
 -----BEGIN PGP SIGNATURE-----
@@ -368,7 +381,8 @@ Hash: SHA256
 
 RSL 2.1.2 
 
-+ Added quick search (ctrl+f or click magnifying glass), Automatically selects whatever game it finds, user can press ENTER to start DL+Install
++ Added quick search (ctrl+f or click magnifying glass), Automatically 
+selects whatever game it finds, user can press ENTER to start DL+Install
 = Fixed massive issues caused by accidental branch merge.
 = UI Improvements
 -----BEGIN PGP SIGNATURE-----
@@ -398,8 +412,10 @@ Hash: SHA256
 
 RSL 2.1.1
 
-+ Added optional Wake on Wifi setting so Wireless ADB will still connect as long as device is not powered off or dead.
-+ RSL will now automatically choose any Oculus device over devices made by other manufacturers if more than one ADB device is present.
++ Added optional Wake on Wifi setting so Wireless ADB will still 
+connect as long as device is not powered off or dead.
++ RSL will now automatically choose any Oculus device over devices 
+made by other manufacturers if more than one ADB device is present.
 = Fixed Download+Install QUSettings application if QUSettings are set.
 = Fixed Pull APK from device.
 -----BEGIN PGP SIGNATURE-----
@@ -424,7 +440,8 @@ Hash: SHA256
 
 Update RSL2.1HF5
 
-Fixed ADB path for usernames containing spaces. ADB now located at c:\RSL\VersionNumber\ADB
+Fixed ADB path for usernames containing spaces. ADB now located at 
+c:\RSL\VersionNumber\ADB
 
 - -HarryEffingPotter-
 -----BEGIN PGP SIGNATURE-----
@@ -450,7 +467,8 @@ Hash: SHA256
 
 RSL 2.1HF4
 
-= Moved ADB files to AppData\Roaming\RSL to fix compatibility issues across the board.
+= Moved ADB files to AppData\Roaming\RSL to fix compatibility 
+issues across the board.
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmDa9rQACgkQx/Rql1Vo
@@ -474,7 +492,9 @@ Hash: SHA256
 
 RSL 2.1HF3
 
-= Fixed QUSettings not working issue.(unused fields in QUSettings MUST have 0's in them or it will not work, reset/clear all fields button now reflect this.)
+= Fixed QUSettings not working issue.(unused fields in QUSettings
+MUST have 0's in them or it will not work, reset/clear all 
+fields button now reflect this.)
 = Fixed Uninstall auto-save-backup
 = Fixed Install.txt automation messages.
 -----BEGIN PGP SIGNATURE-----
@@ -506,16 +526,42 @@ v2.1
  
 + Backups are now stored in Documents\Rookie Backups\(BackupDate) folder.
 + 404 error fixed.
-+ If installing an app that has a different patching method or signature than the previous version did user will now recieve a prompt for the option to upgrade which will backup savedata then uninstall and reinstall the app. NOTE: Not all apps allow backup of savedata.
-+ Refresh updates list now loads much faster and refreshes the main update list.
++ If installing an app that has a different patching method or
+signature than the previous version did user will now recieve 
+a prompt forthe option to upgrade which will backup savedata then 
+uninstall and reinstall the app. NOTE: Not all apps allow backup of
+savedata.
++ Refresh updates list now loads much faster and refreshes the main update
+list.
 + Added Wireless ADB functionality.
 + Added Enable Wireless ADB and Remove Wireless ADB buttons to main menu.
-+ Added ">" symbols on collapsible and expandable menu items to let user know they can be expanded/collapsed.
-+ "Hand/Finger pointer" symbol added above clickable main menu buttons to let user know they're clickable.
-+ Added logic to allow entire list to load and compare installed versions with Rclone versions before populating and added informative text of this step to the bottom/title bar.
-+ Added QU Settings for their newest patch method. Can be found under Quest Options, this will allow you to change settings for any games that include "-QU" in the version/filename. Click Enable QU Settings box to reveal the options.
-DETAILS: Clicking enable again will remove the settings file, if you re-enable you MUST click apply again for it to work. QU Settings are applied automatically when any games are Downloaded/Installed via Rookie as long as the custom settings been enabled and applied in the Quest Options menu.Once applied they can also be added to any already installed titles by selecting the game you wish to add them to in the menu at the top of RSL in the main window then(the same list used to uninstall games) then clicking on Install QU Setting. To remove a setting for a game select it from the same menu and click Remove QU Setting. If you click Delete Custom Settings in Quest Options it will not delete settings for any games installed while it was enabled, you must do this with the previously mentioned Remove QU Setting option. Clear Settings just clears the values entered in the fields. Settings entered into those fields will persist between instances of RSL.
-+ Public key for HarryEffingPotter(Rookie contributor/VRPE dev) added to Rookie directory.
++ Added ">" symbols on collapsible and expandable menu items to let user 
+know they can be expanded/collapsed.
++ "Hand/Finger pointer" symbol added above clickable main menu buttons to 
+let user know they're clickable.
++ Added logic to allow entire list to load and compare installed versions 
+with Rclone versions before populating and added informative text of this 
+step to the bottom/title bar.
++ Added QU Settings for their newest patch method. Can be found under 
+Quest Options, this will allow you to change settings for any games that 
+include "-QU" in the version/filename. 
+Click Enable QU Settings box to reveal the options.
+DETAILS: Clicking enable again will remove the settings file, if you
+re-enable you MUST click apply again for it to work. QU Settings are 
+applied automatically when any games are Downloaded/Installed via Rookie 
+as long as the custom settings been enabled and applied in the Quest
+Options menu.Once applied they can also be added to any already installed
+titles by selecting the game you wish to add them to in the menu at the top 
+of RSL in the main window then(the same list used to uninstall games) then 
+clicking onInstall QU Setting. 
+To remove a setting for a game select it from the same menu and click Remove 
+QU Setting. If you click Delete Custom Settings in Quest Options it will not 
+delete settings for any games installed while it was enabled, you must do 
+this with the previously mentioned RemoveQU Setting option. Clear Settings 
+just clears the values entered in the fields. Settings entered into those 
+fields will persist between instances of RSL.
++ Public key for HarryEffingPotter(Rookie contributor/VRPE dev) added to 
+Rookie directory.
 = Fixed Install.txt automation to make Manual installs automatic.
 
 - -HarryEffingPotter-
@@ -523,9 +569,11 @@ DETAILS: Clicking enable again will remove the settings file, if you re-enable y
 Released: May 29th 2021
 
 
-Public key for Rookie and HarryEffingPotter included in Rookie directory along with Checksum(can be run with QuickSFV.exe)
+Public key for Rookie and HarryEffingPotter included in Rookie 
+directory along with Checksum(can be run with QuickSFV.exe)
 
-THIS SOFTWARE IS FREE TO USE, IF YOU PAID FOR IT YOU WERE RIPPED OFF. We can be found on Telegram @ t.me/VRPirates.
+THIS SOFTWARE IS FREE TO USE, IF YOU PAID FOR IT YOU WERE
+RIPPED OFF. We can be found on Telegram @ t.me/VRPirates.
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmCyMHUACgkQx/Rql1Vo
@@ -549,11 +597,14 @@ Hash: SHA256
 
 !!!IMPORTANT!!!
 THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
-Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
-Make sure to redownload the entire rclone folder from the config provider!
+Due to how the rclone config works now, if you used Rookie's 
+Sideloader with a custom config. Make sure to redownload the entire
+rclone folder from the config provider!
 
-I forgot, adb usb isn't called at start so the last changelog was wrong
-Also this was the first release to use GIT and sideloader had broken updates so thats why the huge ammount of commits in such a short time sorry
+I forgot, adb usb isn't called at start so the last changelog 
+was wrong. Also this was the first release to use GIT and 
+sideloader had broken updatesso thats why the huge ammount of 
+commits in such a short time sorry
 
 v2.0-WIP-SU1
 
@@ -568,11 +619,15 @@ VT: https://bit.ly/3uPda5K
 
 MD5 Checksum: 4259AD179E8C56478828FFFC38586BE0
 SHA-1 Checksum: 44C1754D0CD0B1677A73BE5A10B05E02BC85E6B7
-SHA-256 Checksum: 8D6CCFB6DDA656BB3FEB1EBAB4F3BA9D9A0D431398A80F23F8C1E097DEB8B827
-SHA-512 Checksum: B6DF140C00E3761698C604BCD1A8835C6B2EB5BE18477C3BB69900E2353EE42C196A475E81A95D495C346C35CD2100148FA5E5A0C03D3FEBCB4F469E7E8C6EBF
+SHA-256 Checksum: 8D6CCFB6DDA656BB3FEB1EBAB4F3BA9D9A0D431398A80F
+23F8C1E097DEB8B827
+SHA-512 Checksum: B6DF140C00E3761698C604BCD1A8835C6B2EB5BE18477C
+3BB69900E2353EE4
+2C196A475E81A95D495C346C35CD2100148FA5E5A0C03D3FEBCB4F469E7E8C6EBF
 
 You can always get my public key from miligra.me/pgp
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAmB3+4UACgkQvrtJUNxE
@@ -596,8 +651,9 @@ Hash: SHA256
 
 !!!IMPORTANT!!!
 THIS VERSION IS WORK IN PROGRESS DUE TO LACK OF TESTERS!
-Due to how the rclone config works now, if you used Rookie's Sideloader with a custom config
-Make sure to redownload the entire rclone folder from the config provider!
+Due to how the rclone config works now, if you used Rookie's 
+Sideloader with a custom config. Make sure to redownload the 
+entire rclone folder from the config provider!
 
 v2.0-WIP
 
@@ -606,13 +662,18 @@ Changes
  + Added dependency check for spoofer
  + Games now can have images
  + Replaced the gamescombo box with a listview
- + Listview marks already installed games with green and outdated ones with yellow
+ + Listview marks already installed games with green and 
+ outdated ones with yellow
  + Sideloader should be faster now
  + Reduced sideloader size
- + Installing games and copying obbs tries to wake the device first
+ + Installing games and copying obbs tries to wake the 
+ device first
  + Sideloader calls adb usb on start now
- + ADB Output now is a proper object containing strings for stdout and stderr, handling will be easier now
- + Changed spoof on rclone install to resign, allowing users to easily update games from now on!
+ + ADB Output now is a proper object containing strings for
+ stdout and stderr, 
+ handling will be easier now
+ + Changed spoof on rclone install to resign, allowing users
+ to easily update games from now on!
  //You can still use the spoof button manually
  = Fixed UI not starting for some people
  = Refreshing mirrors now deosn't change the selected mirror
@@ -630,11 +691,15 @@ VT: https://bit.ly/3a3LvGg
 
 MD5 Checksum: 597D4AC957F69D5B1860D14D15DD3904
 SHA-1 Checksum: EC78E4416D5222E507F46499B62A1D16880F84DF
-SHA-256 Checksum: B68EE3B95CA531CA4678FEAAFD13F75A69D4495879536A9D04094ECFFEEC86EA
-SHA-512 Checksum: D98F319986179B362D0F4C4E092FE6AF4ED8D1FD5445667F68280B43BF49C9DB7AC3B0F49690644CB46A7A391EDF36E82A8BCF7C52770498E6CACEA52D44EA4D
+SHA-256 Checksum: B68EE3B95CA531CA4678FEAAFD13F75A69D4495879536A
+9D04094ECFFEEC86EA
+SHA-512 Checksum: D98F319986179B362D0F4C4E092FE6AF4ED8D1FD54456
+67F68280B43BF49C9D
+B7AC3B0F49690644CB46A7A391EDF36E82A8BCF7C52770498E6CACEA52D44EA4D
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows
+or dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAmB1rNsACgkQvrtJUNxE
@@ -669,11 +734,15 @@ VT: https://bit.ly/3nDUMcx
 
 MD5 Checksum: 6DA8ADBE4447A809C598379E73DC7F77
 SHA-1 Checksum: 924220FE8877174CCB9732F1F99B759DD6749102
-SHA-256 Checksum: 0405C389A7D84CAC0D9081BDE10D010300822B10EBC2FF94C501EC740C8CFA40
-SHA-512 Checksum: E8C3A15257C30278CEBC46507B1F6049FFB5AC0D6E4FBB73E1776537F80CBEA95C8C81A3F3259F8AEEDE276EBF6D50F6945622403E9D80B5E9E0F47B050BBEA9
+SHA-256 Checksum: 0405C389A7D84CAC0D9081BDE10D010300822B10EBC2FF
+94C501EC740C8CFA40
+SHA-512 Checksum: E8C3A15257C30278CEBC46507B1F6049FFB5AC0D6E4FB
+B73E1776537F80CBEA9
+5C8C81A3F3259F8AEEDE276EBF6D50F6945622403E9D80B5E9E0F47B050BBEA9
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+2aycACgkQvrtJUNxE
@@ -696,10 +765,13 @@ HL+SrazP9o8ut2L85uBqCjWHPfgVaBaaQgk9FgZe0WQoS06fdeU=
 Hash: SHA256
 
 v1.17
-Please manually update to this version, as it fixes automatic updates that were broken since 1.15
+Please manually update to this version, as it fixes automatic
+updates that were 
+broken since 1.15
 
 Changes
- + Better game installation => no need for manual installation of games anymore
+ + Better game installation => no need for manual installation 
+ of games anymore
  + Added theme changer back and updated it
  = Fixed updates
  = Updated quest options
@@ -710,10 +782,14 @@ VT: https://bit.ly/3lwztcn
 
 MD5 Checksum: CC7BF16A3D687C21208E9E986D720CAE
 SHA-1 Checksum: CE0C71B4097068E84FA6FC65F4AFE69CBC79AA29
-SHA-256 Checksum: D9393C28376DDE1D0582BCF939D1414879EDE6772CE82F83F54C0EA0F239B2F0
-SHA-512 Checksum: 326C7A0177E9B8BCFA10CB3B8FAEA025F9C45C599DE5D46CA06DFEE427351F3AE88371C5A0827DEADF7D3F459052C421A145AA5581FE3C4BD2EFAD33BCFFC37B
+SHA-256 Checksum: D9393C28376DDE1D0582BCF939D1414879EDE6772CE82F
+83F54C0EA0F239B2F0
+SHA-512 Checksum: 326C7A0177E9B8BCFA10CB3B8FAEA025F9C45C599DE5D4
+6CA06DFEE427351F3AE88371C5A0827DEADF7D3F459052C421A145AA5581FE3C
+4BD2EFAD33BCFFC37B
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+wFCUACgkQvrtJUNxE
@@ -748,11 +824,15 @@ VT: https://bit.ly/2K4Y5Lv
 
 MD5 Checksum: 29978E435BF02865CE61EF6279FB42ED
 SHA-1 Checksum: 2E47CFDE7549D088A102F021657E9CD6859EAC47
-SHA-256 Checksum: 50057AC0DA315C492C9C45B5801AE99E65B812F5BC18E23622CCAF5FBC48760A
-SHA-512 Checksum: E485ADB6088C1F7DC34B65B57A9077E876D3D576D48CCED1FCA691A113CA5F6D0F8A0D31C6C848B6719FF18B7D4C5F829B9DAA8789EA6087F8B1D41005F87A48
+SHA-256 Checksum: 50057AC0DA315C492C9C45B5801AE99E65B812F5BC18E23
+622CCAF5FBC48760A
+SHA-512 Checksum: E485ADB6088C1F7DC34B65B57A9077E876D3D576D48CCED1
+FCA691A113CA5F6D0
+F8A0D31C6C848B6719FF18B7D4C5F829B9DAA8789EA6087F8B1D41005F87A48
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+tHY0ACgkQvrtJUNxE
@@ -785,11 +865,15 @@ VT: https://bit.ly/2GDYWRU
 
 MD5 Checksum: F0D51FEC94F8D266390E61E89E6A2EE0
 SHA-1 Checksum: 4FB43CFA6021B8360A23858169FAF15468B68EDF
-SHA-256 Checksum: CBE414D9A283871099057EE5D8E56AF408996AE9C996C31F92C4DAE16D48B024
-SHA-512 Checksum: F16A6B29ECABBB16D25B7F7FC52CB15AE4930B2B17ABAC791BF1F331270F40B047094FDEAF1EF834E72E26AA3A6762AF8BE13EBCB735EB1C1009F884E338D9DE
+SHA-256 Checksum: CBE414D9A283871099057EE5D8E56AF408996AE9C996C31F
+92C4DAE16D48B024
+SHA-512 Checksum: F16A6B29ECABBB16D25B7F7FC52CB15AE4930B2B17ABAC79
+1BF1F331270F40B047
+094FDEAF1EF834E72E26AA3A6762AF8BE13EBCB735EB1C1009F884E338D9DE
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+lfEkACgkQvrtJUNxE
@@ -827,11 +911,15 @@ VT: https://bit.ly/3kYCQsb
 
 MD5 Checksum: 39BAB4CEE3D0E387E770BA35F4488C2F
 SHA-1 Checksum: C6F311411408BCF5A55034E7A926EA385819F348
-SHA-256 Checksum: 64640374EF39DD9CFC4A613A49888E3194994AA934C5E952174A2FCF533E2D19
-SHA-512 Checksum: 22769280B732821539100BFA77C67141F271DB401DB3AFB28EF285E352659F9F45A90C8ABE1C0B829770C5AE580CA76A9208505888443C22EE82AAAE7035C6F7
+SHA-256 Checksum: 64640374EF39DD9CFC4A613A49888E3194994AA934C5E952
+174A2FCF533E2D19
+SHA-512 Checksum: 22769280B732821539100BFA77C67141F271DB401DB3AFB2
+8EF285E352659F9F45
+A90C8ABE1C0B829770C5AE580CA76A9208505888443C22EE82AAAE7035C6F7
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+jJScACgkQvrtJUNxE
@@ -856,7 +944,8 @@ Hash: SHA256
 v1.14SU1
 
 Changes
- + Quota errors now will try to redownload the game from another mirror
+ + Quota errors now will try to redownload the game from another 
+ mirror
  = Only showing mirror remotes for apps
 // Will fix device storage when I get my quest 2 and can debug adb
 
@@ -866,11 +955,15 @@ VT: https://bit.ly/3kcG62A
 
 MD5 Checksum: 2A30E5F3DB785DC8104A2AA55A83CF53
 SHA-1 Checksum: 8376E5971FC4F60995A1125DD9344E52135DB4F7
-SHA-256 Checksum: FD5C74067BA00561A540DE5A4F49FA63B99C9520435A51487F997AEC569E9659
-SHA-512 Checksum: 6188D6306CA2A3F25DE08E19D1F20046774F7AA30BD745ED24FC7E53126DF3950211B599E3D774F540A6C1DEC177A895FAE70FB564B6AE96F5F10ABDCB9021C1
+SHA-256 Checksum: FD5C74067BA00561A540DE5A4F49FA63B99C9520435A51487F
+997AEC569E9659
+SHA-512 Checksum: 6188D6306CA2A3F25DE08E19D1F20046774F7AA30BD745ED2
+4FC7E53126DF3950
+211B599E3D774F540A6C1DEC177A895FAE70FB564B6AE96F5F10ABDCB9021C1
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+MCbMACgkQvrtJUNxE
@@ -906,11 +999,15 @@ VT: https://bit.ly/3j8kCm8
 
 MD5 Checksum: B862B807462CE35CC930C2B1118D5692
 SHA-1 Checksum: F52C8630C89CAEDB2E90A857E494DE00B137712D
-SHA-256 Checksum: 3DDFA2B4CCFC0E9F6F86E8A74E6D3511B9C643F4C4AF19D3878B8704FA360558
-SHA-512 Checksum: 16A022D8A4D235D7C537D9F01FE7C5F964A67A3A8CD68B3DC17AF08D94837DAC6CE0C20557D029DC169E5616B36C2A4C36B1647CE0DF930C7694F3FEC3430E70
+SHA-256 Checksum: 3DDFA2B4CCFC0E9F6F86E8A74E6D3511B9C643F4C4AF19D38
+78B8704FA360558
+SHA-512 Checksum: 16A022D8A4D235D7C537D9F01FE7C5F964A67A3A8CD68B3DC1
+7AF08D94837DAC
+6CE0C20557D029DC169E5616B36C2A4C36B1647CE0DF930C7694F3FEC3430E70
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl+KrhQACgkQvrtJUNxE
@@ -935,7 +1032,8 @@ Hash: SHA256
 New version v1.13 Released
 
 Changes
- + Pgp messages will be available now for every update, so you can verify updates easily
+ + Pgp messages will be available now for every update, so you can 
+ verify updates easily
  = Fixed some bugs like the rclone suicide
  - Removed china detection
 
@@ -943,11 +1041,15 @@ Date 9/10/2020
 
 MD5 Checksum: 3834485C5AF611523460E639969284F3
 SHA-1 Checksum: DAF556D34F80FDE6A6A3D8F338381030B2B19E44
-SHA-256 Checksum: 063FABA6A76A98AB862BBBF6F3348F176F66FD4932075E761A5FCAA85785EE4B
-SHA-512 Checksum: CC743BD95826664535239BB665934E88A25CC948B95E4A3E8B34379C1E8DEB8FED05EAD87428F4B85D5841ED9101F38E4E3DAFB0EAF3CD2F2E4314B62356104D
+SHA-256 Checksum: 063FABA6A76A98AB862BBBF6F3348F176F66FD4932075E761
+A5FCAA85785EE4B
+SHA-512 Checksum: CC743BD95826664535239BB665934E88A25CC948B95E4A3E8
+B34379C1E8DEB8F
+ED05EAD87428F4B85D5841ED9101F38E4E3DAFB0EAF3CD2F2E4314B62356104D
 
 You can always get my public key from rookie.wtf/pgp.txt
-You can verify the signed message using kleopatra for windows or dark.fail/pgp
+You can verify the signed message using kleopatra for windows or 
+dark.fail/pgp
 -----BEGIN PGP SIGNATURE-----
 
 iQIzBAEBCAAdFiEEG9eYw4mQVDjvGf4lvrtJUNxETxMFAl9aBpMACgkQvrtJUNxE
@@ -966,7 +1068,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
 -----END PGP SIGNATURE-----
 
 1.11HF1
- = Fixed some crashes that occured when a unauthorized device was used with the sideloader
+ = Fixed some crashes that occured when a unauthorized device was 
+ used with the sideloader
 
 1.11
  + Added support for multiple devices
@@ -993,7 +1096,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
  + Added a setting for disabling user.json push
 
 1.8SU2
- = Install game now won't throw an exception when a game isn't selected
+ = Install game now won't throw an exception when a game isn't 
+ selected
 
 1.8SU1
  + Added debug logs for rclone
@@ -1010,7 +1114,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
 
 1.7
  + Removed some freezes
- + Sideloader kills rclone on start and on close if it's open so you dont waste bandwith
+ + Sideloader kills rclone on start and on close if it's open 
+ so you dont waste bandwith
  + Updating rclone config now does a hash check first
  + Refresh storage after game install and on game uninstall
 
@@ -1032,7 +1137,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
  + Added some tooltips
 
 1.4
- + Donators can now change the speed of the donate button color change (even disable)
+ + Donators can now change the speed of the donate button color
+ change (even disable)
  + Auto update for the rclone config
  + Theme export and import buttons (by gotard)
 
@@ -1062,9 +1168,11 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
  + Added games auto download
  + Added auto troubleshoot
  + Every app installed will have all perms granted
- + Displays apps for games instead of package names if you have rclone set up
+ + Displays apps for games instead of package names if you 
+ have rclone set up
  + Uninstall app now will also delete its obb folder
- //For auto download you need an rclone config and rclone to be set up correctly
+ //For auto download you need an rclone config and rclone 
+ to be set up correctly
 
 0.15HF1
  + Added list apps button back
@@ -1073,7 +1181,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
 0.15
  = MASSIVE UI REDESIGN
  + Added toggle for tor/clearnet
- + Added download games through tor but still waiting for someone to help me host the files
+ + Added download games through tor but still waiting for 
+ someone to help me host the files
  + Added download with progress
  = Changed adb sideload command to allow downgrades too
  - Removed perms stuff, was too buggy
@@ -1085,7 +1194,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
 
 0.14
  + Check file hash button
- + Added first run check (will maybe be used to create user.json files)
+ + Added first run check (will maybe be used to create user.json
+  files)
  + Added drag and drop for apk and obb files
  + Progress bar now works for every adb command
  = Moved buttons
@@ -1103,7 +1213,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
  + Added a new user.json
  = Fixed crash on some systems (PerformanceCounter)
  = Fixed crash because of file name inconsistency
- - Removed performance counters because they made the software not work for some people
+ - Removed performance counters because they made the software 
+ not work for some people
 
 0.11
  + Changed normal message boxes to flexible ones
@@ -1150,7 +1261,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
 0.5
  - Removed Flash Firmware
  = Redesigned UI
- = Reworked RunAdbCommand function (now it will be possible to do stuff I wasnt able to do before)
+ = Reworked RunAdbCommand function (now it will be possible to do stuff 
+ I wasnt able to do before)
  = Replaced Ui Buttons, still needs work
  + Added List apk button
  + Added List apk combo box
@@ -1166,7 +1278,8 @@ DFKYJpBgATHdRTwt7/zZwJCBq0ONheA/6+6VYj8x8Q5rqbiDDdc=
  + Added recover and backup app data
  - Removed Select APK and Select OBB Buttons
  - Removed tooltips from removed buttons
- + Sideload APK and Copy Obb buttons now also make you select the file/folder
+ + Sideload APK and Copy Obb buttons now also make you select the 
+ file/folder
  + Improved firmware button
 
 0.2

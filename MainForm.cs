@@ -64,7 +64,7 @@ namespace AndroidSideloader
                 }
                 else
                 {
-                    MessageBox.Show("Cannot generate debug log until RSL is done syncing with the server. Once RSL has fully loaded please reset your DebugLog in Settings.");
+                    FlexibleMessageBox.Show("Cannot generate debug log until RSL is done syncing with the server. Once RSL has fully loaded please reset your DebugLog in Settings.");
                     Properties.Settings.Default.CurrentLogPath = $"{Environment.CurrentDirectory}\\debuglog.txt";
                 }
 
@@ -86,7 +86,14 @@ namespace AndroidSideloader
             this.gamesListView.ListViewItemSorter = lvwColumnSorter;
             if (searchTextBox.Visible)
                 searchTextBox.Focus();
-
+            if (Properties.Settings.Default.QblindOn)
+                pictureBox3.Image = global::AndroidSideloader.Properties.Resources.redkey;
+            else
+                pictureBox3.Image = global::AndroidSideloader.Properties.Resources.orangekey;
+            if (Properties.Settings.Default.QblindOn)
+                pictureBox4.Image = global::AndroidSideloader.Properties.Resources.bluekey;
+            else
+                pictureBox4.Image = global::AndroidSideloader.Properties.Resources.greenkey;
         }
 
 
@@ -204,7 +211,7 @@ namespace AndroidSideloader
 
                             Clipboard.SetText(combined);
                             RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
-                            MessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
+                            FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
                             Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
 
 
@@ -239,11 +246,12 @@ namespace AndroidSideloader
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
                 ChangeTitle("Initializing Games");
-                SideloaderRCLONE.UpdateNouns(currentRemote);
+                if (!Directory.Exists(SideloaderRCLONE.Nouns))
+                 SideloaderRCLONE.UpdateNouns(currentRemote);
                 SideloaderRCLONE.initGames(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
-                    MessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
+                    FlexibleMessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                 }
                 ChangeTitle("Syncing Game Photos");
                 SideloaderRCLONE.UpdateGamePhotos(currentRemote);
@@ -421,10 +429,10 @@ namespace AndroidSideloader
             Devices.Clear();
             string output = string.Empty;
             string error = string.Empty;
+            string battery = string.Empty;
             ADB.DeviceID = GetDeviceID();
             Thread t1 = new Thread(() =>
             {
-                output = ADB.RunAdbCommandToString("devices").Output;
                 output = ADB.RunAdbCommandToString("devices").Output;
             });
 
@@ -453,10 +461,17 @@ namespace AndroidSideloader
                 i++;
             }
 
+            battery = ADB.RunAdbCommandToString("shell dumpsys battery").Output;
+            battery = Utilities.StringUtilities.RemoveEverythingBeforeFirst(battery, "level:");
+            battery = Utilities.StringUtilities.RemoveEverythingAfterFirst(battery, "\n");
+            battery = Utilities.StringUtilities.KeepOnlyNumbers(battery);
+            BatteryLbl.Text = BatteryLbl.Text.Replace("N/A", battery);
+
             if (devicesComboBox.Items.Count > 0)
                 devicesComboBox.SelectedIndex = 0;
 
             return devicesComboBox.SelectedIndex;
+
         }
 
 
@@ -525,7 +540,7 @@ namespace AndroidSideloader
                     this.Invoke(() =>
                     {
                         this.Text = "Device Not Authorized";
-                        DialogResult dialogResult = MessageBox.Show("Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                        DialogResult dialogResult = FlexibleMessageBox.Show("Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
@@ -548,7 +563,7 @@ namespace AndroidSideloader
                     {
                         DeviceConnected = false;
                         this.Text = "No Device Connected";
-                        DialogResult dialogResult = MessageBox.Show("No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        DialogResult dialogResult = FlexibleMessageBox.Show("No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
@@ -623,7 +638,7 @@ namespace AndroidSideloader
 
                 string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(BackupFolder, date_str);
-                MessageBox.Show($"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str} (year.month.date)");
+                FlexibleMessageBox.Show($"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str} (year.month.date)");
                 Directory.CreateDirectory(CurrBackups);
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{CurrBackups}\"");
 
@@ -765,11 +780,11 @@ namespace AndroidSideloader
 
             string GameName = m_combo.SelectedItem.ToString();
             string packagename = Sideloader.gameNameToPackageName(GameName);
-            MessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Attempting Backup...", MessageBoxButtons.OK);
+            FlexibleMessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Attempting Backup...", MessageBoxButtons.OK);
 
             Directory.CreateDirectory(CurrBackups);
             ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
-            DialogResult dialogResult = MessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Check for backup.", MessageBoxButtons.OKCancel);
+            DialogResult dialogResult = FlexibleMessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Check for backup.", MessageBoxButtons.OKCancel);
             if (dialogResult == DialogResult.Cancel)
             {
                 return;
@@ -880,7 +895,7 @@ namespace AndroidSideloader
                             {
 
 
-                                DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
+                                DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
                                 else
@@ -921,7 +936,7 @@ namespace AndroidSideloader
                         {
                             if (File.Exists($"{dir}\\Install.txt"))
                             {
-                                DialogResult dialogResult = MessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
+                                DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                                 if (dialogResult == DialogResult.Cancel)
                                     return;
                                 else
@@ -1154,14 +1169,14 @@ without him none of this would be possible
         {
 
             ADB.WakeDevice();
-            DialogResult dialogResult = MessageBox.Show("Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
+            DialogResult dialogResult = FlexibleMessageBox.Show("Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
             if (dialogResult == DialogResult.Cancel)
                 return;
 
             ADB.RunAdbCommandToString("devices");
             ADB.RunAdbCommandToString("tcpip 5555");
 
-            MessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
+            FlexibleMessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
             Thread.Sleep(1000);
             string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
@@ -1173,7 +1188,7 @@ without him none of this would be possible
             {
                 string IPaddr = strArrayOne[8];
                 string IPcmnd = "connect " + IPaddr + ":5555";
-                MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                FlexibleMessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
                 Thread.Sleep(2000);
                 ADB.RunAdbCommandToString(IPcmnd);
                 await Program.form.CheckForDevice();
@@ -1182,7 +1197,7 @@ without him none of this would be possible
                 Properties.Settings.Default.IPAddress = IPcmnd;
                 Properties.Settings.Default.Save();
 
-                MessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
+                FlexibleMessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
@@ -1193,7 +1208,7 @@ without him none of this would be possible
                 ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
             }
             else
-                MessageBox.Show("No device connected!");
+                FlexibleMessageBox.Show("No device connected!");
 
         }
 
@@ -1530,7 +1545,7 @@ without him none of this would be possible
                         if (Properties.Settings.Default.deleteAllAfterInstall)
                         {
                             ChangeTitle("Deleting game files", false);
-                            try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { MessageBox.Show($"Error deleting game files: {ex.Message}"); }
+                            try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
                         }
 
                         //Remove current game
@@ -1562,16 +1577,16 @@ without him none of this would be possible
 
         private void ADBWirelessDisable_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = MessageBox.Show("Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = FlexibleMessageBox.Show("Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.No)
             {
-                MessageBox.Show("Saved IP data reset cancelled.");
+                FlexibleMessageBox.Show("Saved IP data reset cancelled.");
                 return;
             }
             else
             {
                 ADB.WakeDevice();
-                MessageBox.Show("Make sure your device is not connected to USB and press OK.");
+                FlexibleMessageBox.Show("Make sure your device is not connected to USB and press OK.");
                 ADB.RunAdbCommandToString("shell USB");
                 Thread.Sleep(2000);
                 ADB.RunAdbCommandToString("disconnect");
@@ -1583,7 +1598,7 @@ without him none of this would be possible
                 Properties.Settings.Default.Save();
                 Program.form.GetDeviceID();
                 Program.form.ChangeTitlebarToDevice();
-                MessageBox.Show("Relaunch Rookie to complete the process and switch back to USB adb.");
+                FlexibleMessageBox.Show("Relaunch Rookie to complete the process and switch back to USB adb.");
             }
 
         }
@@ -1680,6 +1695,16 @@ without him none of this would be possible
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
+                
+                if (searchTextBox.Visible)
+                {
+                    if (Properties.Settings.Default.EnterKeyInstall)
+                    {
+                        if (gamesListView.SelectedItems.Count > 0)
+                            downloadInstallGameButton_Click(sender, e);
+                    }
+                }
+                
                 searchTextBox.Visible = false;
                 label2.Visible = false;
                 label3.Visible = false;
@@ -1693,7 +1718,6 @@ without him none of this would be possible
                     ChangeTitle("");
 
                 }
-                ChangeTitle($"{ADB.RunAdbCommandToString(ADBcommandbox.Text)}");
                 ADBcommandbox.Visible = false;
                 label9.Visible = false;
                 label11.Visible = false;
@@ -1780,7 +1804,7 @@ without him none of this would be possible
             {
                 ADB.WakeDevice();
                 GetDeviceID();
-                MessageBox.Show("If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+                FlexibleMessageBox.Show("If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
                 listappsbtn();
                 initListView();
             }
@@ -1789,7 +1813,7 @@ without him none of this would be possible
             if (keyData == (Keys.F1) && !dialogisup)
             {
                 dialogisup = true;
-                MessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12 ------ Copy Debuglog to Desktop\n\nCTRL+R - Run custom ADB command.\nCTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie's Sideloader.");
+                FlexibleMessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12 ------ Copy Debuglog to Desktop\n\nCTRL+R - Run custom ADB command.\nCTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie's Sideloader.");
                 dialogisup = false;
             }
 
@@ -1797,7 +1821,7 @@ without him none of this would be possible
 
             if (keyData == (Keys.Control | Keys.P))
             {
-                DialogResult dialogResult = MessageBox.Show("Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show("Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     Properties.Settings.Default.PackageNameToCB = true;
@@ -1814,7 +1838,7 @@ without him none of this would be possible
                 if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
                 {
                     RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" RSL-debuglogs:DebugLogs");
-                    MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
+                    FlexibleMessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
                     Clipboard.SetText(Properties.Settings.Default.CurrentLogName);
                 }
 
@@ -1824,11 +1848,11 @@ without him none of this would be possible
                 if (File.Exists($"{Properties.Settings.Default.CurrentCrashPath}"))
                 {
                     RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
-                    MessageBox.Show($"Your CrashLog has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
+                    FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
                     Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
                 }
             else
-            MessageBox.Show("No CrashLog found in Rookie directory.");
+            FlexibleMessageBox.Show("No CrashLog found in Rookie directory.");
 
             return base.ProcessCmdKey(ref msg, keyData);
 
@@ -1855,8 +1879,6 @@ without him none of this would be possible
 
 
                     searchTextBox.Focus();
-                    this.searchTextBox.KeyPress += new
-                    System.Windows.Forms.KeyPressEventHandler(CheckEnter);
                 }
             }
         }
@@ -1865,8 +1887,6 @@ without him none of this would be possible
 
         private void ADBcommandbox_Enter(object sender, EventArgs e)
         {
-            this.searchTextBox.KeyPress += new
-                    System.Windows.Forms.KeyPressEventHandler(CheckEnter);
             ADBcommandbox.Focus();
 
 
@@ -1913,7 +1933,7 @@ without him none of this would be possible
         {
             ADB.WakeDevice();
             GetDeviceID();
-            MessageBox.Show("If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+            FlexibleMessageBox.Show("If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
             listappsbtn();
             initListView();
 
@@ -2070,17 +2090,6 @@ without him none of this would be possible
                 }
             }
 
-        private void searchTextBox_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (e.KeyChar == (char)Keys.Enter)
-            {
-                if (Properties.Settings.Default.EnterKeyInstall)
-                {
-                    if (gamesListView.SelectedItems.Count > 0)
-                        downloadInstallGameButton_Click(sender, e);
-                }
-                }
-        }
 
         private void pictureBox1_Click(object sender, EventArgs e)
         {
@@ -2102,7 +2111,7 @@ without him none of this would be possible
             {
                 Program.form.ChangeTitle($"Running adb command: ADB {ADBcommandbox.Text}");
                 string output = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
-                MessageBox.Show($"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
+                FlexibleMessageBox.Show($"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
                 ADBcommandbox.Visible = false;
                 label9.Visible = false;
                 label11.Visible = false;
@@ -2129,6 +2138,16 @@ without him none of this would be possible
             label11.Visible = false;
         }
 
+        private void gamesQueListBox_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (this.gamesQueListBox.SelectedItem == null) return;
+            this.gamesQueListBox.DoDragDrop(this.gamesQueListBox.SelectedItem, DragDropEffects.Move);
+        }
+
+        private void gamesQueListBox_DragOver(object sender, DragEventArgs e)
+        {
+            e.Effect = DragDropEffects.Move;
+        }
     }
 
     public static class ControlExtensions

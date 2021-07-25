@@ -330,5 +330,11 @@ namespace AndroidSideloader
             return base.ProcessDialogKey(keyData);
         }
 
+        private void WifiWake_Click(object sender, EventArgs e)
+        {
+            ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+            ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+            MessageBox.Show("Wake on Wifi enabled!\n\nNOTE: This requires having wireless ADB enabled to work. (Obviously)");
+        }
     }
 }

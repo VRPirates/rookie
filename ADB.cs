@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
 
 namespace AndroidSideloader
@@ -68,12 +69,12 @@ namespace AndroidSideloader
             adb.WaitForExit();
             if (error.Contains("ADB_VENDOR_KEYS"))
             {
-                MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
+                FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
                 ADB.WakeDevice();
             }
             if (error.Contains("not enough storage space"))
             {
-                MessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
+                FlexibleMessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
             if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null)) 
             Logger.Log(output);
@@ -126,7 +127,7 @@ namespace AndroidSideloader
                 adb.WaitForExit();
             if (error.Contains("ADB_VENDOR_KEYS"))
             {
-                MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
+                FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
                 ADB.WakeDevice();
             }
             Logger.Log(output);
@@ -179,7 +180,7 @@ namespace AndroidSideloader
                 adb.WaitForExit();
             if (error.Contains("ADB_VENDOR_KEYS"))
             {
-                MessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
+                FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
                 ADB.WakeDevice();
             }
             Logger.Log(output);
@@ -255,10 +256,10 @@ namespace AndroidSideloader
 
                     if (response.Contains("cannot") || String.IsNullOrEmpty(response))
                     {
-                        DialogResult dialogResult = MessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
+                        DialogResult dialogResult = FlexibleMessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
                         if (dialogResult == DialogResult.Cancel)
                         {
-                            DialogResult dialogResult2 = MessageBox.Show("Press OK to remove your stored IP address.\nIf your Quest went idle press the HOLD button on the device twice then press CANCEL to reconnect.", "REMOVE STORED IP?", MessageBoxButtons.OKCancel);
+                            DialogResult dialogResult2 = FlexibleMessageBox.Show("Press OK to remove your stored IP address.\nIf your Quest went idle press the HOLD button on the device twice then press CANCEL to reconnect.", "REMOVE STORED IP?", MessageBoxButtons.OKCancel);
                             if (dialogResult2 == DialogResult.Cancel)
                                 WakeDevice();
                             if (dialogResult2 == DialogResult.OK)
@@ -271,7 +272,7 @@ namespace AndroidSideloader
                         }
                         else if (dialogResult == DialogResult.Yes)
                         {
-                            MessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
+                            FlexibleMessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
                             RunAdbCommandToString("devices");
                             Thread.Sleep(250);
                             RunAdbCommandToString("disconnect");
@@ -297,10 +298,10 @@ namespace AndroidSideloader
                         }
                         else if (dialogResult == DialogResult.No)
                         {
-                            MessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
+                            FlexibleMessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
                             RunAdbCommandToString("devices");
                             RunAdbCommandToString("tcpip 5555");
-                            MessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OK);
+                            FlexibleMessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OK);
                             Thread.Sleep(1000);
                             string input = RunAdbCommandToString("shell ip route").Output;
 
@@ -312,7 +313,7 @@ namespace AndroidSideloader
                             {
                                 string IPaddr = strArrayOne[8];
                                 string IPcmnd = "connect " + IPaddr + ":5555";
-                                MessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                                FlexibleMessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
                                 Thread.Sleep(2000);
                                 ADB.RunAdbCommandToString(IPcmnd);
                                 Properties.Settings.Default.IPAddress = IPcmnd;
@@ -349,7 +350,7 @@ namespace AndroidSideloader
                 string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
                 if (out2.Contains("offline"))
                 {
-                    DialogResult dialogResult2 = MessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
+                    DialogResult dialogResult2 = FlexibleMessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                     if (dialogResult2 == DialogResult.Yes)
                         ADB.WakeDevice();
                 }
@@ -359,22 +360,22 @@ namespace AndroidSideloader
                     ret.Output = string.Empty;
 
 
-                    MessageBox.Show($"In place upgrade for {packagename} failed.  We will need to upgrade by uninstalling, and keeping savedata isn't guaranteed.  Continue?", "UPGRADE FAILED!", MessageBoxButtons.OKCancel);
+                    FlexibleMessageBox.Show($"In place upgrade for {packagename} failed.  We will need to upgrade by uninstalling, and keeping savedata isn't guaranteed.  Continue?", "UPGRADE FAILED!", MessageBoxButtons.OKCancel);
 
                     string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                     string CurrBackups = Path.Combine(BackupFolder, date_str);
 
 
-                    MessageBox.Show($"Searching for save files...", "Searching!", MessageBoxButtons.OK);
+                    FlexibleMessageBox.Show($"Searching for save files...", "Searching!", MessageBoxButtons.OK);
                     if (Directory.Exists($"/sdcard/Android/data/{packagename}"))
                     {
-                        MessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Save files found", MessageBoxButtons.OK);
+                        FlexibleMessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Save files found", MessageBoxButtons.OK);
                         Directory.CreateDirectory(CurrBackups);
                         ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
                     }
                     else
                     {
-                        DialogResult dialogResult = MessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
+                        DialogResult dialogResult = FlexibleMessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
                         if (dialogResult == DialogResult.Cancel) 
                         {
                             return ret;
