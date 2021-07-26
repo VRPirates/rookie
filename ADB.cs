@@ -259,14 +259,18 @@ namespace AndroidSideloader
                         DialogResult dialogResult = FlexibleMessageBox.Show("Either your Quest is idle or you have rebooted the device.\nRSL's wireless ADB will persist on PC reboot but not on Quest reboot.\n\nNOTE: If you haven't rebooted your Quest it may be idle.\n\nTo prevent this press the HOLD button 2x prior to launching RSL. Or\nkeep your Quest plugged into power to keep it permanently \"awake\".\n\nHave you assigned your Quest a static IP in your router configuration?\n\nIf you no longer want to use Wireless ADB or your device was idle please hit CANCEL.", "DEVICE REBOOTED\\IDLE?", MessageBoxButtons.YesNoCancel);
                         if (dialogResult == DialogResult.Cancel)
                         {
-                            DialogResult dialogResult2 = FlexibleMessageBox.Show("Press OK to remove your stored IP address.\nIf your Quest went idle press the HOLD button on the device twice then press CANCEL to reconnect.", "REMOVE STORED IP?", MessageBoxButtons.OKCancel);
-                            if (dialogResult2 == DialogResult.Cancel)
+                            DialogResult dialogResult2 = FlexibleMessageBox.Show("PRESS YES TO DISABLE WIRELESS ADB.\n\nIf your Quest went idle press the HOLD button on the device twice then press NO to reconnect.\n\nIf you just want to exit this prompt press CANCEL.", "DISABLE WIRELESS ADB?", MessageBoxButtons.YesNoCancel);
+                            if (dialogResult2 == DialogResult.No)
                                 WakeDevice();
-                            if (dialogResult2 == DialogResult.OK)
+                            if (dialogResult2 == DialogResult.Yes)
                             {
                                 Properties.Settings.Default.IPAddress = "";
                                 Properties.Settings.Default.Save();
                                 WakeDevice();
+                            }
+                            if (dialogResult2 == DialogResult.Cancel)
+                            {
+                                return;
                             }
 
                         }

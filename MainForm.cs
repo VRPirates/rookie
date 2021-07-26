@@ -1197,15 +1197,12 @@ without him none of this would be possible
                 Properties.Settings.Default.IPAddress = IPcmnd;
                 Properties.Settings.Default.Save();
 
-                FlexibleMessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
+                MessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                     ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                 }
-
-                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
-                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
             }
             else
                 FlexibleMessageBox.Show("No device connected!");

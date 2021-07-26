@@ -1,6 +1,36 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.4.8 
+
+= Fixed wake on wifi prompt after enabling Wireless ADB.
+= Gave user an option to back out of automatic wireless 
+ADB connection restore after device is rebooted or has 
+gone idle.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD+JLIACgkQx/Rql1Vo
+czcd7Q//TbRjq1ePpP3PFUm+IDFt4HRnwFOyuS8/LVOh1FPUc66vXEh/BtzK5xgN
+ZPe4QRojSnZPzizkqzMnsXxhiFlwu+3Y3uA+S5JmdisfE0A0DaU9JBNv0IPCsQBG
+A3azgQrN/8waq+R1A/uK9mvcO1033cTV8SkTRIWqBSjcOBT+hdvL4UngAPgrYUvp
+GqYMx4/qNq8SyoYkY3VCN4LtX3iswPQkHxjwT1LB08gltMP7Hoxpaz5B1QJiC0gZ
+NRAWEOMSuhdZC1X87lo08hPMwUJrt12PDzHrrDjOz8eUSUtEqjqKHY0HTpyJ5wvK
+i5t0hvVC6bwXIRKeI7I8RESqGYoQYAoQDOHWMZ2fgclYOwjevMaE/1qbBpOmwBgz
+3g2UM7OH5DU2b+4Er+lrHEZSplVdC9fjifGEUjm8sD2Q+sW8PaJV0wtAMYy9mIzd
+pTrQE7rYGYllPJ8XAhzzLtGYXCwlrBeMdYhGjxmVet4+dtMEXAksemIq24PNxp2M
+1FEcM3+jLpi0GJ+PBF9qSR70ZrKwmQcgu2miVVxoYrRA5WADp3fI5VxbdAqxwOgl
+3SrI4htTvu2mBQ5x6wiWVXsWbEsDvCnx2+46FWVutdEc0QKGsmcm2znb6VjBc+Ho
+w3osj+rHbWYArCWjEYdezsP1aPRAs3Uly5tJrg4Q0wd9lxJHiaU=
+=ljkJ
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 
 RSL 2.4.7
 
