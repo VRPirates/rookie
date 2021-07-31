@@ -461,16 +461,18 @@ namespace AndroidSideloader
                 i++;
             }
 
+         
+
+            if (devicesComboBox.Items.Count > 0)
+                devicesComboBox.SelectedIndex = 0;
             battery = ADB.RunAdbCommandToString("shell dumpsys battery").Output;
             battery = Utilities.StringUtilities.RemoveEverythingBeforeFirst(battery, "level:");
             battery = Utilities.StringUtilities.RemoveEverythingAfterFirst(battery, "\n");
             battery = Utilities.StringUtilities.KeepOnlyNumbers(battery);
             BatteryLbl.Text = BatteryLbl.Text.Replace("N/A", battery);
-
-            if (devicesComboBox.Items.Count > 0)
-                devicesComboBox.SelectedIndex = 0;
-
             return devicesComboBox.SelectedIndex;
+
+
 
         }
 
@@ -747,10 +749,15 @@ namespace AndroidSideloader
                 return;
             }
             progressBar.Style = ProgressBarStyle.Marquee;
-
             string GameName = m_combo.SelectedItem.ToString();
+            string packageName = Sideloader.gameNameToPackageName(GameName);
+            if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
+                Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+
             ProcessOutput output = new ProcessOutput("", "");
             ChangeTitle("Extracting APK....");
+
+            Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
             Thread t1 = new Thread(() =>
             {
                 output = Sideloader.getApk(GameName);
@@ -760,10 +767,33 @@ namespace AndroidSideloader
 
             while (t1.IsAlive)
                 await Task.Delay(100);
+            ChangeTitle("Extracting obb if it exists....");
+            Thread t2 = new Thread(() =>
+            {
+               output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
+            });
+            t2.IsBackground = true;
+            t2.Start();
+
+            while (t2.IsAlive)
+                await Task.Delay(100);
+            ChangeTitle("Zipping extracted application...");
+            string cmd = $"7z a {packageName}.zip {packageName}";
+            string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+            Thread t3 = new Thread(() =>
+            {
+                ADB.RunCommandToString(cmd, path);
+            });
+            t3.IsBackground = true;
+            t3.Start();
+
+            while (t3.IsAlive)
+                await Task.Delay(100);
+            File.Move($"{Properties.Settings.Default.MainDir}\\{packageName}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip");
+            FlexibleMessageBox.Show($"The app has been zipped and placed on your desktop as\n\n{GameName}.zip\n\nPlease upload this file to a free file hosting service like\n https://1fichier.com or https://mega.nz and share the link with a moderator.");
+            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
             progressBar.Style = ProgressBarStyle.Continuous;
-            ChangeTitle("APK Extracted to " + Properties.Settings.Default.MainDir + ". Opening folder now.");
-            Process.Start("explorer.exe", Properties.Settings.Default.MainDir);
-            ShowPrcOutput(output);
+            ChangeTitle("");
         }
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
@@ -1006,7 +1036,7 @@ namespace AndroidSideloader
         {
             DragDropLbl.Visible = false;
         }
-        private void initListView()
+        private async void initListView()
         {
             gamesListView.Items.Clear();
             gamesListView.Columns.Clear();
@@ -1067,6 +1097,74 @@ namespace AndroidSideloader
                                 Game.BackColor = Color.FromArgb(120, 0, 0);     
                                 else
                                 Game.BackColor = Color.FromArgb(102, 77, 0);
+                            }
+                            bool dontget = false;
+                            if (installedVersionInt > cloudVersionInt)
+                            {
+                                string RlsName = Sideloader.PackageNametoGameName(packagename);
+                                string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                                if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\blacklist.txt"))
+                                {
+                                    string[] blacklist = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\blacklist.txt");
+
+                                    foreach (string blacklistpckg in blacklist)
+                                    {
+                                        if (packagename.Contains(blacklistpckg))
+                                        {
+                                            dontget = true;
+                                        }
+                                    }
+                                }
+                                if (!GameName.Contains("Beat Saber") && !dontget)
+                                {
+                                    DialogResult dialogResult = FlexibleMessageBox.Show($"It seems you have a newer version of:\n\n{GameName}\n\nPlease consider sharing the updated files with us.\nThis is the only way to keep the apps up to date for everyone.\nWould you like to share the files with us?\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "Share clean files?", MessageBoxButtons.YesNo);
+                                    if (dialogResult == DialogResult.Yes)
+                                    {
+                                        Thread t1 = new Thread(() =>
+                                        {
+                                            Sideloader.getApk(GameName);
+                                        });
+                                        t1.IsBackground = true;
+                                        t1.Start();
+
+                                        while (t1.IsAlive)
+                                            await Task.Delay(100);
+                                        ChangeTitle("Extracting obb if it exists....");
+                                        Thread t2 = new Thread(() =>
+                                        {
+                                            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packagename}\" \"{Properties.Settings.Default.MainDir}\\{packagename}\"");
+                                        });
+                                        t2.IsBackground = true;
+                                        t2.Start();
+
+                                        while (t2.IsAlive)
+                                            await Task.Delay(100);
+                                        ChangeTitle("Zipping extracted application...");
+                                        string cmd = $"7z a {packagename}.zip {packagename}";
+                                        string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+
+                                        Thread t3 = new Thread(() =>
+                                        {
+                                            ADB.RunCommandToString(cmd, path);
+                                            if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip"))
+                                                File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip");
+                                            File.Move($"{Properties.Settings.Default.MainDir}\\{packagename}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip");
+                                            FlexibleMessageBox.Show($"The app has been zipped and placed on your desktop as\n\n{GameName}.zip\n\nPlease upload this file to a free file hosting service like\n https://1fichier.com or https://mega.nz and share the link with a moderator.");
+                                            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packagename}", true);
+                                        });
+                                        t3.IsBackground = true;
+                                        t3.Start();
+
+                                        while (t3.IsAlive)
+                                            await Task.Delay(100);
+                                       
+                                        progressBar.Style = ProgressBarStyle.Continuous;
+                                        ChangeTitle("");
+                                    }
+                                    else MessageBox.Show("Ok, we understand, but remember: If everyone said No then none of this would exist!\nPlease reconsider and share the files so everyone can benefit!");
+
+                                }    
+                            
                             }
                         }
                         catch (Exception ex)

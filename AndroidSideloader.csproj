@@ -260,6 +260,7 @@
   <ItemGroup>
     <Content Include="changelog.txt" />
     <Content Include="icon.ico" />
+    <Content Include="ChangelogHistory.txt" />
     <None Include="Resources\battery11.png" />
     <None Include="Resources\battery.png" />
     <None Include="Resources\battery1.png" />

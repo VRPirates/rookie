@@ -26,7 +26,7 @@ namespace AndroidSideloader
             {
                 command = $" -s {DeviceID} {command}";
             }
-            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP")) 
+            if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP"))
             {
 
                 string logcmd = command;
@@ -66,7 +66,7 @@ namespace AndroidSideloader
                 }
             }
             else
-            adb.WaitForExit();
+                adb.WaitForExit();
             if (error.Contains("ADB_VENDOR_KEYS"))
             {
                 FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
@@ -76,8 +76,8 @@ namespace AndroidSideloader
             {
                 FlexibleMessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
-            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null)) 
-            Logger.Log(output);
+            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null))
+                Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
         }
@@ -117,7 +117,7 @@ namespace AndroidSideloader
             catch { }
             if (command.Contains("connect"))
             {
-                bool graceful = adb.WaitForExit(3000); 
+                bool graceful = adb.WaitForExit(3000);
                 if (!graceful)
                 {
                     adb.Kill();
@@ -134,7 +134,7 @@ namespace AndroidSideloader
             Logger.Log(error);
             return new ProcessOutput(output, error);
         }
-        public static ProcessOutput RunCommandToString(string result, string path)
+        public static ProcessOutput RunCommandToString(string result, string path = "")
         {
             string command = result;
             Properties.Settings.Default.ADBFolder = adbFolderPath;
@@ -145,7 +145,7 @@ namespace AndroidSideloader
             if (logcmd.Contains(Environment.CurrentDirectory))
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
             Logger.Log($"Running command: {logcmd}");
-            adb.StartInfo.FileName = @"C:\windows\system32\cmd.exe";
+            adb.StartInfo.FileName = "cmd.exe";
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
@@ -338,6 +338,7 @@ namespace AndroidSideloader
 
                 }
             }
+
         }
 
 
@@ -380,7 +381,7 @@ namespace AndroidSideloader
                     else
                     {
                         DialogResult dialogResult = FlexibleMessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
-                        if (dialogResult == DialogResult.Cancel) 
+                        if (dialogResult == DialogResult.Cancel)
                         {
                             return ret;
                         }
@@ -427,8 +428,8 @@ namespace AndroidSideloader
                     ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
                 }
             }
-            
-        
+
+
             Program.form.ChangeTitle("");
             return ret;
         }
@@ -436,7 +437,9 @@ namespace AndroidSideloader
         public static ProcessOutput CopyOBB(string path)
         {
             WakeDevice();
-            if (Path.GetDirectoryName(path).Contains(".") && !Path.GetDirectoryName(path).Contains("_data") || path.Contains("."))
+
+            string folder = Path.GetFileName(path);
+            if (!folder.Contains("+") && !folder.Contains("_") && folder.Contains("."))
             {
              return RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"");
             }

@@ -114,7 +114,7 @@
             this.m_combo.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.m_combo.Location = new System.Drawing.Point(227, 8);
             this.m_combo.Name = "m_combo";
-            this.m_combo.Size = new System.Drawing.Size(353, 24);
+            this.m_combo.Size = new System.Drawing.Size(353, 26);
             this.m_combo.TabIndex = 0;
             this.m_combo.Text = "Select an app to uninstall...";
             // 
@@ -239,7 +239,7 @@
             this.getApkButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
             this.getApkButton.Size = new System.Drawing.Size(218, 28);
             this.getApkButton.TabIndex = 2;
-            this.getApkButton.Text = "Extract Apk from device";
+            this.getApkButton.Text = "Extract App to Desktop";
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.getApkButton.UseVisualStyleBackColor = false;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
@@ -370,7 +370,7 @@
             this.BatteryLbl.BackColor = System.Drawing.Color.Transparent;
             this.BatteryLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BatteryLbl.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.BatteryLbl.Location = new System.Drawing.Point(157, 580);
+            this.BatteryLbl.Location = new System.Drawing.Point(156, 580);
             this.BatteryLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.BatteryLbl.Name = "BatteryLbl";
             this.BatteryLbl.Size = new System.Drawing.Size(47, 17);
@@ -737,7 +737,7 @@
             this.diskLabel.Location = new System.Drawing.Point(7, 622);
             this.diskLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.diskLabel.Name = "diskLabel";
-            this.diskLabel.Size = new System.Drawing.Size(74, 17);
+            this.diskLabel.Size = new System.Drawing.Size(77, 18);
             this.diskLabel.TabIndex = 7;
             this.diskLabel.Text = "Disk Label";
             // 
@@ -751,7 +751,7 @@
             this.speedLabel.Location = new System.Drawing.Point(7, 680);
             this.speedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(141, 17);
+            this.speedLabel.Size = new System.Drawing.Size(149, 18);
             this.speedLabel.TabIndex = 76;
             this.speedLabel.Text = "DLS: Speed in MBPS";
             // 
@@ -765,7 +765,7 @@
             this.etaLabel.Location = new System.Drawing.Point(7, 699);
             this.etaLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.etaLabel.Name = "etaLabel";
-            this.etaLabel.Size = new System.Drawing.Size(139, 17);
+            this.etaLabel.Size = new System.Drawing.Size(148, 18);
             this.etaLabel.TabIndex = 75;
             this.etaLabel.Text = "ETA: HH:MM:SS Left";
             // 
@@ -799,11 +799,11 @@
             this.gamesQueListBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.gamesQueListBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesQueListBox.FormattingEnabled = true;
-            this.gamesQueListBox.ItemHeight = 16;
+            this.gamesQueListBox.ItemHeight = 18;
             this.gamesQueListBox.Location = new System.Drawing.Point(601, 475);
             this.gamesQueListBox.Margin = new System.Windows.Forms.Padding(2);
             this.gamesQueListBox.Name = "gamesQueListBox";
-            this.gamesQueListBox.Size = new System.Drawing.Size(369, 162);
+            this.gamesQueListBox.Size = new System.Drawing.Size(369, 128);
             this.gamesQueListBox.TabIndex = 9;
             this.gamesQueListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gamesQueListBox_MouseClick);
             // 
@@ -820,7 +820,7 @@
             this.devicesComboBox.Location = new System.Drawing.Point(227, 39);
             this.devicesComboBox.Margin = new System.Windows.Forms.Padding(2);
             this.devicesComboBox.Name = "devicesComboBox";
-            this.devicesComboBox.Size = new System.Drawing.Size(161, 24);
+            this.devicesComboBox.Size = new System.Drawing.Size(161, 26);
             this.devicesComboBox.TabIndex = 1;
             this.devicesComboBox.Text = "Select your device";
             this.devicesComboBox.SelectedIndexChanged += new System.EventHandler(this.devicesComboBox_SelectedIndexChanged);
@@ -838,7 +838,7 @@
             this.remotesList.Location = new System.Drawing.Point(527, 39);
             this.remotesList.Margin = new System.Windows.Forms.Padding(2);
             this.remotesList.Name = "remotesList";
-            this.remotesList.Size = new System.Drawing.Size(53, 24);
+            this.remotesList.Size = new System.Drawing.Size(53, 26);
             this.remotesList.TabIndex = 3;
             this.remotesList.SelectedIndexChanged += new System.EventHandler(this.remotesList_SelectedIndexChanged);
             // 
@@ -878,7 +878,7 @@
             this.searchTextBox.MaximumSize = new System.Drawing.Size(231, 26);
             this.searchTextBox.MinimumSize = new System.Drawing.Size(231, 26);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(231, 23);
+            this.searchTextBox.Size = new System.Drawing.Size(231, 24);
             this.searchTextBox.TabIndex = 5;
             this.searchTextBox.Text = "Search";
             this.searchTextBox.Visible = false;
@@ -895,7 +895,7 @@
             this.gamesQueueLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesQueueLabel.Location = new System.Drawing.Point(597, 601);
             this.gamesQueueLabel.Name = "gamesQueueLabel";
-            this.gamesQueueLabel.Size = new System.Drawing.Size(51, 17);
+            this.gamesQueueLabel.Size = new System.Drawing.Size(52, 18);
             this.gamesQueueLabel.TabIndex = 86;
             this.gamesQueueLabel.Text = "Queue";
             // 
@@ -974,7 +974,7 @@
             this.label1.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label1.Location = new System.Drawing.Point(597, 674);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(45, 17);
+            this.label1.Size = new System.Drawing.Size(48, 18);
             this.label1.TabIndex = 86;
             this.label1.Text = "Notes";
             // 
@@ -1096,7 +1096,7 @@
             this.EnterInstallBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.EnterInstallBox.Location = new System.Drawing.Point(593, 7);
             this.EnterInstallBox.Name = "EnterInstallBox";
-            this.EnterInstallBox.Size = new System.Drawing.Size(78, 52);
+            this.EnterInstallBox.Size = new System.Drawing.Size(80, 54);
             this.EnterInstallBox.TabIndex = 93;
             this.EnterInstallBox.Text = "  Install w/ \r\n Enter Key";
             this.EnterInstallBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1119,7 +1119,7 @@
             this.ADBcommandbox.MaximumSize = new System.Drawing.Size(231, 26);
             this.ADBcommandbox.MinimumSize = new System.Drawing.Size(231, 26);
             this.ADBcommandbox.Name = "ADBcommandbox";
-            this.ADBcommandbox.Size = new System.Drawing.Size(231, 23);
+            this.ADBcommandbox.Size = new System.Drawing.Size(231, 24);
             this.ADBcommandbox.TabIndex = 5;
             this.ADBcommandbox.Visible = false;
             this.ADBcommandbox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);

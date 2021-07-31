@@ -170,6 +170,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         //Extracts apk from device, saves it by package name to sideloader folder
         public static ProcessOutput getApk(string GameName)
         {
+
             ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");
 
@@ -185,13 +186,12 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
 
+            if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
+                Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
 
-            if (File.Exists(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk"))
-                File.Delete(Properties.Settings.Default.MainDir + "\\" + packageName + ".apk");
+            Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
 
-            MessageBox.Show("APK is named" + packageName + ".apk. Opening containing folder now.");
-            File.Move(Properties.Settings.Default.ADBFolder + "\\base.apk", Environment.CurrentDirectory + "\\" + packageName + ".apk");
-
+            File.Move($"{Properties.Settings.Default.ADBFolder}\\base.apk", $"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk");
             return output;
         }
 
