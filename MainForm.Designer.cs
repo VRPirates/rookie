@@ -803,7 +803,7 @@
             this.gamesQueListBox.Location = new System.Drawing.Point(601, 475);
             this.gamesQueListBox.Margin = new System.Windows.Forms.Padding(2);
             this.gamesQueListBox.Name = "gamesQueListBox";
-            this.gamesQueListBox.Size = new System.Drawing.Size(369, 128);
+            this.gamesQueListBox.Size = new System.Drawing.Size(369, 146);
             this.gamesQueListBox.TabIndex = 9;
             this.gamesQueListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gamesQueListBox_MouseClick);
             // 
@@ -948,7 +948,7 @@
             this.notesRichTextBox.ShowSelectionMargin = true;
             this.notesRichTextBox.Size = new System.Drawing.Size(369, 67);
             this.notesRichTextBox.TabIndex = 10;
-            this.notesRichTextBox.Text = "";
+            this.notesRichTextBox.Text = "\n\n\n                                   TIP: PRESS F1 TO SEE A LIST OF SHORTCUTS";
             // 
             // DragDropLbl
             // 
@@ -999,7 +999,7 @@
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.label2.Location = new System.Drawing.Point(465, 196);
+            this.label2.Location = new System.Drawing.Point(464, 196);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(271, 120);
             this.label2.TabIndex = 89;
@@ -1029,11 +1029,11 @@
             this.label4.AutoSize = true;
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(532, 284);
+            this.label4.Location = new System.Drawing.Point(506, 283);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(132, 17);
+            this.label4.Size = new System.Drawing.Size(183, 17);
             this.label4.TabIndex = 90;
-            this.label4.Text = "Shorcut: CTRL+F";
+            this.label4.Text = "Shorcuts: CTRL+F or F2";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.label4.Visible = false;
             // 
@@ -1044,9 +1044,9 @@
             this.label5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label5.Location = new System.Drawing.Point(692, 11);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(99, 17);
+            this.label5.Size = new System.Drawing.Size(105, 17);
             this.label5.TabIndex = 90;
-            this.label5.Text = "Search apps";
+            this.label5.Text = "Quick Search";
             this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // label6
@@ -1206,6 +1206,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.ClientSize = new System.Drawing.Size(980, 721);
+            this.Controls.Add(this.label4);
             this.Controls.Add(this.EnterInstallBox);
             this.Controls.Add(this.ProgressText);
             this.Controls.Add(this.pictureBox4);
@@ -1216,7 +1217,6 @@
             this.Controls.Add(this.label8);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.label11);
-            this.Controls.Add(this.label4);
             this.Controls.Add(this.ADBcommandbox);
             this.Controls.Add(this.searchTextBox);
             this.Controls.Add(this.label9);

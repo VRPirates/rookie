@@ -1,6 +1,49 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.5.1
+
++ Added PARTIAL SEARCH compatibility to Quick Search. Quick 
+Search now works if users type one word or one part of a word 
+that matches a release. For example if an app was named 
+"Supercool Awesome Application", typing "Application", 
+"Awesome", or even "Cool" would work as it works with parts of 
+words as well. 
+
+NOTE:As a reminder you can open Quick Search with F2, CTRL+F 
+or by cllicking on the Quick Search magnifying glass icon.
+
++ Added a blocklist for apps that can't be updated for various 
+reasons. This will prevent users from being asked to send apps 
+that cannot be used.
++ Added .png support for gameslist thumbnails.
++ Added tip under Notes section at launch to remind users they 
+can press F1 to view all of the program shortcuts added in a 
+prior update. 
+= Some minor syntax updates.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEGqr8ACgkQx/Rql1Vo
+czftJA//ePxg5+fuAoYNfl2D8yKpzhkvQldkdZia1GJiHBb4CJBwdhMDpDeNhKzO
+ziJ5yBNLqx6wWSbHV70PF4fagASA81FeLbJxdJX4gFgtX9MpzoR2ppK+Gy1UYVGw
+ij1fjQIIIHXyAVDgaS4DcRQrgxtc6R2G3iey3EBaxtaWDh2cR3sWdR6QMcZSJ/0S
+/QLXROCCCIHc1mTsf37b2qQVQ/v2Yk/UAGSV6/VdN78QE7Z8dPqCLZvM+10mfXTE
+AOJ6WkZBVA7HkpRgEGVtTLor+kwDROshkq+eM7yMREFv6GwHtd5H0hHGhRr/FoVW
+E99TfabD9Rd5P7tvcYm2c6Diu7yz2ai7l7N6G77wr+lOfsmIniHeUYEWsPOcZHQH
+P+0Xvx84cHj6Dd2+zfCWcI/jPamfgzgxrBS/pSXJ5ktdrCiJRnqeU9FhJxhGF002
+7+iIZTumhAU4ab8LhSzkMg+hwhzTrhmgbeZE1jdwLiLQ3vyYszEB5zflubt86pLq
+WXVvupQKtCGek1B3ETvU2YzNaQe6vVjqrh0sHkwgYgwfhLg9+gc+c3Rtq6ighqfc
+KNDocmVcNOJMNkre/DOTmVU6ULg22pXlj0PgWkxph/vt1SegMbPMVGUJD0ncIqL8
+eQbzNOltkzALWel4S2Itvv/JgoDU1YDupJmZNh66ihKBuIdcT0k=
+=wU75
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 
 RSL 2.5
 
@@ -37,54 +80,3 @@ LkPCpNo2w5gtx7+8Jv65Z/BlueUVmVWUHhQ2gHRkXenkg3McEZpqwKInqQSZkHpZ
 USckVtW+iteVVR0yf+hFPRGp+Shz6/GIn9YnwVQCT2DK+ih9zD4=
 =0bPq
 -----END PGP SIGNATURE-----
-
-
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-RSL 2.4.8 
-
-= Fixed wake on wifi prompt after enabling Wireless ADB.
-= Gave user an option to back out of automatic wireless 
-ADB connection restore after device is rebooted or has 
-gone idle.
-
-HFP
- 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmD+JLIACgkQx/Rql1Vo
-czcd7Q//TbRjq1ePpP3PFUm+IDFt4HRnwFOyuS8/LVOh1FPUc66vXEh/BtzK5xgN
-ZPe4QRojSnZPzizkqzMnsXxhiFlwu+3Y3uA+S5JmdisfE0A0DaU9JBNv0IPCsQBG
-A3azgQrN/8waq+R1A/uK9mvcO1033cTV8SkTRIWqBSjcOBT+hdvL4UngAPgrYUvp
-GqYMx4/qNq8SyoYkY3VCN4LtX3iswPQkHxjwT1LB08gltMP7Hoxpaz5B1QJiC0gZ
-NRAWEOMSuhdZC1X87lo08hPMwUJrt12PDzHrrDjOz8eUSUtEqjqKHY0HTpyJ5wvK
-i5t0hvVC6bwXIRKeI7I8RESqGYoQYAoQDOHWMZ2fgclYOwjevMaE/1qbBpOmwBgz
-3g2UM7OH5DU2b+4Er+lrHEZSplVdC9fjifGEUjm8sD2Q+sW8PaJV0wtAMYy9mIzd
-pTrQE7rYGYllPJ8XAhzzLtGYXCwlrBeMdYhGjxmVet4+dtMEXAksemIq24PNxp2M
-1FEcM3+jLpi0GJ+PBF9qSR70ZrKwmQcgu2miVVxoYrRA5WADp3fI5VxbdAqxwOgl
-3SrI4htTvu2mBQ5x6wiWVXsWbEsDvCnx2+46FWVutdEc0QKGsmcm2znb6VjBc+Ho
-w3osj+rHbWYArCWjEYdezsP1aPRAs3Uly5tJrg4Q0wd9lxJHiaU=
-=ljkJ
------END PGP SIGNATURE-----
-
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-
-RSL 2.4.7
-
-+ Added battery percentage to stats on bottom left.
-= Fixed using ENTER key to install option.
-= Fixed  using Enter to install from Quick Search.
-= Fixed install feed message when using Enter to Install.
-= All important message boxes will remain on top
-until user selects an option..
-= Settings form and Quest Options form will remain on top
-until closed.
-= Fixed changelog formatting so updater box isn't so wide.
-
-HFP
- 

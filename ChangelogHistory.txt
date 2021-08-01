@@ -1,6 +1,49 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.5.1
+
++ Added PARTIAL SEARCH compatibility to Quick Search. Quick 
+Search now works if users type one word or one part of a word 
+that matches a release. For example if an app was named 
+"Supercool Awesome Application", typing "Application", 
+"Awesome", or even "Cool" would work as it works with parts of 
+words as well. 
+
+NOTE:As a reminder you can open Quick Search with F2, CTRL+F 
+or by cllicking on the Quick Search magnifying glass icon.
+
++ Added a blocklist for apps that can't be updated for various 
+reasons. This will prevent users from being asked to send apps 
+that cannot be used.
++ Added .png support for gameslist thumbnails.
++ Added tip under Notes section at launch to remind users they 
+can press F1 to view all of the program shortcuts added in a 
+prior update. 
+= Some minor syntax updates.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEGqr8ACgkQx/Rql1Vo
+czftJA//ePxg5+fuAoYNfl2D8yKpzhkvQldkdZia1GJiHBb4CJBwdhMDpDeNhKzO
+ziJ5yBNLqx6wWSbHV70PF4fagASA81FeLbJxdJX4gFgtX9MpzoR2ppK+Gy1UYVGw
+ij1fjQIIIHXyAVDgaS4DcRQrgxtc6R2G3iey3EBaxtaWDh2cR3sWdR6QMcZSJ/0S
+/QLXROCCCIHc1mTsf37b2qQVQ/v2Yk/UAGSV6/VdN78QE7Z8dPqCLZvM+10mfXTE
+AOJ6WkZBVA7HkpRgEGVtTLor+kwDROshkq+eM7yMREFv6GwHtd5H0hHGhRr/FoVW
+E99TfabD9Rd5P7tvcYm2c6Diu7yz2ai7l7N6G77wr+lOfsmIniHeUYEWsPOcZHQH
+P+0Xvx84cHj6Dd2+zfCWcI/jPamfgzgxrBS/pSXJ5ktdrCiJRnqeU9FhJxhGF002
+7+iIZTumhAU4ab8LhSzkMg+hwhzTrhmgbeZE1jdwLiLQ3vyYszEB5zflubt86pLq
+WXVvupQKtCGek1B3ETvU2YzNaQe6vVjqrh0sHkwgYgwfhLg9+gc+c3Rtq6ighqfc
+KNDocmVcNOJMNkre/DOTmVU6ULg22pXlj0PgWkxph/vt1SegMbPMVGUJD0ncIqL8
+eQbzNOltkzALWel4S2Itvv/JgoDU1YDupJmZNh66ihKBuIdcT0k=
+=wU75
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.5
 
 + Upgraded Extract APK from device to Extract APP to Desktop.

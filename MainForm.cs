@@ -247,7 +247,7 @@ namespace AndroidSideloader
                 initMirrors(true);
                 ChangeTitle("Initializing Games");
                 if (!Directory.Exists(SideloaderRCLONE.Nouns))
-                 SideloaderRCLONE.UpdateNouns(currentRemote);
+                    SideloaderRCLONE.UpdateNouns(currentRemote);
                 SideloaderRCLONE.initGames(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
@@ -255,6 +255,14 @@ namespace AndroidSideloader
                 }
                 ChangeTitle("Syncing Game Photos");
                 SideloaderRCLONE.UpdateGamePhotos(currentRemote);
+                
+                if (Directory.Exists(SideloaderRCLONE.Nouns))
+                {
+                    ChangeTitle("Updating list of needed clean apps...");
+                    SideloaderRCLONE.UpdateNouns(currentRemote);
+                }
+             
+       
                 ChangeTitle("Checking for Updates on server...");
                 SideloaderRCLONE.UpdateGameNotes(currentRemote);
                 listappsbtn();
@@ -1149,7 +1157,7 @@ namespace AndroidSideloader
                                             if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip"))
                                                 File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip");
                                             File.Move($"{Properties.Settings.Default.MainDir}\\{packagename}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName}.zip");
-                                            FlexibleMessageBox.Show($"The app has been zipped and placed on your desktop as\n\n{GameName}.zip\n\nPlease upload this file to a free file hosting service like\n https://1fichier.com or https://mega.nz and share the link with a moderator.");
+                                            FlexibleMessageBox.Show($"The app has been zipped and placed on your desktop as\n\n{GameName}.zip\n\nPlease upload this file to a free file hosting service like\n https://1fichier.com or https://mega.nz \nThen share the link to the moderators listed in the\npinned message on Telegram.");
                                             Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packagename}", true);
                                         });
                                         t3.IsBackground = true;
@@ -1959,7 +1967,8 @@ without him none of this would be possible
             System.Windows.Forms.KeyPressEventHandler(CheckEnter);
             if (gamesListView.Items.Count > 0)
             {
-                ListViewItem foundItem = gamesListView.FindItemWithText(searchTextBox.Text, true, 0, true);
+                ListViewItem foundItem = gamesListView.Items.Cast<ListViewItem>()
+                .FirstOrDefault(i => i.Text.IndexOf(searchTextBox.Text, StringComparison.CurrentCultureIgnoreCase) >= 0);
                 if (foundItem != null)
                 {
                     foundItem.Selected = true;
@@ -2003,7 +2012,11 @@ without him none of this would be possible
             }
             if (!keyheld)
             {
-                string ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
+                string ImagePath = "";
+                if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg"))
+                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
+                else if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png"))
+                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png";
                 if (gamesPictureBox.BackgroundImage != null)
                     gamesPictureBox.BackgroundImage.Dispose();
                 if (File.Exists(ImagePath) && !keyheld)
