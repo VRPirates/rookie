@@ -62,7 +62,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                 {
                     Program.form.ChangeTitle($"Running {cmd}");
                     Logger.Log($"Logging command: {cmd} from file: {path}");
-                    output += ADB.RunCommandToString(cmd, path);
+                    ADB.RunCommandToString(cmd, path);
                 }
                 if (cmd.StartsWith("adb"))
                 {
@@ -183,9 +183,12 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             apkPath = apkPath.Remove(apkPath.Length - 1);
             apkPath = apkPath.Remove(0, 8); //remove package:
             apkPath = apkPath.Remove(apkPath.Length - 1);
-
+            if (File.Exists($"{Properties.Settings.Default.ADBFolder}\\base.apk"))
+                File.Delete($"{Properties.Settings.Default.ADBFolder}\\base.apk");
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk"))
+                File.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk");
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
-
+           
             if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
                 Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
 
@@ -228,6 +231,17 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
             return gameName;
         }
+
+        public static string PackageNameToSimpleName(string gameName)
+        {
+            foreach (string[] game in SideloaderRCLONE.games)
+            {
+                if (gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
+                    return game[SideloaderRCLONE.GameNameIndex];
+            }
+            return gameName;
+        }
+
 
         //Downloads the required files
         public static void downloadFiles()

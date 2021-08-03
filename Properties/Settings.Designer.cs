@@ -574,5 +574,38 @@ namespace AndroidSideloader.Properties {
                 this["QblindOn"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool adbdebugwarned {
+            get {
+                return ((bool)(this["adbdebugwarned"]));
+            }
+            set {
+                this["adbdebugwarned"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool nodevicemode {
+            get {
+                return ((bool)(this["nodevicemode"]));
+            }
+            set {
+                this["nodevicemode"] = value;
+            }
+        }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool UsingBMBF {
+            get {
+                return ((bool)(this["UsingBMBF"]));
+            }
+        }
     }
 }

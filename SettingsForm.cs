@@ -33,6 +33,8 @@ namespace AndroidSideloader
             deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
             updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
             userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
+            nodevicemodeBox.Checked = Properties.Settings.Default.nodevicemode;
+
             if (Properties.Settings.Default.BandwithLimit.Length > 1)
             {
                 BandwithTextbox.Text = Properties.Settings.Default.BandwithLimit.Remove(Properties.Settings.Default.BandwithLimit.Length - 1);
@@ -207,6 +209,12 @@ namespace AndroidSideloader
         {
             if (CblindBox.Checked)
                 MessageBox.Show("You must restart Rookie's Sideloader OR click Refresh Updates List for changes to take effect.\n\nNOTE: Colors in the legend at the top right of the main window of Rookie won't update until you restart the program.");
+        }
+
+        private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.nodevicemode = nodevicemodeBox.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

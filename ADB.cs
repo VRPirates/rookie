@@ -67,16 +67,22 @@ namespace AndroidSideloader
             }
             else
                 adb.WaitForExit();
-            if (error.Contains("ADB_VENDOR_KEYS"))
+            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
             {
-                FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
-                ADB.WakeDevice();
+                DialogResult dialogResult = FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    Properties.Settings.Default.adbdebugwarned = true;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                    ADB.WakeDevice();
             }
             if (error.Contains("not enough storage space"))
             {
                 FlexibleMessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
-            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null))
+            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null))
                 Logger.Log(output);
             Logger.Log(error);
             return new ProcessOutput(output, error);
@@ -122,13 +128,30 @@ namespace AndroidSideloader
                 {
                     adb.Kill();
                 }
+                else
+                    adb.WaitForExit();
             }
-            else
-                adb.WaitForExit();
-            if (error.Contains("ADB_VENDOR_KEYS"))
+            else if (command.Contains("install"))
             {
-                FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
-                ADB.WakeDevice();
+                bool graceful = adb.WaitForExit(120000);
+                if (!graceful)
+                {
+                    adb.Kill();
+                }
+                else
+                    adb.WaitForExit();
+            }
+   
+            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
+            {
+                DialogResult dialogResult = FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    Properties.Settings.Default.adbdebugwarned = true;
+                    Properties.Settings.Default.Save();
+                }
+                else
+                    ADB.WakeDevice();
             }
             Logger.Log(output);
             Logger.Log(error);
@@ -178,9 +201,16 @@ namespace AndroidSideloader
             }
             else
                 adb.WaitForExit();
-            if (error.Contains("ADB_VENDOR_KEYS"))
+            
+            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
             {
-                FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.");
+                DialogResult dialogResult = FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    Properties.Settings.Default.adbdebugwarned = true;
+                    Properties.Settings.Default.Save();
+                }
+                else
                 ADB.WakeDevice();
             }
             Logger.Log(output);
@@ -246,7 +276,7 @@ namespace AndroidSideloader
         public static void WakeDevice()
         {
             string devicesout = RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP").Output;
-            if (!devicesout.Contains("found"))
+            if (!devicesout.Contains("found") && !Properties.Settings.Default.nodevicemode)
             {
                 if (Properties.Settings.Default.IPAddress.Contains("connect"))
                 {
@@ -353,13 +383,14 @@ namespace AndroidSideloader
             if (out2.Contains("failed"))
             {
                 string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
-                if (out2.Contains("offline"))
+                Logger.Log(out2);
+                if (out2.Contains("offline") && !Properties.Settings.Default.nodevicemode)
                 {
                     DialogResult dialogResult2 = FlexibleMessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                     if (dialogResult2 == DialogResult.Yes)
                         ADB.WakeDevice();
                 }
-                if (out2.Contains($"INSTALL_FAILED_UPDATE_INCOMPATIBLE") || out2.Contains("INSTALL_FAILED_VERSION_DOWNGRADE"))
+                if (out2.Contains($"INSTALL_FAILED_UPDATE_INCOMPATIBLE") || out2.Contains("INSTALL_FAILED_VERSION_DOWNGRADE") || out2.Contains("signatures do not match") || out2.Contains("failed to install"))
                 {
                     ret.Error = string.Empty;
                     ret.Output = string.Empty;

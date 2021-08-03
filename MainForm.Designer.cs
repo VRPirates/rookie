@@ -116,7 +116,7 @@
             this.m_combo.Name = "m_combo";
             this.m_combo.Size = new System.Drawing.Size(353, 26);
             this.m_combo.TabIndex = 0;
-            this.m_combo.Text = "Select an app to uninstall...";
+            this.m_combo.Text = "Select an app to uninstall or extract...";
             // 
             // startsideloadbutton
             // 
@@ -336,6 +336,8 @@
             this.downloadInstallGameButton.Text = "Download and Install Game/Add to Queue";
             this.downloadInstallGameButton.UseVisualStyleBackColor = false;
             this.downloadInstallGameButton.Click += new System.EventHandler(this.downloadInstallGameButton_Click);
+            this.downloadInstallGameButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.downloadInstallGameButton.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
             // panel1
             // 
@@ -806,6 +808,8 @@
             this.gamesQueListBox.Size = new System.Drawing.Size(369, 146);
             this.gamesQueListBox.TabIndex = 9;
             this.gamesQueListBox.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gamesQueListBox_MouseClick);
+            this.gamesQueListBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.gamesQueListBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
             // devicesComboBox
             // 
@@ -859,6 +863,8 @@
             this.gamesListView.UseCompatibleStateImageBehavior = false;
             this.gamesListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.gamesListView.SelectedIndexChanged += new System.EventHandler(this.gamesListView_SelectedIndexChanged);
+            this.gamesListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.gamesListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.gamesListView.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gamesListView_KeyPress);
             this.gamesListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gamesListView_MouseDoubleClick);
             // 
@@ -1198,6 +1204,8 @@
             this.gamesPictureBox.Size = new System.Drawing.Size(371, 214);
             this.gamesPictureBox.TabIndex = 84;
             this.gamesPictureBox.TabStop = false;
+            this.gamesPictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.gamesPictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
             // MainForm
             // 
