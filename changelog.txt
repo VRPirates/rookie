@@ -1,124 +1,42 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
-RSL 2.6
 
-+ Added No Device mode for those who wish to download games 
-overnight without interruption.
-+ Added automatic config update at launch.
-+ Added a unique HWID generator that will generate a unique 
-number based on your  PC's components and then encrypt it
-with SHA256. This is so donors can be anonymously identified 
-for the purpose of future benefits/recognition. Once.the HWID 
-is generated RSL then creates  a text file named HWID to put 
-with the  clean files in the zip. Users can see their unique 
-HWID at any time by pressing CTRL+H  in Rookie. Your unique HWID 
-will always be the same.
-= Added version code to any zip files created during clean files 
-prep.
-= Added boolean to check if user has been asked to send clean 
-files, if they have it won't appear again for some time.
-= Fixed OBB installation for Install+Download.
+RSL 2.7
 
-HFP
- 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEJuZYACgkQx/Rql1Vo
-cze1yg//Yyw+tRfA3hLxLQejXhj/LyFsGOoTCyqTVQDuUtxZxyMAFUN3SCd5sC3h
-byVpcoDMaBMGoOgE3FnpEvObd3SHVaB3xqw902saHPAhzuujv4Ru25ou+xRDU8c6
-+xXPQ3O4ocgHwlFP+nCVx3eXai8Dz/2OUc6JC2PfpjU/xj3B6cs/ExSrxoHqyCJL
-g5lntpE0dFQboe6gu7uEQn2Qal1Gsn2+MqCqQZh1dBIpF/gEPD8/q40St/lN7cdY
-jm1lVxW3By7muxlh9wcRYsxQk78cb49+Vsa+EcxS6GK0m8Hibp8nS7RoHFMBtC1i
-hgIZW5lt1cCj5WlwI3/t+vLR4Ia/eh7Vi0EiyVGhiOIQvCR2+PpkWWrVDe3zoXUX
-n68zFZlL2yoaCXg5AWPp3KiQff3uxlBD58fzNZRtKzjFPNmcYR6x7PcHfai76+JD
-aE36aC8Q3aMCaIaH+gH+eAhl+mzyX1Vhdl9NLLHLUXZwBnSA9drMHJsVMh6SOQiC
-VMiv1vMXJllKq/7W7EGr1fWFGuPJk6FFjT1g+3+2d71yVKyPL+99JQg7UJzp112w
-7ZUAD6Wt8lpW66I2zpcOBPwpoAlxg2uJy2Nc38axfrBpHsscNrYIXFMHEprLG+Xk
-PqnfDHPtP1sUxe2uiZTQj3JjlEnb4ES/xBdvSPacc53+fBPs0yM=
-=BAUp
------END PGP SIGNATURE-----
-
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-RSL 2.5.1
-
-+ Added PARTIAL SEARCH compatibility to Quick Search. Quick 
-Search now works if users type one word or one part of a word 
-that matches a release. For example if an app was named 
-"Supercool Awesome Application", typing "Application", 
-"Awesome", or even "Cool" would work as it works with parts of 
-words as well. 
-
-NOTE:As a reminder you can open Quick Search with F2, CTRL+F 
-or by cllicking on the Quick Search magnifying glass icon.
-
-+ Added a blocklist for apps that can't be updated for various 
-reasons. This will prevent users from being asked to send apps 
-that cannot be used.
-+ Added .png support for gameslist thumbnails.
-+ Added tip under Notes section at launch to remind users they 
-can press F1 to view all of the program shortcuts added in a 
-prior update. 
-= Some minor syntax updates.
++ Added BMBF drag and drop option for Quest users
+in SETTINGS menu.If users drag and drop BMBF song 
+zip files onto rookie either one by one, an entire 
+folder, or many zips at once Rookie will automatically
+extract the files to a folder then push the folder
+to your device then delete the extraction folder.
++ Added automatic timeout during APK install that
+will ask user if they'd like Rookie to automatically
+uninstall and reinstall the app. Rookie will check
+for save data and copy it to a folder temporarily
+then put it back after reinstall.
+= Cleaned up startup tasks so booting Rookie should
+be faster.
+= Added automatic deletion of previous crashlog to 
+decrease clutter in Rookie directory.
+= Added automatic installed app refresh after drag
+and drop.
 
 HFP
  
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEGqr8ACgkQx/Rql1Vo
-czftJA//ePxg5+fuAoYNfl2D8yKpzhkvQldkdZia1GJiHBb4CJBwdhMDpDeNhKzO
-ziJ5yBNLqx6wWSbHV70PF4fagASA81FeLbJxdJX4gFgtX9MpzoR2ppK+Gy1UYVGw
-ij1fjQIIIHXyAVDgaS4DcRQrgxtc6R2G3iey3EBaxtaWDh2cR3sWdR6QMcZSJ/0S
-/QLXROCCCIHc1mTsf37b2qQVQ/v2Yk/UAGSV6/VdN78QE7Z8dPqCLZvM+10mfXTE
-AOJ6WkZBVA7HkpRgEGVtTLor+kwDROshkq+eM7yMREFv6GwHtd5H0hHGhRr/FoVW
-E99TfabD9Rd5P7tvcYm2c6Diu7yz2ai7l7N6G77wr+lOfsmIniHeUYEWsPOcZHQH
-P+0Xvx84cHj6Dd2+zfCWcI/jPamfgzgxrBS/pSXJ5ktdrCiJRnqeU9FhJxhGF002
-7+iIZTumhAU4ab8LhSzkMg+hwhzTrhmgbeZE1jdwLiLQ3vyYszEB5zflubt86pLq
-WXVvupQKtCGek1B3ETvU2YzNaQe6vVjqrh0sHkwgYgwfhLg9+gc+c3Rtq6ighqfc
-KNDocmVcNOJMNkre/DOTmVU6ULg22pXlj0PgWkxph/vt1SegMbPMVGUJD0ncIqL8
-eQbzNOltkzALWel4S2Itvv/JgoDU1YDupJmZNh66ihKBuIdcT0k=
-=wU75
------END PGP SIGNATURE-----
-
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
-
-
-RSL 2.5
-
-+ Upgraded Extract APK from device to Extract APP to Desktop. 
-RSL will now automatically extract the APK file, then extract 
-the obb if there is any for the selected app, then it will 
-compress both into a zip file and place it on the desktop so 
-users can share their apps without issue.
-+ Added automatic detection of apps that are more updated than 
-the database user is connecting to, and if they are a pop up 
-will ask if user wants to share the app.
-= Fixed issue where copying a folder containing an obb folder 
-via drag and drop would cause the containing folder to be copied 
-to the obb folder as well.
-= Changelog.txt now only contains the 3 most recent updates 
-including the most current, the older changelogs can be found 
-in the ChangelogHistory text file.
-
-HFP
- 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEFcMEACgkQx/Rql1Vo
-czdoWA//cbngmK/it4fy6Hy/5JMGubJvCb0Ar+KY0UCO5FR60Q+ADCrkhPDEaWif
-xnM+h4CLqyHUD0NipUxsjZ4j25VRMA20eTy3jiLKSZKq6P6KD+oRv0Tx3vTEs61U
-wJdQsWK81cC9+BnhCBDuWpDJ/nCqO9ZJBYdKX0+KuYTVZwaaZSfMXD1dgQsrCQCq
-zU5kgrsl+LDUJknnpfda521pbACgHlZ/Cb3bztqgnSviF38jFuYsJe7hJVjsINYz
-j6HtmT+vn3Rxhk6uRTtUNhM1YVvuKzsZtUNvqd7cjT3FJXWuuoP8mgdauSahVnpQ
-jMLu/dMLx0PkRXox/D8/69tDA1dxNZozXvws0OQfmNlzLfLGPZdVSWVjfU+P0feA
-hMZiVICyAAJPnzfNAfVq2yDpU5wJbAhj3qG+Lj9Ox4dpmn7AUrjoUCFZxhZIZJi1
-KKKz+7Q9ZDkcFODCUzZAdrI0MP7MNrsfPl8jxSCLYFe6LUIOfTAakBkxOY9x02lF
-x08jfbpAsJHU3Wm8bruk+nkB+65J5kqsLkJk2n4yrkW3QtIo9xul/z9vgZKo75S6
-LkPCpNo2w5gtx7+8Jv65Z/BlueUVmVWUHhQ2gHRkXenkg3McEZpqwKInqQSZkHpZ
-USckVtW+iteVVR0yf+hFPRGp+Shz6/GIn9YnwVQCT2DK+ih9zD4=
-=0bPq
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmENfVMACgkQx/Rql1Vo
+czcxaw//bTVxR5gt1F4c+gDT80dVfJa1Js3h5vSjGgCHjQdmsU6eaU5BQGoUorkw
+6ewYF48jt84xDNj/VirkeqHV95mvsj9sksi+mxvELnAa0NdRVYj0DCqZWB/mNDfx
+lYZGp2SwiGK3a6KfMpPcbi2IEWqc9ZWpdazIDy6l3oGSBAYaoVqfjl+CJQQpomIJ
+x7f67Ei633dyhu8+0612LVu+tZ4ibN2pAAu1Dd5+uvlODUiYLPadhZkLwk+CYC6p
+ifs/1qB/fsXJS6YJyPCmuZCbYN//jLCD9ECQ5cqZbTTU82Ub2lDE+TcdO/CsxSxU
+pueIxZ+7C5TceiNzsDfKfeCWu65hZlBW1xKReDtLPFzZdZuyXYTI0v00kvapwJIO
+C9Eq2qxZvdnp05tw8nY1V4Ae5Jl6oLN0BwWSZv50NhQ4Dpmbl8pemk1r5iZsRhGA
+MWQCytBCaX/3EpJda8ifGJxj3kOno2ewbwXdZEMN7QqWt1scN9HxNXFWEJwO29HV
+pT6ra3T0OrOBLmCQGt4w71HGFK2t+c7aPq0yI/sayguB9zjR/GpTyekg7nHXZh9g
+c+WD5umN2xA0LuLjvvePKhhKTBT6ebmQJh1CRNIRtA150ULbnTAIpZJTDZyhcLXi
+IUfWyWPA4G3GsRUqGWf97O2G2bIbbIzLeg3uEdxF7T9LOigYgpU=
+=Rwj0
 -----END PGP SIGNATURE-----

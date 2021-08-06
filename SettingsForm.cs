@@ -34,6 +34,7 @@ namespace AndroidSideloader
             updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
             userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
             nodevicemodeBox.Checked = Properties.Settings.Default.nodevicemode;
+            bmbfBox.Checked = Properties.Settings.Default.BMBFchecked;
 
             if (Properties.Settings.Default.BandwithLimit.Length > 1)
             {
@@ -214,6 +215,12 @@ namespace AndroidSideloader
         private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.nodevicemode = nodevicemodeBox.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void bmbfBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.BMBFchecked = nodevicemodeBox.Checked;
             Properties.Settings.Default.Save();
         }
     }

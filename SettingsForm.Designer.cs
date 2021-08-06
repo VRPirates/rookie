@@ -47,6 +47,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.CblindBox = new System.Windows.Forms.CheckBox();
             this.nodevicemodeBox = new System.Windows.Forms.CheckBox();
+            this.bmbfBox = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -71,7 +72,7 @@
             this.applyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.applyButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.applyButton.Location = new System.Drawing.Point(67, 265);
+            this.applyButton.Location = new System.Drawing.Point(67, 280);
             this.applyButton.Name = "applyButton";
             this.applyButton.Size = new System.Drawing.Size(101, 31);
             this.applyButton.TabIndex = 5;
@@ -101,7 +102,7 @@
             this.resetSettingsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.resetSettingsButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.resetSettingsButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.resetSettingsButton.Location = new System.Drawing.Point(174, 265);
+            this.resetSettingsButton.Location = new System.Drawing.Point(174, 280);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Size = new System.Drawing.Size(101, 31);
             this.resetSettingsButton.TabIndex = 4;
@@ -156,7 +157,7 @@
             this.BandwithTextbox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.BandwithTextbox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.BandwithTextbox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.BandwithTextbox.Location = new System.Drawing.Point(52, 233);
+            this.BandwithTextbox.Location = new System.Drawing.Point(52, 248);
             this.BandwithTextbox.Name = "BandwithTextbox";
             this.BandwithTextbox.Size = new System.Drawing.Size(177, 24);
             this.BandwithTextbox.TabIndex = 11;
@@ -166,7 +167,7 @@
             this.label1.AutoSize = true;
             this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.label1.Location = new System.Drawing.Point(40, 210);
+            this.label1.Location = new System.Drawing.Point(40, 225);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(245, 18);
             this.label1.TabIndex = 12;
@@ -187,7 +188,7 @@
             "K",
             "M",
             "G"});
-            this.BandwithComboBox.Location = new System.Drawing.Point(235, 233);
+            this.BandwithComboBox.Location = new System.Drawing.Point(235, 248);
             this.BandwithComboBox.Name = "BandwithComboBox";
             this.BandwithComboBox.Size = new System.Drawing.Size(55, 26);
             this.BandwithComboBox.TabIndex = 13;
@@ -201,7 +202,7 @@
             this.DebugLogCopy.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.DebugLogCopy.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.DebugLogCopy.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.DebugLogCopy.Location = new System.Drawing.Point(29, 310);
+            this.DebugLogCopy.Location = new System.Drawing.Point(29, 325);
             this.DebugLogCopy.Name = "DebugLogCopy";
             this.DebugLogCopy.Size = new System.Drawing.Size(285, 31);
             this.DebugLogCopy.TabIndex = 5;
@@ -227,7 +228,7 @@
             this.button1.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.button1.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.button1.Location = new System.Drawing.Point(29, 345);
+            this.button1.Location = new System.Drawing.Point(29, 360);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(285, 31);
             this.button1.TabIndex = 5;
@@ -238,7 +239,7 @@
             // debuglogID
             // 
             this.debuglogID.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.debuglogID.Location = new System.Drawing.Point(29, 421);
+            this.debuglogID.Location = new System.Drawing.Point(29, 436);
             this.debuglogID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.debuglogID.Name = "debuglogID";
             this.debuglogID.Size = new System.Drawing.Size(285, 48);
@@ -253,7 +254,7 @@
             this.DebugID.Cursor = System.Windows.Forms.Cursors.Default;
             this.DebugID.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold);
             this.DebugID.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.DebugID.Location = new System.Drawing.Point(29, 392);
+            this.DebugID.Location = new System.Drawing.Point(29, 407);
             this.DebugID.Margin = new System.Windows.Forms.Padding(2);
             this.DebugID.Name = "DebugID";
             this.DebugID.ReadOnly = true;
@@ -266,7 +267,7 @@
             // label2
             // 
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label2.Location = new System.Drawing.Point(29, 492);
+            this.label2.Location = new System.Drawing.Point(29, 507);
             this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(284, 86);
@@ -283,7 +284,7 @@
             this.textBox1.Cursor = System.Windows.Forms.Cursors.Default;
             this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold);
             this.textBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBox1.Location = new System.Drawing.Point(29, 475);
+            this.textBox1.Location = new System.Drawing.Point(29, 490);
             this.textBox1.Margin = new System.Windows.Forms.Padding(2);
             this.textBox1.Name = "textBox1";
             this.textBox1.ReadOnly = true;
@@ -312,7 +313,7 @@
             this.nodevicemodeBox.AutoSize = true;
             this.nodevicemodeBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.nodevicemodeBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.nodevicemodeBox.Location = new System.Drawing.Point(12, 172);
+            this.nodevicemodeBox.Location = new System.Drawing.Point(12, 196);
             this.nodevicemodeBox.Name = "nodevicemodeBox";
             this.nodevicemodeBox.Size = new System.Drawing.Size(181, 22);
             this.nodevicemodeBox.TabIndex = 9;
@@ -320,12 +321,25 @@
             this.nodevicemodeBox.UseVisualStyleBackColor = true;
             this.nodevicemodeBox.CheckedChanged += new System.EventHandler(this.nodevicemodeBox_CheckedChanged);
             // 
+            // bmbfBox
+            // 
+            this.bmbfBox.AutoSize = true;
+            this.bmbfBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.bmbfBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.bmbfBox.Location = new System.Drawing.Point(12, 170);
+            this.bmbfBox.Name = "bmbfBox";
+            this.bmbfBox.Size = new System.Drawing.Size(281, 22);
+            this.bmbfBox.TabIndex = 9;
+            this.bmbfBox.Text = "Enable BMBF song zips drag and drop";
+            this.bmbfBox.UseVisualStyleBackColor = true;
+            this.bmbfBox.CheckedChanged += new System.EventHandler(this.bmbfBox_CheckedChanged);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.ClientSize = new System.Drawing.Size(342, 569);
+            this.ClientSize = new System.Drawing.Size(342, 606);
             this.Controls.Add(this.textBox1);
             this.Controls.Add(this.DebugID);
             this.Controls.Add(this.crashlogID);
@@ -334,6 +348,7 @@
             this.Controls.Add(this.BandwithComboBox);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.BandwithTextbox);
+            this.Controls.Add(this.bmbfBox);
             this.Controls.Add(this.nodevicemodeBox);
             this.Controls.Add(this.CblindBox);
             this.Controls.Add(this.userJsonOnGameInstall);
@@ -382,5 +397,6 @@
         private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.CheckBox CblindBox;
         private System.Windows.Forms.CheckBox nodevicemodeBox;
+        private System.Windows.Forms.CheckBox bmbfBox;
     }
 }

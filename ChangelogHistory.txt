@@ -1,6 +1,47 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.6
+
++ Added No Device mode for those who wish to download games 
+overnight without interruption.
++ Added automatic config update at launch.
++ Added a unique HWID generator that will generate a unique 
+number based on your  PC's components and then encrypt it
+with SHA256. This is so donors can be anonymously identified 
+for the purpose of future benefits/recognition. Once.the HWID 
+is generated RSL then creates  a text file named HWID to put 
+with the  clean files in the zip. Users can see their unique 
+HWID at any time by pressing CTRL+H  in Rookie. Your unique HWID 
+will always be the same.
+= Added version code to any zip files created during clean files 
+prep.
+= Added boolean to check if user has been asked to send clean 
+files, if they have it won't appear again for some time.
+= Fixed OBB installation for Install+Download.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEJuZYACgkQx/Rql1Vo
+cze1yg//Yyw+tRfA3hLxLQejXhj/LyFsGOoTCyqTVQDuUtxZxyMAFUN3SCd5sC3h
+byVpcoDMaBMGoOgE3FnpEvObd3SHVaB3xqw902saHPAhzuujv4Ru25ou+xRDU8c6
++xXPQ3O4ocgHwlFP+nCVx3eXai8Dz/2OUc6JC2PfpjU/xj3B6cs/ExSrxoHqyCJL
+g5lntpE0dFQboe6gu7uEQn2Qal1Gsn2+MqCqQZh1dBIpF/gEPD8/q40St/lN7cdY
+jm1lVxW3By7muxlh9wcRYsxQk78cb49+Vsa+EcxS6GK0m8Hibp8nS7RoHFMBtC1i
+hgIZW5lt1cCj5WlwI3/t+vLR4Ia/eh7Vi0EiyVGhiOIQvCR2+PpkWWrVDe3zoXUX
+n68zFZlL2yoaCXg5AWPp3KiQff3uxlBD58fzNZRtKzjFPNmcYR6x7PcHfai76+JD
+aE36aC8Q3aMCaIaH+gH+eAhl+mzyX1Vhdl9NLLHLUXZwBnSA9drMHJsVMh6SOQiC
+VMiv1vMXJllKq/7W7EGr1fWFGuPJk6FFjT1g+3+2d71yVKyPL+99JQg7UJzp112w
+7ZUAD6Wt8lpW66I2zpcOBPwpoAlxg2uJy2Nc38axfrBpHsscNrYIXFMHEprLG+Xk
+PqnfDHPtP1sUxe2uiZTQj3JjlEnb4ES/xBdvSPacc53+fBPs0yM=
+=BAUp
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.5.1
 
 + Added PARTIAL SEARCH compatibility to Quick Search. Quick 

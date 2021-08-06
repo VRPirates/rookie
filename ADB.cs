@@ -168,7 +168,7 @@ namespace AndroidSideloader
             if (logcmd.Contains(Environment.CurrentDirectory))
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
             Logger.Log($"Running command: {logcmd}");
-            adb.StartInfo.FileName = "cmd.exe";
+            adb.StartInfo.FileName = @"C:\Windows\System32\cmd.exe";
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
@@ -377,7 +377,6 @@ namespace AndroidSideloader
 
             WakeDevice();
             ProcessOutput ret = new ProcessOutput();
-            Program.form.ChangeTitle($"Sideloading {Path.GetFileName(path)}");
             ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             string out2 = ret.Output + ret.Error;
             if (out2.Contains("failed"))

@@ -856,9 +856,9 @@
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesListView.HideSelection = false;
-            this.gamesListView.Location = new System.Drawing.Point(224, 72);
+            this.gamesListView.Location = new System.Drawing.Point(224, 71);
             this.gamesListView.Name = "gamesListView";
-            this.gamesListView.Size = new System.Drawing.Size(746, 359);
+            this.gamesListView.Size = new System.Drawing.Size(746, 360);
             this.gamesListView.TabIndex = 6;
             this.gamesListView.UseCompatibleStateImageBehavior = false;
             this.gamesListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
