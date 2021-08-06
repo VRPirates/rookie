@@ -599,12 +599,15 @@ namespace AndroidSideloader.Properties {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool UsingBMBF {
+        public bool BMBFchecked {
             get {
-                return ((bool)(this["UsingBMBF"]));
+                return ((bool)(this["BMBFchecked"]));
+            }
+            set {
+                this["BMBFchecked"] = value;
             }
         }
     }

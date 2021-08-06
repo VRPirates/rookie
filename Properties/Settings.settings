@@ -146,7 +146,7 @@
     <Setting Name="nodevicemode" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="UsingBMBF" Type="System.Boolean" Scope="Application">
+    <Setting Name="BMBFchecked" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
