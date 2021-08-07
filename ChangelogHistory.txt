@@ -1,6 +1,49 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+
+RSL 2.7
+
++ Added BMBF drag and drop option for Quest users
+in SETTINGS menu.If users drag and drop BMBF song 
+zip files onto rookie either one by one, an entire 
+folder, or many zips at once Rookie will automatically
+extract the files to a folder then push the folder
+to your device then delete the extraction folder.
++ Added automatic timeout during APK install that
+will ask user if they'd like Rookie to automatically
+uninstall and reinstall the app. Rookie will check
+for save data and copy it to a folder temporarily
+then put it back after reinstall.
+= Cleaned up startup tasks so booting Rookie should
+be faster.
+= Added automatic deletion of previous crashlog to 
+decrease clutter in Rookie directory.
+= Added automatic installed app refresh after drag
+and drop.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmENfVMACgkQx/Rql1Vo
+czcxaw//bTVxR5gt1F4c+gDT80dVfJa1Js3h5vSjGgCHjQdmsU6eaU5BQGoUorkw
+6ewYF48jt84xDNj/VirkeqHV95mvsj9sksi+mxvELnAa0NdRVYj0DCqZWB/mNDfx
+lYZGp2SwiGK3a6KfMpPcbi2IEWqc9ZWpdazIDy6l3oGSBAYaoVqfjl+CJQQpomIJ
+x7f67Ei633dyhu8+0612LVu+tZ4ibN2pAAu1Dd5+uvlODUiYLPadhZkLwk+CYC6p
+ifs/1qB/fsXJS6YJyPCmuZCbYN//jLCD9ECQ5cqZbTTU82Ub2lDE+TcdO/CsxSxU
+pueIxZ+7C5TceiNzsDfKfeCWu65hZlBW1xKReDtLPFzZdZuyXYTI0v00kvapwJIO
+C9Eq2qxZvdnp05tw8nY1V4Ae5Jl6oLN0BwWSZv50NhQ4Dpmbl8pemk1r5iZsRhGA
+MWQCytBCaX/3EpJda8ifGJxj3kOno2ewbwXdZEMN7QqWt1scN9HxNXFWEJwO29HV
+pT6ra3T0OrOBLmCQGt4w71HGFK2t+c7aPq0yI/sayguB9zjR/GpTyekg7nHXZh9g
+c+WD5umN2xA0LuLjvvePKhhKTBT6ebmQJh1CRNIRtA150ULbnTAIpZJTDZyhcLXi
+IUfWyWPA4G3GsRUqGWf97O2G2bIbbIzLeg3uEdxF7T9LOigYgpU=
+=Rwj0
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.6
 
 + Added No Device mode for those who wish to download games 
