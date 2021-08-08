@@ -1248,6 +1248,10 @@ namespace AndroidSideloader
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
             updatesnotified = true;
+            if(gamesListView.Columns.Count > 0)
+            {
+                gamesListView.Columns[1].Width = 280;
+            }
         }
 
 
