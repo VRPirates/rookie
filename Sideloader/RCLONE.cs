@@ -7,6 +7,15 @@ using Newtonsoft.Json;
 
 namespace AndroidSideloader
 {
+    class rcloneFolder
+    {
+        public string Path { get; set; }
+        public string Name { get; set; }
+        public string Size { get; set; }
+        public string ModTime { get; set; }
+
+    }
+
     class SideloaderRCLONE
     {
         public static List<string> RemotesList = new List<string>();
@@ -38,12 +47,12 @@ namespace AndroidSideloader
 
         public static void UpdateNouns(string remote)
         {
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");  
-        }   
-        
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
+        }
+
         public static void UpdateGamePhotos(string remote)
         {
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");  
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
         }
 
         public static void UpdateGameNotes(string remote)
@@ -76,7 +85,7 @@ namespace AndroidSideloader
         {
             gameProperties.Clear();
             games.Clear();
-            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/GameList.txt\"").Output;    
+            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/GameList.txt\"").Output;
             if (MainForm.debugMode)
                 File.WriteAllText("GamesList.txt", tempGameList);
             string gamePropertiesLine = Utilities.StringUtilities.RemoveEverythingAfterFirst(tempGameList, "\n");
@@ -85,13 +94,28 @@ namespace AndroidSideloader
             {
                 gameProperties.Add(gameProperty);
             }
+            gameProperties.Add("Modified Date");
+
 
             tempGameList = Utilities.StringUtilities.RemoveEverythingBeforeFirst(tempGameList, "\n");
+
+            List<rcloneFolder> gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
+
 
             foreach (string game in tempGameList.Split('\n'))
             {
                 if (game.Length > 1)
-                    games.Add(game.Split(';'));
+                {
+                    string[] splitGame = game.Split(';');
+
+                    //gameFolder.find();
+
+                    var gameFolder = gameFolders.Find((predicate) => predicate.Path == splitGame[1]);
+                    //splitGame[6] = gameFolder.ModTime;
+                    Array.Resize(ref splitGame, splitGame.Length + 1);
+                    splitGame[splitGame.Length - 1] = gameFolder.ModTime;
+                    games.Add(splitGame);
+                }
             }
 
             //Output
@@ -100,12 +124,20 @@ namespace AndroidSideloader
             //{
             //    Console.WriteLine($"gameProperty: {s}");
             //}
+
+
+
             foreach (string[] s in games)
             {
-                string output = "";
-                for (int i = 0; i < gameProperties.Count; i++)
-                    output += s[i] + " ";
+                //string output = "";
+                //for (int i = 0; i < gameProperties.Count; i++)
+                //    output += s[i] + " ";
+
             }
+
+
+
+
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
