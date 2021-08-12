@@ -1,25 +1,43 @@
 -----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
-RSL 2.7.1
+RSL 2.7.2
 
-= Fixed apk path for in-place reinstall. Should work correctly now.
++ Fixed automated mirror switching to now try every 
+single mirror (instead of stoping at highest and failing).
 
-HFP
++ Fixed BMBF automated drag and drop (zip/zips/folder of 
+zips) song install. Settings is also now OPT OUT instead 
+of OPT IN. It can be disabled in the settings menu.
+
++ Dead mirrors will no longer cause the gamelist to fail 
+to load, instead RSL will move on after 35 seconds of no 
+list loading.
+
++ Simplified Wireless ADB messages and also made it easier
+to enable or disable wireless ADB.
+
++ Fixed bug where if mirror failed it said "No gamelist".
+
++ Fixed bug where if mirror failed to load RSL would ask 
+users to donate every app on their device whether it was 
+actually newer than the mirrors' version or not.
+
+ HFP
  
 -----BEGIN PGP SIGNATURE-----
 
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEOGwkACgkQx/Rql1Vo
-czfPHw//eXtKkM1g/mjz43/BLTjhT1PTrwvolCmds+LzMTHT1EfDyouJBZ2XxnXQ
-NiZkk9SR3m/VmJSr0FO7p7F9Ab07xEUIv280C7Mbqyr0KEPiQTvrlnL/eX4sx/Px
-1pmDCuPUL42u2zo4famGxDvduoVToyPrIzzv3QYt8qJGEAYRG4gtn26SB38+JslU
-eU6hJkB2E7BNZXRtpiDM7rsejOtzsIROdLeIztSyIyTl/sY4Az9nfgRiJFyHsPsJ
-ILRRkquCzkXbzzdjS8AqPPIzt+JZdp+ZZS2H3gSeld4We8rkm5CzBef7pzeP6ZKZ
-WGYnw1Et9dtflSAmfDb6i4Rr5Y3mPLk2OzIeYebZ0fCGmyrpJ7QlRfYqJNJ7JMH9
-DOmsSNVUvFRR+b0FnT414uSg4Q79cYXWsJ/Wi28PIOQF0nQwtPIKly2x1kB4NE7P
-CItXy8VJ//q0/2ijHB3ZQIiMkj78TVePCAC6TQT4RnBgWS0HeItBKZJYCcyvhe72
-6H9qzOVsIKHgxnfbRON9tZOWxpxIdnbFsaE5TsiXp+80SsaHhxcxuAyjh0M0CaKu
-lh3z9FJmZW8CrxIA1G1sQePxqF3iObVhqJPqp8G7N6UC1wBnhJWmnBKTYm1iHs6P
-pj8ggpyFTT55UxGeRklLUyoSxSnqSE7Oj2zluLvBFHPi1KAMlEg=
-=HVQ5
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEVXukACgkQx/Rql1Vo
+czdLaA//ZBZ6ar5Qxlg5bZ409cSCRT+9JRBWkH7GRZZ4X2aejgesHXkcsF9L+NRo
+cUjv/4s+lWCScY3EvzJg038Nr9zXUsZYdCfJuT1f3P3uBvEBP+XdtB0+1+bnSQnX
+QhjtyP0WwJJqDhiDINB0DHycHu68sGmvaqZXoksWkdrtU5xDpoOw540nkBhIEHTb
+anFNUBEdGsjafVj6ZhZ4dYOpewVsV+VJZbg5J7T7z/ZdYZunS6fTBjb7ho9CfnpF
+GaTsGrwf03GcBBv13wYkl5UwO7TZiv6U+hUDOv0bkHGmaSQWbto+1Nt5GEo7SPMh
+qOiVvLH0vr6RuLLeaKo2QGzKcOgr4sSSXfQFp70yiQGEP/UlIHGBXqRyJ0x/hAtV
+yD7ynTpVpVw5bh939lpmjtw2VHNoOzOG9fky9tp61jQSIjDYWGP39Ntow9fkLWyC
+Em4pHwHih1aWiHV91kzupWdSKIk8KKewcNIKXmxvV1A9zc6cxxyqnvYIcbOojg0i
+d10UmyF+Tjm5bVH5U+AVwNeaFEZiI6d4QrLgTDFl3klyunCj2FWPdJmCvUPxFSzV
+fRB5OWgRWnWB85tb63geNTJbbJURH1TJ88PWFn/3opgOEFTDu4UkRiuK6VviRQ8D
+F95CsnuCrHRBwBozozv2YHJ8rCi61i+vmXi95jPAVMQd0OmsR0o=
+=nH4m
 -----END PGP SIGNATURE-----

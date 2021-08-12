@@ -220,7 +220,7 @@ namespace AndroidSideloader
 
         private void bmbfBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.BMBFchecked = nodevicemodeBox.Checked;
+            Properties.Settings.Default.BMBFchecked = bmbfBox.Checked;
             Properties.Settings.Default.Save();
         }
     }

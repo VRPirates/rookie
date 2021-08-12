@@ -34,6 +34,10 @@ namespace AndroidSideloader
         public static string CurrPCKG;
         public static bool debugMode = false;
         public bool DeviceConnected = false;
+
+
+        public static string currremotesimple = "";
+
 #endif
 
         private bool isLoading = true;
@@ -133,9 +137,10 @@ namespace AndroidSideloader
             ADB.RunAdbCommandToString("kill-server");
             Properties.Settings.Default.ADBPath = adbFile;
             Properties.Settings.Default.Save();
-           
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+                 ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
             CheckForInternet();
-
+           
             if (HasInternet == true)
                 Sideloader.downloadFiles();
             else
@@ -247,9 +252,14 @@ namespace AndroidSideloader
              
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
+                System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+                t.Interval = 35000; // 35 seconds before switching mirror
+                t.Tick += new EventHandler(timer_Tick5);
+                t.Start();
                 ChangeTitle("Initializing Games");
-                SideloaderRCLONE.UpdateNouns(currentRemote);
                 SideloaderRCLONE.initGames(currentRemote);
+                t.Stop();
+                SideloaderRCLONE.UpdateNouns(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
                     FlexibleMessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
@@ -325,6 +335,12 @@ namespace AndroidSideloader
         void timer_Tick(object sender, EventArgs e)
         {
             ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+        }
+
+        void timer_Tick5(object sender, EventArgs e)
+        {
+            SwitchMirrors();
+            SideloaderRCLONE.initGames(currentRemote);
         }
 
         void timer_Tick2(object sender, EventArgs e)
@@ -1179,7 +1195,7 @@ namespace AndroidSideloader
                                         }
                                     }
                                 }
-                                if (!GameName.Contains("Beat Saber") && !dontget && !updatesnotified && SideloaderRCLONE.games.Count > 0)
+                                if (!GameName.Contains("Beat Saber") && !dontget && !updatesnotified && cloudVersionInt > 0)
                                 {
                                     DialogResult dialogResult = FlexibleMessageBox.Show($"It seems you have a newer version of:\n\n{GameName}\n\nAll apps on Rookie are from donors, please share the updated files with us.\nThis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "Share clean files?", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
@@ -1253,7 +1269,6 @@ namespace AndroidSideloader
                 gamesListView.Columns[1].Width = 280;
             }
         }
-
 
         private void initMirrors(bool random)
         {
@@ -1369,8 +1384,8 @@ without him none of this would be possible
                 Program.form.showAvailableSpace();
                 Properties.Settings.Default.IPAddress = IPcmnd;
                 Properties.Settings.Default.Save();
-
-                MessageBox.Show($"Connected! We can now automatically disable the Quest wifi chip from falling asleep. This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\". This setting is NOT permanent and resets upon Quest reboot, just like wireless ADB functionality.\n\nNOTE: This may cause the device battery to drain while it is in sleep mode at a very slightly increased rate. We recommend this setting for the majority of users for ease of use purposes. If you click NO you must keep your Quest connected to a charger or wake your device and then put it back on hold before using Rookie wirelessly. Do you want us to stop sleep mode from disabling wireless ADB?", "", MessageBoxButtons.YesNo);
+                ADB.wirelessadbON = true;
+                MessageBox.Show($"Connected! We can now automatically enable wake on wifi.\n(This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\" at extremely little battery cost (~1% per full charge))", "Enable Wake on Wifi?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
@@ -1411,13 +1426,15 @@ without him none of this would be possible
         }
 
         private static readonly HttpClient client = new HttpClient();
-
-        private bool updatedConfig = false;
-
-        private bool gamesAreDownloading = false;
+        public static bool reset = false;
+        public static bool updatedConfig = false;
+        public static int steps = 0;
+        public static bool gamesAreDownloading = false;
         private List<string> gamesQueueList = new List<string>();
-        private int quotaTries = 0;
+        public static int quotaTries = 0;
         public static bool timerticked = false;
+
+
         public void SwitchMirrors()
         {
             quotaTries++;
@@ -1428,12 +1445,22 @@ without him none of this would be possible
                     FlexibleMessageBox.Show("Quota reached for all mirrors exiting program...");
                     Application.Exit();
                 }
-                if (remotesList.Items.Count > remotesList.SelectedIndex)
+                if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
+                {
+                    reset = true;
+                    for (int i = 0; i < steps; i++)
+                        remotesList.SelectedIndex--;
+
+                }
+                if (reset)
+                {
+                    remotesList.SelectedIndex--;
+                }
+                if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
                 {
                     remotesList.SelectedIndex++;
+                    steps++;
                 }
-                else
-                    remotesList.SelectedIndex = 0;
             });
         }
 
@@ -1801,8 +1828,10 @@ without him none of this would be possible
             }
             else
             {
-                ADB.WakeDevice();
+                ADB.wirelessadbON = false;
                 FlexibleMessageBox.Show("Make sure your device is not connected to USB and press OK.");
+
+                ADB.RunAdbCommandToString("devices");
                 ADB.RunAdbCommandToString("shell USB");
                 Thread.Sleep(2000);
                 ADB.RunAdbCommandToString("disconnect");

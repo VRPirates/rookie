@@ -1304,7 +1304,6 @@
         private System.Windows.Forms.Button ADBWirelessDisable;
         private System.Windows.Forms.Label freeDisclaimer;
         private System.Windows.Forms.ComboBox devicesComboBox;
-        private System.Windows.Forms.ComboBox remotesList;
         private System.Windows.Forms.Button QuestOptionsButton;
         private System.Windows.Forms.Button ThemeChangerButton;
         private System.Windows.Forms.ListBox gamesQueListBox;
@@ -1338,6 +1337,7 @@
         private System.Windows.Forms.Label label9;
         private System.Windows.Forms.Label BatteryLbl;
         private System.Windows.Forms.PictureBox pictureBox5;
+        public System.Windows.Forms.ComboBox remotesList;
     }
 }
 
