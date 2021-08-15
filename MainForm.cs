@@ -1847,6 +1847,14 @@ without him none of this would be possible
 
         }
 
+        private void EnablePassthroughAPI_Click(object sender, EventArgs e)
+        {
+            ADB.WakeDevice();
+            ADB.RunAdbCommandToString("shell setprop debug.oculus.experimentalEnabled 1");
+            FlexibleMessageBox.Show("Passthrough API enabled.");
+
+        }
+
         private async void killRcloneButton_Click(object sender, EventArgs e)
         {
             if (isLoading)
