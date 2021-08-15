@@ -35,10 +35,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         }
 
         //List of all installed package names from connected device
-        public static Dictionary<string, string> InstalledPackages = new Dictionary<string, string>(); //Packagename and Version
-        //public static List<string> InstalledPackageNames = new List<string>();
-
-        //Remove folder from device
+        //public static List<string> InstalledPackageNames = new List<string>();        //Remove folder from device
         public static ProcessOutput RemoveFolder(string path)
         {
             ADB.WakeDevice();
