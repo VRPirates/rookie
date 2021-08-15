@@ -276,7 +276,7 @@ namespace AndroidSideloader
 
         public static bool wirelessadbON;
 
-        public static async void WakeDevice()
+        public static void WakeDevice()
         {
             string devicesout = RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP").Output;
             if (!devicesout.Contains("found") && !Properties.Settings.Default.nodevicemode)

@@ -988,7 +988,9 @@ namespace AndroidSideloader
                             {
                                 if (file2.EndsWith(".apk"))
                                 {
-                                    ChangeTitle($"Installing apk... (If this hangs, uninstall app first then install again)");
+                                    string pathname = Path.GetDirectoryName(data);
+                                    string filename = file2.Replace($"{pathname}\\", "");
+                                    ChangeTitle($"Installing {filename} (If this hangs, uninstall app first then install again)");
                                     output += ADB.Sideload(file2);
                                 }
 
@@ -1039,7 +1041,9 @@ namespace AndroidSideloader
                             else
 
                             {
-                                ChangeTitle($"Installing apk... (If this hangs, uninstall app first then install again)");
+                                string pathname = Path.GetDirectoryName(data);
+                                string dataname = data.Replace($"{pathname}\\", "");
+                                ChangeTitle($"Installing {dataname} (If this hangs, uninstall app first then install again)"); 
                                 output += ADB.Sideload(data);
                        
 
@@ -1142,7 +1146,15 @@ namespace AndroidSideloader
                 char[] delims = new[] { '\r', '\n' };
                 string[] strings = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
                 //MessageBox.Show(result);
-
+                if (gamesListView.Columns.Count > 0)
+                {
+                    gamesListView.Columns[5].Width = 0;
+                    gamesListView.Columns[2].Width = 0;
+                    gamesListView.Columns[3].Width = 102;
+                    gamesListView.Columns[4].Width = 94;
+                    gamesListView.Columns[6].Width = 98;
+                    gamesListView.Columns[1].Width = 280;
+                }
                 foreach (string packagename in strings)
                 {
                     if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
@@ -1263,11 +1275,9 @@ namespace AndroidSideloader
             gamesListView.BeginUpdate();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
+
             updatesnotified = true;
-            if(gamesListView.Columns.Count > 0)
-            {
-                gamesListView.Columns[1].Width = 280;
-            }
+
         }
 
         private void initMirrors(bool random)
@@ -1276,10 +1286,6 @@ namespace AndroidSideloader
             remotesList.Invoke(() => { index = remotesList.SelectedIndex; remotesList.Items.Clear(); });
 
             string[] mirrors = RCLONE.runRcloneCommand("listremotes").Output.Split('\n');
-            string item = "VRP-mirror07";
-            string item2 = "VRP-mirror09";
-            mirrors = mirrors.Where(val => val != item).ToArray();
-            mirrors = mirrors.Where(val => val != item2).ToArray();
 
             Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
@@ -1333,7 +1339,8 @@ namespace AndroidSideloader
 
         private void aboutBtn_Click(object sender, EventArgs e)
         {
-            string about = $@"Finally {Updater.LocalVersion}, with new version comming Soon™
+            string about = $@"Version: {Updater.LocalVersion}
+
  - Software orignally coded by rookie.wtf
  - Thanks to pmow for all of his work, including rclone, wonka and other projects, and for scripting the backend
 without him none of this would be possible
@@ -1348,7 +1355,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HFP Thanks to: Roma/Rookie, Pmow, Flow, Sam Hoque, Kaladin, and the mod staff!";
+ - HarryEffinPotter Thanks: Roma/Rookie, Pmow, Flow, John, Sam Hoque, Kaladin, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
@@ -1536,14 +1543,6 @@ without him none of this would be possible
                     return;
                 gamesAreDownloading = true;
 
-                if (updatedConfig == false && Properties.Settings.Default.autoUpdateConfig == true) //check for config only once per program open and if setting enabled
-                {
-                    updatedConfig = true;
-                    ChangeTitle("Checking if config is updated and updating config");
-                    progressBar.Style = ProgressBarStyle.Marquee;
-                    await Task.Run(() => SideloaderRCLONE.updateConfig(currentRemote));
-                    progressBar.Style = ProgressBarStyle.Continuous;
-                }
 
                 //Do user json on firsttime
                 if (Properties.Settings.Default.userJsonOnGameInstall)
@@ -1927,9 +1926,15 @@ without him none of this would be possible
             }
             else
             {
-                // Set the column number that is to be sorted; default to ascending.
                 lvwColumnSorter.SortColumn = e.Column;
-                lvwColumnSorter.Order = SortOrder.Ascending;
+                if (e.Column == 6)
+                {
+                    lvwColumnSorter.Order = SortOrder.Descending;
+                }
+                else
+                {
+                    lvwColumnSorter.Order = SortOrder.Ascending;
+                }
             }
 
             // Perform the sort with these new sort options.

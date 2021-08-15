@@ -94,7 +94,7 @@ namespace AndroidSideloader
             {
                 gameProperties.Add(gameProperty);
             }
-            gameProperties.Add("Modified Date");
+            gameProperties.Add("Upload Date");
 
 
             tempGameList = Utilities.StringUtilities.RemoveEverythingBeforeFirst(tempGameList, "\n");
@@ -113,7 +113,9 @@ namespace AndroidSideloader
                     var gameFolder = gameFolders.Find((predicate) => predicate.Path == splitGame[1]);
                     //splitGame[6] = gameFolder.ModTime;
                     Array.Resize(ref splitGame, splitGame.Length + 1);
-                    splitGame[splitGame.Length - 1] = gameFolder.ModTime;
+                    string gametime = Utilities.StringUtilities.RemoveEverythingAfterLast(gameFolder.ModTime, ":");
+                    gametime = gametime.Replace("T", " ");
+                    splitGame[splitGame.Length - 1] = gametime;
                     games.Add(splitGame);
                 }
             }
