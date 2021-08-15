@@ -109,14 +109,18 @@ namespace AndroidSideloader
                     string[] splitGame = game.Split(';');
 
                     //gameFolder.find();
-
-                    var gameFolder = gameFolders.Find((predicate) => predicate.Path == splitGame[1]);
-                    //splitGame[6] = gameFolder.ModTime;
                     Array.Resize(ref splitGame, splitGame.Length + 1);
-                    string gametime = Utilities.StringUtilities.RemoveEverythingAfterLast(gameFolder.ModTime, ":");
-                    gametime = gametime.Replace("T", " ");
-                    splitGame[splitGame.Length - 1] = gametime;
-                    games.Add(splitGame);
+
+                    var gameSynced = gameFolders.Exists((predicate) => predicate.Path == splitGame[1]);
+                    if (gameSynced)
+                    {
+                        var gameFolder = gameFolders.Find((predicate) => predicate.Path == splitGame[1]);
+                        //splitGame[6] = gameFolder.ModTime;
+                        string gametime = Utilities.StringUtilities.RemoveEverythingAfterLast(gameFolder.ModTime, ":");
+                        gametime = gametime.Replace("T", " ");
+                        splitGame[splitGame.Length - 1] = gametime;
+                        games.Add(splitGame);
+                    }
                 }
             }
 

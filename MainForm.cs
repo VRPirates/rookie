@@ -741,15 +741,12 @@ namespace AndroidSideloader
                 {
                     line[i] = line[i].Remove(0, 8);
                     line[i] = line[i].Remove(line[i].Length - 1);
-                    if (!Sideloader.InstalledPackages.ContainsKey(line[i]))
-                        Sideloader.InstalledPackages.Add(line[i], "");
                     foreach (var game in SideloaderRCLONE.games)
                         if (line[i].Length > 0 && game[3].Contains(line[i]))
                             line[i] = game[0];
                 }
             }
 
-            File.WriteAllText("installedPackages.json", JsonConvert.SerializeObject(Sideloader.InstalledPackages));
 
             Array.Sort(line);
 
@@ -1127,8 +1124,6 @@ namespace AndroidSideloader
             gamesListView.Columns.Clear();
             if (!File.Exists("installedPackages.json"))
                 File.Create("installedPackages.json");
-            if (File.Exists("instlledPackages.json"))
-                Sideloader.InstalledPackages = JsonConvert.DeserializeObject<Dictionary<string, string>>(File.ReadAllText("installedPackages.json"));
             foreach (string column in SideloaderRCLONE.gameProperties)
             {
                 gamesListView.Columns.Add(column, 150);
@@ -1164,18 +1159,12 @@ namespace AndroidSideloader
                         else
                         Game.BackColor = Color.Green;
                         string InstalledVersionCode;
-                        if (Sideloader.InstalledPackages.ContainsKey(packagename) && Sideloader.InstalledPackages[packagename] != "")
-                        {
-                            InstalledVersionCode = Sideloader.InstalledPackages[packagename];
-                        }
-                        else
-                        {
+
                             InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
 
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                            Sideloader.InstalledPackages[packagename] = InstalledVersionCode;
-                        }
+                        
 
                         try
                         {
@@ -1267,7 +1256,6 @@ namespace AndroidSideloader
                         }
                     }
                 }
-                File.WriteAllText("installedPackages.json", JsonConvert.SerializeObject(Sideloader.InstalledPackages));
                 GameList.Add(Game);
             }
 

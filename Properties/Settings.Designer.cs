@@ -610,5 +610,17 @@ namespace AndroidSideloader.Properties {
                 this["BMBFchecked"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GamesList {
+            get {
+                return ((string)(this["GamesList"]));
+            }
+            set {
+                this["GamesList"] = value;
+            }
+        }
     }
 }
