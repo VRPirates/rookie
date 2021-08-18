@@ -100,7 +100,7 @@ namespace AndroidSideloader
             tempGameList = Utilities.StringUtilities.RemoveEverythingBeforeFirst(tempGameList, "\n");
 
             List<rcloneFolder> gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
-            if (gameFolders.Count < 1)
+            if (gameFolders == null || gameFolders.Count < 1)
             {
                 Program.form.SwitchMirrors();
                 gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
