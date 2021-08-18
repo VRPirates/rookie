@@ -41,6 +41,8 @@
             this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.downloadInstallGameButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.ULLabel = new System.Windows.Forms.Label();
+            this.ULGif = new System.Windows.Forms.PictureBox();
             this.BatteryLbl = new System.Windows.Forms.Label();
             this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.downloadingLabel = new System.Windows.Forms.Label();
@@ -92,6 +94,7 @@
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.gamesPictureBox = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ULGif)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.otherContainer.SuspendLayout();
             this.backupContainer.SuspendLayout();
@@ -239,7 +242,7 @@
             this.getApkButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
             this.getApkButton.Size = new System.Drawing.Size(218, 28);
             this.getApkButton.TabIndex = 2;
-            this.getApkButton.Text = "Extract App to Desktop";
+            this.getApkButton.Text = "Upload Selected App";
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.getApkButton.UseVisualStyleBackColor = false;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
@@ -343,6 +346,8 @@
             // 
             this.panel1.AutoScroll = true;
             this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.ButtonColor;
+            this.panel1.Controls.Add(this.ULLabel);
+            this.panel1.Controls.Add(this.ULGif);
             this.panel1.Controls.Add(this.BatteryLbl);
             this.panel1.Controls.Add(this.pictureBox5);
             this.panel1.Controls.Add(this.downloadingLabel);
@@ -365,6 +370,29 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(218, 721);
             this.panel1.TabIndex = 73;
+            // 
+            // ULLabel
+            // 
+            this.ULLabel.AutoSize = true;
+            this.ULLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.ULLabel.ForeColor = System.Drawing.Color.Snow;
+            this.ULLabel.Location = new System.Drawing.Point(154, 683);
+            this.ULLabel.Name = "ULLabel";
+            this.ULLabel.Size = new System.Drawing.Size(64, 13);
+            this.ULLabel.TabIndex = 87;
+            this.ULLabel.Text = "Uploading";
+            this.ULLabel.Visible = false;
+            // 
+            // ULGif
+            // 
+            this.ULGif.Enabled = false;
+            this.ULGif.Image = global::AndroidSideloader.Properties.Resources.ajax_loader;
+            this.ULGif.Location = new System.Drawing.Point(178, 699);
+            this.ULGif.Name = "ULGif";
+            this.ULGif.Size = new System.Drawing.Size(34, 17);
+            this.ULGif.TabIndex = 86;
+            this.ULGif.TabStop = false;
+            this.ULGif.Visible = false;
             // 
             // BatteryLbl
             // 
@@ -1260,6 +1288,7 @@
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ULGif)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.otherContainer.ResumeLayout(false);
             this.backupContainer.ResumeLayout(false);
@@ -1338,6 +1367,8 @@
         private System.Windows.Forms.Label BatteryLbl;
         private System.Windows.Forms.PictureBox pictureBox5;
         public System.Windows.Forms.ComboBox remotesList;
+        private System.Windows.Forms.PictureBox ULGif;
+        private System.Windows.Forms.Label ULLabel;
     }
 }
 

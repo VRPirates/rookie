@@ -265,6 +265,7 @@
     <None Include="Resources\battery11.png" />
     <None Include="Resources\battery.png" />
     <None Include="Resources\battery1.png" />
+    <None Include="Resources\ajax-loader.gif" />
     <Content Include="Resources\bluekey.png" />
     <Content Include="Resources\redkey.png" />
     <None Include="Resources\greenkey.png" />
