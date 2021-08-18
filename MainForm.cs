@@ -1,4 +1,5 @@
-﻿using JR.Utils.GUI.Forms;
+﻿using AndroidSideloader.Utilities;
+using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
 using SergeUtils;
 using Spoofer;
@@ -1143,14 +1144,7 @@ namespace AndroidSideloader
             ChangeTitle("");
         }
 
-        public static string uploadcommand;
-        public static string uploadgamename;
-        public static ulong uploadversion;
-        public static string uploadcommand2;
-        public static string uploadgamename2;
-        public static ulong uploadversion2;
-        public static bool uploadyes;
-        public static bool secondpass = false;
+        private List<UploadGame> gamesToUpload = new List<UploadGame>();
         private async void initListView()
         {
             gamesListView.Items.Clear();
@@ -1234,7 +1228,6 @@ namespace AndroidSideloader
                                     DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
                                     {
-                                        uploadyes = true;
                                         progressBar.Style = ProgressBarStyle.Marquee;
                                         Thread t1 = new Thread(() =>
                                         {
@@ -1274,19 +1267,12 @@ namespace AndroidSideloader
                                             await Task.Delay(100);
                                         isworking = false;
                                         Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packagename}", true);
-                                        if (!secondpass)
-                                        {
-                                            uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-debuglogs:CleanGames";
-                                            uploadversion = installedVersionInt;
-                                            uploadgamename = GameName;
-                                            secondpass = true;
-                                        }
-                                        else if (secondpass)
-                                        {
-                                            uploadcommand2 = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-debuglogs:CleanGames";
-                                            uploadversion2 = installedVersionInt;
-                                            uploadgamename2 = GameName;
-                                        }
+
+                                        UploadGame game = new UploadGame();
+                                        game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-debuglogs:CleanGames";
+                                        game.Uploadversion = installedVersionInt;
+                                        game.Uploadgamename = GameName;
+                                        gamesToUpload.Add(game);
                                         ChangeTitle("");
                                     }
                                 }                         
@@ -1310,23 +1296,20 @@ namespace AndroidSideloader
             gamesListView.EndUpdate();
 
             updatesnotified = true;
-            if (uploadyes)
+            if (gamesToUpload.Count > 0)
             {
-             
-
- 
                 ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
                 ULGif.Visible = true;
                 ULLabel.Visible = true;
                 ULGif.Enabled = true;
 
-                if (uploadyes)
+                foreach (UploadGame game in gamesToUpload)
                 {
                     Thread t3 = new Thread(() =>
                     {
-                        RCLONE.runRcloneCommand(uploadcommand);
-                        FlexibleMessageBox.Show($"Upload of {uploadgamename} is complete! Thank you for your contribution!");
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{uploadgamename} v{uploadversion}.zip");
+                        RCLONE.runRcloneCommand(game.Uploadcommand);
+                        FlexibleMessageBox.Show($"Upload of {game.Uploadgamename} is complete! Thank you for your contribution!");
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
 
                     });
                     t3.IsBackground = true;
@@ -1337,23 +1320,8 @@ namespace AndroidSideloader
                         await Task.Delay(100);
                     }
                 }
-                if (secondpass)
-                {
-                    Thread t3 = new Thread(() =>
-                    {
-                        RCLONE.runRcloneCommand(uploadcommand2);
-                        FlexibleMessageBox.Show($"Upload of {uploadgamename2} is complete! Thank you for your contribution!");
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{uploadgamename2} v{uploadversion2}.zip");
+                gamesToUpload.Clear();
 
-                    });
-                    t3.IsBackground = true;
-                    t3.Start();
-                    while (t3.IsAlive)
-                    {
-                        isuploading = true;
-                        await Task.Delay(100);
-                    }
-                }
                 isuploading = false;
                 ULGif.Visible = false;
                 ULLabel.Visible = false;
