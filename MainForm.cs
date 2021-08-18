@@ -758,6 +758,7 @@ namespace AndroidSideloader
 
             m_combo.Invoke(() => { m_combo.MatchingMethod = StringMatchingMethod.NoWildcards; });
         }
+        public static bool isuploading = false;
         public static bool isworking = false;
         private async void getApkButton_Click(object sender, EventArgs e)
         {
@@ -811,23 +812,46 @@ namespace AndroidSideloader
                 while (t2.IsAlive)
                     await Task.Delay(100);
                 ChangeTitle("Zipping extracted application...");
-                string cmd = $"7z a {packageName}v{VersionInt}.zip .\\{packageName}\\*";
+                string cmd = $"7z a \"{GameName} v{VersionInt}.zip\" .\\{packageName}\\*";
                 string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                Thread t3 = new Thread(() =>
+                progressBar.Style = ProgressBarStyle.Continuous;
+                Thread t4 = new Thread(() =>
                 {
                     ADB.RunCommandToString(cmd, path);
+                });
+                t4.IsBackground = true;
+                t4.Start();
+                while (t4.IsAlive)
+                    await Task.Delay(100);
+                ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
+                ULGif.Visible = true;
+                ULLabel.Visible = true;
+                ULGif.Enabled = true;
+                isworking = false;
+                isuploading = true;
+                Thread t3 = new Thread(() =>
+                {
+                    string currentlyuploading = GameName;
+                    ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
+                    string Uploadoutput = RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip\" RSL-debuglogs:CleanGames").Output;
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip");
+                    FlexibleMessageBox.Show($"Upload of {currentlyuploading} is complete! Thank you for your contribution!");
+                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
                 });
                 t3.IsBackground = true;
                 t3.Start();
 
                 while (t3.IsAlive)
+                {
+                    isuploading = true;
                     await Task.Delay(100);
-                File.Move($"{Properties.Settings.Default.MainDir}\\{packageName}v{VersionInt}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt}.zip");
-                FlexibleMessageBox.Show($"The app has been zipped and placed on your desktop as\n\n{GameName} v{VersionInt}.zip\n\nPlease upload this file to a free file hosting service like\n https://1fichier.com or https://mega.nz and share the link with a moderator.");
-                Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
-                progressBar.Style = ProgressBarStyle.Continuous;
+                }
+
                 ChangeTitle("");
-                isworking = false;
+                isuploading = false;
+                ULGif.Visible = false;
+                ULLabel.Visible = false;
+                ULGif.Enabled = false;
             }
             else MessageBox.Show("You must wait until each app is finished extracting to start another.");
         }
@@ -1118,6 +1142,15 @@ namespace AndroidSideloader
             DragDropLbl.Text = "";
             ChangeTitle("");
         }
+
+        public static string uploadcommand;
+        public static string uploadgamename;
+        public static ulong uploadversion;
+        public static string uploadcommand2;
+        public static string uploadgamename2;
+        public static ulong uploadversion2;
+        public static bool uploadyes;
+        public static bool secondpass = false;
         private async void initListView()
         {
             gamesListView.Items.Clear();
@@ -1196,11 +1229,13 @@ namespace AndroidSideloader
                                         }
                                     }
                                 }
-                                if (!GameName.Contains("Beat Saber") && !dontget && !updatesnotified && cloudVersionInt > 0)
+                                if (!GameName.Contains("Beat Saber") && !dontget && !updatesnotified && !isworking && cloudVersionInt > 0)
                                 {
-                                    DialogResult dialogResult = FlexibleMessageBox.Show($"It seems you have a newer version of:\n\n{GameName}\n\nAll apps on Rookie are from donors, please share the updated files with us.\nThis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "Share clean files?", MessageBoxButtons.YesNo);
+                                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
                                     {
+                                        uploadyes = true;
+                                        progressBar.Style = ProgressBarStyle.Marquee;
                                         Thread t1 = new Thread(() =>
                                         {
                                             Sideloader.getApk(GameName);
@@ -1221,27 +1256,37 @@ namespace AndroidSideloader
                                         while (t2.IsAlive)
                                             await Task.Delay(1000);
                                         ChangeTitle("Zipping extracted application...");
-                                        string cmd = $"7z a {packagename}v{installedVersionInt}.zip .\\{packagename}\\*";
+                                        string HWID = SideloaderUtilities.UUID();
+                                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packagename}\\HWID.txt", HWID);
+                                        string cmd = $"7z a \"{GameName} v{installedVersionInt}.zip\" .\\{packagename}\\*";
                                         string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-
-                                        Thread t3 = new Thread(() =>
-                                        {
-                                            string HWID = SideloaderUtilities.UUID();
-                                            File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packagename}\\HWID.txt", HWID);
-                                            ADB.RunCommandToString(cmd, path);
-                                            if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{installedVersionInt}.zip"))
-                                                File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{installedVersionInt}.zip");
-                                            File.Move($"{Properties.Settings.Default.MainDir}\\{packagename}v{installedVersionInt}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{installedVersionInt}.zip");
-                                            FlexibleMessageBox.Show($"The app has been zipped and placed on your desktop as\n\n{GameName} v{installedVersionInt}.zip\n\nPlease upload this file to a free file hosting service like\n https://1fichier.com or https://mega.nz \nThen share the link to the moderators listed in the\npinned message on Telegram.");
-                                            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packagename}", true);
-                                        });
-                                        t3.IsBackground = true;
-                                        t3.Start();
-
-                                        while (t3.IsAlive)
-                                            await Task.Delay(100);
-                                       
                                         progressBar.Style = ProgressBarStyle.Continuous;
+                                        isworking = true;
+                                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip"))
+                                            File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip");
+                                        Thread t4 = new Thread(() =>
+                                        {
+                                            ADB.RunCommandToString(cmd, path);
+                                        });
+                                        t4.IsBackground = true;
+                                        t4.Start();
+                                        while (t4.IsAlive)
+                                            await Task.Delay(100);
+                                        isworking = false;
+                                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packagename}", true);
+                                        if (!secondpass)
+                                        {
+                                            uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-debuglogs:CleanGames";
+                                            uploadversion = installedVersionInt;
+                                            uploadgamename = GameName;
+                                            secondpass = true;
+                                        }
+                                        else if (secondpass)
+                                        {
+                                            uploadcommand2 = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-debuglogs:CleanGames";
+                                            uploadversion2 = installedVersionInt;
+                                            uploadgamename2 = GameName;
+                                        }
                                         ChangeTitle("");
                                     }
                                 }                         
@@ -1265,7 +1310,56 @@ namespace AndroidSideloader
             gamesListView.EndUpdate();
 
             updatesnotified = true;
+            if (uploadyes)
+            {
+             
 
+ 
+                ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
+                ULGif.Visible = true;
+                ULLabel.Visible = true;
+                ULGif.Enabled = true;
+
+                if (uploadyes)
+                {
+                    Thread t3 = new Thread(() =>
+                    {
+                        RCLONE.runRcloneCommand(uploadcommand);
+                        FlexibleMessageBox.Show($"Upload of {uploadgamename} is complete! Thank you for your contribution!");
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{uploadgamename} v{uploadversion}.zip");
+
+                    });
+                    t3.IsBackground = true;
+                    t3.Start();
+                    while (t3.IsAlive)
+                    {
+                        isuploading = true;
+                        await Task.Delay(100);
+                    }
+                }
+                if (secondpass)
+                {
+                    Thread t3 = new Thread(() =>
+                    {
+                        RCLONE.runRcloneCommand(uploadcommand2);
+                        FlexibleMessageBox.Show($"Upload of {uploadgamename2} is complete! Thank you for your contribution!");
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{uploadgamename2} v{uploadversion2}.zip");
+
+                    });
+                    t3.IsBackground = true;
+                    t3.Start();
+                    while (t3.IsAlive)
+                    {
+                        isuploading = true;
+                        await Task.Delay(100);
+                    }
+                }
+                isuploading = false;
+                ULGif.Visible = false;
+                ULLabel.Visible = false;
+                ULGif.Enabled = false;
+                ChangeTitle("");
+            }
         }
 
         private void initMirrors(bool random)
@@ -1454,11 +1548,12 @@ without him none of this would be possible
                 if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
                 {
                     remotesList.SelectedIndex++;
+                    SideloaderRCLONE.initGames(currentRemote);
                     steps++;
                 }
             });
         }
-
+        public bool isinstalling = false;
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
@@ -1520,6 +1615,7 @@ without him none of this would be possible
                     ChangeTitle("");
                     return;
                 }
+                isinstalling = true;
                 //Add games to the queue
                 for (int i = 0; i < gamesToDownload.Length; i++)
                     gamesQueueList.Add(gamesToDownload[i]);
@@ -1648,7 +1744,7 @@ without him none of this would be possible
                         progressBar.Style = ProgressBarStyle.Continuous;
                         ChangeTitle("Installing game apk " + gameName, false);
                         etaLabel.Text = "ETA: Wait for install...";
-                        speedLabel.Text = "DLS: Done downloading";
+                        speedLabel.Text = "DLS: Finished";
                         if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\install.txt"))
                             isinstalltxt = true;
                         if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\Install.txt"))
@@ -1692,6 +1788,7 @@ without him none of this would be possible
                                         Program.form.ChangeTitle($"Sideloading apk...");
                                         output += ADB.Sideload(file, packagename);
                                     });
+                                    apkThread.IsBackground = true;
                                     apkThread.Start();
                                     while (apkThread.IsAlive)
                                         await Task.Delay(100);
@@ -1714,7 +1811,9 @@ without him none of this would be possible
                                     while (obbThread.IsAlive)
                                         await Task.Delay(100);
                                 }
+                                
                             }
+                            ChangeTitle($"Installation of {gameName} completed....");
                         }
                         if (Properties.Settings.Default.deleteAllAfterInstall)
                         {
@@ -1738,6 +1837,7 @@ without him none of this would be possible
                 ChangeTitlebarToDevice();
                 gamesAreDownloading = false;
                 ShowPrcOutput(output);
+                isinstalling = false;
                 listappsbtn();
                 initListView();
             }
@@ -1801,8 +1901,36 @@ without him none of this would be possible
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            RCLONE.killRclone();
-            ADB.RunAdbCommandToString("kill-server");
+            if (isinstalling)
+            {
+                var res1 = FlexibleMessageBox.Show(this, "There are downloads and/or installations in progress,\nif you exit now you'll have to start the entire process over again.\nAre you sure you want to exit?", "Still downloading/installing.",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (res1 != DialogResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+            }
+            else if (isuploading)
+            {
+                var res = FlexibleMessageBox.Show(this, "There is an upload still in progress, if you exit now\nyou'll have to start the entire process over again.\nAre you sure you want to exit?", "Still uploading.",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (res != DialogResult.Yes)
+                {
+                    e.Cancel = true;
+                    return;
+                }
+                else
+                {
+                    RCLONE.killRclone();
+                    ADB.RunAdbCommandToString("kill-server");
+                }
+            }
+            else
+            {
+                RCLONE.killRclone();
+                ADB.RunAdbCommandToString("kill-server");
+            }
         }
 
         private void ADBWirelessDisable_Click(object sender, EventArgs e)

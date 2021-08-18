@@ -94,12 +94,17 @@ namespace AndroidSideloader
             {
                 gameProperties.Add(gameProperty);
             }
-            gameProperties.Add("Upload Date");
+            gameProperties.Add("Last Updated");
 
 
             tempGameList = Utilities.StringUtilities.RemoveEverythingBeforeFirst(tempGameList, "\n");
 
             List<rcloneFolder> gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
+            if (gameFolders.Count < 1)
+            {
+                Program.form.SwitchMirrors();
+                gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
+            }
 
 
             foreach (string game in tempGameList.Split('\n'))
