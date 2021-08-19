@@ -1927,7 +1927,7 @@ without him none of this would be possible
             }
             else if (newGamesList.Count > 0 && !Properties.Settings.Default.UploadedGameList)
             {
-                var res = FlexibleMessageBox.Show(this, "Please share game list bla bla bla for future patch bla ", "upload game list",
+                var res = FlexibleMessageBox.Show(this, "For August 2021, we'd like to grab a list of the apps installed to make updates work better.\nDo that now?", "Upload game list?",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
                 if (res == DialogResult.Yes)
                 {
