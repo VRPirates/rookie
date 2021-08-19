@@ -108,8 +108,8 @@ namespace AndroidSideloader
             updatesnotified = false;
 
             
-            string adbFile = "C:\\RSL\\2.1.1\\adb\\adb.exe";
-            string adbDir = "C:\\RSL\\2.1.1\\adb";
+            string adbFile = "C:\\RSL\\2.8.2\\adb\\adb.exe";
+            string adbDir = "C:\\RSL\\2.8.2\\adb";
             string fileName = "";
             string destFile = "";
             string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
