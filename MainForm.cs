@@ -113,7 +113,6 @@ namespace AndroidSideloader
         {
             updatesnotified = false;
 
-
             string adbFile = "C:\\RSL\\2.8.2\\adb\\adb.exe";
             string adbDir = "C:\\RSL\\2.8.2\\adb";
             string fileName = "";
@@ -1435,7 +1434,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HarryEffinPotter Thanks: Roma/Rookie, Pmow, Flow, John, Sam Hoque, Kaladin, and the mod staff!";
+ - HarryEffinPotter Thanks: Roma/Rookie, Pmow, Ivan, Kaladin, John, Sam Hoque, Flow, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
