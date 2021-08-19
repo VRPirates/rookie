@@ -83,6 +83,8 @@ namespace AndroidSideloader
 
         public static void initGames(string remote)
         {
+            if (remote.Contains("08"))
+                Program.form.SwitchMirrors();
             gameProperties.Clear();
             games.Clear();
             string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/GameList.txt\"").Output;

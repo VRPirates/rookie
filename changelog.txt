@@ -1,26 +1,26 @@
------BEGIN PGP SIGNED MESSAGE-----
-Hash: SHA256
 
-RSL 2.8.1
+RSL 2.8.2 
 
-= Fixed crash at startup related to Upload Date column.
++ Added automatic upload to Google shared drive
+for clean game files donation.
++ Added uploading GIF for duration of upload.
++ Added warning messages when user attempts
+to close Rookie while games are download, installing,
+or uploading.
+= Threaded clean file zipping and uploading
+so user can continue to use Rookie while game
+is uploading.
+
+
+P.S. We are looking for volunteers for the next
+beta which will automatically detect new games
+installed on user's headset and suggest them for
+donation. Message https://t.me/Harryeffinpotter or 
+https://t.me/pmowpmow on Telegram to join the beta 
+test!
 
 HFP
  
 
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEZPjAACgkQx/Rql1Vo
-czdfUw/+PiQ03p3FFwuVIndiDHKvwcjcewDWASYiP2KJkDCsbaEj0U5+ntpu7mxo
-ytIFuNZd47CwiYGFXi6IzEO1n9yj4LL3ONnVEogZgd3bP3Bb2b28KDdHtDX3IO5d
-wWle/WMksKDywqRyjJnaP9dh+7YS0C/49H32cFokF8S69stPwPYh9LSaf4ctK0/f
-y8pHN7tgOkmCR8NU6lOY9OLepBZlv+PcOAco0nIz1zHtwdRGz2vjwQqAa8NShfEy
-E/rjBhM37YBULf7cOayt0FY/rDYvw6Bj8B9ht0Bn6dmWgJrhfAj01utREL8HcmPd
-rNDXB7UxuR56OVy1f1gh1Fzb5f62xDydfELd/0dFYE0oDcdkHjaEkT5CnAukBmrO
-y0ntjawsy40dVAwPwPSAPQ+qP9g7mDZdbjOfgP4JNFWwnxgYLlTASoUMis/hd5mg
-FLaFAiMM3o72Gip+gjMl3AiuwyefKoCGfAPgNvRx0t8R3bdLfVJ0KIPpgvJ7ZuD8
-n4LEHLPoldDmoshdxl/BiQyLhaEM3W3qkwANVic6/8eCqy/N23CM74L4xgUaQDoq
-dvkS3PKuhLvcYh4HkZNhALj7Mavvs0x8/pIGx8bK8JCNOhKX7rGylF6erDFfZ8Ym
-T2vN0PjVYS/pF//qKHPyV5yVc5piudCB895LBNIDcJK1b67nUUE=
-=+e9J
------END PGP SIGNATURE-----
+P.S MOVED PGP SIGNATURE TO CHANGELOGHISTORY.TXT @ 
+https://github.com/nerdunit/androidsideloader

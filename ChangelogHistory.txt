@@ -1,6 +1,49 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.8.2 
+
++ Added automatic upload to Google shared drive
+for clean game files donation.
++ Added uploading GIF for duration of upload.
++ Added warning messages when user attempts
+to close Rookie while games are download, installing,
+or uploading.
+= Threaded clean file zipping and uploading
+so user can continue to use Rookie while game
+is uploading.
+
+
+P.S. We are looking for volunteers for the next
+beta which will automatically detect new games
+installed on user's headset and suggest them for
+donation. Message https://t.me/Harryeffinpotter or 
+https://t.me/pmowpmow on Telegram to join the beta 
+test!
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEd+IUACgkQx/Rql1Vo
+czcyUw/+ImynsE4CXmv+LjuTH1by6L2AHZFZCQ0cgwq88OOwdir/WzPfNeqqv0e6
+/QCRbRdvC6pASPgHryCkvFPFXUoLgQ+lXZY1GCBUzX0lIMqrenihQ5QUQb70LOxR
+kVkivnxLJzBeQAXn+gkvPXMCIn3l0yVInsjtusVqVHtmsegcAQTwcrG7RXSsl0dr
+2rkPOuvlcxMTWA4SlE16IhuLcq8L9GavpeWKoQiaoydhBGdzfAe1O4yy6UQs7Nas
+9Xl3vy1mXnZIprTOtjH+zYXxcdcxb1ZAdvHdq19nqTf5iuCqO+A4TxSq4vRv6Dvt
+XkJ0igXJsscpIQjJ812mZACJiJlP31yPdhZvKZXtUAQoR63iRPiEpY2gIKrd249Y
+HIq0g+XaO0K8kjOAmrBxLpESEBEovhhcfvrepSh7NocsxRAAnxOJUdcbmekwRjpj
+MCtMYThTYRXoR2aWxIbtaviUIecAGxuF8m+wWbxnWqJSEh4BanmQKjoh32G8geEE
+PS4XMBcWQ0/MhKSibaWO0SQCjrHNtsmbVvu28rh/eD9ar4Z9tPxza43iqSepSEjK
+Vlka7WxpkeqVCYnTpoLPv7I+XBBRojKlUp8aUz4MrOuuzNg08GyLFgKejU1aiw4I
+7s3PjFj6e4SsRgAKHhKStjYzVTkhlbyWIguhyPdzpiNoMFEwMz8=
+=EIFi
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.8.1
 
 = Fixed crash at startup related to Upload Date column.

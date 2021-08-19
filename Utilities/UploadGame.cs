@@ -13,6 +13,12 @@ namespace AndroidSideloader.Utilities
         {
             get => uploadcommand;
             set => uploadcommand = value;
+        }   
+        private string pckgcommand;
+        public string Pckgcommand
+        {
+            get => pckgcommand;
+            set => pckgcommand = value;
         }
         private string uploadgamename;
         public string Uploadgamename
