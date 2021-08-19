@@ -1850,7 +1850,7 @@ without him none of this would be possible
                     DialogResult dialogResult = FlexibleMessageBox.Show("In place upgrade has failed.\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to do this while retaining your savedata.\nWhile the vast majority of games can be backed up there are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want Rookie to uninstall and reinstall the app automatically?", "In place upgrade failed", MessageBoxButtons.OKCancel);
                     if (dialogResult == DialogResult.OK)
                     {
-                        ChangeTitle("Preforming reinstall, please wait...");
+                        ChangeTitle("Performing reinstall, please wait...");
                         ADB.RunAdbCommandToString("kill-server");
                         ADB.RunAdbCommandToString("devices");
                         ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{CurrPCKG} \"{Environment.CurrentDirectory}\"");
