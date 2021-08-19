@@ -2,7 +2,6 @@
 using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
 using SergeUtils;
-using Spoofer;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -14,7 +13,6 @@ using System.Net.NetworkInformation;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Timers;
 using System.Windows.Forms;
 
 
@@ -83,7 +81,7 @@ namespace AndroidSideloader
                 }
 
             }
-          
+
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
@@ -115,7 +113,7 @@ namespace AndroidSideloader
         {
             updatesnotified = false;
 
-            
+
             string adbFile = "C:\\RSL\\2.1.1\\adb\\adb.exe";
             string adbDir = "C:\\RSL\\2.1.1\\adb";
             string fileName = "";
@@ -147,9 +145,9 @@ namespace AndroidSideloader
             Properties.Settings.Default.ADBPath = adbFile;
             Properties.Settings.Default.Save();
             if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                 ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
+                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
             CheckForInternet();
-           
+
             if (HasInternet == true)
                 Sideloader.downloadFiles();
             else
@@ -170,8 +168,8 @@ namespace AndroidSideloader
             if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
             {
                 long length = new System.IO.FileInfo(Properties.Settings.Default.CurrentLogPath).Length;
-                if (length > 5000000)  
-                File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
+                if (length > 5000000)
+                    File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
             }
 
             RCLONE.Init();
@@ -203,7 +201,7 @@ namespace AndroidSideloader
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(Properties.Settings.Default.CurrentCrashPath))
-                File.Delete(Properties.Settings.Default.CurrentCrashPath);
+                    File.Delete(Properties.Settings.Default.CurrentCrashPath);
                 DialogResult dialogResult = FlexibleMessageBox.Show($"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.OK)
                 {
@@ -223,10 +221,10 @@ namespace AndroidSideloader
                         Properties.Settings.Default.CurrentCrashName = combined;
                         Properties.Settings.Default.Save();
 
-                            Clipboard.SetText(combined);
-                            RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
-                            FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
-                            Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
+                        Clipboard.SetText(combined);
+                        RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
+                        FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
+                        Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
 
 
                     }
@@ -258,7 +256,7 @@ namespace AndroidSideloader
                     Updater.Update();
                 }
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
-             
+
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
                 System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
@@ -489,7 +487,7 @@ namespace AndroidSideloader
                 i++;
             }
 
-         
+
 
             if (devicesComboBox.Items.Count > 0)
                 devicesComboBox.SelectedIndex = 0;
@@ -532,14 +530,14 @@ namespace AndroidSideloader
             {
                 Title = "Select OBB folder (must be direct OBB folder, E.G: com.Company.AppName)"
             };
-       
+
             ADB.WakeDevice();
             if (dialog.Show(Handle))
             {
                 progressBar.Style = ProgressBarStyle.Marquee;
                 string path = dialog.FileName;
                 string dirname = Path.GetFileName(path);
-               
+
                 Thread t1 = new Thread(() =>
                 {
 
@@ -738,7 +736,7 @@ namespace AndroidSideloader
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
             var line = listapps().Split('\n');
-            
+
             string forsettings = String.Join("", line);
             Properties.Settings.Default.InstalledApps = forsettings;
             Properties.Settings.Default.Save();
@@ -770,7 +768,7 @@ namespace AndroidSideloader
         public static bool isworking = false;
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-            
+
             ADB.WakeDevice();
 
             if (m_combo.SelectedIndex == -1)
@@ -1072,9 +1070,9 @@ namespace AndroidSideloader
                             {
                                 string pathname = Path.GetDirectoryName(data);
                                 string dataname = data.Replace($"{pathname}\\", "");
-                                ChangeTitle($"Installing {dataname} (If this hangs, uninstall app first then install again)"); 
+                                ChangeTitle($"Installing {dataname} (If this hangs, uninstall app first then install again)");
                                 output += ADB.Sideload(data);
-                       
+
 
                                 ChangeTitle("");
                             }
@@ -1102,7 +1100,7 @@ namespace AndroidSideloader
                             datazip = datazip.Replace(zippath, "");
                             datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
                             datazip = datazip.Replace(".", "");
-                         
+
                             string command = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{data}\" -o\"{zippath}\\{datazip}\\\"";
 
                             ADB.RunCommandToString(command, data);
@@ -1185,7 +1183,7 @@ namespace AndroidSideloader
             }
             List<String> installGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
-            
+
             newGamesList = installGames.Except(rookieList).ToList();
             newGamesList = newGamesList.Except(blacklistItems).ToList();
 
@@ -1226,16 +1224,16 @@ namespace AndroidSideloader
                             if (installedVersionInt < cloudVersionInt)
                             {
                                 if (Properties.Settings.Default.QblindOn)
-                                Game.BackColor = Color.FromArgb(120, 0, 0);     
+                                    Game.BackColor = Color.FromArgb(120, 0, 0);
                                 else
-                                Game.BackColor = Color.FromArgb(102, 77, 0);
+                                    Game.BackColor = Color.FromArgb(102, 77, 0);
                             }
                             bool dontget = false;
                             if (installedVersionInt > cloudVersionInt)
                             {
                                 string RlsName = Sideloader.PackageNametoGameName(packagename);
                                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                                
+
                                 if (!GameName.Contains("Beat Saber") && !dontget && !updatesnotified && !isworking && cloudVersionInt > 0)
                                 {
                                     DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
@@ -1258,12 +1256,12 @@ namespace AndroidSideloader
                 GameList.Add(Game);
             }
 
-  
+
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
-            foreach (string newGamesToUpload in newGamesList)
+            /*foreach (string newGamesToUpload in newGamesList)
             {
                 string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
@@ -1283,7 +1281,7 @@ namespace AndroidSideloader
                 }
             }
 
-            newGamesList.Clear();
+            newGamesList.Clear();*/
             updatesnotified = true;
             if (!isworking && gamesToUpload.Count > 0)
             {
@@ -1559,7 +1557,7 @@ without him none of this would be possible
             {
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (gamesListView.SelectedItems.Count == 0) return;
-                
+
                 string namebox = gamesListView.SelectedItems[0].ToString();
                 string nameboxtranslated = Sideloader.gameNameToSimpleName(namebox);
                 ChangeTitle($"Checking filesize of {nameboxtranslated}...");
@@ -1690,10 +1688,12 @@ without him none of this would be possible
                                 allSize /= 1000000;
                                 downloaded /= 1000000;
                                 Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (((double)downloaded / (double)allSize) * 100));
-                                try {
+                                try
+                                {
                                     progressBar.Style = ProgressBarStyle.Continuous;
                                     progressBar.Value = Convert.ToInt32((((double)downloaded / (double)allSize) * 100));
-                                } catch { }
+                                }
+                                catch { }
 
                                 i++;
                                 downloadSpeed /= 1000000;
@@ -1748,7 +1748,7 @@ without him none of this would be possible
                         if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\install.txt"))
                             isinstalltxt = true;
                         if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\Install.txt"))
-                           isinstalltxt = true;
+                            isinstalltxt = true;
                         string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
 
                         Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
@@ -1811,7 +1811,7 @@ without him none of this would be possible
                                     while (obbThread.IsAlive)
                                         await Task.Delay(100);
                                 }
-                                
+
                             }
                             ChangeTitle($"Installation of {gameName} completed....");
                         }
@@ -1925,14 +1925,20 @@ without him none of this would be possible
                     RCLONE.killRclone();
                     ADB.RunAdbCommandToString("kill-server");
                 }
-            } else if (newGamesList.Count > 0)
+            }
+            else if (newGamesList.Count > 0 && !Properties.Settings.Default.UploadedGameList)
             {
                 var res = FlexibleMessageBox.Show(this, "Please share game list bla bla bla for future patch bla ", "upload game list",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
                 if (res == DialogResult.Yes)
                 {
-                    System.IO.File.WriteAllLines("gameList.txt", newGamesList);
-                    RCLONE.runRcloneCommand($"copy gameList.txt RSL-debuglogs:installedGames");
+                    string fileName = "gamesList" + DateTime.Now.ToFileTime() + ".txt";
+                    System.IO.File.WriteAllLines(fileName, newGamesList);
+                    RCLONE.runRcloneCommand($"copy " + Environment.CurrentDirectory + "\\" + fileName + " RSL-debuglogs:InstalledGamesList");
+                    FlexibleMessageBox.Show("Upload done! Thank for your colaboration!");
+                    File.Delete(fileName);
+                    Properties.Settings.Default.UploadedGameList = true;
+                    Properties.Settings.Default.Save();
                     RCLONE.killRclone();
                     ADB.RunAdbCommandToString("kill-server");
                     return;
@@ -2022,7 +2028,7 @@ without him none of this would be possible
 
         private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            remotesList.Invoke(() => { currentRemote = "VRP-mirror" +  remotesList.SelectedItem.ToString(); });
+            remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
             if (remotesList.Text.Contains("VRP"))
             {
                 string lines = remotesList.Text;
@@ -2086,7 +2092,7 @@ without him none of this would be possible
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                
+
                 if (searchTextBox.Visible)
                 {
                     if (Properties.Settings.Default.EnterKeyInstall)
@@ -2095,7 +2101,7 @@ without him none of this would be possible
                             downloadInstallGameButton_Click(sender, e);
                     }
                 }
-                
+
                 searchTextBox.Visible = false;
                 label2.Visible = false;
                 label3.Visible = false;
@@ -2187,7 +2193,7 @@ without him none of this would be possible
                     QuestForm Form = new QuestForm();
                     Form.Show();
                 }
-             
+
             }
             if (keyData == (Keys.F4))
             {
@@ -2254,8 +2260,8 @@ without him none of this would be possible
                     FlexibleMessageBox.Show("No CrashLog found in Rookie directory.");
             }
 
-           
-  
+
+
 
             return base.ProcessCmdKey(ref msg, keyData);
 
@@ -2276,7 +2282,7 @@ without him none of this would be possible
                     if (foundItem == gamesListView.TopItem)
                     {
                         gamesListView.TopItem.Selected = true;
-     
+
                     }
                     else
                         foundItem.Selected = true;
@@ -2299,7 +2305,7 @@ without him none of this would be possible
 
         public void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-          
+
             if (gamesListView.SelectedItems.Count < 1)
                 return;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
@@ -2344,16 +2350,16 @@ without him none of this would be possible
             listappsbtn();
             initListView();
 
-            if (SideloaderRCLONE.games.Count<1)
+            if (SideloaderRCLONE.games.Count < 1)
             {
                 FlexibleMessageBox.Show("There are no games in rclone, please check your internet connection and check if the config is working properly");
                 return;
             }
 
-         // if (gamesToUpdate.Length > 0)
-         //     FlexibleMessageBox.Show(gamesToUpdate);
-        //  else
-         //     FlexibleMessageBox.Show("All your games are up to date!");
+            // if (gamesToUpdate.Length > 0)
+            //     FlexibleMessageBox.Show(gamesToUpdate);
+            //  else
+            //     FlexibleMessageBox.Show("All your games are up to date!");
         }
 
         private void gamesListView_MouseDoubleClick(object sender, MouseEventArgs e)
@@ -2376,7 +2382,7 @@ without him none of this would be possible
 
         private async void removeQUSetting_Click(object sender, EventArgs e)
         {
-  
+
             if (m_combo.SelectedIndex == -1)
             {
                 FlexibleMessageBox.Show("Please select an app first");
@@ -2435,7 +2441,7 @@ without him none of this would be possible
                 int y2 = r.Next(9999999);
 
                 var sum2 = ((long)y2 * (long)1000000000) + (long)x2;
-             
+
                 Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
                 Properties.Settings.Default.Save();
                 File.WriteAllText("delete_settings", "");
@@ -2494,8 +2500,8 @@ without him none of this would be possible
                     if (gamesListView.SelectedItems.Count > 0)
                         downloadInstallGameButton_Click(sender, e);
                 }
-                }
             }
+        }
 
 
         private void pictureBox1_Click(object sender, EventArgs e)
@@ -2571,4 +2577,4 @@ without him none of this would be possible
             }
         }
     }
- }
+}
