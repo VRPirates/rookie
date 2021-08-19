@@ -1255,25 +1255,25 @@ namespace AndroidSideloader
             gamesListView.BeginUpdate();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
-        //    foreach (string newGamesToUpload in newGamesList)
-          //  {
-            //    string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-              //  string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                //Logger.Log(newGamesToUpload);
-               // if (!updatesnotified)
-                //{
-                 //   DialogResult dialogResult = FlexibleMessageBox.Show($"You have a new game:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                  //  if (dialogResult == DialogResult.Yes)
-                   // {
-                     //   string InstalledVersionCode;
-                       // InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                        //InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                        //InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                        //ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                        //await uploadGameAsync(GameName, newGamesToUpload, installedVersionInt);
-                   // }
-                //}
-         //   }
+            foreach (string newGamesToUpload in newGamesList)
+            {
+                string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+                string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                Logger.Log(newGamesToUpload);
+                if (!updatesnotified)
+                {
+                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have a new game:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        string InstalledVersionCode;
+                        InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                        ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                        await uploadGameAsync(GameName, newGamesToUpload, installedVersionInt);
+                    }
+                }
+            }
 
             newGamesList.Clear();
             updatesnotified = true;
