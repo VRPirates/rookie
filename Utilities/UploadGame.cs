@@ -9,27 +9,22 @@ namespace AndroidSideloader.Utilities
     class UploadGame
     {
         private string uploadcommand;
-        public string Uploadcommand    // the Name property
+        public string Uploadcommand
         {
             get => uploadcommand;
             set => uploadcommand = value;
         }
         private string uploadgamename;
-        public string Uploadgamename    // the Name property
+        public string Uploadgamename
         {
             get => uploadgamename;
             set => uploadgamename = value;
         }
         private ulong uploadversion;
-        public ulong Uploadversion    // the Name property
+        public ulong Uploadversion
         {
             get => uploadversion;
             set => uploadversion = value;
-        }
-
-        public static implicit operator List<object>(UploadGame v)
-        {
-            throw new NotImplementedException();
         }
     }
 }

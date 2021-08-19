@@ -38,9 +38,6 @@ namespace AndroidSideloader
         {
             if (!MainForm.HasInternet) return new ProcessOutput("", "No internet");
 
-            //Set the password for rclone configs
-            Environment.SetEnvironmentVariable("RCLONE_CRYPT_REMOTE", rclonepw);
-            Environment.SetEnvironmentVariable("RCLONE_CONFIG_PASS", rclonepw);
             ProcessOutput prcoutput = new ProcessOutput();
             //Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
@@ -90,7 +87,7 @@ namespace AndroidSideloader
             rclone.WaitForExit();
 
             //if there is one of these errors, we switch the mirrors
-            if (error.Contains("cannot fetch token") || error.Contains("authError") || (error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("couldn't list")))
+            if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("couldn't list"))
             {
                 string oldRemote = MainForm.currentRemote;
                 try
@@ -111,8 +108,10 @@ namespace AndroidSideloader
             if (!output.Contains("Game Name;Release Name;") && !output.Contains("package:"))
             Logger.Log($"Rclone error: {error}\nRclone Output: {output}");
             if (error.Contains("There is not enough space"))
+            {
                 FlexibleMessageBox.Show("There isn't enough space on your PC to properly install this game. Please have at least 2x the size of the game you are trying to download/install available on the drive where Rookie is installed.", "NOT ENOUGH SPACE");
-                return prcoutput;
+            }
+            return prcoutput;
 
         }
     }
