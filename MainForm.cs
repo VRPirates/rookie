@@ -28,6 +28,14 @@ namespace AndroidSideloader
 #if DEBUG
         public static bool debugMode = true;
         public bool DeviceConnected = false;
+
+        public bool keyheld;
+        public bool keyheld2;
+        public static string CurrAPK;
+        public static string CurrPCKG;
+
+
+        public static string currremotesimple = "";
 #else
         public bool keyheld;
         public bool keyheld2;
@@ -1910,6 +1918,23 @@ without him none of this would be possible
                 if (res != DialogResult.Yes)
                 {
                     e.Cancel = true;
+                    return;
+                }
+                else
+                {
+                    RCLONE.killRclone();
+                    ADB.RunAdbCommandToString("kill-server");
+                }
+            } else if (newGamesList.Count > 0)
+            {
+                var res = FlexibleMessageBox.Show(this, "Please share game list bla bla bla for future patch bla ", "upload game list",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
+                if (res == DialogResult.Yes)
+                {
+                    System.IO.File.WriteAllLines("gameList.txt", newGamesList);
+                    RCLONE.runRcloneCommand($"copy gameList.txt RSL-debuglogs:installedGames");
+                    RCLONE.killRclone();
+                    ADB.RunAdbCommandToString("kill-server");
                     return;
                 }
                 else
