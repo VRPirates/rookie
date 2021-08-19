@@ -265,7 +265,7 @@ namespace AndroidSideloader
                 ChangeTitle("Initializing Games");
                 SideloaderRCLONE.initGames(currentRemote);
                 t.Stop();
-                //SideloaderRCLONE.UpdateNouns(currentRemote);
+                SideloaderRCLONE.UpdateNouns(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
                     FlexibleMessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
