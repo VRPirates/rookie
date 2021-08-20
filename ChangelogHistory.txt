@@ -1,6 +1,49 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.8.5
+
++ Added OPT-IN installed packages check,
+this will be used to add common free apps
+to a blacklist so a future version of RSL 
+can ask users to donate new apps.
+
+= Fixed logic for apk signature mismatch
+automatic reinstall.
+
+= Increased timer for apk installation
+failure to 3 minutes.
+
+= Fixed blacklist implementation for 
+updates to apps already on RSL.
+
+- - Removed 2nd confirmation dialog for 
+app uninstalls.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEfX4kACgkQx/Rql1Vo
+czch2BAAgPAPx8ziiX8e+IH9wBTBbj+Z9V8/GCaehCYd2SdOi9n4rHwzKL2S96mb
+VAyEuYyEnPc+sGIIVoUczAeoBOFpt6rwVwAysHfX85+MFcaJ8x/k5iAHwUYUDbaS
+retbuPO4YIsPHI38DWscOO0G/uD+caa5sf6/hYr6wLhIIozAmE3L9XtUuYO6kKSo
+m2hBAf728MWODRHH0G6+ktJG1sL1l5x66A+wvRkKHoYZFGLrAM126yGWIQlmWdtN
+F2AzBPXvIX09wtpiXQwLAc0GNF/wrazd8A5d9l0c+Rkl2lmist5k9xBD+MAbehdb
+QI1QgKXDvEZIp/+B4BgaB193HxZZFphVkRtera8mlohmiHVzunFcpHonOrc90jjk
+7fAMiieR/EgaRGXux9a24s/q32L/dHxqUtZfHhYbgRtWe4Kcm9AbVkLDVSAPiQik
+5k8fFRkokRQVgd5i/G0fzMPLHfKIn9afQ5oli7WxL761JQcx7HDb6/HS0BKiyZWN
+CsAxNjHt+4B/k5lvJNSCJL8mjQMjTViiPNYE9OmM6SzttvYtn8NGE6+fKb/e5x7+
+DjQuOVZ3b6TtKnvmx/Q5TbF82P23p9I6Aa32mMO8edD2CYKIF8bmDNlSGjWs3EC9
+OxsIksCmNIb4pxY25ejlN/X92/75YNsxrI+dYhXJPMOm39WQtVY=
+=EPMk
+-----END PGP SIGNATURE-----
+
+
+RSL 2.8.4
++ Hotfix to update the exclusion list of games we need updates for.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.8.2 
 
 + Added automatic upload to Google shared drive

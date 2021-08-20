@@ -1,28 +1,20 @@
-RSL 2.8.4
-+ Hotfix to update the exclusion list of games we need updates for.
+RSL 2.8.5
 
-RSL 2.8.2 
++ Added OPT-IN installed packages check,
+this will be used to add common free apps
+to a blacklist so a future version of RSL 
+can ask users to donate new apps.
 
-+ Added automatic upload to Google shared drive
-for clean game files donation.
-+ Added uploading GIF for duration of upload.
-+ Added warning messages when user attempts
-to close Rookie while games are download, installing,
-or uploading.
-= Threaded clean file zipping and uploading
-so user can continue to use Rookie while game
-is uploading.
+= Fixed logic for apk signature mismatch
+automatic reinstall.
 
+= Increased timer for apk installation
+failure to 3 minutes.
 
-P.S. We are looking for volunteers for the next
-beta which will automatically detect new games
-installed on user's headset and suggest them for
-donation. Message https://t.me/Harryeffingpotter or 
-https://t.me/pmowpmow on Telegram to join the beta 
-test!
+= Fixed blacklist implementation for 
+updates to apps already on RSL.
+
+- Removed 2nd confirmation dialog for 
+app uninstalls.
 
 HFP
- 
-
-P.S MOVED PGP SIGNATURE TO CHANGELOGHISTORY.TXT @ 
-https://github.com/nerdunit/androidsideloader

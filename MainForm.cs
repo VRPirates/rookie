@@ -879,12 +879,11 @@ namespace AndroidSideloader
 
             Directory.CreateDirectory(CurrBackups);
             ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
-            DialogResult dialogResult = FlexibleMessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Check for backup.", MessageBoxButtons.OKCancel);
-            if (dialogResult == DialogResult.Cancel)
+            DialogResult dialogResult = FlexibleMessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Continue with Uninstall?", MessageBoxButtons.YesNo);
+            if (dialogResult == DialogResult.No)
             {
                 return;
             }
-
             ProcessOutput output = new ProcessOutput("", "");
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
@@ -892,26 +891,17 @@ namespace AndroidSideloader
                 output += Sideloader.UninstallGame(GameName);
             });
             t1.Start();
-
+            t1.IsBackground = true;
             while (t1.IsAlive)
                 await Task.Delay(100);
-
+            ShowPrcOutput(output);
             showAvailableSpace();
-
             progressBar.Style = ProgressBarStyle.Continuous;
             m_combo.Items.RemoveAt(m_combo.SelectedIndex);
-            ShowPrcOutput(output);
-            listappsbtn();
-            initListView();
         }
 
-
-
-
-
-
         private async void sideloadFolderButton_Click(object sender, EventArgs e)
-        {
+            {
             ADB.WakeDevice();
 
             var dialog = new FolderSelectDialog
@@ -1153,10 +1143,6 @@ namespace AndroidSideloader
         {
             gamesListView.Items.Clear();
             gamesListView.Columns.Clear();
-            if (!File.Exists("installedPackages.json"))
-            {
-                File.Create("installedPackages.json");
-            }
             foreach (string column in SideloaderRCLONE.gameProperties)
             {
                 gamesListView.Columns.Add(column, 150);
@@ -1170,9 +1156,9 @@ namespace AndroidSideloader
             char[] delims = new[] { '\r', '\n' };
             string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
             string[] blacklist = new string[] { };
-            if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\blacklist.txt"))
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
             {
-                blacklist = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\blacklist.txt");
+                blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
             }
             List<ListViewItem> GameList = new List<ListViewItem>();
             List<String> rookieList = new List<String>();
@@ -1227,13 +1213,16 @@ namespace AndroidSideloader
                                 else
                                     Game.BackColor = Color.FromArgb(102, 77, 0);
                             }
-                            bool dontget = false;
+
                             if (installedVersionInt > cloudVersionInt)
                             {
+                                bool dontget = false;
+                                if (blacklist.Contains(packagename))
+                                    dontget = true;
                                 string RlsName = Sideloader.PackageNametoGameName(packagename);
                                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
 
-                                if (!GameName.Contains("Beat Saber") && !dontget && !updatesnotified && !isworking && cloudVersionInt > 0)
+                                if (!dontget && !updatesnotified && !isworking)
                                 {
                                     DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
                                     if (dialogResult == DialogResult.Yes)
@@ -1298,13 +1287,12 @@ namespace AndroidSideloader
                         if (File.Exists($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip"))
                             File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
                         string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                        string cmd = $"7z a \"{game.Uploadgamename} v{game.Uploadversion}.zip\" .\\{game.Pckgcommand}\\*";
+                        string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip\" .\\{game.Pckgcommand}\\*";
                         ChangeTitle("Zipping extracted application...");
                         ADB.RunCommandToString(cmd, path);
                         Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
                         ChangeTitle("Uploading to drive, you may continue to use Rookie while it uploads.");
                         RCLONE.runRcloneCommand(game.Uploadcommand);
-                        FlexibleMessageBox.Show($"Upload of {game.Uploadgamename} is complete! Thank you for your contribution!");
                         File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
 
                     });
@@ -1779,7 +1767,7 @@ without him none of this would be possible
                                     CurrAPK = file;
                                     CurrPCKG = packagename;
                                     System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-                                    t.Interval = 60000; // 60 seconds to fail
+                                    t.Interval = 180000; // 180 seconds to fail
                                     t.Tick += new EventHandler(timer_Tick4);
                                     t.Start();
                                     Thread apkThread = new Thread(() =>
@@ -1812,7 +1800,7 @@ without him none of this would be possible
                                 }
 
                             }
-                            ChangeTitle($"Installation of {gameName} completed....");
+                            ChangeTitle($"Installation of {gameName} completed.");
                         }
                         if (Properties.Settings.Default.deleteAllAfterInstall)
                         {
@@ -1826,7 +1814,9 @@ without him none of this would be possible
                         gamesQueListBox.DataSource = gamesQueueList;
                         ChangeTitlebarToDevice();
                         showAvailableSpace();
-                    }
+                    
+                    ChangeTitle("");
+                }
                 }
                 progressBar.Style = ProgressBarStyle.Continuous;
                 etaLabel.Text = "ETA: Finished Queue";
@@ -1848,14 +1838,11 @@ without him none of this would be possible
             if (!timerticked)
             {
                 timerticked = true;
-                string[] blacklist = File.ReadAllLines($"{Environment.CurrentDirectory}\\installedPackages.json");
                 bool isinstalled = false;
-                foreach (string blacklistpckg in blacklist)
+
+                if (Properties.Settings.Default.InstalledApps.Contains(CurrPCKG))
                 {
-                    if (blacklistpckg.Contains(CurrPCKG))
-                    {
-                        isinstalled = true;
-                    }
+                    isinstalled = true;
                 }
                 if (isinstalled)
                 {
@@ -1877,7 +1864,7 @@ without him none of this would be possible
                         if (Directory.Exists($"{Environment.CurrentDirectory}\\{CurrPCKG}"))
                             Directory.Delete($"{Environment.CurrentDirectory}\\{CurrPCKG}", true);
                         ChangeTitle("");
-                        ShowPrcOutput(output);
+                        return;
                     }
 
                     else
@@ -1891,6 +1878,7 @@ without him none of this would be possible
                         }
                         else
                         {
+                            timerticked = false;
                             return;
                         }
                     }

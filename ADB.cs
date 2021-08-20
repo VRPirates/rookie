@@ -224,7 +224,6 @@ namespace AndroidSideloader
         {
             WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");
-            output += RunAdbCommandToString($"shell pm uninstall -k --user 0 {package}");
             output += RunAdbCommandToString($"shell pm uninstall {package}");
             return output;
         }

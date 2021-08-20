@@ -132,19 +132,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput("", "");
-
             string packageName = Sideloader.gameNameToPackageName(GameName);
-
-            DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to uninstall {packageName}? this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
-            if (dialogResult != DialogResult.Yes)
-                return output;
-
             output = ADB.UninstallPackage(packageName);
-
             //remove both data and obb if there is any
             Sideloader.RemoveFolder("/sdcard/Android/obb/" + packageName);
             Sideloader.RemoveFolder("/sdcard/Android/data/" + packageName);
-
             return output;
         }
 
