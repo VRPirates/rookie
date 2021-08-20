@@ -1,4 +1,4 @@
-RSL 2.8.3
+RSL 2.8.4
 + Hotfix to update the exclusion list of games we need updates for.
 
 RSL 2.8.2 
