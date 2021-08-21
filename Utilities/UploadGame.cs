@@ -8,29 +8,24 @@ namespace AndroidSideloader.Utilities
 {
     class UploadGame
     {
-        private string uploadcommand;
-        public string Uploadcommand
+        public UploadGame(string Uploadcommand, string Pckgcommand, string Uploadgamename, ulong Uploadversion)
         {
-            get => uploadcommand;
-            set => uploadcommand = value;
-        }   
-        private string pckgcommand;
-        public string Pckgcommand
-        {
-            get => pckgcommand;
-            set => pckgcommand = value;
+            this.Uploadcommand = Uploadcommand;
+            this.Pckgcommand = Pckgcommand;
+            this.Uploadgamename = Uploadgamename;
+            this.Uploadversion = Uploadversion;
         }
-        private string uploadgamename;
-        public string Uploadgamename
+        public UploadGame()
         {
-            get => uploadgamename;
-            set => uploadgamename = value;
+            
         }
-        private ulong uploadversion;
-        public ulong Uploadversion
-        {
-            get => uploadversion;
-            set => uploadversion = value;
-        }
+        public string Uploadcommand { get; set; }
+
+        public string Pckgcommand { get; set; }
+        
+        public string Uploadgamename { get; set; }
+
+        public ulong Uploadversion { get; set; }
+
     }
 }

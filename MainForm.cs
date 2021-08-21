@@ -265,24 +265,47 @@ namespace AndroidSideloader
                 ChangeTitle("Initializing Games");
                 SideloaderRCLONE.initGames(currentRemote);
                 t.Stop();
+                
+                //ChangeTitle("Syncing Game Photos");
+                //ChangeTitle("Updating list of needed clean apps...");
+                //ChangeTitle("Checking for Updates on server...");
+                
+            });
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.IsBackground = true;
+            Thread t2 = new Thread(() =>
+            {
+                SideloaderRCLONE.UpdateGameNotes(currentRemote);
+            });
+
+            Thread t3 = new Thread(() =>
+            {
+                SideloaderRCLONE.UpdateGamePhotos(currentRemote);
+            });
+
+            Thread t4 = new Thread(() =>
+            {
                 SideloaderRCLONE.UpdateNouns(currentRemote);
                 if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
                 {
                     FlexibleMessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                 }
-                ChangeTitle("Syncing Game Photos");
-                SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                ChangeTitle("Updating list of needed clean apps...");
-                ChangeTitle("Checking for Updates on server...");
-                SideloaderRCLONE.UpdateGameNotes(currentRemote);
-                ChangeTitle("Loaded");
             });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = true;
+            t2.IsBackground = true;
+            t3.IsBackground = true;
+            t4.IsBackground = true;
             if (HasInternet)
+            {
                 t1.Start();
-            while (t1.IsAlive)
+                t2.Start();
+                t3.Start();
+                t4.Start();
+            }
+            while (t1.IsAlive || t2.IsAlive || t3.IsAlive || t4.IsAlive)
                 await Task.Delay(100);
+
+            ChangeTitle("Loaded");
+
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread configThread = new Thread(() =>
             {
@@ -293,7 +316,7 @@ namespace AndroidSideloader
             });
             configThread.IsBackground = true;
             configThread.Start();
-            while (t1.IsAlive)
+            while (configThread.IsAlive)
                 await Task.Delay(100);
             ChangeTitle("Populating update list, please wait...");
             listappsbtn();
@@ -1139,6 +1162,7 @@ namespace AndroidSideloader
         }
         List<String> newGamesList = new List<string>();
         private List<UploadGame> gamesToUpload = new List<UploadGame>();
+        private List<UpdateGameData> gamesToAskForUpdate = new List<UpdateGameData>();
         private async void initListView()
         {
             gamesListView.Items.Clear();
@@ -1169,8 +1193,7 @@ namespace AndroidSideloader
             List<String> installGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
 
-            newGamesList = installGames.Except(rookieList).ToList();
-            newGamesList = newGamesList.Except(blacklistItems).ToList();
+            newGamesList = installGames.Except(rookieList).Except(blacklistItems).ToList();
 
             foreach (string[] release in SideloaderRCLONE.games)
             {
@@ -1224,11 +1247,8 @@ namespace AndroidSideloader
 
                                 if (!dontget && !updatesnotified && !isworking)
                                 {
-                                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                                    if (dialogResult == DialogResult.Yes)
-                                    {
-                                        await uploadGameAsync(GameName, packagename, installedVersionInt);
-                                    }
+                                    UpdateGameData gameData = new UpdateGameData(GameName, packagename, installedVersionInt);
+                                    gamesToAskForUpdate.Add(gameData);
                                 }
                             }
                         }
@@ -1249,6 +1269,17 @@ namespace AndroidSideloader
             gamesListView.BeginUpdate();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
+
+            //This is for games that we already have on rookie and user has an update
+            foreach(UpdateGameData gameData in gamesToAskForUpdate)
+            {
+                DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                if (dialogResult == DialogResult.Yes)
+                {
+                    await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
+                }
+            }
+            //This is for games that are not blacklisted and we dont have on rookie
             /*foreach (string newGamesToUpload in newGamesList)
             {
                 string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
@@ -1314,7 +1345,7 @@ namespace AndroidSideloader
             }
         }
 
-        private async Task uploadGameAsync(string GameName, string packagename, ulong installedVersionInt)
+        private async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt)
         {
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
