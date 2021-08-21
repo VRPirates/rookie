@@ -211,6 +211,7 @@
     <Compile Include="SelectFolder.cs" />
     <Compile Include="Utilities\StringUtilities.cs" />
     <Compile Include="Utilities\GeneralUtilities.cs" />
+    <Compile Include="Utilities\UpdateGameData.cs" />
     <Compile Include="Utilities\UploadGame.cs" />
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
