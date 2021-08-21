@@ -790,7 +790,6 @@ namespace AndroidSideloader
         public static bool isworking = false;
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-
             ADB.WakeDevice();
 
             if (m_combo.SelectedIndex == -1)
@@ -798,6 +797,9 @@ namespace AndroidSideloader
                 notify("Please select an app first");
                 return;
             }
+            DialogResult dialogResult1 = FlexibleMessageBox.Show($"Do you want to upload {m_combo.SelectedItem.ToString()} now?", "Upload app?", MessageBoxButtons.YesNo);
+            if (dialogResult1 == DialogResult.No)
+                return;
             if (!isworking)
             {
                 isworking = true;
@@ -2047,17 +2049,6 @@ without him none of this would be possible
         private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
-            if (remotesList.Text.Contains("VRP"))
-            {
-                string lines = remotesList.Text;
-                string pattern = "VRP-mirror";
-                string replacement = "";
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] strings = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
-                remotesList.Text = result;
-            }
         }
 
         private void QuestOptionsButton_Click(object sender, EventArgs e)
