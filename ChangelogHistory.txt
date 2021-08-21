@@ -1,6 +1,37 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.8.7
+
+= Added code made by Ivan that makes
+RSL load up much faster.
+= Added confirmation dialog when using 
+Upload App button in case of accidental
+misclicks.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEhgj8ACgkQx/Rql1Vo
+czc+TA/5ARiMcBdvxbKjB6jZKFDGZvEh0IpPyHRJzLpuZhHI+qR91P3UI9fXCrQ6
+Vzi6Nc0I3YMhPIpNnp9uxWkNfeIUDTdBUi+wwIpMopupVxLCEJkR7ZGkjJHFWPYn
+Hm19BLmmv9dctJwQlPLyaDgnb0+GKDRzZF8xHKBopbmModbhHwnt0UHTmodD4syc
+DinfaVpM+RwGZOptUyzwqLR51aQb03JrbHS3gkB40EbsIr6brZd50lahSvVMW8W4
+Btc3gf0rig+BrjXgUkNFlZ1PZ+jM1+12dWflYNvMYCoQ7bRc7Kds7IqCiPIweRF1
+2YR5jBh52C2ChhY3sfbc8G6VkbXW7N6ktz/11mrIc7Mc7X4ibpsDzQCUyDiuXNwi
+wm3ikq5liQYlM/I/awutD8yDcJPGEoUui8wYehwi23Pzujdh74bBYd9F6cQLg7Tb
+AsRLvEDY/n7gsDzqdt/oqUkGtt0x4c0K5ZPEIe9pcQvfNln7j/Mf3BNC4HZRkeei
++FIyuhVf/w4dcz3xm1g5060N2eQLgXCk7690aak3l9ucghivUFlrKGe8vRk7qtE6
+FebUemHtTgurKz1bm8XCZjfvq0IR7MY+iGgIfKtXbM8SqjxIDhE7P1QuGXeZD9y3
+nkjY4+FHkT7BXSlOUpQ/6tR0wGYxtrxuNfwlXKGEqJlzPBbmCAY=
+=Zdt7
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.8.6
 
 + Added Set username option to Quest

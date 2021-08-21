@@ -1,6 +1,10 @@
-RSL 2.8.6
+RSL 2.8.7
 
-+ Added Set username option to Quest
-Options. This will work for all apps.
+= Added code made by Ivan that makes
+RSL load up much faster.
+= Added confirmation dialog when using 
+Upload App button in case of accidental
+misclicks.
 
 HFP
+ 
