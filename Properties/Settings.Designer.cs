@@ -634,5 +634,17 @@ namespace AndroidSideloader.Properties {
                 this["UploadedGameList"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string GlobalUsername {
+            get {
+                return ((string)(this["GlobalUsername"]));
+            }
+            set {
+                this["GlobalUsername"] = value;
+            }
+        }
     }
 }

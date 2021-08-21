@@ -1,6 +1,33 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.8.6
+
++ Added Set username option to Quest
+Options. This will work for all apps.
+
+HFP
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEgoXkACgkQx/Rql1Vo
+czexgg/+P9mlydoik903J8wSbVvVvRhxypl+TI7ijkwU++qm4iGCc1ntqz/E/yAZ
+SpVjfuGpr3GV/B3ZkCKKvwvrwUr11CJFteoQ++HVmDlRwUu0DpNFIwiIi46E2ca8
+28Y3+A55WeNMFcLEBTB8nLUd7++YVhPs4ZKNOkCu+OYGMZN/2B6kPS9674YvRCZv
+7yqxmYBs5tVXHqoFJEGC6fMIfMN7rF1zkZ5u5qOpOeGGkFOeCyrtv/7fY7XmL9Qj
+i3mPOn8OV7N8wMoXt1j7cagdmYh2rwK90raCovItqWmCoy2HoBtxM6624+q5kt0i
+2ne5s/p3yiwlW4tRFHsCzseN3N6gEv3kQ2gSN5JDfyUlTOZwMrYyWvNHrYsuJH/U
+ibxPQFInULg2RmuARvRZRngtvxPIQsANuFyzCU2jGUOPvrtHfDtvnAL1WtHZtmga
+x1iiw86GKfvmkqPq9Sz6NXczCOyE6d7knfGNNqK5Ec7D2I/O2aw/9Ssz1TiAhj9S
+vIiw0ABOTI0VrSic63y0qkShq81BcaYd7IFX2r++JnC+LEoYuA9EriaqKqwCLgLU
+ghwBYOSnkh7/mGu7eBF8SzYk3QlhC5+5IcsQtwNT97Z2DqVxzlT0CwFot9puObnO
+AkeRZ5JtDd9w3RmjcMIVVpqyUvC8guDlBgMsrwFNiRcxyY08+es=
+=T/ZC
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.8.5
 
 + Added OPT-IN installed packages check,

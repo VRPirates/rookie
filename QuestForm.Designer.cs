@@ -59,16 +59,17 @@ namespace AndroidSideloader
             this.label6 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.ResolutionLabel = new System.Windows.Forms.Label();
+            this.GlobalUsername = new System.Windows.Forms.TextBox();
             this.FOVy = new System.Windows.Forms.TextBox();
             this.FOVx = new System.Windows.Forms.TextBox();
             this.UsrBox = new System.Windows.Forms.TextBox();
             this.ResBox = new System.Windows.Forms.TextBox();
             this.TextureResTextBox = new System.Windows.Forms.TextBox();
             this.QUEnable = new System.Windows.Forms.Button();
+            this.WifiWake = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.QURfrRt = new System.Windows.Forms.ComboBox();
             this.RefreshRateComboBox = new System.Windows.Forms.ComboBox();
-            this.WifiWake = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -213,14 +214,15 @@ namespace AndroidSideloader
             // button3
             // 
             this.button3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.button3.Enabled = false;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.5F);
             this.button3.ForeColor = System.Drawing.SystemColors.ButtonHighlight;
-            this.button3.Location = new System.Drawing.Point(101, 702);
+            this.button3.Location = new System.Drawing.Point(278, 700);
             this.button3.Name = "button3";
-            this.button3.Size = new System.Drawing.Size(169, 25);
+            this.button3.Size = new System.Drawing.Size(81, 25);
             this.button3.TabIndex = 17;
-            this.button3.Text = "CUSTOM USER.JSON";
+            this.button3.Text = "APPLY";
             this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
@@ -230,11 +232,11 @@ namespace AndroidSideloader
             this.label12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label12.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label12.ForeColor = System.Drawing.Color.LightCyan;
-            this.label12.Location = new System.Drawing.Point(93, 656);
+            this.label12.Location = new System.Drawing.Point(121, 656);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(185, 20);
+            this.label12.Size = new System.Drawing.Size(128, 20);
             this.label12.TabIndex = 6;
-            this.label12.Text = "Set custom user.json*";
+            this.label12.Text = "Set username*";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // label13
@@ -243,11 +245,11 @@ namespace AndroidSideloader
             this.label13.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.label13.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label13.ForeColor = System.Drawing.Color.LightSteelBlue;
-            this.label13.Location = new System.Drawing.Point(53, 678);
+            this.label13.Location = new System.Drawing.Point(83, 678);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(265, 16);
+            this.label13.Size = new System.Drawing.Size(204, 16);
             this.label13.TabIndex = 6;
-            this.label13.Text = "*For games that don\'t work with QU settings.";
+            this.label13.Text = "*For games not released by -QU.";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // DeleteShots
@@ -333,7 +335,7 @@ namespace AndroidSideloader
             "4"});
             this.CPUComboBox.Location = new System.Drawing.Point(13, 123);
             this.CPUComboBox.Name = "CPUComboBox";
-            this.CPUComboBox.Size = new System.Drawing.Size(346, 28);
+            this.CPUComboBox.Size = new System.Drawing.Size(346, 26);
             this.CPUComboBox.TabIndex = 2;
             this.CPUComboBox.Text = "Select CPU level (0 for default)";
             // 
@@ -355,7 +357,7 @@ namespace AndroidSideloader
             "4"});
             this.GPUComboBox.Location = new System.Drawing.Point(13, 94);
             this.GPUComboBox.Name = "GPUComboBox";
-            this.GPUComboBox.Size = new System.Drawing.Size(346, 28);
+            this.GPUComboBox.Size = new System.Drawing.Size(346, 26);
             this.GPUComboBox.TabIndex = 1;
             this.GPUComboBox.Text = "Select GPU level (0 for default)";
             // 
@@ -369,7 +371,7 @@ namespace AndroidSideloader
             this.label7.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label7.Location = new System.Drawing.Point(13, 532);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(59, 20);
+            this.label7.Size = new System.Drawing.Size(56, 18);
             this.label7.TabIndex = 3;
             this.label7.Text = "Fov - X";
             this.label7.Visible = false;
@@ -384,7 +386,7 @@ namespace AndroidSideloader
             this.label8.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label8.Location = new System.Drawing.Point(191, 532);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(59, 20);
+            this.label8.Size = new System.Drawing.Size(55, 18);
             this.label8.TabIndex = 3;
             this.label8.Text = "Fov - Y";
             this.label8.Visible = false;
@@ -399,7 +401,7 @@ namespace AndroidSideloader
             this.label9.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label9.Location = new System.Drawing.Point(12, 583);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(105, 20);
+            this.label9.Size = new System.Drawing.Size(95, 18);
             this.label9.TabIndex = 3;
             this.label9.Text = "Refresh Rate";
             this.label9.Visible = false;
@@ -414,7 +416,7 @@ namespace AndroidSideloader
             this.label6.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label6.Location = new System.Drawing.Point(93, 484);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(185, 20);
+            this.label6.Size = new System.Drawing.Size(173, 18);
             this.label6.TabIndex = 3;
             this.label6.Text = "Enter Custom Username";
             this.label6.Visible = false;
@@ -429,7 +431,7 @@ namespace AndroidSideloader
             this.label5.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label5.Location = new System.Drawing.Point(16, 434);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(362, 20);
+            this.label5.Size = new System.Drawing.Size(337, 18);
             this.label5.TabIndex = 3;
             this.label5.Text = "Custom Resolution Width (Height auto calculated)";
             this.label5.Visible = false;
@@ -444,9 +446,23 @@ namespace AndroidSideloader
             this.ResolutionLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.ResolutionLabel.Location = new System.Drawing.Point(9, 180);
             this.ResolutionLabel.Name = "ResolutionLabel";
-            this.ResolutionLabel.Size = new System.Drawing.Size(166, 20);
+            this.ResolutionLabel.Size = new System.Drawing.Size(153, 18);
             this.ResolutionLabel.TabIndex = 3;
             this.ResolutionLabel.Text = "Resolution (0=default)";
+            // 
+            // GlobalUsername
+            // 
+            this.GlobalUsername.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
+            this.GlobalUsername.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.GlobalUsername.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.GlobalUsername.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.GlobalUsername.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.GlobalUsername.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.GlobalUsername.Location = new System.Drawing.Point(12, 701);
+            this.GlobalUsername.Name = "GlobalUsername";
+            this.GlobalUsername.Size = new System.Drawing.Size(262, 24);
+            this.GlobalUsername.TabIndex = 12;
+            this.GlobalUsername.TextChanged += new System.EventHandler(this.GlobalUsername_TextChanged);
             // 
             // FOVy
             // 
@@ -458,7 +474,7 @@ namespace AndroidSideloader
             this.FOVy.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.FOVy.Location = new System.Drawing.Point(189, 507);
             this.FOVy.Name = "FOVy";
-            this.FOVy.Size = new System.Drawing.Size(169, 26);
+            this.FOVy.Size = new System.Drawing.Size(169, 24);
             this.FOVy.TabIndex = 12;
             this.FOVy.Text = "0";
             this.FOVy.Visible = false;
@@ -474,7 +490,7 @@ namespace AndroidSideloader
             this.FOVx.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.FOVx.Location = new System.Drawing.Point(13, 507);
             this.FOVx.Name = "FOVx";
-            this.FOVx.Size = new System.Drawing.Size(169, 26);
+            this.FOVx.Size = new System.Drawing.Size(169, 24);
             this.FOVx.TabIndex = 11;
             this.FOVx.Text = "0";
             this.FOVx.Visible = false;
@@ -490,7 +506,7 @@ namespace AndroidSideloader
             this.UsrBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.UsrBox.Location = new System.Drawing.Point(13, 459);
             this.UsrBox.Name = "UsrBox";
-            this.UsrBox.Size = new System.Drawing.Size(345, 26);
+            this.UsrBox.Size = new System.Drawing.Size(345, 24);
             this.UsrBox.TabIndex = 10;
             this.UsrBox.Text = "0";
             this.UsrBox.Visible = false;
@@ -506,7 +522,7 @@ namespace AndroidSideloader
             this.ResBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.ResBox.Location = new System.Drawing.Point(13, 409);
             this.ResBox.Name = "ResBox";
-            this.ResBox.Size = new System.Drawing.Size(345, 26);
+            this.ResBox.Size = new System.Drawing.Size(345, 24);
             this.ResBox.TabIndex = 9;
             this.ResBox.Text = "0";
             this.ResBox.Visible = false;
@@ -522,7 +538,7 @@ namespace AndroidSideloader
             this.TextureResTextBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.TextureResTextBox.Location = new System.Drawing.Point(13, 152);
             this.TextureResTextBox.Name = "TextureResTextBox";
-            this.TextureResTextBox.Size = new System.Drawing.Size(167, 26);
+            this.TextureResTextBox.Size = new System.Drawing.Size(167, 24);
             this.TextureResTextBox.TabIndex = 3;
             this.TextureResTextBox.Text = "0";
             // 
@@ -543,6 +559,23 @@ namespace AndroidSideloader
             this.QUEnable.UseVisualStyleBackColor = false;
             this.QUEnable.Visible = false;
             this.QUEnable.Click += new System.EventHandler(this.QUEnable_Click);
+            // 
+            // WifiWake
+            // 
+            this.WifiWake.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.WifiWake.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.WifiWake.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.WifiWake.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.WifiWake.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.WifiWake.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.WifiWake.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.WifiWake.Location = new System.Drawing.Point(189, 180);
+            this.WifiWake.Name = "WifiWake";
+            this.WifiWake.Size = new System.Drawing.Size(170, 25);
+            this.WifiWake.TabIndex = 4;
+            this.WifiWake.Text = "ENABLE WIFI WAKE";
+            this.WifiWake.UseVisualStyleBackColor = false;
+            this.WifiWake.Click += new System.EventHandler(this.WifiWake_Click);
             // 
             // button1
             // 
@@ -578,7 +611,7 @@ namespace AndroidSideloader
             "120"});
             this.QURfrRt.Location = new System.Drawing.Point(13, 555);
             this.QURfrRt.Name = "QURfrRt";
-            this.QURfrRt.Size = new System.Drawing.Size(170, 28);
+            this.QURfrRt.Size = new System.Drawing.Size(170, 26);
             this.QURfrRt.TabIndex = 13;
             this.QURfrRt.Text = "0";
             this.QURfrRt.Visible = false;
@@ -600,26 +633,9 @@ namespace AndroidSideloader
             "120"});
             this.RefreshRateComboBox.Location = new System.Drawing.Point(13, 65);
             this.RefreshRateComboBox.Name = "RefreshRateComboBox";
-            this.RefreshRateComboBox.Size = new System.Drawing.Size(346, 28);
+            this.RefreshRateComboBox.Size = new System.Drawing.Size(346, 26);
             this.RefreshRateComboBox.TabIndex = 0;
             this.RefreshRateComboBox.Text = "Select refresh rate";
-            // 
-            // WifiWake
-            // 
-            this.WifiWake.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.WifiWake.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.WifiWake.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.WifiWake.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.WifiWake.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.WifiWake.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.WifiWake.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.WifiWake.Location = new System.Drawing.Point(189, 180);
-            this.WifiWake.Name = "WifiWake";
-            this.WifiWake.Size = new System.Drawing.Size(170, 25);
-            this.WifiWake.TabIndex = 4;
-            this.WifiWake.Text = "ENABLE WIFI WAKE";
-            this.WifiWake.UseVisualStyleBackColor = false;
-            this.WifiWake.Click += new System.EventHandler(this.WifiWake_Click);
             // 
             // QuestForm
             // 
@@ -654,6 +670,7 @@ namespace AndroidSideloader
             this.Controls.Add(this.label6);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.ResolutionLabel);
+            this.Controls.Add(this.GlobalUsername);
             this.Controls.Add(this.FOVy);
             this.Controls.Add(this.FOVx);
             this.Controls.Add(this.UsrBox);
@@ -719,6 +736,7 @@ namespace AndroidSideloader
         private Label label15;
         private Label label16;
         private Button WifiWake;
+        private TextBox GlobalUsername;
     }
 
 }

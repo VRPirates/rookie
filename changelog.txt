@@ -1,20 +1,6 @@
-RSL 2.8.5
+RSL 2.8.6
 
-+ Added OPT-IN installed packages check,
-this will be used to add common free apps
-to a blacklist so a future version of RSL 
-can ask users to donate new apps.
-
-= Fixed logic for apk signature mismatch
-automatic reinstall.
-
-= Increased timer for apk installation
-failure to 3 minutes.
-
-= Fixed blacklist implementation for 
-updates to apps already on RSL.
-
-- Removed 2nd confirmation dialog for 
-app uninstalls.
++ Added Set username option to Quest
+Options. This will work for all apps.
 
 HFP

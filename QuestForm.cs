@@ -210,6 +210,8 @@ namespace AndroidSideloader
         {
             if (Properties.Settings.Default.delsh)
                 DeleteShots.Checked = true;
+            else
+                DeleteShots.Checked = false;
             if (Properties.Settings.Default.QUsett)
             {
                 ResBox.Text = Properties.Settings.Default.QUres;
@@ -219,10 +221,9 @@ namespace AndroidSideloader
                 QURfrRt.Text = Properties.Settings.Default.QUhz;
                 QUon.Checked = true;
                 if (settingsexist)
-                QUSon = true;
-              
-                
+                QUSon = true; 
             }
+            GlobalUsername.Text = Properties.Settings.Default.GlobalUsername;
         }
 
         private void ResBox_TextChanged(object sender, EventArgs e)
@@ -308,8 +309,15 @@ namespace AndroidSideloader
         }
         private void button3_Click(object sender, EventArgs e)
         {
-            UsernameForm Form = new UsernameForm();
-            Form.Show();
+            if (GlobalUsername.Text.Contains(" "))
+            {
+                MessageBox.Show("Usernames with a space are not permitted.", "Detected a space in username!");
+            }
+            else
+            {
+                ADB.RunAdbCommandToString($"shell settings put global username {GlobalUsername.Text}");
+                MessageBox.Show($"Username set as {GlobalUsername.Text}", "Success");
+            }
         }
 
 
@@ -335,6 +343,16 @@ namespace AndroidSideloader
             ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
             ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
             MessageBox.Show("Wake on Wifi enabled!\n\nNOTE: This requires having wireless ADB enabled to work. (Obviously)");
+        }
+
+        private void GlobalUsername_TextChanged(object sender, EventArgs e)
+        {
+            if (GlobalUsername.TextLength > 0)
+                button3.Enabled = true;
+            else
+                button3.Enabled = false;
+            Properties.Settings.Default.GlobalUsername = GlobalUsername.Text;
+            Properties.Settings.Default.Save();
         }
     }
 }
