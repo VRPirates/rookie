@@ -646,5 +646,16 @@ namespace AndroidSideloader.Properties {
                 this["GlobalUsername"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime lastTimeShared {
+            get {
+                return ((global::System.DateTime)(this["lastTimeShared"]));
+            }
+            set {
+                this["lastTimeShared"] = value;
+            }
+        }
     }
 }

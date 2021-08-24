@@ -90,17 +90,15 @@ namespace AndroidSideloader
             {
                 File.WriteAllText("VRP-GamesList.txt", tempGameList);
             }
-            string gamePropertiesLine = Utilities.StringUtilities.RemoveEverythingAfterFirst(tempGameList, "\n");
+            
+            string[] gameListSplited = tempGameList.Split(new[] { '\n' }, 2);
 
-            foreach (string gameProperty in gamePropertiesLine.Split(';'))
+            foreach (string gameProperty in gameListSplited[0].Split(';'))
             {
                 gameProperties.Add(gameProperty);
             }
 
-
-
-
-            foreach (string game in tempGameList.Split('\n'))
+            foreach (string game in gameListSplited[1].Split('\n'))
             {
                 if (game.Length > 1)
                 {
