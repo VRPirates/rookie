@@ -1248,6 +1248,7 @@ namespace AndroidSideloader
             ChangeTitle("");
         }
         List<String> newGamesList = new List<string>();
+        List<String> newGamesToUploadList = new List<string>();
         private List<UploadGame> gamesToUpload = new List<UploadGame>();
         private List<UpdateGameData> gamesToAskForUpdate = new List<UpdateGameData>();
         private async void initListView()
@@ -1287,8 +1288,9 @@ namespace AndroidSideloader
             List<String> whitelistItems = whitelist.ToList();
 
             //This is for black list, but temporarly will be whitelist
-            //newGamesList = installGames.Except(rookieList).Except(blacklistItems).ToList();
-            newGamesList = whitelistItems.Intersect(installGames).ToList();
+            newGamesList = installGames.Except(rookieList).Except(blacklistItems).ToList();
+            //this list has games that we are actually going to upload
+            newGamesToUploadList = whitelistItems.Intersect(installGames).ToList();
 
             foreach (string[] release in SideloaderRCLONE.games)
             {
@@ -1378,7 +1380,7 @@ namespace AndroidSideloader
                 }
             }
             //This is for games that are not blacklisted and we dont have on rookie
-            foreach (string newGamesToUpload in newGamesList)
+            foreach (string newGamesToUpload in newGamesToUploadList)
             {
                 string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
@@ -1402,7 +1404,7 @@ namespace AndroidSideloader
             }
             updatesnotified = true;
 
-            newGamesList.Clear();
+            
             if (!isworking && gamesToUpload.Count > 0)
             {
                 ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
@@ -2010,6 +2012,15 @@ without him none of this would be possible
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            //Even if the user has already uploaded the game list, we will ask once every 24h
+            if (Properties.Settings.Default.lastTimeShared != null && Properties.Settings.Default.UploadedGameList)
+            {
+                Console.WriteLine((DateTime.Now - Properties.Settings.Default.lastTimeShared).TotalDays);
+                if((DateTime.Now - Properties.Settings.Default.lastTimeShared).TotalDays > 1)
+                {
+                    Properties.Settings.Default.UploadedGameList = false;
+                }
+            }
             if (isinstalling)
             {
                 var res1 = FlexibleMessageBox.Show(this, "There are downloads and/or installations in progress,\nif you exit now you'll have to start the entire process over again.\nAre you sure you want to exit?", "Still downloading/installing.",
@@ -2047,6 +2058,7 @@ without him none of this would be possible
                     FlexibleMessageBox.Show("Upload done! Thank for your colaboration!");
                     File.Delete(fileName);
                     Properties.Settings.Default.UploadedGameList = true;
+                    Properties.Settings.Default.lastTimeShared = DateTime.Now;
                     Properties.Settings.Default.Save();
                     RCLONE.killRclone();
                     ADB.RunAdbCommandToString("kill-server");
