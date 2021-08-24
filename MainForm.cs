@@ -1267,9 +1267,14 @@ namespace AndroidSideloader
             char[] delims = new[] { '\r', '\n' };
             string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
             string[] blacklist = new string[] { };
+            string[] whitelist = new string[] { };
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
             {
                 blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+            }
+            if(File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            {
+                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
             }
             List<ListViewItem> GameList = new List<ListViewItem>();
             List<String> rookieList = new List<String>();
@@ -1279,8 +1284,11 @@ namespace AndroidSideloader
             }
             List<String> installGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
+            List<String> whitelistItems = whitelist.ToList();
 
-            newGamesList = installGames.Except(rookieList).Except(blacklistItems).ToList();
+            //This is for black list, but temporarly will be whitelist
+            //newGamesList = installGames.Except(rookieList).Except(blacklistItems).ToList();
+            newGamesList = whitelistItems.Intersect(installGames).ToList();
 
             foreach (string[] release in SideloaderRCLONE.games)
             {
@@ -1351,7 +1359,6 @@ namespace AndroidSideloader
                 if (!release[SideloaderRCLONE.PackageNameIndex].Contains("Package Name"))
                 GameList.Add(Game);
             }
-            updatesnotified = true;
 
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
@@ -1371,7 +1378,7 @@ namespace AndroidSideloader
                 }
             }
             //This is for games that are not blacklisted and we dont have on rookie
-            /*foreach (string newGamesToUpload in newGamesList)
+            foreach (string newGamesToUpload in newGamesList)
             {
                 string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
@@ -1386,12 +1393,16 @@ namespace AndroidSideloader
                         InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                         InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                         ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                        await uploadGameAsync(GameName, newGamesToUpload, installedVersionInt);
+                        await extractAndPrepareGameToUploadAsync(GameName, newGamesToUpload, installedVersionInt);
+                    } else
+                    {
+
                     }
                 }
             }
+            updatesnotified = true;
 
-            newGamesList.Clear();*/
+            newGamesList.Clear();
             if (!isworking && gamesToUpload.Count > 0)
             {
                 ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
