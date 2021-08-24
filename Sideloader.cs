@@ -242,11 +242,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             {
                 if (!File.Exists("Sideloader Launcher.exe"))
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
-
-                if (!Directory.Exists(ADB.adbFolderPath)) //if there is no adb folder, download and extract
+                if (!File.Exists($"{Properties.Settings.Default.MainDir}\\adb\\aug2021.txt") || !File.Exists("C:\\RSL\\2.8.2\\ADB\\aug2021.txt")) //if adb is not updated, download and auto extract
                 {
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
                     Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", "C:\\RSL\\2.8.2\\");
                     File.Delete("adb.7z");
                 }
 

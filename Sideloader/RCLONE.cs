@@ -26,9 +26,9 @@ namespace AndroidSideloader
 
         public static int GameNameIndex = 0;
         public static int ReleaseNameIndex = 1;
-        public static int ReleaseAPKPathIndex = 2;
-        public static int PackageNameIndex = 3;
-        public static int VersionCodeIndex = 4;
+        public static int PackageNameIndex = 2;
+        public static int VersionCodeIndex = 3;
+        public static int ReleaseAPKPathIndex = 4;
         public static int VersionNameIndex = 5;
 
         public static List<string> gameProperties = new List<string>();
@@ -85,10 +85,10 @@ namespace AndroidSideloader
         {
             gameProperties.Clear();
             games.Clear();
-            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/GameList.txt\"").Output;
+            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
             if (MainForm.debugMode)
             {
-                File.WriteAllText("GamesList.txt", tempGameList);
+                File.WriteAllText("VRP-GamesList.txt", tempGameList);
             }
             string gamePropertiesLine = Utilities.StringUtilities.RemoveEverythingAfterFirst(tempGameList, "\n");
 
@@ -96,17 +96,8 @@ namespace AndroidSideloader
             {
                 gameProperties.Add(gameProperty);
             }
-            gameProperties.Add("Last Updated");
 
 
-            tempGameList = Utilities.StringUtilities.RemoveEverythingBeforeFirst(tempGameList, "\n");
-
-            List<rcloneFolder> gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
-            if (gameFolders == null || gameFolders.Count < 1)
-            {
-                Program.form.SwitchMirrors();
-                gameFolders = JsonConvert.DeserializeObject<List<rcloneFolder>>(RCLONE.runRcloneCommand($"lsjson \"{remote}:{RcloneGamesFolder}\"").Output);
-            }
 
 
             foreach (string game in tempGameList.Split('\n'))
@@ -114,20 +105,8 @@ namespace AndroidSideloader
                 if (game.Length > 1)
                 {
                     string[] splitGame = game.Split(';');
-
+                    games.Add(splitGame);
                     //gameFolder.find();
-                    Array.Resize(ref splitGame, splitGame.Length + 1);
-
-                    var gameSynced = gameFolders.Exists((predicate) => predicate.Path == splitGame[1]);
-                    if (gameSynced)
-                    {
-                        var gameFolder = gameFolders.Find((predicate) => predicate.Path == splitGame[1]);
-                        //splitGame[6] = gameFolder.ModTime;
-                        string gametime = Utilities.StringUtilities.RemoveEverythingAfterLast(gameFolder.ModTime, ":");
-                        gametime = gametime.Replace("T", " ");
-                        splitGame[splitGame.Length - 1] = gametime;
-                        games.Add(splitGame);
-                    }
                 }
             }
 

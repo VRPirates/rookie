@@ -242,7 +242,7 @@
             this.getApkButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
             this.getApkButton.Size = new System.Drawing.Size(218, 28);
             this.getApkButton.TabIndex = 2;
-            this.getApkButton.Text = "Upload Selected App";
+            this.getApkButton.Text = "Share Selected App";
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.getApkButton.UseVisualStyleBackColor = false;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);

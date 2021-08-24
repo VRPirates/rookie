@@ -368,12 +368,12 @@ namespace AndroidSideloader
         }
 
 
-        public static ProcessOutput Sideload(string path = "", string packagename = "")
+        public static ProcessOutput Sideload(string path, string packagename = "")
         {
 
             WakeDevice();
             ProcessOutput ret = new ProcessOutput();
-            ret += RunAdbCommandToString($"install -g -r \"{path}\"");
+            ret += RunAdbCommandToString($"install -g \"{path}\"");
             string out2 = ret.Output + ret.Error;
             if (out2.Contains("failed"))
             {

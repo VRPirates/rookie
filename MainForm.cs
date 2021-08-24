@@ -107,51 +107,21 @@ namespace AndroidSideloader
 
 
         private string oldTitle = "";
-        public static bool updatesnotified;
+        public static bool updatesnotified = false;
 
         private async void Form1_Load(object sender, EventArgs e)
         {
-            updatesnotified = false;
-
-            string adbFile = "C:\\RSL\\2.8.2\\adb\\adb.exe";
-            string adbDir = "C:\\RSL\\2.8.2\\adb";
-            string fileName = "";
-            string destFile = "";
-            string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
-            Logger.Log($"\n\n##############\n##############\n##############\n\nAPP LAUNCH DATE/TIME: " + date_time + "\n\n##############\n##############\n##############\n\n");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-
-
-            if (!File.Exists(adbFile))
-            {
-                Directory.CreateDirectory(adbDir);
-                if (System.IO.Directory.Exists($"{Environment.CurrentDirectory}\\adb"))
-                {
-                    string[] ADBfiles = System.IO.Directory.GetFiles($"{Properties.Settings.Default.MainDir}\\adb");
-
-                    // Copy the files and overwrite destination files if they already exist.
-                    foreach (string s in ADBfiles)
-                    {
-                        fileName = System.IO.Path.GetFileName(s);
-                        destFile = System.IO.Path.Combine(adbDir, fileName);
-                        System.IO.File.Copy(s, destFile, true);
-                    }
-                }
-
-            }
-            ADB.RunAdbCommandToString("kill-server");
-            Properties.Settings.Default.ADBPath = adbFile;
-            Properties.Settings.Default.Save();
-            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
             CheckForInternet();
-
             if (HasInternet == true)
                 Sideloader.downloadFiles();
             else
                 FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
             await Task.Delay(100);
+            ADB.RunAdbCommandToString("kill-server");
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
 
             if (!Directory.Exists(BackupFolder))
                 Directory.CreateDirectory(BackupFolder);
@@ -258,18 +228,12 @@ namespace AndroidSideloader
 
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
-                System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-                t.Interval = 35000; // 35 seconds before switching mirror
-                t.Tick += new EventHandler(timer_Tick5);
-                t.Start();
                 ChangeTitle("Initializing Games");
                 SideloaderRCLONE.initGames(currentRemote);
-                t.Stop();
-                
                 //ChangeTitle("Syncing Game Photos");
                 //ChangeTitle("Updating list of needed clean apps...");
                 //ChangeTitle("Checking for Updates on server...");
-                
+
             });
             t1.SetApartmentState(ApartmentState.STA);
             t1.IsBackground = true;
@@ -363,12 +327,6 @@ namespace AndroidSideloader
         void timer_Tick(object sender, EventArgs e)
         {
             ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
-        }
-
-        void timer_Tick5(object sender, EventArgs e)
-        {
-            SwitchMirrors();
-            SideloaderRCLONE.initGames(currentRemote);
         }
 
         void timer_Tick2(object sender, EventArgs e)
@@ -770,7 +728,7 @@ namespace AndroidSideloader
                     line[i] = line[i].Remove(0, 8);
                     line[i] = line[i].Remove(line[i].Length - 1);
                     foreach (var game in SideloaderRCLONE.games)
-                        if (line[i].Length > 0 && game[3].Contains(line[i]))
+                        if (line[i].Length > 0 && game[2].Contains(line[i]))
                             line[i] = game[0];
                 }
             }
@@ -926,7 +884,7 @@ namespace AndroidSideloader
         }
 
         private async void sideloadFolderButton_Click(object sender, EventArgs e)
-            {
+        {
             ADB.WakeDevice();
 
             var dialog = new FolderSelectDialog
@@ -984,157 +942,285 @@ namespace AndroidSideloader
             ADB.WakeDevice();
             ADB.DeviceID = GetDeviceID();
             progressBar.Style = ProgressBarStyle.Marquee;
-
-            Thread t1 = new Thread(() =>
-
+            CurrPCKG = "";
+            string[] datas = (string[])e.Data.GetData(DataFormats.FileDrop);
+            foreach (string data in datas)
             {
-                string[] datas = (string[])e.Data.GetData(DataFormats.FileDrop);
-                foreach (string data in datas)
+                string directory = Path.GetDirectoryName(data);
+                //if is directory
+                string dir = Path.GetDirectoryName(data);
+                string path = $"{dir}\\Install.txt";
+                if (Directory.Exists(data))
                 {
-                    string directory = Path.GetDirectoryName(data);
-                    //if is directory
-                    string dir = Path.GetDirectoryName(data);
-                    string path = $"{dir}\\Install.txt";
-                    if (Directory.Exists(data))
+
+                    Program.form.ChangeTitle($"Copying {data} to device...");
+
+                    Thread t1 = new Thread(() =>
+
                     {
-                        Program.form.ChangeTitle($"Copying {data} to device...");
                         output += ADB.CopyOBB(data);
-                        Program.form.ChangeTitle($"");
-                        string extension = Path.GetExtension(data);
-                        if (extension == ".apk")
+                    });
+                    t1.IsBackground = true;
+                    t1.Start();
+
+                    while (t1.IsAlive)
+                        await Task.Delay(100);
+
+                    Program.form.ChangeTitle($"");
+                    string extension = Path.GetExtension(data);
+                    if (extension == ".apk")
+                    {
+
+                        if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
                         {
 
-                            if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
+
+                            DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
+                            if (dialogResult == DialogResult.Cancel)
+                                return;
+                            else
+                                ChangeTitle("Sideloading custom install.txt automatically.");
+
+                            Thread t2 = new Thread(() =>
+
                             {
-
-
-                                DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
-                                if (dialogResult == DialogResult.Cancel)
-                                    return;
-                                else
-                                    ChangeTitle("Sideloading custom install.txt automatically.");
                                 output += Sideloader.RunADBCommandsFromFile(path);
-                                Logger.Log($"Sideloading {path}");
-                                if (output.Error.Contains("mkdir"))
-                                    output.Error = "";
-                                if (output.Error.Contains("reserved"))
-                                    output.Output = "";
-                                ChangeTitle("");
-                            }
-                        }
-                        string[] files = Directory.GetFiles(data);
-                        foreach (string file2 in files)
-                        {
-                            if (File.Exists(file2))
-                            {
-                                if (file2.EndsWith(".apk"))
-                                {
-                                    string pathname = Path.GetDirectoryName(data);
-                                    string filename = file2.Replace($"{pathname}\\", "");
-                                    ChangeTitle($"Installing {filename} (If this hangs, uninstall app first then install again)");
-                                    output += ADB.Sideload(file2);
-                                }
 
-                                if (file2.EndsWith(".zip") && Properties.Settings.Default.BMBFchecked)
-                                {
-                                    string datazip = file2;
-                                    string zippath = Path.GetDirectoryName(data);
-                                    datazip = datazip.Replace(zippath, "");
-                                    datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
-                                    datazip = datazip.Replace(".", "");
-                                    string command2 = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{file2}\" -o\"{zippath}\\{datazip}\\\"";
-                                    ADB.RunCommandToString(command2, file2);
-                                    output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
-                                    Directory.Delete($"{zippath}\\{datazip}", true);
-                                }
-                            }
-                        }
-                        string[] folders = Directory.GetDirectories(data);
-                        foreach (string folder in folders)
-                        {
-                            Program.form.ChangeTitle($"Copying {folder} to device...");
-                            output += ADB.CopyOBB(folder);
-                            Program.form.ChangeTitle("");
-                            Properties.Settings.Default.CurrPckg = dir;
-                            Properties.Settings.Default.Save();
+                            });
+                            t2.IsBackground = true;
+                            t2.Start();
+
+                            while (t2.IsAlive)
+                                await Task.Delay(100);
+
+                            Logger.Log($"Sideloading {path}");
+                            if (output.Error.Contains("mkdir"))
+                                output.Error = "";
+                            if (output.Error.Contains("reserved"))
+                                output.Output = "";
+                            ChangeTitle("");
                         }
                     }
-                    //if it's a file
-                    else if (File.Exists(data))
+                    string[] files = Directory.GetFiles(data);
+                    foreach (string file2 in files)
                     {
-
-                        string extension = Path.GetExtension(data);
-                        if (extension == ".apk")
+                        if (File.Exists(file2))
                         {
-                            if (File.Exists($"{dir}\\Install.txt"))
-                            {
-                                DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
-                                if (dialogResult == DialogResult.Cancel)
-                                    return;
-                                else
-                                {
-                                    ChangeTitle("Sideloading custom install.txt automatically.");
-                                    output += Sideloader.RunADBCommandsFromFile(path);
-                                    ChangeTitle("");
-
-                                }
-                            }
-                            else
-
+                            if (file2.EndsWith(".apk"))
                             {
                                 string pathname = Path.GetDirectoryName(data);
-                                string dataname = data.Replace($"{pathname}\\", "");
-                                ChangeTitle($"Installing {dataname} (If this hangs, uninstall app first then install again)");
-                                output += ADB.Sideload(data);
+                                string filename = file2.Replace($"{pathname}\\", "");
+
+                                string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
+                                string cmdout = ADB.RunCommandToString(cmd, file2).Output;
+                                cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
+                                cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
+                                cmdout = cmdout.Replace("'", "");
+                                cmdout = cmdout.Replace("=", "");
+                                CurrPCKG = cmdout;
+                                CurrAPK = file2;
+                                System.Windows.Forms.Timer t3 = new System.Windows.Forms.Timer();
+                                t3.Interval = 150000; // 180 seconds to fail
+                                t3.Tick += timer_Tick4;
+                                t3.Start();
+                                Program.form.ChangeTitle($"Sideloading apk...");
+
+                                Thread t2 = new Thread(() =>
+
+                                {
+                                    output += ADB.Sideload(file2);
+                                });
+                                t2.IsBackground = true;
+                                t2.Start();
+                                while (t2.IsAlive)
+                                    await Task.Delay(100);
+                                t3.Stop();
+                            }
+
+                            if (file2.EndsWith(".zip") && Properties.Settings.Default.BMBFchecked)
+                            {
+                                string datazip = file2;
+                                string zippath = Path.GetDirectoryName(data);
+                                datazip = datazip.Replace(zippath, "");
+                                datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
+                                datazip = datazip.Replace(".", "");
+                                string command2 = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{file2}\" -o\"{zippath}\\{datazip}\\\"";
+
+                                Thread t2 = new Thread(() =>
+
+                                {
+                                    ADB.RunCommandToString(command2, file2);
+                                    output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
+                                });
+                                t2.IsBackground = true;
+                                t2.Start();
+
+                                while (t2.IsAlive)
+                                    await Task.Delay(100);
+
+                                Directory.Delete($"{zippath}\\{datazip}", true);
+                            }
+                        }
+                    }
+                    string[] folders = Directory.GetDirectories(data);
+                    foreach (string folder in folders)
+                    {
+                        Program.form.ChangeTitle($"Copying {folder} to device...");
+
+                        Thread t2 = new Thread(() =>
+
+                        {
+                            output += ADB.CopyOBB(folder);
+                        });
+                        t2.IsBackground = true;
+                        t2.Start();
+
+                        while (t2.IsAlive)
+                            await Task.Delay(100);
+
+                        Program.form.ChangeTitle("");
+                        Properties.Settings.Default.CurrPckg = dir;
+                        Properties.Settings.Default.Save();
+                    }
+                }
+                //if it's a file
+                else if (File.Exists(data))
+                {
+
+                    string extension = Path.GetExtension(data);
+                    if (extension == ".apk")
+                    {
+                        if (File.Exists($"{dir}\\Install.txt"))
+                        {
+                            DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
+                            if (dialogResult == DialogResult.Cancel)
+                                return;
+                            else
+                            {
+                                ChangeTitle("Sideloading custom install.txt automatically.");
+
+                                Thread t1 = new Thread(() =>
+
+                                {
+                                    output += Sideloader.RunADBCommandsFromFile(path);
+                                });
+                                t1.IsBackground = true;
+                                t1.Start();
+
+                                while (t1.IsAlive)
+                                    await Task.Delay(100);
 
 
                                 ChangeTitle("");
+
                             }
                         }
-                        //If obb is dragged and dropped alone onto Rookie, Rookie will recreate its obb folder automatically with this code.
-                        else if (extension == ".obb")
+                        else
                         {
-                            string filename = Path.GetFileName(data);
-                            string foldername = filename.Substring(filename.IndexOf('.') + 1);
-                            foldername = foldername.Substring(foldername.IndexOf('.') + 1);
-                            foldername = foldername.Replace(".obb", "");
-                            foldername = Environment.CurrentDirectory + "\\" + foldername;
-                            Directory.CreateDirectory(foldername);
-                            File.Copy(data, foldername + "\\" + filename);
-                            path = foldername;
-                            output += ADB.CopyOBB(path);
-                            Directory.Delete(foldername, true);
-                            ChangeTitle("");
-                        }
-                        // BMBF Zip extraction then push to BMBF song folder on Quest.
-                        else if (extension == ".zip" && Properties.Settings.Default.BMBFchecked)
-                        {
-                            string datazip = data;
-                            string zippath = Path.GetDirectoryName(data);
-                            datazip = datazip.Replace(zippath, "");
-                            datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
-                            datazip = datazip.Replace(".", "");
+                            string pathname = Path.GetDirectoryName(data);
+                            string dataname = data.Replace($"{pathname}\\", "");
+                            string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
+                            string cmdout = ADB.RunCommandToString(cmd, data).Output;
+                            cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
+                            cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
+                            cmdout = cmdout.Replace("'", "");
+                            cmdout = cmdout.Replace("=", "");
+                            CurrPCKG = cmdout;
+                            CurrAPK = data;
+                            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
+                            timer.Interval = 150000; // 150 seconds to fail
+                            timer.Tick += timer_Tick4;
+                            timer.Start();
 
-                            string command = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{data}\" -o\"{zippath}\\{datazip}\\\"";
+                            ChangeTitle($"Installing {dataname}...");
 
-                            ADB.RunCommandToString(command, data);
-                            output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
-                            Directory.Delete($"{zippath}\\{datazip}", true);
-                        }
-                        else if (extension == ".txt")
-                        {
-                            ChangeTitle("Sideloading custom install.txt automatically.");
-                            output += Sideloader.RunADBCommandsFromFile(path);
+                            Thread t1 = new Thread(() =>
+
+                            {
+                                output += ADB.Sideload(data);
+                            });
+                            t1.IsBackground = true;
+                            t1.Start();
+
+                            while (t1.IsAlive)
+                                await Task.Delay(100);
+
+                            timer.Stop();
+
+
                             ChangeTitle("");
                         }
                     }
-                }
-            });
-            t1.IsBackground = true;
-            t1.Start();
+                    //If obb is dragged and dropped alone onto Rookie, Rookie will recreate its obb folder automatically with this code.
+                    else if (extension == ".obb")
+                    {
+                        string filename = Path.GetFileName(data);
+                        string foldername = filename.Substring(filename.IndexOf('.') + 1);
+                        foldername = foldername.Substring(foldername.IndexOf('.') + 1);
+                        foldername = foldername.Replace(".obb", "");
+                        foldername = Environment.CurrentDirectory + "\\" + foldername;
+                        Directory.CreateDirectory(foldername);
+                        File.Copy(data, foldername + "\\" + filename);
+                        path = foldername;
 
-            while (t1.IsAlive)
-                await Task.Delay(100);
+                        Thread t1 = new Thread(() =>
+
+                        {
+                            output += ADB.CopyOBB(path);
+                        });
+                        t1.IsBackground = true;
+                        t1.Start();
+
+                        while (t1.IsAlive)
+                            await Task.Delay(100);
+
+                        Directory.Delete(foldername, true);
+                        ChangeTitle("");
+                    }
+                    // BMBF Zip extraction then push to BMBF song folder on Quest.
+                    else if (extension == ".zip" && Properties.Settings.Default.BMBFchecked)
+                    {
+                        string datazip = data;
+                        string zippath = Path.GetDirectoryName(data);
+                        datazip = datazip.Replace(zippath, "");
+                        datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
+                        datazip = datazip.Replace(".", "");
+
+                        string command = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{data}\" -o\"{zippath}\\{datazip}\\\"";
+
+                        Thread t1 = new Thread(() =>
+
+                        {
+                            ADB.RunCommandToString(command, data);
+                            output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
+                        });
+                        t1.IsBackground = true;
+                        t1.Start();
+
+                        while (t1.IsAlive)
+                            await Task.Delay(100);
+
+                        Directory.Delete($"{zippath}\\{datazip}", true);
+                    }
+                    else if (extension == ".txt")
+                    {
+                        ChangeTitle("Sideloading custom install.txt automatically.");
+
+                        Thread t1 = new Thread(() =>
+
+                        {
+                            output += Sideloader.RunADBCommandsFromFile(path);
+                        });
+                        t1.IsBackground = true;
+                        t1.Start();
+
+                        while (t1.IsAlive)
+                            await Task.Delay(100);
+
+                        ChangeTitle("");
+                    }
+                }
+            }
 
             progressBar.Style = ProgressBarStyle.Continuous;
 
@@ -1144,7 +1230,6 @@ namespace AndroidSideloader
 
             ShowPrcOutput(output);
             listappsbtn();
-            initListView();
 
         }
 
@@ -1202,12 +1287,12 @@ namespace AndroidSideloader
                 ListViewItem Game = new ListViewItem(release);
                 if (gamesListView.Columns.Count > 0)
                 {
-                    gamesListView.Columns[5].Width = 0;
-                    gamesListView.Columns[2].Width = 0;
-                    gamesListView.Columns[3].Width = 102;
-                    gamesListView.Columns[4].Width = 94;
-                    gamesListView.Columns[6].Width = 98;
-                    gamesListView.Columns[1].Width = 280;
+                    gamesListView.Columns[1].Width = 265;
+                    gamesListView.Columns[5].Width = 59;
+                    gamesListView.Columns[2].Width = 100;
+                    gamesListView.Columns[3].Width = 50;
+                    gamesListView.Columns[4].Width = 100;
+                    gamesListView.Columns[5].Text = "Size (MB)";
                 }
                 foreach (string packagename in packageList)
                 {
@@ -1265,7 +1350,7 @@ namespace AndroidSideloader
                 }
                 GameList.Add(Game);
             }
-
+            updatesnotified = true;
 
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
@@ -1273,12 +1358,15 @@ namespace AndroidSideloader
             gamesListView.EndUpdate();
 
             //This is for games that we already have on rookie and user has an update
-            foreach(UpdateGameData gameData in gamesToAskForUpdate)
+            foreach (UpdateGameData gameData in gamesToAskForUpdate)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
+                if (!updatesnotified)
                 {
-                    await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
+                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
+                    }
                 }
             }
             //This is for games that are not blacklisted and we dont have on rookie
@@ -1303,7 +1391,6 @@ namespace AndroidSideloader
             }
 
             newGamesList.Clear();*/
-            updatesnotified = true;
             if (!isworking && gamesToUpload.Count > 0)
             {
                 ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
@@ -1562,11 +1649,14 @@ without him none of this would be possible
                 if (reset)
                 {
                     remotesList.SelectedIndex--;
+                    SideloaderRCLONE.initGames(currentRemote);
+                    initListView();
                 }
                 if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
                 {
                     remotesList.SelectedIndex++;
                     SideloaderRCLONE.initGames(currentRemote);
+                    initListView();
                     steps++;
                 }
             });
@@ -1580,7 +1670,6 @@ without him none of this would be possible
 
                 string namebox = gamesListView.SelectedItems[0].ToString();
                 string nameboxtranslated = Sideloader.gameNameToSimpleName(namebox);
-                ChangeTitle($"Checking filesize of {nameboxtranslated}...");
                 long selectedGamesSize = 0;
                 int count = 0;
                 string[] gamesToDownload;
@@ -1592,7 +1681,6 @@ without him none of this would be possible
                         gamesToDownload[i] = gamesListView.SelectedItems[i].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
                 }
                 else return;
-
                 bool HadError = false;
                 Thread gameSizeThread = new Thread(() =>
                 {
@@ -1625,13 +1713,6 @@ without him none of this would be possible
                 else
                 {
                     game = "the selected games";
-                }
-                DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to download {game}? The size is {String.Format("{0:0.00}", (double)selectedGamesSize)} MB", "Are you sure?", MessageBoxButtons.YesNo);
-                ChangeTitle($"");
-                if (dialogResult != DialogResult.Yes)
-                {
-                    ChangeTitle("");
-                    return;
                 }
                 isinstalling = true;
                 //Add games to the queue
@@ -1800,7 +1881,7 @@ without him none of this would be possible
                                     CurrAPK = file;
                                     CurrPCKG = packagename;
                                     System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-                                    t.Interval = 180000; // 180 seconds to fail
+                                    t.Interval = 150000; // 150 seconds to fail
                                     t.Tick += new EventHandler(timer_Tick4);
                                     t.Start();
                                     Thread apkThread = new Thread(() =>
@@ -1845,11 +1926,10 @@ without him none of this would be possible
                         gamesQueueList.RemoveAt(0);
                         gamesQueListBox.DataSource = null;
                         gamesQueListBox.DataSource = gamesQueueList;
-                        ChangeTitlebarToDevice();
                         showAvailableSpace();
-                    
-                    ChangeTitle("");
-                }
+
+                        ChangeTitle("");
+                    }
                 }
                 progressBar.Style = ProgressBarStyle.Continuous;
                 etaLabel.Text = "ETA: Finished Queue";
@@ -1872,7 +1952,6 @@ without him none of this would be possible
             {
                 timerticked = true;
                 bool isinstalled = false;
-
                 if (Properties.Settings.Default.InstalledApps.Contains(CurrPCKG))
                 {
                     isinstalled = true;
@@ -1888,10 +1967,8 @@ without him none of this would be possible
                         ADB.RunAdbCommandToString("devices");
                         ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{CurrPCKG} \"{Environment.CurrentDirectory}\"");
                         ADB.RunAdbCommandToString($"shell pm uninstall {CurrPCKG}");
-                        output += ADB.RunAdbCommandToString($"install -g -r \"{CurrAPK}\"");
+                        output += ADB.RunAdbCommandToString($"install -g \"{CurrAPK}\"");
                         ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{CurrPCKG}\" /sdcard/Android/data/");
-                        listappsbtn();
-                        initListView();
 
                         timerticked = false;
                         if (Directory.Exists($"{Environment.CurrentDirectory}\\{CurrPCKG}"))
@@ -2083,7 +2160,7 @@ without him none of this would be possible
             else
             {
                 lvwColumnSorter.SortColumn = e.Column;
-                if (e.Column == 6)
+                if (e.Column == 4)
                 {
                     lvwColumnSorter.Order = SortOrder.Descending;
                 }
@@ -2245,28 +2322,7 @@ without him none of this would be possible
                     Properties.Settings.Default.Save();
                 }
 
-            }
-            if (keyData == (Keys.F11))
-                if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
-                {
-                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" RSL-debuglogs:DebugLogs");
-                    FlexibleMessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
-                    Clipboard.SetText(Properties.Settings.Default.CurrentLogName);
-                }
 
-
-
-            if (keyData == (Keys.F12))
-            {
-                if (File.Exists($"{Properties.Settings.Default.CurrentCrashPath}"))
-                {
-                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
-                    FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
-                    Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
-
-                }
-                else
-                    FlexibleMessageBox.Show("No CrashLog found in Rookie directory.");
             }
 
 

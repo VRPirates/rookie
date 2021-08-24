@@ -1,6 +1,79 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+
+RSL 2.9
+
++ Updated ADB zip on repo and added a verification 
+text file to ensure all users are on newest ADB, 
+this should fix most obb issues. Upon first launch
+after this update Rookie will automatically obtain
+the latest ADB via this zip (7MB).
+
++ Added AAPT to repo along with a timer + logic to 
+detect packagename for automatic reinstall when drag 
+and dropped installs fail. 
+
++ Implemented Size(MB) column to see app size prior 
+to clicking Download and Install.
+
+= Cleaned up automatic reinstall on apk installation
+failure for Download and Install, it should work for
+most users now.
+
+= Adjusted code for mirror switching, should fix failure
+to load gameslist whatsoever on dead mirrors.
+
+= Fixed issue where after installing a game RSL would
+ask user to donate same clean files again. RSL will now
+only ask once per program load, as intended.
+
+- - Removed filesize confirmation dialog when clicking 
+download and install.
+
+- - Removed columns that were useless to users.
+
+HFP
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEkn0oACgkQx/Rql1Vo
+czf7Mg//cU+DnFex+on9JBI5+K2bRfmp6RUhYHQKXD7V/od4vMxWP2jXt7F6ebat
+32KI9GeQfCubRuFEJKBRQ5BfsZXqZtWbLoYtSfrPsk6fz5JzK5PfzAayRLEmS3nV
++3Gu7w7wxlseo+IzN95mvEZOYOaFnv7rieGJsXoEUVh0xZnCF7CzTe6MZ6JSdpCY
+LUWOiZ2Krxc8W/tD45JLGSxHkMpFlnZO9DLISyN65SdkvjcridbpTWSMiQJPh5KA
+jTiOM4PzOZo6YCoTsIWy4rvhkIqhdNJdJZK4qb0vN40wvqgbFI7c7yh/rcb/xi7R
+Ruva6Z2zIJi122lEsohG9TfeNODxIuPGR0rLAJDuSPpri0ukxLMIHPg0ViBQ2Z7D
+jPmDnEQDKPfaj1gbvAXuk5qd8ogOM3CCpBoaHt3tMFhuCUgxPYx5RxMPjdn8bOvR
+fjkEfMdvS55pI04seQued6KIlYnkkUGntIcSbBJfVhW8pev2iPxICC3Rn4ejSAnM
+J3fIjLsUbHxM501HgM8ttWjniEb5ExGFUI/PvF7rNw2WjYT8wJltv8PUWNZoQYy/
+Upif9IzLVORN9TsrnbxUQBtOZgmvfbCbj+rotYhvj6igo1C3ZX8t001CknljNBCU
+/9Y18yJRWJ7BpbEbzYpKBofphZzaWI9GN2hM6wV18An8sMEbb4A=
+=kVMl
+-----END PGP SIGNATURE-----
+
+ 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEkntYACgkQx/Rql1Vo
+czdB/g/9FHUbQt4tTHitnCBjfKmxRY5qcmmvSQM1LRKxoWqOMgl6wmX/oJQFnR1/
+DL+zc5nf1Qmjll7OyLEZbft2p0+KnGuGNCcB4aB36VcsMEED6j6L63OZeI045KY6
+cMAmcyR0A/OcfsiqaHjXVOyp8yI4RCGa/M2HwBvZOypxbdTKlftdQEOQ9bVFxV8p
+1L0NuhHpfewnke1WG3MRjiXlu44athOYh6fACO0/+TTJwmtD6w9A9fc+0A70jqp6
+pz9WVKzrnVFnq5CbHSQIrmDoQfiqyIxUEmrMKcZipjHfkVa0ZZ5Jjp9QuIozEskp
+rLxoCawe2NmfHhe4frxF6ngRCVD0Xcn8YmgQAbts+5+PqnvK+DyL0C53BkONUeCp
+ODAqiTjqWWfsILkpphPDQI4/WWjKURLTKFbse5jboBHNeF810y9gfBC0xHS8MeGO
+k//02mbJ7gHonRBpuNy0ba80tRHYtzr4OL/gd9YUyVd2AYP/GEptIoWM7ESqR1Hy
+g7oxD8JGR/WgLIJD1stYC3eh2Fy36J6oJPUvT85EUbPznY7UIL+upT/9wrXPzZqd
+iI4o8DkPq/9yMEWBwV8cikgllx+KXWgwHbG8lY0uvuxPX26UscGyY1bNytb/WMfG
+lJaztf9Yo7uBrSIdicEeED1BN+/q/QmsNzR9mpFrqfrqyDB91yA=
+=z7JR
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.8.7
 
 = Added code made by Ivan that makes
