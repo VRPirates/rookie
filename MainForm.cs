@@ -1273,9 +1273,9 @@ namespace AndroidSideloader
             {
                 blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
             }
-            if(File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            if(File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\Whitelist.txt"))
             {
-                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\Whitelist.txt");
             }
             List<ListViewItem> GameList = new List<ListViewItem>();
             List<String> rookieList = new List<String>();
