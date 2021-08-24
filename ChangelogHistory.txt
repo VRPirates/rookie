@@ -1,4 +1,9 @@
-﻿-----BEGIN PGP SIGNED MESSAGE-----
+﻿RSL 2.9.0
+
+= Hotfix to remove errant entry from GamesList
+that would crash the program.
+
+-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
 

@@ -1,3 +1,8 @@
+RSL 2.9.0
+
+= Hotfix to remove errant entry from app list
+that would crash the program.
+
 RSL 2.9
 
 + Updated ADB zip on repo and added a verification 

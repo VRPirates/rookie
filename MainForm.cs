@@ -1348,6 +1348,7 @@ namespace AndroidSideloader
                         }
                     }
                 }
+                if (!release[SideloaderRCLONE.PackageNameIndex].Contains("Package Name"))
                 GameList.Add(Game);
             }
             updatesnotified = true;
