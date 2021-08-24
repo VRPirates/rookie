@@ -100,7 +100,7 @@ namespace AndroidSideloader
 
 
 
-            foreach (string game in tempGameList.Split('\n'))
+            foreach (string game in Utilities.StringUtilities.RemoveEverythingBeforeFirst(tempGameList, "\n").Split('\n'))
             {
                 if (game.Length > 1)
                 {
