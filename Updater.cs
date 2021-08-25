@@ -17,7 +17,7 @@ namespace AndroidSideloader
         private static string RawGitHubUrl;
         private static string GitHubUrl;
 
-        static readonly public string LocalVersion = "2.9.0";
+        static readonly public string LocalVersion = "2.9.1";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
@@ -54,13 +54,14 @@ namespace AndroidSideloader
             //Download new sideloader with version appended to file name so there is no chance of overwriting the current exe
             try
             {
+                RCLONE.killRclone();
+                ADB.RunAdbCommandToString("kill-server");
                 var fileClient = new WebClient();
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                 Logger.Log($"Downloading update from {RawGitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
                 fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
                 fileClient.Dispose();
-
                 Logger.Log($"Starting {AppName} v{currentVersion}.exe");
                 Process.Start($"{AppName} v{currentVersion}.exe");
                 //Delete current version

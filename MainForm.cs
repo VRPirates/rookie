@@ -237,6 +237,10 @@ namespace AndroidSideloader
             });
             t1.SetApartmentState(ApartmentState.STA);
             t1.IsBackground = true;
+            if (HasInternet)
+            t1.Start();
+            while (t1.IsAlive)
+                await Task.Delay(100);
             Thread t2 = new Thread(() =>
             {
                 SideloaderRCLONE.UpdateGameNotes(currentRemote);
@@ -260,12 +264,11 @@ namespace AndroidSideloader
             t4.IsBackground = true;
             if (HasInternet)
             {
-                t1.Start();
                 t2.Start();
                 t3.Start();
                 t4.Start();
             }
-            while (t1.IsAlive || t2.IsAlive || t3.IsAlive || t4.IsAlive)
+            while (t2.IsAlive || t3.IsAlive || t4.IsAlive)
                 await Task.Delay(100);
 
             ChangeTitle("Loaded");
@@ -1273,9 +1276,9 @@ namespace AndroidSideloader
             {
                 blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
             }
-            if(File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\Whitelist.txt"))
+            if(File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
             {
-                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\Whitelist.txt");
+                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
             }
             List<ListViewItem> GameList = new List<ListViewItem>();
             List<String> rookieList = new List<String>();
@@ -1339,6 +1342,8 @@ namespace AndroidSideloader
                                 bool dontget = false;
                                 if (blacklist.Contains(packagename))
                                     dontget = true;
+                                if (!dontget)
+                                    Game.BackColor = Color.FromArgb(20, 20, 20);
                                 string RlsName = Sideloader.PackageNametoGameName(packagename);
                                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
 
@@ -1358,7 +1363,6 @@ namespace AndroidSideloader
                         }
                     }
                 }
-                if (!release[SideloaderRCLONE.PackageNameIndex].Contains("Package Name"))
                 GameList.Add(Game);
             }
 
@@ -1379,15 +1383,73 @@ namespace AndroidSideloader
                     }
                 }
             }
-            //This is for games that are not blacklisted and we dont have on rookie
+            //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
             foreach (string newGamesToUpload in newGamesToUploadList)
             {
                 string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+
+                //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                if (File.Exists($"C:\\RSL\\2.8.2\\ADB\\base.apk"))
+                    File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"C:\\RSL\\2.8.2\\ADB\\base.apk\" | findstr -i \"application-label\"";
+                string workingpath = $"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe";
+                string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                ReleaseName = ReleaseName.Replace("'", "");
+                File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                //end
+
                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
                 Logger.Log(newGamesToUpload);
                 if (!updatesnotified)
                 {
-                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have a new game:\n\n{GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have an in demand game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        string InstalledVersionCode;
+                        InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                        ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                        await extractAndPrepareGameToUploadAsync(GameName, newGamesToUpload, installedVersionInt);
+                    }
+                    else
+                    {
+
+                    }
+                }
+            }
+            //This is for games that are not blacklisted and we dont have on rookie
+            foreach (string newGamesToUpload in newGamesList)
+            {
+                string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+                
+                //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                if (File.Exists($"C:\\RSL\\2.8.2\\ADB\\base.apk"))
+                    File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"C:\\RSL\\2.8.2\\ADB\\base.apk\" | findstr -i \"application-label\"";
+                string workingpath = $"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe";
+                string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                ReleaseName = ReleaseName.Replace("'", "");
+                File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                //end
+
+                string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                Logger.Log(newGamesToUpload);
+                if (!updatesnotified)
+                {
+                    DialogResult dialogResult = FlexibleMessageBox.Show($"You have a new game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
                         string InstalledVersionCode;
@@ -2015,7 +2077,6 @@ without him none of this would be possible
             //Even if the user has already uploaded the game list, we will ask once every 24h
             if (Properties.Settings.Default.lastTimeShared != null && Properties.Settings.Default.UploadedGameList)
             {
-                Console.WriteLine((DateTime.Now - Properties.Settings.Default.lastTimeShared).TotalDays);
                 if((DateTime.Now - Properties.Settings.Default.lastTimeShared).TotalDays > 1)
                 {
                     Properties.Settings.Default.UploadedGameList = false;
@@ -2075,6 +2136,7 @@ without him none of this would be possible
                 RCLONE.killRclone();
                 ADB.RunAdbCommandToString("kill-server");
             }
+
         }
 
         private void ADBWirelessDisable_Click(object sender, EventArgs e)
