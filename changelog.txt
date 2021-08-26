@@ -1,37 +1,21 @@
-RSL 2.9.0
+RSL 2.9.1
 
-= Hotfix to remove errant entry from app list
-that would crash the program.
++ Added blacklist implementation to request games
+found on User's device that are not currently on 
+Rookie.
 
-RSL 2.9
++ Added CTRL + L shortcut to copy list of game names 
+separated by new lines to clipboard.
 
-+ Updated ADB zip on repo and added a verification 
-text file to ensure all users are on newest ADB, 
-this should fix most obb issues. Upon first launch
-after this update Rookie will automatically obtain
-the latest ADB via this zip (7MB).
++ Added ALT + L shortcut to copy list of game names to
+a paragraph separated by commas to clipboard.
 
-+ Added AAPT to repo along with a timer + logic to 
-detect packagename for automatic reinstall when drag 
-and dropped installs fail. 
++ Rookie will now maintain games list position when it 
+is refreshed. (e.g.: After finishing install queue,
+when pressing refresh all/updates list buttons)
 
-+ Implemented Size(MB) column to see app size prior 
-to clicking Download and Install.
-
-= Cleaned up automatic reinstall on apk installation
-failure for Download and Install, it should work for
-most users now.
-
-= Adjusted code for mirror switching, should fix failure
-to load gameslist whatsoever on dead mirrors.
-
-= Fixed issue where after installing a game RSL would
-ask user to donate same clean files again. RSL will now
-only ask once per program load, as intended.
-
-- Removed filesize confirmation dialog when clicking 
-download and install.
-
-- Removed columns that were useless to users.
+= Fixed issue where Rookie won't load game list properly
+after updating, users won't notice the issue fixed until
+the next update after this update.
 
 HFP

@@ -1,4 +1,45 @@
-﻿RSL 2.9.0
+﻿-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+RSL 2.9.1
+
++ Added blacklist implementation to request games
+found on User's device that are not currently on 
+Rookie.
+
++ Added CTRL + L shortcut to copy list of game names 
+separated by new lines to clipboard.
+
++ Added ALT + L shortcut to copy list of game names to
+a paragraph separated by commas to clipboard.
+
++ Rookie will now maintain games list position when it 
+is refreshed. (e.g.: After finishing install queue,
+when pressing refresh all/updates list buttons)
+
+= Fixed issue where Rookie won't load game list properly
+after updating, users won't notice the issue fixed until
+the next update after this update.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEndGsACgkQx/Rql1Vo
+czfQVQ//VjiJDJuId85cbm1gb5Rsek5aqbNv12kWUTULBy7cGgu43KeitnyaoryA
+jXTe6wMVi4FXkcv71HzIf/ABfmInlBW045ZmWlujKXYt5g6zrN2GCYYM2+fnO91z
+Umpqzz3xm+oF/U77704NuT4eqMFq/kBQ0QDGeJ34bxB22kQR1zw1Q3fFKZe+mmg4
+h54op3835sJAdKH1bFsN7zvL+RpxahWwo+etJ5oNIUx+W/xHSi7G9maKPvTH/bmQ
+5Fo1xGtad61BDVCIjJOfAafdlXUm4osmXcQcCZPyc6A+zx7/MMEHp4iCeIUUG08k
+2Ekodjd01nxZCaPZJKQS6H9BedDNlDwFNSUBa6K/A1+g0KneIHXnZfpQf4q8TrY3
+wkFyLOOJhDzFHdWDO4FuKz97eC9r9Y8iWRYHpzh8q/3A2bmeLx9+3d1FDns/fBhK
+Au5PwmZYhwAGp3eXfL8YiYwqssJ0dy23b6O9Vvgloz/aY0adJYCXaKugFdV/oVHx
+9s5W5LNI+AgkGOGdjZqtiFWO6ZeVfF4QqnFhx24G1qTk7euaIRzPPncMx0kn4KBl
+E+UAj3uhmJccMQSFyBwGKCsEpWqiFkUzVcSCt0HlEmNfRTNg+eQbuzvKJCs1CyDN
+Pty7ySgNk5/IKzTC18a0TSOS/IP2+8/Jhbpbmb8jd23UTSK33rI=
+=8iDP
+-----END PGP SIGNATURE-----
+
+RSL 2.9.0
 
 = Hotfix to remove errant entry from GamesList
 that would crash the program.

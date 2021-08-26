@@ -36,7 +36,6 @@ namespace AndroidSideloader
         public static string currremotesimple = "";
 #else
         public bool keyheld;
-        public bool keyheld2;
         public static string CurrAPK;
         public static string CurrPCKG;
         public static bool debugMode = false;
@@ -87,7 +86,7 @@ namespace AndroidSideloader
             t.Tick += new EventHandler(timer_Tick);
             t.Start();
             System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer();
-            t2.Interval = 30; // 30ms
+            t2.Interval = 300; // 30ms
             t2.Tick += new EventHandler(timer_Tick2);
             t2.Start();
 
@@ -1254,10 +1253,13 @@ namespace AndroidSideloader
         List<String> newGamesToUploadList = new List<string>();
         private List<UploadGame> gamesToUpload = new List<UploadGame>();
         private List<UpdateGameData> gamesToAskForUpdate = new List<UpdateGameData>();
+        public static bool loaded = false;
+        public static string rookienamelist;
+        public static string rookienamelist2;
         private async void initListView()
         {
-            gamesListView.Items.Clear();
-            gamesListView.Columns.Clear();
+            rookienamelist = "";
+            loaded = false;
             foreach (string column in SideloaderRCLONE.gameProperties)
             {
                 gamesListView.Columns.Add(column, 150);
@@ -1276,7 +1278,7 @@ namespace AndroidSideloader
             {
                 blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
             }
-            if(File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
             {
                 whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
             }
@@ -1286,6 +1288,7 @@ namespace AndroidSideloader
             {
                 rookieList.Add(game[SideloaderRCLONE.PackageNameIndex]);
             }
+            
             List<String> installGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
             List<String> whitelistItems = whitelist.ToList();
@@ -1297,20 +1300,27 @@ namespace AndroidSideloader
 
             foreach (string[] release in SideloaderRCLONE.games)
             {
+                if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
+                    {
+                    rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
+                    rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
+                    }
+
                 ListViewItem Game = new ListViewItem(release);
                 if (gamesListView.Columns.Count > 0)
                 {
                     gamesListView.Columns[1].Width = 265;
                     gamesListView.Columns[5].Width = 59;
                     gamesListView.Columns[2].Width = 100;
-                    gamesListView.Columns[3].Width = 50;
-                    gamesListView.Columns[4].Width = 100;
+                    gamesListView.Columns[3].Width = 45;
+                    gamesListView.Columns[4].Width = 105;
                     gamesListView.Columns[5].Text = "Size (MB)";
                 }
                 foreach (string packagename in packageList)
                 {
                     if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                     {
+                       
                         if (Properties.Settings.Default.QblindOn)
                         {
                             Game.BackColor = Color.FromArgb(0, 112, 138);
@@ -1366,11 +1376,27 @@ namespace AndroidSideloader
                 GameList.Add(Game);
             }
 
+            int topItemIndex = 0;
+            try
+            {
+                if (gamesListView.Items.Count > 1)
+                topItemIndex = gamesListView.TopItem.Index;
+            }
+            catch (Exception ex)
+            { }
+
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
+            gamesListView.Items.Clear();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
-
+            try
+            {
+                if (topItemIndex != 0)
+                    gamesListView.TopItem = gamesListView.Items[topItemIndex];
+            }
+            catch (Exception ex)
+            { }
             //This is for games that we already have on rookie and user has an update
             foreach (UpdateGameData gameData in gamesToAskForUpdate)
             {
@@ -1428,7 +1454,7 @@ namespace AndroidSideloader
             foreach (string newGamesToUpload in newGamesList)
             {
                 string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-                
+
                 //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
                 string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
                 apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
@@ -1458,15 +1484,12 @@ namespace AndroidSideloader
                         InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                         ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
                         await extractAndPrepareGameToUploadAsync(GameName, newGamesToUpload, installedVersionInt);
-                    } else
-                    {
-
                     }
                 }
             }
             updatesnotified = true;
 
-            
+
             if (!isworking && gamesToUpload.Count > 0)
             {
                 ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
@@ -1506,8 +1529,8 @@ namespace AndroidSideloader
                 ULGif.Visible = false;
                 ULLabel.Visible = false;
                 ULGif.Enabled = false;
-                ChangeTitle("");
             }
+            loaded = true;
         }
 
         private async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt)
@@ -2002,22 +2025,20 @@ without him none of this would be possible
                         gamesQueueList.RemoveAt(0);
                         gamesQueListBox.DataSource = null;
                         gamesQueListBox.DataSource = gamesQueueList;
-                        showAvailableSpace();
-
-                        ChangeTitle("");
                     }
                 }
                 progressBar.Style = ProgressBarStyle.Continuous;
                 etaLabel.Text = "ETA: Finished Queue";
                 speedLabel.Text = "DLS: Finished Queue";
                 ProgressText.Text = "";
-                await CheckForDevice();
-                ChangeTitlebarToDevice();
                 gamesAreDownloading = false;
                 ShowPrcOutput(output);
                 isinstalling = false;
+                ChangeTitle("Refreshing games list, please wait...\n");
+                showAvailableSpace();
                 listappsbtn();
                 initListView();
+                ChangeTitle("");
             }
         }
 
@@ -2138,7 +2159,6 @@ without him none of this would be possible
             }
 
         }
-
         private void ADBWirelessDisable_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = FlexibleMessageBox.Show("Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
@@ -2166,9 +2186,7 @@ without him none of this would be possible
                 Program.form.ChangeTitlebarToDevice();
                 FlexibleMessageBox.Show("Relaunch Rookie to complete the process and switch back to USB adb.");
             }
-
         }
-
         private void EnablePassthroughAPI_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
@@ -2192,7 +2210,6 @@ without him none of this would be possible
         {
             ShowSubMenu(otherContainer);
         }
-
         private void gamesQueListBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (gamesQueListBox.SelectedIndex != -1 && gamesQueListBox.SelectedIndex != 0)
@@ -2202,18 +2219,15 @@ without him none of this would be possible
                 gamesQueListBox.DataSource = gamesQueueList;
             }
         }
-
         private void devicesComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             ADB.WakeDevice();
             showAvailableSpace();
         }
-
         private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
         }
-
         private void QuestOptionsButton_Click(object sender, EventArgs e)
         {
             QuestForm Form = new QuestForm();
@@ -2255,7 +2269,6 @@ without him none of this would be possible
                     lvwColumnSorter.Order = SortOrder.Ascending;
                 }
             }
-
             // Perform the sort with these new sort options.
             this.gamesListView.Sort();
         }
@@ -2264,7 +2277,6 @@ without him none of this would be possible
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-
                 if (searchTextBox.Visible)
                 {
                     if (Properties.Settings.Default.EnterKeyInstall)
@@ -2273,7 +2285,6 @@ without him none of this would be possible
                             downloadInstallGameButton_Click(sender, e);
                     }
                 }
-
                 searchTextBox.Visible = false;
                 label2.Visible = false;
                 label3.Visible = false;
@@ -2281,11 +2292,9 @@ without him none of this would be possible
 
                 if (ADBcommandbox.Visible)
                 {
-
                     ChangeTitle($"Entered command: ADB {ADBcommandbox.Text}");
                     ADB.RunAdbCommandToString(ADBcommandbox.Text);
                     ChangeTitle("");
-
                 }
                 ADBcommandbox.Visible = false;
                 label9.Visible = false;
@@ -2303,14 +2312,12 @@ without him none of this would be possible
                 label9.Visible = false;
                 label11.Visible = false;
                 label2.Visible = false;
-
             }
         }
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.F))
             {
-
                 //show search
                 searchTextBox.Clear();
                 searchTextBox.Visible = true;
@@ -2318,6 +2325,24 @@ without him none of this would be possible
                 label3.Visible = true;
                 label4.Visible = true;
                 searchTextBox.Focus();
+            }
+            if (keyData == (Keys.Control | Keys.L))
+            {
+                if (loaded)
+                {
+                    Clipboard.SetText(rookienamelist);
+                    MessageBox.Show("Entire game list copied as a line by line list to clipboard!\nPress CTRL+V to paste it anywhere!");
+                }
+
+            }
+            if (keyData == (Keys.Alt | Keys.L))
+            {
+                if (loaded)
+                {
+                    Clipboard.SetText(rookienamelist2);
+                    MessageBox.Show("Entire game list copied as a paragraph to clipboard!\nPress CTRL+V to paste it anywhere!");
+                }
+
             }
             if (keyData == (Keys.Control | Keys.H))
             {
@@ -2333,7 +2358,6 @@ without him none of this would be possible
                 label11.Visible = true;
                 label2.Visible = true;
                 ADBcommandbox.Focus();
-
             }
             if (keyData == (Keys.F2))
             {
@@ -2344,8 +2368,6 @@ without him none of this would be possible
                 label4.Visible = true;
                 searchTextBox.Focus();
             }
-
-
             if (keyData == (Keys.Control | Keys.F4))
                 try
                 {
@@ -2383,17 +2405,13 @@ without him none of this would be possible
                 listappsbtn();
                 initListView();
             }
-
             bool dialogisup = false;
             if (keyData == (Keys.F1) && !dialogisup)
             {
                 dialogisup = true;
-                FlexibleMessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\nF11 ------ Copy CrashLog to Desktop\nF12 ------ Copy Debuglog to Desktop\n\nCTRL+R - Run custom ADB command.\nCTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie's Sideloader.");
+                FlexibleMessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie's Sideloader.");
                 dialogisup = false;
             }
-
-
-
             if (keyData == (Keys.Control | Keys.P))
             {
                 DialogResult dialogResult = FlexibleMessageBox.Show("Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
@@ -2407,13 +2425,7 @@ without him none of this would be possible
                     Properties.Settings.Default.PackageNameToCB = false;
                     Properties.Settings.Default.Save();
                 }
-
-
             }
-
-
-
-
             return base.ProcessCmdKey(ref msg, keyData);
 
         }
@@ -2461,11 +2473,11 @@ without him none of this would be possible
                 return;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
             string CurrentReleaseName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
-            if (!keyheld2)
+            if (!keyheld)
             {
                 if (Properties.Settings.Default.PackageNameToCB)
                     Clipboard.SetText(CurrentPackageName);
-                keyheld2 = true;
+                keyheld = true;
             }
 
             string ImagePath = "";
@@ -2475,16 +2487,12 @@ without him none of this would be possible
                 ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png";
             if (gamesPictureBox.BackgroundImage != null)
                 gamesPictureBox.BackgroundImage.Dispose();
-            if (File.Exists(ImagePath) && !keyheld)
+            if (File.Exists(ImagePath))
             {
                 gamesPictureBox.BackgroundImage = Image.FromFile(ImagePath);
-
             }
             else
                 gamesPictureBox.BackgroundImage = new Bitmap(367, 214);
-            keyheld = true;
-
-
 
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             if (File.Exists(NotePath))
