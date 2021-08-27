@@ -237,7 +237,7 @@ namespace AndroidSideloader
             t1.SetApartmentState(ApartmentState.STA);
             t1.IsBackground = true;
             if (HasInternet)
-            t1.Start();
+                t1.Start();
             while (t1.IsAlive)
                 await Task.Delay(100);
             Thread t2 = new Thread(() =>
@@ -277,19 +277,18 @@ namespace AndroidSideloader
             {
                 ChangeTitle("Checking if config is updated and updating config");
                 SideloaderRCLONE.updateConfig(currentRemote);
-                ChangeTitle("");
 
             });
             configThread.IsBackground = true;
             configThread.Start();
             while (configThread.IsAlive)
                 await Task.Delay(100);
-            ChangeTitle("Populating update list, please wait...");
+            ChangeTitle("Populating update list, please wait...\n\n");
             listappsbtn();
             initListView();
             showAvailableSpace();
             intToolTips();
-            ChangeTitle("");
+            ChangeTitle(" \n\n");
             downloadInstallGameButton.Enabled = true;
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
@@ -823,7 +822,7 @@ namespace AndroidSideloader
                 {
                     string currentlyuploading = GameName;
                     ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
-                    string Uploadoutput = RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip\" RSL-debuglogs:CleanGames").Output;
+                    string Uploadoutput = RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip\" RSL-gameuploads:").Output;
                     File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip");
                     FlexibleMessageBox.Show($"Upload of {currentlyuploading} is complete! Thank you for your contribution!");
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
@@ -837,7 +836,7 @@ namespace AndroidSideloader
                     await Task.Delay(100);
                 }
 
-                ChangeTitle("");
+                ChangeTitle(" \n\n");
                 isuploading = false;
                 ULGif.Visible = false;
                 ULLabel.Visible = false;
@@ -848,32 +847,28 @@ namespace AndroidSideloader
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
+            string packagename;
             ADB.WakeDevice();
             if (m_combo.SelectedIndex == -1)
             {
                 FlexibleMessageBox.Show("Please select an app first");
                 return;
             }
-            string date_str = DateTime.Today.ToString("yyyy.MM.dd");
-            string CurrBackups = Path.Combine(BackupFolder, date_str);
-
-
             string GameName = m_combo.SelectedItem.ToString();
-            string packagename = Sideloader.gameNameToPackageName(GameName);
-            FlexibleMessageBox.Show($"If savedata is found it will be saved to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Attempting Backup...", MessageBoxButtons.OK);
-
-            Directory.CreateDirectory(CurrBackups);
-            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
-            DialogResult dialogResult = FlexibleMessageBox.Show($"Please check to see if we automatically found savedata in Documents\\Rookie Backups.\nIf there are no new files there is recommended that you do a full backup via Backup Gamedata before continuing.\nNOTE: Some games do not allow backup of savedata.\nContinue with the uninstall?", "Continue with Uninstall?", MessageBoxButtons.YesNo);
-            if (dialogResult == DialogResult.No)
+            DialogResult dialogresult = FlexibleMessageBox.Show($"Are you sure you want to unintsall {GameName}? Rookie will attempt to automatically backup any saves to Documents\\Rookie Backups\\(TodaysDate)", "Proceed with uninstall?", MessageBoxButtons.YesNo);
+            if (dialogresult == DialogResult.No)
             {
                 return;
             }
+            if (!GameName.Contains("."))
+                packagename = Sideloader.gameNameToPackageName(GameName);
+            else
+                packagename = GameName;
             ProcessOutput output = new ProcessOutput("", "");
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
             {
-                output += Sideloader.UninstallGame(GameName);
+                output += Sideloader.UninstallGame(packagename);
             });
             t1.Start();
             t1.IsBackground = true;
@@ -1000,7 +995,8 @@ namespace AndroidSideloader
                                 output.Error = "";
                             if (output.Error.Contains("reserved"))
                                 output.Output = "";
-                            ChangeTitle("");
+
+                            ChangeTitle(" \n\n");
                         }
                     }
                     string[] files = Directory.GetFiles(data);
@@ -1013,7 +1009,7 @@ namespace AndroidSideloader
                                 string pathname = Path.GetDirectoryName(data);
                                 string filename = file2.Replace($"{pathname}\\", "");
 
-                                string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
+                                string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
                                 string cmdout = ADB.RunCommandToString(cmd, file2).Output;
                                 cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
                                 cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
@@ -1028,7 +1024,6 @@ namespace AndroidSideloader
                                 Program.form.ChangeTitle($"Sideloading apk...");
 
                                 Thread t2 = new Thread(() =>
-
                                 {
                                     output += ADB.Sideload(file2);
                                 });
@@ -1112,8 +1107,7 @@ namespace AndroidSideloader
                                 while (t1.IsAlive)
                                     await Task.Delay(100);
 
-
-                                ChangeTitle("");
+                                ChangeTitle(" \n\n");
 
                             }
                         }
@@ -1149,8 +1143,7 @@ namespace AndroidSideloader
 
                             timer.Stop();
 
-
-                            ChangeTitle("");
+                            ChangeTitle(" \n\n");
                         }
                     }
                     //If obb is dragged and dropped alone onto Rookie, Rookie will recreate its obb folder automatically with this code.
@@ -1177,7 +1170,7 @@ namespace AndroidSideloader
                             await Task.Delay(100);
 
                         Directory.Delete(foldername, true);
-                        ChangeTitle("");
+                        ChangeTitle(" \n\n");
                     }
                     // BMBF Zip extraction then push to BMBF song folder on Quest.
                     else if (extension == ".zip" && Properties.Settings.Default.BMBFchecked)
@@ -1219,7 +1212,8 @@ namespace AndroidSideloader
                         while (t1.IsAlive)
                             await Task.Delay(100);
 
-                        ChangeTitle("");
+
+                        ChangeTitle(" \n\n");
                     }
                 }
             }
@@ -1247,7 +1241,8 @@ namespace AndroidSideloader
         {
             DragDropLbl.Visible = false;
             DragDropLbl.Text = "";
-            ChangeTitle("");
+
+            ChangeTitle(" \n\n");
         }
         List<String> newGamesList = new List<string>();
         List<String> newGamesToUploadList = new List<string>();
@@ -1288,7 +1283,7 @@ namespace AndroidSideloader
             {
                 rookieList.Add(game[SideloaderRCLONE.PackageNameIndex]);
             }
-            
+
             List<String> installGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
             List<String> whitelistItems = whitelist.ToList();
@@ -1301,10 +1296,10 @@ namespace AndroidSideloader
             foreach (string[] release in SideloaderRCLONE.games)
             {
                 if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
-                    {
+                {
                     rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
                     rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
-                    }
+                }
 
                 ListViewItem Game = new ListViewItem(release);
                 if (gamesListView.Columns.Count > 0)
@@ -1320,7 +1315,7 @@ namespace AndroidSideloader
                 {
                     if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                     {
-                       
+
                         if (Properties.Settings.Default.QblindOn)
                         {
                             Game.BackColor = Color.FromArgb(0, 112, 138);
@@ -1380,7 +1375,7 @@ namespace AndroidSideloader
             try
             {
                 if (gamesListView.Items.Count > 1)
-                topItemIndex = gamesListView.TopItem.Index;
+                    topItemIndex = gamesListView.TopItem.Index;
             }
             catch (Exception ex)
             { }
@@ -1469,6 +1464,8 @@ namespace AndroidSideloader
                 ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
                 ReleaseName = ReleaseName.Replace("'", "");
                 File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                if (ReleaseName.Contains("Microsoft Windows"))
+                    ReleaseName = newGamesToUpload;
                 //end
 
                 string GameName = Sideloader.gameNameToSimpleName(RlsName);
@@ -1529,6 +1526,7 @@ namespace AndroidSideloader
                 ULGif.Visible = false;
                 ULLabel.Visible = false;
                 ULGif.Enabled = false;
+                ChangeTitle(" \n\n");
             }
             loaded = true;
         }
@@ -1560,11 +1558,12 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Continuous;
             UploadGame game = new UploadGame();
             game.Pckgcommand = packagename;
-            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-debuglogs:CleanGames";
+            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-gameuploads:";
             game.Uploadversion = installedVersionInt;
             game.Uploadgamename = GameName;
             gamesToUpload.Add(game);
-            ChangeTitle("");
+
+            ChangeTitle(" \n\n");
         }
         private void initMirrors(bool random)
         {
@@ -1715,7 +1714,8 @@ without him none of this would be possible
             initListView();
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
-            ChangeTitle("");
+
+            ChangeTitle(" \n\n");
         }
 
         private static readonly HttpClient client = new HttpClient();
@@ -1965,7 +1965,8 @@ without him none of this would be possible
                                     Thread installtxtThread = new Thread(() =>
                                     {
                                         output += Sideloader.RunADBCommandsFromFile(file);
-                                        ChangeTitle("");
+
+                                        ChangeTitle(" \n\n");
                                     });
 
                                     installtxtThread.Start();
@@ -2034,11 +2035,12 @@ without him none of this would be possible
                 gamesAreDownloading = false;
                 ShowPrcOutput(output);
                 isinstalling = false;
-                ChangeTitle("Refreshing games list, please wait...\n");
+                ChangeTitle("Refreshing games list, please wait...                                                                                                                   \n");
                 showAvailableSpace();
                 listappsbtn();
                 initListView();
-                ChangeTitle("");
+
+                ChangeTitle(" \n\n");
             }
         }
 
@@ -2055,54 +2057,52 @@ without him none of this would be possible
                 }
                 if (isinstalled)
                 {
-
-                    DialogResult dialogResult = FlexibleMessageBox.Show("In place upgrade has failed.\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to do this while retaining your savedata.\nWhile the vast majority of games can be backed up there are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want Rookie to uninstall and reinstall the app automatically?", "In place upgrade failed", MessageBoxButtons.OKCancel);
-                    if (dialogResult == DialogResult.OK)
+                    if (!Properties.Settings.Default.AutoReinstall)
                     {
-                        ChangeTitle("Performing reinstall, please wait...");
-                        ADB.RunAdbCommandToString("kill-server");
-                        ADB.RunAdbCommandToString("devices");
-                        ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{CurrPCKG} \"{Environment.CurrentDirectory}\"");
-                        ADB.RunAdbCommandToString($"shell pm uninstall {CurrPCKG}");
-                        output += ADB.RunAdbCommandToString($"install -g \"{CurrAPK}\"");
-                        ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{CurrPCKG}\" /sdcard/Android/data/");
-
-                        timerticked = false;
-                        if (Directory.Exists($"{Environment.CurrentDirectory}\\{CurrPCKG}"))
-                            Directory.Delete($"{Environment.CurrentDirectory}\\{CurrPCKG}", true);
-                        ChangeTitle("");
-                        return;
-                    }
-
-                    else
-                    {
-                        DialogResult dialogResult2 = FlexibleMessageBox.Show("Would you like to cancel the install? Press NO to keep waiting.", "Cancel install?", MessageBoxButtons.YesNo);
-                        if (dialogResult2 == DialogResult.Yes)
+                        DialogResult dialogResult = FlexibleMessageBox.Show("In place upgrade has failed.\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to do this while retaining your savedata.\nWhile the vast majority of games can be backed up there are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want Rookie to uninstall and reinstall the app automatically?", "In place upgrade failed", MessageBoxButtons.OKCancel);
+                        if (dialogResult == DialogResult.Cancel)
                         {
-                            ChangeTitle("Stopping Install...");
-                            ADB.RunAdbCommandToString("kill-server");
-                            ADB.RunAdbCommandToString("devices");
-                        }
-                        else
-                        {
-                            timerticked = false;
                             return;
                         }
+                    }
+                    ChangeTitle("Performing reinstall, please wait...");
+                    ADB.RunAdbCommandToString("kill-server");
+                    ADB.RunAdbCommandToString("devices");
+                    ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{CurrPCKG} \"{Environment.CurrentDirectory}\"");
+                    Sideloader.UninstallGame(CurrPCKG);
+                    ChangeTitle("Reinstalling Game");
+                    output += ADB.RunAdbCommandToString($"install -g \"{CurrAPK}\"");
+                    ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{CurrPCKG}\" /sdcard/Android/data/");
+
+                    timerticked = false;
+                    if (Directory.Exists($"{Environment.CurrentDirectory}\\{CurrPCKG}"))
+                        Directory.Delete($"{Environment.CurrentDirectory}\\{CurrPCKG}", true);
+
+                    ChangeTitle(" \n\n");
+                    return;
+                }
+                else
+                {
+                    DialogResult dialogResult2 = FlexibleMessageBox.Show("This install is taking an usual amount of time, you can keep waiting or cancel the install.\n" +
+                        "Would you like to cancel the installation?", "Cancel install?", MessageBoxButtons.YesNo);
+                    if (dialogResult2 == DialogResult.Yes)
+                    {
+                        ChangeTitle("Stopping Install...");
+                        ADB.RunAdbCommandToString("kill-server");
+                        ADB.RunAdbCommandToString("devices");
+                    }
+                    else
+                    {
+                        timerticked = false;
+                        return;
                     }
                 }
             }
         }
 
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            //Even if the user has already uploaded the game list, we will ask once every 24h
-            if (Properties.Settings.Default.lastTimeShared != null && Properties.Settings.Default.UploadedGameList)
-            {
-                if((DateTime.Now - Properties.Settings.Default.lastTimeShared).TotalDays > 1)
-                {
-                    Properties.Settings.Default.UploadedGameList = false;
-                }
-            }
             if (isinstalling)
             {
                 var res1 = FlexibleMessageBox.Show(this, "There are downloads and/or installations in progress,\nif you exit now you'll have to start the entire process over again.\nAre you sure you want to exit?", "Still downloading/installing.",
@@ -2120,30 +2120,6 @@ without him none of this would be possible
                 if (res != DialogResult.Yes)
                 {
                     e.Cancel = true;
-                    return;
-                }
-                else
-                {
-                    RCLONE.killRclone();
-                    ADB.RunAdbCommandToString("kill-server");
-                }
-            }
-            else if (newGamesList.Count > 0 && !Properties.Settings.Default.UploadedGameList)
-            {
-                var res = FlexibleMessageBox.Show(this, "For August 2021, we'd like to grab a list of the apps installed to make updates work better.\nDo that now?", "Upload game list?",
-                MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
-                if (res == DialogResult.Yes)
-                {
-                    string fileName = "gamesList" + DateTime.Now.ToFileTime() + ".txt";
-                    System.IO.File.WriteAllLines(fileName, newGamesList);
-                    RCLONE.runRcloneCommand($"copy " + Environment.CurrentDirectory + "\\" + fileName + " RSL-debuglogs:InstalledGamesList");
-                    FlexibleMessageBox.Show("Upload done! Thank for your colaboration!");
-                    File.Delete(fileName);
-                    Properties.Settings.Default.UploadedGameList = true;
-                    Properties.Settings.Default.lastTimeShared = DateTime.Now;
-                    Properties.Settings.Default.Save();
-                    RCLONE.killRclone();
-                    ADB.RunAdbCommandToString("kill-server");
                     return;
                 }
                 else
@@ -2294,7 +2270,7 @@ without him none of this would be possible
                 {
                     ChangeTitle($"Entered command: ADB {ADBcommandbox.Text}");
                     ADB.RunAdbCommandToString(ADBcommandbox.Text);
-                    ChangeTitle("");
+                    ChangeTitle(" \n\n");
                 }
                 ADBcommandbox.Visible = false;
                 label9.Visible = false;

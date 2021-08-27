@@ -1,21 +1,28 @@
-RSL 2.9.1
+RSL 2.9.2
 
-+ Added blacklist implementation to request games
-found on User's device that are not currently on 
-Rookie.
++ Added option in settings menu
+to automatically reinstall apps
+when installs fail due to previous
+version clashing with update.
 
-+ Added CTRL + L shortcut to copy list of game names 
-separated by new lines to clipboard.
+NOTE: If your USB or wireless ADB
+connection is extremely slow this
+setting can cause larger APK installs
+to fail in rare cases.
 
-+ Added ALT + L shortcut to copy list of game names to
-a paragraph separated by commas to clipboard.
+= Fixed auto reinstall for signature
+mismatch when if ADB reports error
+properly (thanks to ADB update),
+this will lead to faster reinstalls
+in general when there are issues.
 
-+ Rookie will now maintain games list position when it 
-is refreshed. (e.g.: After finishing install queue,
-when pressing refresh all/updates list buttons)
+= Fixed crash that would occur when 
+closing Rookie.
 
-= Fixed issue where Rookie won't load game list properly
-after updating, users won't notice the issue fixed until
-the next update after this update.
+= Added check to see if AAPT was 
+sucessful in retrieving mew game 
+name from APK, if not RSL will just 
+call the name by its package name 
+instead.
 
 HFP

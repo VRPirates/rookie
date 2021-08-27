@@ -35,6 +35,7 @@ namespace AndroidSideloader
             userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
             nodevicemodeBox.Checked = Properties.Settings.Default.nodevicemode;
             bmbfBox.Checked = Properties.Settings.Default.BMBFchecked;
+            AutoReinstBox.Checked = Properties.Settings.Default.AutoReinstall;
 
             if (Properties.Settings.Default.BandwithLimit.Length > 1)
             {
@@ -222,6 +223,27 @@ namespace AndroidSideloader
         {
             Properties.Settings.Default.BMBFchecked = bmbfBox.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void AutoReinstBox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AutoReinstall = AutoReinstBox.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void AutoReinstBox_Click(object sender, EventArgs e)
+        {
+            if (AutoReinstBox.Checked)
+            {
+                DialogResult dialogResult = FlexibleMessageBox.Show("WARNING: This box enables automatic reinstall when installs fail,\ndue to some games not allowing " +
+                    "access to their save data (less than 5%) this\noption can lead to losing your progress." +
+                    " However with this option\nchecked when installs fail you won't have to agree to a prompt to preform\nthe reinstall. " +
+                    "(ideal when installing from a queue).\n\nNOTE: If your usb/wireless adb connection is extremely slow this option can\ncause larger" +
+                    "apk file installations to fail. Enable anyway?", "WARNING", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.Cancel)
+                    AutoReinstBox.Checked = false;
+            }
+
         }
     }
 }

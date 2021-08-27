@@ -657,5 +657,17 @@ namespace AndroidSideloader.Properties {
                 this["lastTimeShared"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool AutoReinstall {
+            get {
+                return ((bool)(this["AutoReinstall"]));
+            }
+            set {
+                this["AutoReinstall"] = value;
+            }
+        }
     }
 }

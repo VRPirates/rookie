@@ -126,17 +126,22 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
             catch (Exception ex) { Logger.Log(ex.Message); }
         }
-
+        public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
         //uninstalls an app
-        public static ProcessOutput UninstallGame(string GameName)
+        public static ProcessOutput UninstallGame(string packagename)
         {
             ADB.WakeDevice();
+            Program.form.ChangeTitle("Attempting to backup any savedata to Documents\\Rookie Backups...");
             ProcessOutput output = new ProcessOutput("", "");
-            string packageName = Sideloader.gameNameToPackageName(GameName);
-            output = ADB.UninstallPackage(packageName);
-            //remove both data and obb if there is any
-            Sideloader.RemoveFolder("/sdcard/Android/obb/" + packageName);
-            Sideloader.RemoveFolder("/sdcard/Android/data/" + packageName);
+            string date_str = DateTime.Today.ToString("yyyy.MM.dd");
+            string CurrBackups = Path.Combine(BackupFolder, date_str);
+            if (!Directory.Exists(CurrBackups))
+            Directory.CreateDirectory(CurrBackups);
+            ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
+            output = ADB.UninstallPackage(packagename);
+            Program.form.ChangeTitle("");
+            Sideloader.RemoveFolder("/sdcard/Android/obb/" + packagename);
+            Sideloader.RemoveFolder("/sdcard/Android/data/" + packagename);
             return output;
         }
 

@@ -385,39 +385,34 @@ namespace AndroidSideloader
                     if (dialogResult2 == DialogResult.Yes)
                         ADB.WakeDevice();
                 }
-                if (out2.Contains($"INSTALL_FAILED_UPDATE_INCOMPATIBLE") || out2.Contains("INSTALL_FAILED_VERSION_DOWNGRADE") || out2.Contains("signatures do not match") || out2.Contains("failed to install"))
+                if (out2.Contains($"signatures do not match previously") || out2.Contains("INSTALL_FAILED_VERSION_DOWNGRADE") || out2.Contains("signatures do not match") || out2.Contains("failed to install"))
                 {
                     ret.Error = string.Empty;
                     ret.Output = string.Empty;
-
-
-                    FlexibleMessageBox.Show($"In place upgrade for {packagename} failed.  We will need to upgrade by uninstalling, and keeping savedata isn't guaranteed.  Continue?", "UPGRADE FAILED!", MessageBoxButtons.OKCancel);
-
-                    string date_str = DateTime.Today.ToString("yyyy.MM.dd");
-                    string CurrBackups = Path.Combine(BackupFolder, date_str);
-
-
-                    FlexibleMessageBox.Show($"Searching for save files...", "Searching!", MessageBoxButtons.OK);
-                    if (Directory.Exists($"/sdcard/Android/data/{packagename}"))
-                    {
-                        FlexibleMessageBox.Show($"Trying to backup save to Documents\\Rookie Backups\\{date_str}(YYYY.MM.DD)\\{packagename}", "Save files found", MessageBoxButtons.OK);
-                        Directory.CreateDirectory(CurrBackups);
-                        ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{packagename}\" \"{CurrBackups}\"");
-                    }
-                    else
-                    {
-                        DialogResult dialogResult = FlexibleMessageBox.Show($"No savedata found! Continue with the uninstall!", "None Found", MessageBoxButtons.OK);
-                        if (dialogResult == DialogResult.Cancel)
-                        {
-                            return ret;
-                        }
-                    }
                     ADB.WakeDevice();
-                    ret += ADB.RunAdbCommandToString("shell pm uninstall " + package);
-                    ret += RunAdbCommandToString($"install -g -r \"{path}\"");
+                    if (!Properties.Settings.Default.AutoReinstall)
+                    {
+                        DialogResult dialogResult1 = FlexibleMessageBox.Show("In place upgrade has failed. Rookie can attempt to backup your save data and\nreinstall the game automatically, however " +
+                            "some games do not store their saves\nin an accessible location(less than 5%). Continue with reinstall?", "In place upgrade failed.", MessageBoxButtons.OKCancel);
+                        if (dialogResult1 == DialogResult.Cancel)
+                            return ret;
+                    }
+            
+                    Program.form.ChangeTitle("Performing reinstall, please wait...");
+                    ADB.RunAdbCommandToString("kill-server");
+                    ADB.RunAdbCommandToString("devices");
+                    ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{MainForm.CurrPCKG} \"{Environment.CurrentDirectory}\"");
+                    Program.form.ChangeTitle("Uinstalling game...");
+                    Sideloader.UninstallGame(MainForm.CurrPCKG);
+                    Program.form.ChangeTitle("Reinstalling Game");
+                    ret += ADB.RunAdbCommandToString($"install -g \"{path}\"");
+                    ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}\" /sdcard/Android/data/");
+                    if (Directory.Exists($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}"))
+                        Directory.Delete($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}", true);
+
+                    Program.form.ChangeTitle(" \n\n");
                     return ret;
                 }
-                ret += RunAdbCommandToString($"install -g -r \"{path}\"");
             }
             string gamenameforQU = Sideloader.PackageNametoGameName(packagename);
             if (Properties.Settings.Default.QUturnedon)

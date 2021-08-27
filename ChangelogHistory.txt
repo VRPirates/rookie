@@ -1,6 +1,55 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.9.2
+
++ Added option in settings menu
+to automatically reinstall apps
+when installs fail due to previous
+version clashing with update.
+
+NOTE: If your USB or wireless ADB
+connection is extremely slow this
+setting can cause larger APK installs
+to fail in rare cases.
+
+= Fixed auto reinstall for signature
+mismatch when if ADB reports error
+properly (thanks to ADB update),
+this will lead to faster reinstalls
+in general when there are issues.
+
+= Fixed crash that would occur when 
+closing Rookie.
+
+= Added check to see if AAPT was 
+sucessful in retrieving mew game 
+name from APK, if not RSL will just 
+call the name by its package name 
+instead.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEotsUACgkQx/Rql1Vo
+czc2/w/8DkMuVYLb31J0WyqeIdo/12t+TO0oIbmTvGl8Oi1LttnfH1a+PUBYYXFF
+VTEcBoEgGde/Jk7+AblKhzce+uQIzwzU9KC7HL+Ab/1AAj3tdczx2vE4uKTPfMUe
+k8XuZz0Qe37IOVUgnHugQCac8jjaDCFXzwoIwADnBg7mW/4Ha+LqxJr/+dsMUnz/
+WsenolRWWKyhTj3RHIulZu82yEV9Gw+KfIUpO/XJR71xNdCq1IyrAfBRT8KqgI3F
+2IuX/pIqMSMvG1N62rWUzxD67BM5NbpjxiDZKg3LmBo39avqowSGclT7gOP+eiGY
+eSvvl+zoI08ofL+8Vonhu/mwnQNUcGFQqqpwAvDIcgE/zVDM9uTVAOTRkrjW0ge2
+xEUhpdKZVJ/UzbwnUEyR7zeAkt+sVkEbAD9My7NdQ58eD52F20+yYTAWC6CU8dB4
+8QJbJBEzd0Pm23H7iY5F5/7UnPy+rxzfyezrJCKV5u+D65Fn4n13VY33CDxBJW4y
+kmcpWwal81mbGgwhWpxK6+xy1V2oWL9PLN9YIkfv+n5/KlqJjUfj3wqah+aUG5qI
+X/5mqLAWnsQcM/F0bZXzt3dVszInPHH7jjSjoyKOKQwfVxYrh6uuonVhG7NfHfij
+LGs8d6O8osorkiB+2Aiziw8A+9o8fWLmfjeDhFcGc5YTb3eMxz0=
+=XRAG
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.9.1
 
 + Added blacklist implementation to request games
