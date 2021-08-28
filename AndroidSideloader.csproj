@@ -269,6 +269,7 @@
     <None Include="Resources\battery1.png" />
     <None Include="Resources\ajax-loader.gif" />
     <Content Include="Resources\bluekey.png" />
+    <None Include="Resources\gametoupload.png" />
     <Content Include="Resources\redkey.png" />
     <None Include="Resources\greenkey.png" />
     <None Include="Resources\orangekey.png" />

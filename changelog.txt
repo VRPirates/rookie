@@ -1,28 +1,22 @@
-RSL 2.9.2
+RSL 2.9.3
 
-+ Added option in settings menu
-to automatically reinstall apps
-when installs fail due to previous
-version clashing with update.
++ Added new background color for apps that are a newer
+version than the version on the list. If you see this
+darker background please agree to share when prompted
+upon program launch or alternatively select the game 
+from top drop-down installed apps list and click Share 
+Selected App to help the community!
 
-NOTE: If your USB or wireless ADB
-connection is extremely slow this
-setting can cause larger APK installs
-to fail in rare cases.
++ Added logic for file size column, clicking the column
+header will now properly sort from biggest to smallest
+or vice versa.
 
-= Fixed auto reinstall for signature
-mismatch when if ADB reports error
-properly (thanks to ADB update),
-this will lead to faster reinstalls
-in general when there are issues.
+= Fixed issue where Rookie would ask for every single
+app installed on user's device. It should now only ask
+for apps not on Rookie and not on the Blacklist as
+intended.
 
-= Fixed crash that would occur when 
-closing Rookie.
+= Changed zip file naming for new game uploads to use 
+Release Name instead of package name.
 
-= Added check to see if AAPT was 
-sucessful in retrieving mew game 
-name from APK, if not RSL will just 
-call the name by its package name 
-instead.
-
-HFP
+HFP 

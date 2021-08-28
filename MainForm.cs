@@ -227,6 +227,8 @@ namespace AndroidSideloader
 
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
+                ChangeTitle("Checking if config is updated and updating config");
+                SideloaderRCLONE.updateConfig(currentRemote);
                 ChangeTitle("Initializing Games");
                 SideloaderRCLONE.initGames(currentRemote);
                 //ChangeTitle("Syncing Game Photos");
@@ -267,31 +269,25 @@ namespace AndroidSideloader
                 t3.Start();
                 t4.Start();
             }
-            while (t2.IsAlive || t3.IsAlive || t4.IsAlive)
-                await Task.Delay(100);
-
+            while (t2.IsAlive)
+                await Task.Delay(100);        
+            while (t3.IsAlive)
+                await Task.Delay(100);         
+            while (t4.IsAlive)
+                await Task.Delay(100);        
             ChangeTitle("Loaded");
 
             progressBar.Style = ProgressBarStyle.Marquee;
-            Thread configThread = new Thread(() =>
-            {
-                ChangeTitle("Checking if config is updated and updating config");
-                SideloaderRCLONE.updateConfig(currentRemote);
 
-            });
-            configThread.IsBackground = true;
-            configThread.Start();
-            while (configThread.IsAlive)
-                await Task.Delay(100);
             ChangeTitle("Populating update list, please wait...\n\n");
             listappsbtn();
-            initListView();
             showAvailableSpace();
             intToolTips();
             ChangeTitle(" \n\n");
             downloadInstallGameButton.Enabled = true;
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
+            initListView();
         }
 
 
@@ -1285,23 +1281,15 @@ namespace AndroidSideloader
             List<String> rookieList = new List<String>();
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                rookieList.Add(game[SideloaderRCLONE.PackageNameIndex]);
+                
             }
 
             List<String> installedGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
             List<String> whitelistItems = whitelist.ToList();
             errorOnList = false;
-            if (installedGames.Count == 0 || blacklistItems.Count == 0)
-            {
-                //This means either the user does not have headset connected or the blacklist
-                //did not load, so we are just going to skip everything
-                errorOnList = true;
-                FlexibleMessageBox.Show($"Rookie seems to have failed to load some files. Try restarting a few times rookie. If error persists resintall. Also don't use a VPN. If error persists post problem on telegram.", "Error loading blacklist or game list!");
-            }
 
             //This is for black list, but temporarly will be whitelist
-            newGamesList = installedGames.Except(rookieList).Except(blacklistItems).ToList();
             //this list has games that we are actually going to upload
             newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
 
@@ -1317,6 +1305,7 @@ namespace AndroidSideloader
 
                 foreach (string packagename in packageList)
                 {
+                    rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
                     if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                     {
 
@@ -1373,6 +1362,14 @@ namespace AndroidSideloader
                     }
                 }
                 GameList.Add(Game);
+            }
+            newGamesList = installedGames.Except(rookieList).Except(blacklistItems).ToList();
+            if (blacklistItems.Count == 0 || rookieList.Count == 0)
+            {
+                //This means either the user does not have headset connected or the blacklist
+                //did not load, so we are just going to skip everything
+                errorOnList = true;
+                FlexibleMessageBox.Show($"Rookie seems to have failed to load all resources. Please try restarting Rookie a few times.\nIf error still persists please disable any VPN or firewalls (rookie uses direct download so a VPN is not needed)\nIf this error still persists try a system reboot, reinstalling the program, and lastly posting the problem on telegram.", "Error loading blacklist or game list!");
             }
 
             int topItemIndex = 0;
@@ -1483,7 +1480,7 @@ namespace AndroidSideloader
                     ReleaseName = ReleaseName.Replace("'", "");
                     File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
                     if (ReleaseName.Contains("Microsoft Windows"))
-                        ReleaseName = newGamesToUpload;
+                        ReleaseName = RlsName;
                     //end
 
                     string GameName = Sideloader.gameNameToSimpleName(RlsName);
@@ -1498,7 +1495,7 @@ namespace AndroidSideloader
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                             ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                            await extractAndPrepareGameToUploadAsync(GameName, newGamesToUpload, installedVersionInt);
+                            await extractAndPrepareGameToUploadAsync(ReleaseName, newGamesToUpload, installedVersionInt);
                         }
                     }
                 }
@@ -1555,7 +1552,7 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
             {
-                Sideloader.getApk(GameName);
+                Sideloader.getApk(packagename);
             });
             t1.IsBackground = true;
             t1.Start();
@@ -1726,7 +1723,7 @@ without him none of this would be possible
                 SideloaderRCLONE.initGames(currentRemote);
                 listappsbtn();
             });
-            t1.IsBackground = true;
+            t1.IsBackground = false;
             t1.Start();
             while (t1.IsAlive)
                 await Task.Delay(100);

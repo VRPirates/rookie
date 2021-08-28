@@ -1,6 +1,48 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.9.3
+
++ Added new background color for apps that are a newer
+version than the version on the list. If you see this
+darker background please agree to share when prompted
+upon program launch or alternatively select the game 
+from top drop-down installed apps list and click Share 
+Selected App to help the community!
+
++ Added logic for file size column, clicking the column
+header will now properly sort from biggest to smallest
+or vice versa.
+
+= Fixed issue where Rookie would ask for every single
+app installed on user's device. It should now only ask
+for apps not on Rookie and not on the Blacklist as
+intended.
+
+= Changed zip file naming for new game uploads to use 
+Release Name instead of package name.
+
+HFP 
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEpvs8ACgkQx/Rql1Vo
+czc4kg//fgCG0ChVfIVl48I2dww4ZJmRI+sQm/S4Ry38M4NzM+SdKOQVnDFgZ68p
+e/z2VqECc4wPlhqrxh+xHoMzlkfrz8LdpsU3cch6jo9uERpaWMj2X1E5jKFRc7iS
+4/v6XvSBnp/ZSak3f7DUubNnsCcq6vDH4w1ugzv71AyW9STG7oUXQb+kNQNsQ1RO
+WNJjO87RAlHivUuff7wRLlhVKLo21DvZ+MJRmMRzXH5tMxnEGxWeTOkAoWvsDjMa
+1L6rmugC9K7X3Qqi09f1ZyUQG6F++fpoDf8u5QB96DegV+IZGjOsBcvL7wE9fdox
+RxhFxZMsnQtO4kuo3c/iFg7ohxP+pQ5ayk0IzDRwdjfIYX+w+20LdkGpxsThxHvp
+fWZBUCW0nwBFxBjxItXq8dIn7KHsDc3AkNcI2Ox+4eIUoKwuqzr0wCjPaB4dLLLZ
+Ofa1tt25ugl7rSTI4doKEH1YmTlzdOuuSKaA2vIMH6L54gpy+h2DkdAQkSEl0PRJ
+fApOwvUJqnat/Pipg2PTaJSiZd/lLoImWXdhOdlT2XA/9olD0oLGW/DmK+jjH2GK
+Sxd+sLDHUDyujH263yemu1No7+3Zf+iyE+8LTikYj0mVG3SX8tfG/5cOXbQAp2pv
+h9CmnbkKBVy8+RXMHKW8MJhsqCS2/wDIJSGYbxwAge3vSe70UWA=
+=d6JO
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.9.2
 
 + Added option in settings menu

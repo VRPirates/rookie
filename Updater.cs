@@ -17,7 +17,7 @@ namespace AndroidSideloader
         private static string RawGitHubUrl;
         private static string GitHubUrl;
 
-        static readonly public string LocalVersion = "2.9.2";
+        static readonly public string LocalVersion = "2.9.3";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 

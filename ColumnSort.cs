@@ -59,7 +59,7 @@ public class ListViewColumnSorter : IComparer
                 {
                     return 0;
                 } 
-                else if(xNum > yNum && OrderOfSort == SortOrder.Descending)
+                else if(xNum > yNum && OrderOfSort == SortOrder.Ascending)
                 {
                     return -1;
                 }
