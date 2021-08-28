@@ -1261,7 +1261,7 @@ namespace AndroidSideloader
             loaded = false;
             foreach (string column in SideloaderRCLONE.gameProperties)
             {
-                gamesListView.Columns.Add(column);
+                gamesListView.Columns.Add(column, 150);
             }
 
             string lines = Properties.Settings.Default.InstalledApps;

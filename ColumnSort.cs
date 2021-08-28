@@ -50,6 +50,25 @@ public class ListViewColumnSorter : IComparer
         // Cast the objects to be compared to ListViewItem objects
         listviewX = (ListViewItem)x;
         listviewY = (ListViewItem)y;
+        if (ColumnToSort == 5 ) {
+            try
+            {
+                int yNum = int.Parse(cleanNumber(listviewY.SubItems[ColumnToSort].Text));
+                int xNum = int.Parse(cleanNumber(listviewX.SubItems[ColumnToSort].Text));
+                if (xNum == yNum )
+                {
+                    return 0;
+                } 
+                else if(xNum > yNum && OrderOfSort == SortOrder.Descending)
+                {
+                    return -1;
+                }
+                else
+                {
+                    return 1;
+                }
+            } catch { }
+        }
 
         // Compare the two items
         compareResult = ObjectCompare.Compare(listviewX.SubItems[ColumnToSort].Text, listviewY.SubItems[ColumnToSort].Text);
@@ -100,6 +119,11 @@ public class ListViewColumnSorter : IComparer
         {
             return OrderOfSort;
         }
+    }
+
+    private string cleanNumber(string number)
+    {
+        return number.Substring(0, number.LastIndexOf('.'));
     }
 
 }
