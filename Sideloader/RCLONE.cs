@@ -90,44 +90,25 @@ namespace AndroidSideloader
             {
                 File.WriteAllText("VRP-GamesList.txt", tempGameList);
             }
-            
-            string[] gameListSplited = tempGameList.Split(new[] { '\n' }, 2);
-
-            foreach (string gameProperty in gameListSplited[0].Split(';'))
+            if (!tempGameList.Equals(""))
             {
-                gameProperties.Add(gameProperty);
-            }
+                string[] gameListSplited = tempGameList.Split(new[] { '\n' }, 2);
 
-            foreach (string game in gameListSplited[1].Split('\n'))
-            {
-                if (game.Length > 1)
+                foreach (string gameProperty in gameListSplited[0].Split(';'))
                 {
-                    string[] splitGame = game.Split(';');
-                    games.Add(splitGame);
-                    //gameFolder.find();
+                    gameProperties.Add(gameProperty);
+                }
+                
+                foreach (string game in gameListSplited[1].Split('\n'))
+                {
+                    if (game.Length > 1)
+                    {
+                        string[] splitGame = game.Split(';');
+                        games.Add(splitGame);
+                    }
                 }
             }
-
-            //Output
-            //Console.WriteLine("Headers:");
-            //foreach (string s in gameProperties)
-            //{
-            //    Console.WriteLine($"gameProperty: {s}");
-            //}
-
-
-
-            foreach (string[] s in games)
-            {
-                //string output = "";
-                //for (int i = 0; i < gameProperties.Count; i++)
-                //    output += s[i] + " ";
-
-            }
-
-
-
-
+            
         }
 
 #pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
