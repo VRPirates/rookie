@@ -1,4 +1,9 @@
-﻿RSL 2.9.4 
+﻿RSL 2.9.5
+Hotfix for online issue.
+-pmow
+
+
+RSL 2.9.4 
 
 = Changed install.txt logic to search
 for any .7z files and use Zip Extract
