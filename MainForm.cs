@@ -113,16 +113,12 @@ namespace AndroidSideloader
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
             CheckForInternet();
-            if (HasInternet == true)
+            if (HasInternet == true) {
                 Sideloader.downloadFiles();
-            if (Properties.Settings.Default.CallUpgrade)
-            {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.CallUpgrade = false;
-                Properties.Settings.Default.Save();
             }
-            else
+            else { 
                 FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
+            }
             await Task.Delay(100);
             ADB.RunAdbCommandToString("kill-server");
             if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
@@ -149,7 +145,12 @@ namespace AndroidSideloader
             RCLONE.Init();
             try { Spoofer.spoofer.Init(); } catch { }
 
-
+            if (Properties.Settings.Default.CallUpgrade)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.CallUpgrade = false;
+                Properties.Settings.Default.Save();
+            }
 
             this.CenterToScreen();
             gamesListView.View = View.Details;
