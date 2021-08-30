@@ -338,7 +338,7 @@ namespace AndroidSideloader
             try
             {
                 if (ProgressText.IsDisposed) return;
-                this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader | " + txt; });
+                this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + txt; });
                 ProgressText.Invoke(() =>
                 {
                     if (!ProgressText.IsDisposed)
@@ -347,7 +347,7 @@ namespace AndroidSideloader
                 if (!reset)
                     return;
                 await Task.Delay(TimeSpan.FromSeconds(5));
-                this.Invoke(() => { this.Text = "Rookie's Sideloader | " + oldTitle; });
+                this.Invoke(() => { this.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + oldTitle; });
                 ProgressText.Invoke(() =>
                 {
                     if (!ProgressText.IsDisposed)
