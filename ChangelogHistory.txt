@@ -1,4 +1,29 @@
-﻿-----BEGIN PGP SIGNED MESSAGE-----
+﻿RSL 2.9.4 
+
+= Changed install.txt logic to search
+for any .7z files and use Zip Extract
+function from GeneralUtilities, should
+fix version issues with users who have
+a newer 7zip installed than the 7zip
+exe included with install.txt games.
+
+= Fully moved ADB folder to 
+C:\RSL\platform-rools and removed
+adb folder from Rookie directory.
+Rookie will do this automatically upon 
+first launch after updating. This will 
+make updating to future versions of ADB 
+much smoother. This should also fix issues 
+caused by having multiple version of
+adb.exe clashing and fix AAPT issues as 
+well.
+
+= Updated 7z.exe and 7z.dll on Github.
+
+HFP
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
 RSL 2.9.4 
