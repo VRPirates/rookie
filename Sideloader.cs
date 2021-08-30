@@ -255,7 +255,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         Directory.Delete($"{Properties.Settings.Default.MainDir}\\adb", true);
                     
                     Directory.CreateDirectory("C:\\RSL\\platform-tools");
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb2.7z");
                     Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", "C:\\RSL\\platform-tools\\");
                     File.Delete("adb.7z");
                 }
