@@ -253,11 +253,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         Directory.Delete("C:\\RSL", true);
                     if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\adb"))
                         Directory.Delete($"{Properties.Settings.Default.MainDir}\\adb", true);
-                    
+                    if (!Directory.Exists("C:\\RSL\\platform-tools"))
                     Directory.CreateDirectory("C:\\RSL\\platform-tools");
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb2.7z");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", "C:\\RSL\\platform-tools\\");
-                    File.Delete("adb.7z");
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb2.zip", "adb2.zip");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb2.zip", "C:\\RSL\\platform-tools");
+                    File.Delete("adb2.zip");
                 }
 
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))

@@ -115,6 +115,12 @@ namespace AndroidSideloader
             CheckForInternet();
             if (HasInternet == true)
                 Sideloader.downloadFiles();
+            if (Properties.Settings.Default.CallUpgrade)
+            {
+                Properties.Settings.Default.Upgrade();
+                Properties.Settings.Default.CallUpgrade = false;
+                Properties.Settings.Default.Save();
+            }
             else
                 FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
             await Task.Delay(100);
@@ -143,12 +149,7 @@ namespace AndroidSideloader
             RCLONE.Init();
             try { Spoofer.spoofer.Init(); } catch { }
 
-            if (Properties.Settings.Default.CallUpgrade)
-            {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.CallUpgrade = false;
-                Properties.Settings.Default.Save();
-            }
+
 
             this.CenterToScreen();
             gamesListView.View = View.Details;
