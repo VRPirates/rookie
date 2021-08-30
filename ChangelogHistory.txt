@@ -1,6 +1,50 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.9.4 
+
+= Changed install.txt logic to search
+for any .7z files and use Zip Extract
+function from GeneralUtilities, should
+fix version issues with users who have
+a newer 7zip installed than the 7zip
+exe included with install.txt games.
+
+= Fully moved ADB folder to 
+C:\RSL\platform-rools and removed
+adb folder from Rookie directory.
+Rookie will do this automatically upon 
+first launch after updating. This will 
+make updating to future versions of ADB 
+much smoother. This should also fix issues 
+caused by having multiple version of
+adb.exe clashing and fix AAPT issues as 
+well.
+
+= Updated 7z.exe and 7z.dll on Github.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEsQnoACgkQx/Rql1Vo
+czeKPRAAi0l9Ti06d48p0vd6Rziw3mHLVXg5dDOZWyrNULu1Y8axnSCVnZOVduVD
+ftY0fVjTNNv7aU+fyWtH2Gr33CtJ6DvaQpj5RIsFiZpiTeDN3cOq2Ina55jtVvEl
+ZrBVlLdXtv/L/W3ltrMzc/sNnJhrEfBXq7lNDFMj7IT31miphRZ1X9pgIdqGIpdE
+gwcVxxkOu/5PXMzR3+eclpVePeagtJQNBH8dYUBQ9OziKObpzAfVYvoYS94MTYUY
+ZdoHP5tfXEsuW0tQ6G1dvGrIi+ty8EJWX3GS42mkPW6xlyKbSOdu/IQa4KFPmpkK
+7QwCMDzU5FgxJhg4+j35z/4BxJUzUHeTnp2xQYw/HE+GWdiJklIpZoOeqFQ+QLy/
+6jwyhqcPD7cni2HMrCi4HxT0GcuVV5jrqqBAtCHdecglH90EMBCS9DrvmZyw1JgA
+b9bCPQwWvVRLFw8HfiybiqVM98C2kW3TUsprGJOcnT6l1SzKlHEwiSMJSTVWshuu
+bG8Q19gfhKSLEjTdjKVYV9WDHp8it+lrF6ETdneP4kcSsLhigYSgz0AeETx62Ugh
+D13MyxcS6K9XqoRGy5Dr3gL/qkT0I5T6dsWL6vj9o317uexIO9sPkmrGTktbGUn1
+heW2jD324PwyuuPxxoqM1lVKVquUIS0Difx+cqlJHY0lWqIk/Ck=
+=lZeM
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.9.3
 
 + Added new background color for apps that are a newer

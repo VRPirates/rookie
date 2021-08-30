@@ -53,14 +53,14 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             ADB.WakeDevice();
             ProcessOutput output = new ProcessOutput();
             var commands = File.ReadAllLines(path);
+            string currfolder = Path.GetDirectoryName(path);
+            string[] zipz = Directory.GetFiles(currfolder, "*.7z", SearchOption.AllDirectories);
+            foreach (string zip in zipz)
+            {
+                Utilities.Zip.ExtractFile($"{zip}", currfolder);
+            }
             foreach (string cmd in commands)
             {
-                if (cmd.Contains("7z.exe"))
-                {
-                    Program.form.ChangeTitle($"Running {cmd}");
-                    Logger.Log($"Logging command: {cmd} from file: {path}");
-                    ADB.RunCommandToString(cmd, path);
-                }
                 if (cmd.StartsWith("adb"))
                 {
                     string replacement = "";
@@ -247,11 +247,16 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             {
                 if (!File.Exists("Sideloader Launcher.exe"))
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
-                if (!File.Exists($"{Properties.Settings.Default.MainDir}\\adb\\aug2021.txt") || !File.Exists("C:\\RSL\\2.8.2\\ADB\\aug2021.txt")) //if adb is not updated, download and auto extract
+                if (!File.Exists("C:\\RSL\\platform-tools\\aug2021.txt")) //if adb is not updated, download and auto extract
                 {
+                    if (Directory.Exists($"C:\\RSL"))
+                        Directory.Delete("C:\\RSL", true);
+                    if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\adb"))
+                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\adb", true);
+                    
+                    Directory.CreateDirectory("C:\\RSL\\platform-tools");
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb.7z", "adb.7z");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", Environment.CurrentDirectory);
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", "C:\\RSL\\2.8.2\\");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb.7z", "C:\\RSL\\platform-tools\\");
                     File.Delete("adb.7z");
                 }
 

@@ -14,7 +14,7 @@ namespace AndroidSideloader
     class ADB
     {
         static Process adb = new Process();
-        public static string adbFolderPath = "C:\\RSL\\2.8.2\\ADB";
+        public static string adbFolderPath = "C:\\RSL\\platform-tools";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
         public static string package = "";
@@ -91,10 +91,6 @@ namespace AndroidSideloader
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
             string command = result;
-            Properties.Settings.Default.ADBFolder = adbFolderPath;
-            Properties.Settings.Default.ADBPath = adbFilePath;
-            Properties.Settings.Default.Save();
-
             string logcmd = command;
             if (logcmd.Contains(Environment.CurrentDirectory))
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
@@ -161,10 +157,6 @@ namespace AndroidSideloader
         public static ProcessOutput RunCommandToString(string result, string path = "")
         {
             string command = result;
-            Properties.Settings.Default.ADBFolder = adbFolderPath;
-            Properties.Settings.Default.ADBPath = adbFilePath;
-            Properties.Settings.Default.Save();
-
             string logcmd = command;
             if (logcmd.Contains(Environment.CurrentDirectory))
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");

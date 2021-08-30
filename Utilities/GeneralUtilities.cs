@@ -105,7 +105,7 @@ namespace AndroidSideloader.Utilities
     {
         public static void ExtractFile(string sourceArchive, string destination)
         {
-            if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe"))
+            if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe") || !File.Exists(Environment.CurrentDirectory + "\\7z.dll"))
             {
                 WebClient client = new WebClient();
                 client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");

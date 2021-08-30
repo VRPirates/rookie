@@ -1008,7 +1008,7 @@ namespace AndroidSideloader
                                 string pathname = Path.GetDirectoryName(data);
                                 string filename = file2.Replace($"{pathname}\\", "");
 
-                                string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
+                                string cmd = $"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
                                 string cmdout = ADB.RunCommandToString(cmd, file2).Output;
                                 cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
                                 cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
@@ -1114,7 +1114,7 @@ namespace AndroidSideloader
                         {
                             string pathname = Path.GetDirectoryName(data);
                             string dataname = data.Replace($"{pathname}\\", "");
-                            string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
+                            string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
                             string cmdout = ADB.RunCommandToString(cmd, data).Output;
                             cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
                             cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
@@ -1428,16 +1428,16 @@ namespace AndroidSideloader
                     string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
                     apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
                     apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                    if (File.Exists($"C:\\RSL\\2.8.2\\ADB\\base.apk"))
-                        File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                    if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                        File.Delete($"C:\\RSL\\platform-tools\\base.apk");
                     ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                    string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"C:\\RSL\\2.8.2\\ADB\\base.apk\" | findstr -i \"application-label\"";
-                    string workingpath = $"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe";
+                    string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                    string workingpath = "C:\\RSL\\platform-tools\\aapt.exe";
                     string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
                     ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
                     ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
                     ReleaseName = ReleaseName.Replace("'", "");
-                    File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                    File.Delete($"C:\\RSL\\platform-tools\\base.apk");
                     //end
 
                     string GameName = Sideloader.gameNameToSimpleName(RlsName);
@@ -1469,16 +1469,16 @@ namespace AndroidSideloader
                     string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
                     apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
                     apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                    if (File.Exists($"C:\\RSL\\2.8.2\\ADB\\base.apk"))
-                        File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                    if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                        File.Delete($"C:\\RSL\\platform-tools\\base.apk");
                     ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                    string cmd = $"\"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe\" dump badging \"C:\\RSL\\2.8.2\\ADB\\base.apk\" | findstr -i \"application-label\"";
-                    string workingpath = $"{Properties.Settings.Default.MainDir}\\adb\\aapt.exe";
+                    string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                    string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
                     string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
                     ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
                     ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
                     ReleaseName = ReleaseName.Replace("'", "");
-                    File.Delete($"C:\\RSL\\2.8.2\\ADB\\base.apk");
+                    File.Delete($"C:\\RSL\\platform-tools\\base.apk");
                     if (ReleaseName.Contains("Microsoft Windows"))
                         ReleaseName = RlsName;
                     //end
