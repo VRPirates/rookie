@@ -1281,11 +1281,6 @@ namespace AndroidSideloader
             }
             List<ListViewItem> GameList = new List<ListViewItem>();
             List<String> rookieList = new List<String>();
-            foreach (string[] game in SideloaderRCLONE.games)
-            {
-                
-            }
-
             List<String> installedGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
             List<String> whitelistItems = whitelist.ToList();
@@ -1297,6 +1292,7 @@ namespace AndroidSideloader
 
             foreach (string[] release in SideloaderRCLONE.games)
             {
+                rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
                 if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                 {
                     rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
@@ -1307,10 +1303,8 @@ namespace AndroidSideloader
 
                 foreach (string packagename in packageList)
                 {
-                    rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
                     if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                     {
-
                         if (Properties.Settings.Default.QblindOn)
                         {
                             Game.BackColor = Color.FromArgb(0, 112, 138);
@@ -1365,15 +1359,15 @@ namespace AndroidSideloader
                 }
                 GameList.Add(Game);
             }
-            newGamesList = installedGames.Except(rookieList).Except(blacklistItems).ToList();
-            if (blacklistItems.Count == 0 || rookieList.Count == 0)
+
+            if (blacklistItems.Count == 0 || GameList.Count == 0 && !Properties.Settings.Default.nodevicemode)
             {
                 //This means either the user does not have headset connected or the blacklist
                 //did not load, so we are just going to skip everything
                 errorOnList = true;
                 FlexibleMessageBox.Show($"Rookie seems to have failed to load all resources. Please try restarting Rookie a few times.\nIf error still persists please disable any VPN or firewalls (rookie uses direct download so a VPN is not needed)\nIf this error still persists try a system reboot, reinstalling the program, and lastly posting the problem on telegram.", "Error loading blacklist or game list!");
             }
-
+            newGamesList = installedGames.Except(rookieList).Except(blacklistItems).ToList();
             int topItemIndex = 0;
             try
             {
