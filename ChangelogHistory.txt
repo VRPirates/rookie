@@ -1,4 +1,34 @@
 ﻿RSL 2.9.5
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
+RSL 2.9.6
+
+=Fixed obb copy for similarly named apps.
+
+=Added packagename to shared app zips.
+
+=Fixed laggy upload when sharing apps.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEtk1MACgkQx/Rql1Vo
+czcn4g//RvtKxuXtBNxisnxncuXkq559ZX2zb7AN2mf31fUmv3lHtF2IVJnXfb0Z
+gSPJocUNgO7Hf3jyAoKF+zRxF2TrSsg48S17DWFWxxMZ6fA6we6yWh7Gk7FYTUin
+r8uoq1IyF0YMix4NRIinCO+2NFo5aniNi8N1R3IW8F11aeN0i4FRICgpIVuBdzxV
+LCg1Q4vAbWHtOOFH3YZvNBkOl1GIV8IYQT4Kr0y7MShl3C7IsVDFsdR2nfScQRhL
+iDGH2VXULWm/pUk9AVMQsq3AezVyoONIQEjzs5Wz6D/yiB4faZ9VDLmJ4KbXCsfG
+FS6JYh8fnJvt2iTZ0YaIsKm1FeuCISdOioTqcpNd+DvKxySw8rJv2t6yRSV5u2l3
+ZxPXp48DLJCkgSQSJMeG/JiNZigDzG0ydenRYZkZtpWNsDRVUx/F/REKXevvlLIj
+G/Ng0og85tl6XypFzWMMR6ISE3Cj6xkzSkkXluSelZRdx9NeV2UKl5D07tZ5V8f4
+VooJqK1qBn+OXhdPRHIm8pOicvUwKaKCrIrWi2yyvFHDaTQDpUo1jc2WEqCBwSoZ
+/f/R5G7lM0KdWXVdMSZleNoO2lhUujS40uQ4ycelzBlzm0qMotpeq9E/QHlCQ3d3
+pe7uMX6RDlrH09iWG55XHHWXSfDKHFMhPztRcI6apFR3hVA/fHE=
+=Ty3D
+-----END PGP SIGNATURE-----
+
+RSL 2.9.5
 Hotfix for online issue.
 -pmow
 

@@ -1576,9 +1576,11 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Continuous;
             UploadGame game = new UploadGame();
             game.Pckgcommand = packagename;
-            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}\" RSL-gameuploads:";
-            game.Uploadversion = installedVersionInt;
             game.Uploadgamename = GameName;
+            game.Uploadversion = installedVersionInt;
+            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" RSL-gameuploads:";
+
+      
             gamesToUpload.Add(game);
 
             ChangeTitle(" \n\n");

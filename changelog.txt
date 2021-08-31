@@ -1,3 +1,9 @@
-RSL 2.9.5
+RSL 2.9.6
 
-= Hotfix connection bug when starting
+=Fixed obb copy for similarly named apps.
+
+=Added packagename to shared app zips.
+
+=Fixed laggy upload when sharing apps.
+
+HFP
