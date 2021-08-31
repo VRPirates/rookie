@@ -1,9 +1,4 @@
-RSL 2.9.6
+RSL 2.9.7
 
-=Fixed obb copy for similarly named apps.
-
-=Added packagename to shared app zips.
-
-=Fixed laggy upload when sharing apps.
-
-HFP
+= Fixed bug that caused error message to appear 
+when no device is connected to PC.
