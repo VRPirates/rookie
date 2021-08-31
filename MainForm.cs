@@ -1520,13 +1520,13 @@ namespace AndroidSideloader
                             if (File.Exists($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip"))
                                 File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
                             string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                            string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip\" .\\{game.Pckgcommand}\\*";
+                            string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" .\\{game.Pckgcommand}\\*";
                             ChangeTitle("Zipping extracted application...");
                             ADB.RunCommandToString(cmd, path);
                             Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
                             ChangeTitle("Uploading to drive, you may continue to use Rookie while it uploads.");
                             RCLONE.runRcloneCommand(game.Uploadcommand);
-                            File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip");
 
                         });
                         t3.IsBackground = true;
@@ -1576,7 +1576,7 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Continuous;
             UploadGame game = new UploadGame();
             game.Pckgcommand = packagename;
-            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{installedVersionInt}.zip\" RSL-gameuploads:";
+            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}\" RSL-gameuploads:";
             game.Uploadversion = installedVersionInt;
             game.Uploadgamename = GameName;
             gamesToUpload.Add(game);
@@ -2015,13 +2015,13 @@ without him none of this would be possible
                                 }
 
                                 Debug.WriteLine(wrDelimiter);
-                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameName}\\{packagename}"))
+                                if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}"))
                                 {
                                     Thread obbThread = new Thread(() =>
                                     {
 
                                         ChangeTitle($"Copying {packagename} obb to device...");
-                                        output += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                        output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                         Program.form.ChangeTitle("");
                                     });
                                     obbThread.IsBackground = true;

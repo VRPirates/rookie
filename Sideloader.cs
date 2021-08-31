@@ -196,9 +196,9 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]))
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
-                if (gameName.Contains(game[SideloaderRCLONE.ReleaseNameIndex]))
+                if (gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
             }
             return gameName;
@@ -208,7 +208,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
+                if (gameName.Equals(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.ReleaseNameIndex];
             }
             return gameName;
@@ -218,9 +218,9 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Contains(game[SideloaderRCLONE.GameNameIndex]))
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
                     return game[SideloaderRCLONE.GameNameIndex];
-                if (gameName.Contains(game[SideloaderRCLONE.ReleaseNameIndex]))
+                if (gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.GameNameIndex];
             }
             return gameName;
