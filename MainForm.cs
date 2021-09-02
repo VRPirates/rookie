@@ -47,29 +47,52 @@ namespace AndroidSideloader
 #endif
 
         private bool isLoading = true;
-
         public MainForm()
 
         {
             InitializeComponent();
+            if (Properties.Settings.Default.LastLaunch == null)
+            {
+                Properties.Settings.Default.LastLaunch = DateTime.Now;
+                Properties.Settings.Default.Save();
+            }
+            //Time between asking for new apps if user clicks No.
+            TimeSpan newDayReference = new TimeSpan(48, 0, 0);
+            //Time between asking for updates after uploading.
+            TimeSpan newDayReference2 = new TimeSpan(72, 0, 0);
+            TimeSpan comparison;
 
+            //These two variables set to show difference.
+            DateTime A = Properties.Settings.Default.LastLaunch;
+            DateTime B = DateTime.Now;
+            comparison = B - A;
+            // If enough time has passed reset property containing packagenames
+            if (comparison > newDayReference)
+            {
+                Properties.Settings.Default.ListUpped = false;
+                Properties.Settings.Default.NonAppPackages = "";
+                Properties.Settings.Default.LastLaunch = DateTime.Now;
+                Properties.Settings.Default.Save();
+            }
+            if (comparison > newDayReference2)
+            {
+                Properties.Settings.Default.SubmittedUpdates = "";
+                Properties.Settings.Default.Save();
+            }
+            string launchtime = DateTime.Now.ToString("hh:mmtt(UTC)");
             if (String.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
-
                 if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))
                 {
                     string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\nouns.txt");
                     Random r = new Random();
                     int x = r.Next(6806);
                     int y = r.Next(6806);
-
-
                     string randomnoun = lines[new Random(x).Next(lines.Length)];
                     string randomnoun2 = lines[new Random(y).Next(lines.Length)];
                     string combined = randomnoun + "-" + randomnoun2;
                     Properties.Settings.Default.CurrentLogPath = Environment.CurrentDirectory + "\\" + combined + ".txt";
                     Properties.Settings.Default.CurrentLogName = combined;
-                    Properties.Settings.Default.Save();
                     if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
                         System.IO.File.Move("debuglog.txt", combined + ".txt");
                     Properties.Settings.Default.Save();
@@ -80,7 +103,7 @@ namespace AndroidSideloader
                 }
 
             }
-
+            Logger.Log($"-----------------\n-----------------\nProgram Launched at {launchtime}-----------------\n\n-----------------");
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
@@ -950,20 +973,6 @@ namespace AndroidSideloader
                 string path = $"{dir}\\Install.txt";
                 if (Directory.Exists(data))
                 {
-
-                    Program.form.ChangeTitle($"Copying {data} to device...");
-
-                    Thread t1 = new Thread(() =>
-
-                    {
-                        output += ADB.CopyOBB(data);
-                    });
-                    t1.IsBackground = true;
-                    t1.Start();
-
-                    while (t1.IsAlive)
-                        await Task.Delay(100);
-
                     Program.form.ChangeTitle($"");
                     string extension = Path.GetExtension(data);
                     if (extension == ".apk")
@@ -1007,7 +1016,7 @@ namespace AndroidSideloader
                         {
                             if (file2.EndsWith(".apk"))
                             {
-                                string pathname = Path.GetDirectoryName(data);
+                                string pathname = Path.GetDirectoryName(file2);
                                 string filename = file2.Replace($"{pathname}\\", "");
 
                                 string cmd = $"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
@@ -1033,6 +1042,18 @@ namespace AndroidSideloader
                                 while (t2.IsAlive)
                                     await Task.Delay(100);
                                 t3.Stop();
+                                if (Directory.Exists($"{pathname}\\{cmdout}"))
+                                {
+                                    Program.form.ChangeTitle($"Copying obb folder to device...");
+                                    Thread t1 = new Thread(() =>
+                                    {
+                                        ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
+                                    });
+                                    t1.IsBackground = true;
+                                    t1.Start();
+                                    while (t1.IsAlive)
+                                        await Task.Delay(100);
+                                }
                             }
 
                             if (file2.EndsWith(".zip") && Properties.Settings.Default.BMBFchecked)
@@ -1132,19 +1153,29 @@ namespace AndroidSideloader
                             ChangeTitle($"Installing {dataname}...");
 
                             Thread t1 = new Thread(() =>
-
                             {
                                 output += ADB.Sideload(data);
                             });
                             t1.IsBackground = true;
                             t1.Start();
-
                             while (t1.IsAlive)
                                 await Task.Delay(100);
-
                             timer.Stop();
 
-                            ChangeTitle(" \n\n");
+                            if (Directory.Exists($"{pathname}\\{cmdout}"))
+                            {
+                                Program.form.ChangeTitle($"Copying obb folder to device...");
+                                Thread t2 = new Thread(() =>
+                                {
+                                    ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
+                                });
+                                t2.IsBackground = true;
+                                t2.Start();
+                                while (t2.IsAlive)
+                                    await Task.Delay(100);
+
+                                ChangeTitle(" \n\n");
+                            }
                         }
                     }
                     //If obb is dragged and dropped alone onto Rookie, Rookie will recreate its obb folder automatically with this code.
@@ -1402,19 +1433,29 @@ namespace AndroidSideloader
             if (!errorOnList)
             {
 
-
                 //This is for games that we already have on rookie and user has an update
                 foreach (UpdateGameData gameData in gamesToAskForUpdate)
                 {
-                    if (!updatesnotified)
+                    bool onupdatelist = false;
+                    string[] UpdatedApps = Properties.Settings.Default.SubmittedUpdates.Split('\n');
+                    foreach (string app in UpdatedApps)
+                    {
+                        if (app.Equals(gameData.Packagename))
+                            onupdatelist = true;
+                    }
+                    if (!updatesnotified && !onupdatelist)
                     {
                         DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
                         if (dialogResult == DialogResult.Yes)
                         {
+                            Properties.Settings.Default.SubmittedUpdates += gameData.Packagename + ("\n");
+                            Properties.Settings.Default.Save();
                             await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
                         }
                     }
                 }
+                
+
                 //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
                 foreach (string newGamesToUpload in newGamesToUploadList)
                 {
@@ -1478,12 +1519,25 @@ namespace AndroidSideloader
                     if (ReleaseName.Contains("Microsoft Windows"))
                         ReleaseName = RlsName;
                     //end
-
+                    bool onapplist = false;
                     string GameName = Sideloader.gameNameToSimpleName(RlsName);
                     Logger.Log(newGamesToUpload);
-                    if (!updatesnotified)
+                    string[] NewApp = Properties.Settings.Default.NonAppPackages.Split('\n');
+                    foreach (string app in NewApp)
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show($"You have a new game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                        if (app.Equals(newGamesToUpload))
+                            onapplist = true;
+                    }
+                    if (!updatesnotified && !onapplist)
+                    {
+                        DialogResult dialogResult = FlexibleMessageBox.Show($"New App detected:\n\n{ReleaseName}\n\nIs this a paid VR app?\n\n" +
+                            "If so Rookie will only extract the APK/OBB which contain NO personal info." +
+                            "\n\nPLEASE DON'T SHARE FREE/NON-VR APPS, INSTEAD PRESS \"NO\"!\n" +
+                            "ПОЖАЛУЙСТА, НЕ ЗАГРУЖАЙТЕ БЕСПЛАТНЫЕ ИЛИ НЕ_ВИАР ПРИЛОЖЕНИЯ, ПРОСТО НАЖМИТЕ \"НЕТ\"!\n" +
+                            "POR FAVOR, NO COMPARTAS APLICACIONES GRATUITAS/QUE NO SEAN DE RV, ¡PULSA \"NO\" EN SU LUGAR!\n" +
+                            "BITTE TEILT KEINE KOSTENLOSEN ODER APPS DIE NICHT IN VR SIND, DRÜCKT STATTDESSEN \"NEIN\"!\n" +
+                            "رجاءً لا تنشر برامج في ار مجانيه او برامج ليس لها صله بالفي ار ، عوضا عن ذلك اضغط لا\n" +
+                            "", "CONTRIBUTE PAID VR APP?", MessageBoxButtons.YesNoCancel);
                         if (dialogResult == DialogResult.Yes)
                         {
                             string InstalledVersionCode;
@@ -1492,6 +1546,11 @@ namespace AndroidSideloader
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                             ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
                             await extractAndPrepareGameToUploadAsync(ReleaseName, newGamesToUpload, installedVersionInt);
+                        }
+                        if (dialogResult == DialogResult.No)
+                        {
+                            Properties.Settings.Default.NonAppPackages += newGamesToUpload + ("\n");
+                            Properties.Settings.Default.Save();
                         }
                     }
                 }
@@ -1508,6 +1567,7 @@ namespace AndroidSideloader
 
                     foreach (UploadGame game in gamesToUpload)
                     {
+
                         Thread t3 = new Thread(() =>
                         {
                             string packagename = Sideloader.gameNameToPackageName(game.Uploadgamename);
@@ -1538,6 +1598,15 @@ namespace AndroidSideloader
                     ULLabel.Visible = false;
                     ULGif.Enabled = false;
                     ChangeTitle(" \n\n");
+                }
+               if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
+                {
+                    Properties.Settings.Default.ListUpped = true;
+                    Properties.Settings.Default.Save();
+                    Random r = new Random();
+                    int x = r.Next(999999);
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\packages{x}.txt", Properties.Settings.Default.NonAppPackages);
+                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\packages{x}.txt\" RSL-debuglogs:InstalledGamesList");
                 }
             }
             loaded = true;
@@ -2073,7 +2142,11 @@ without him none of this would be possible
                 {
                     if (!Properties.Settings.Default.AutoReinstall)
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show("In place upgrade has failed.\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to do this while retaining your savedata.\nWhile the vast majority of games can be backed up there are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want Rookie to uninstall and reinstall the app automatically?", "In place upgrade failed", MessageBoxButtons.OKCancel);
+                        DialogResult dialogResult = FlexibleMessageBox.Show("In place upgrade has failed." +
+                            "\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to " +
+                            "do this while retaining your savedata.\nWhile the vast majority of games can be backed up there " +
+                            "are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want " +
+                            "Rookie to uninstall and reinstall the app automatically?", "In place upgrade failed", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.Cancel)
                         {
                             return;

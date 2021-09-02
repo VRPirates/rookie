@@ -669,5 +669,52 @@ namespace AndroidSideloader.Properties {
                 this["AutoReinstall"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string NonAppPackages {
+            get {
+                return ((string)(this["NonAppPackages"]));
+            }
+            set {
+                this["NonAppPackages"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public global::System.DateTime LastLaunch {
+            get {
+                return ((global::System.DateTime)(this["LastLaunch"]));
+            }
+            set {
+                this["LastLaunch"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string SubmittedUpdates {
+            get {
+                return ((string)(this["SubmittedUpdates"]));
+            }
+            set {
+                this["SubmittedUpdates"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ListUpped {
+            get {
+                return ((bool)(this["ListUpped"]));
+            }
+            set {
+                this["ListUpped"] = value;
+            }
+        }
     }
 }
