@@ -1,4 +1,15 @@
-RSL 2.9.7
+RSL 2.9.8
 
-= Fixed bug that caused error message to appear 
-when no device is connected to PC.
++ Added timer that detects if user has uploaded an
+update to an app, if they have it will wait til the
+set amount of time passes to ask again.
+
++ When new app is detected user is now asked if it
+is a paid app.
+
+= Fixed debuglog/crashlog upload.
+
+= After sending debuglog to server RSL will now properly
+copy Debug Log ID to clipboard.
+
+HFP

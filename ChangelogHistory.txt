@@ -1,6 +1,43 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.9.8
+
++ Added timer that detects if user has uploaded an
+update to an app, if they have it will wait til the
+set amount of time passes to ask again.
+
++ When new app is detected user is now asked if it
+is a paid app.
+
+= Fixed debuglog/crashlog upload.
+
+= After sending debuglog to server RSL will now properly
+copy Debug Log ID to clipboard.
+
+HFP
+
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmEwowQACgkQx/Rql1Vo
+czfJ2A//d/BMeO3USIMSQxO5McixrdkmY+VdNBK5q3tfAo2BTgEN7N2Ty2jGc3mz
+jIpVCT14PdVCVoQYI5PbzkjvTnaqp8SkCdYqHONELOld/sENOdKJJuo9bIQmy/7r
+oT1DTJJH993RZmJ5qn3TxBddvY7Ie97W84I20suydBo4MheHadyQtGJLXaJRhJpT
+fjSEElYMb9jupeAT2A+HTdny6hV/dWu7nyJmS677V8a8uk8kGi3zm0bS1pX728Ew
+sbBvaexqzlU/JOeiZCKyJL7P1TLQkQUxE3q7kg/h1d0laznYCjMn3nV0IBt2/+E1
+e+uVmWvuDBXQjp1QthAZ8fYhPjgjhDtu0dgsilXefIV1QHmTaIvw8CvyqBl8LfSJ
+9xCm8Z2GGCoGsPnNqHK95dRvcuK82k81fPuZ/LqNArrLerJZKY5YCRPleW77v9LR
+45K3wJYYXXntnzr7czKVw93qByaPZzXB/DcAEdbBEWdzJ2VLCzXZSpS45wf8i7jO
+7R4lvNlbp8ff2K+1hnIaJ9+n0RSuPvmVjP8uLxs9Hb4NyoWjLbZTxMhaF6BQA/wu
+z1r8ZBbxr/Q3ekjutLZY/tytTt6KPCPhaIAm2/In1qnbBHzOGnnCCRfr9D5XRkV4
+Ht4qqc/NHpTax/+qgnLlda/UkmG3ZwN/JAz/SZpEMqXEGO5t4vc=
+=sTUc
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.9.7
 
 = Fixed bug that caused error message to appear 

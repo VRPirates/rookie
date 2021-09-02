@@ -51,11 +51,6 @@ namespace AndroidSideloader
 
         {
             InitializeComponent();
-            if (Properties.Settings.Default.LastLaunch == null)
-            {
-                Properties.Settings.Default.LastLaunch = DateTime.Now;
-                Properties.Settings.Default.Save();
-            }
             //Time between asking for new apps if user clicks No.
             TimeSpan newDayReference = new TimeSpan(48, 0, 0);
             //Time between asking for updates after uploading.
@@ -215,7 +210,7 @@ namespace AndroidSideloader
                         Properties.Settings.Default.Save();
 
                         Clipboard.SetText(combined);
-                        RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-debuglogs:CrashLogs");
+                        RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" VRP-debuglogs:CrashLogs");
                         FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
                         Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
 
@@ -1500,44 +1495,46 @@ namespace AndroidSideloader
                 //This is for games that are not blacklisted and we dont have on rookie
                 foreach (string newGamesToUpload in newGamesList)
                 {
-                    string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-
-                    //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                    string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                    apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                    apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                    if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
-                        File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                    ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                    string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                    string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
-                    string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                    ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                    ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                    ReleaseName = ReleaseName.Replace("'", "");
-                    File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                    if (ReleaseName.Contains("Microsoft Windows"))
-                        ReleaseName = RlsName;
-                    //end
                     bool onapplist = false;
-                    string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                    Logger.Log(newGamesToUpload);
                     string[] NewApp = Properties.Settings.Default.NonAppPackages.Split('\n');
                     foreach (string app in NewApp)
                     {
                         if (app.Equals(newGamesToUpload))
                             onapplist = true;
                     }
+                    string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+
+
                     if (!updatesnotified && !onapplist)
                     {
+                        //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                        string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                        apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                        apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                        if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                            File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                        ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                        string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                        string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
+                        string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                        ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                        ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                        ReleaseName = ReleaseName.Replace("'", "");
+                        File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                        if (ReleaseName.Contains("Microsoft Windows"))
+                            ReleaseName = RlsName;
+                        //end
+                        string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                        Logger.Log(newGamesToUpload);
+
                         DialogResult dialogResult = FlexibleMessageBox.Show($"New App detected:\n\n{ReleaseName}\n\nIs this a paid VR app?\n\n" +
                             "If so Rookie will only extract the APK/OBB which contain NO personal info." +
-                            "\n\nPLEASE DON'T SHARE FREE/NON-VR APPS, INSTEAD PRESS \"NO\"!\n" +
+                            "\n\n\n\nPLEASE DON'T SHARE FREE/NON-VR APPS, INSTEAD PRESS \"NO\"!\n" +
                             "ПОЖАЛУЙСТА, НЕ ЗАГРУЖАЙТЕ БЕСПЛАТНЫЕ ИЛИ НЕ_ВИАР ПРИЛОЖЕНИЯ, ПРОСТО НАЖМИТЕ \"НЕТ\"!\n" +
                             "POR FAVOR, NO COMPARTAS APLICACIONES GRATUITAS/QUE NO SEAN DE RV, ¡PULSA \"NO\" EN SU LUGAR!\n" +
                             "BITTE TEILT KEINE KOSTENLOSEN ODER APPS DIE NICHT IN VR SIND, DRÜCKT STATTDESSEN \"NEIN\"!\n" +
-                            "رجاءً لا تنشر برامج في ار مجانيه او برامج ليس لها صله بالفي ار ، عوضا عن ذلك اضغط لا\n" +
-                            "", "CONTRIBUTE PAID VR APP?", MessageBoxButtons.YesNoCancel);
+                            "رجاءً لا تنشر برامج في ار مجانيه او برامج ليس لها صله بالفي ار ، عوضا عن ذلك اضغط لا\n"
+                            , "CONTRIBUTE PAID VR APP?", MessageBoxButtons.YesNoCancel);
                         if (dialogResult == DialogResult.Yes)
                         {
                             string InstalledVersionCode;
@@ -1601,12 +1598,14 @@ namespace AndroidSideloader
                 }
                if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
                 {
-                    Properties.Settings.Default.ListUpped = true;
-                    Properties.Settings.Default.Save();
                     Random r = new Random();
                     int x = r.Next(999999);
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\packages{x}.txt", Properties.Settings.Default.NonAppPackages);
-                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\packages{x}.txt\" RSL-debuglogs:InstalledGamesList");
+                    int y = x;
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\packages{y}.txt", Properties.Settings.Default.NonAppPackages);
+                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\packages{y}.txt\" VRP-debuglogs:InstalledGamesList");
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\packages{y}.txt");
+                    Properties.Settings.Default.ListUpped = true;
+                    Properties.Settings.Default.Save();
                 }
             }
             loaded = true;

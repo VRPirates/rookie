@@ -63,8 +63,8 @@ namespace AndroidSideloader
         {
             if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
             {
-                RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" RSL-debuglogs:DebugLogs/");
-
+                RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" VRP-debuglogs:DebugLogs");
+                Clipboard.SetText(DebugID.Text);
                 MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
             }
         }

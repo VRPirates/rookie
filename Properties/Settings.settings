@@ -168,7 +168,7 @@
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="LastLaunch" Type="System.DateTime" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">04/20/1969 16:20:00</Value>
     </Setting>
     <Setting Name="SubmittedUpdates" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
