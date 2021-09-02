@@ -968,20 +968,6 @@ namespace AndroidSideloader
                 string path = $"{dir}\\Install.txt";
                 if (Directory.Exists(data))
                 {
-
-                    Program.form.ChangeTitle($"Copying {data} to device...");
-
-                    Thread t1 = new Thread(() =>
-
-                    {
-                        output += ADB.CopyOBB(data);
-                    });
-                    t1.IsBackground = true;
-                    t1.Start();
-
-                    while (t1.IsAlive)
-                        await Task.Delay(100);
-
                     Program.form.ChangeTitle($"");
                     string extension = Path.GetExtension(data);
                     if (extension == ".apk")
@@ -1025,7 +1011,7 @@ namespace AndroidSideloader
                         {
                             if (file2.EndsWith(".apk"))
                             {
-                                string pathname = Path.GetDirectoryName(data);
+                                string pathname = Path.GetDirectoryName(file2);
                                 string filename = file2.Replace($"{pathname}\\", "");
 
                                 string cmd = $"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
@@ -1051,6 +1037,18 @@ namespace AndroidSideloader
                                 while (t2.IsAlive)
                                     await Task.Delay(100);
                                 t3.Stop();
+                                if (Directory.Exists($"{pathname}\\{cmdout}"))
+                                {
+                                    Program.form.ChangeTitle($"Copying obb folder to device...");
+                                    Thread t1 = new Thread(() =>
+                                    {
+                                        ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
+                                    });
+                                    t1.IsBackground = true;
+                                    t1.Start();
+                                    while (t1.IsAlive)
+                                        await Task.Delay(100);
+                                }
                             }
 
                             if (file2.EndsWith(".zip") && Properties.Settings.Default.BMBFchecked)
@@ -1150,19 +1148,29 @@ namespace AndroidSideloader
                             ChangeTitle($"Installing {dataname}...");
 
                             Thread t1 = new Thread(() =>
-
                             {
                                 output += ADB.Sideload(data);
                             });
                             t1.IsBackground = true;
                             t1.Start();
-
                             while (t1.IsAlive)
                                 await Task.Delay(100);
-
                             timer.Stop();
 
-                            ChangeTitle(" \n\n");
+                            if (Directory.Exists($"{pathname}\\{cmdout}"))
+                            {
+                                Program.form.ChangeTitle($"Copying obb folder to device...");
+                                Thread t2 = new Thread(() =>
+                                {
+                                    ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
+                                });
+                                t2.IsBackground = true;
+                                t2.Start();
+                                while (t2.IsAlive)
+                                    await Task.Delay(100);
+
+                                ChangeTitle(" \n\n");
+                            }
                         }
                     }
                     //If obb is dragged and dropped alone onto Rookie, Rookie will recreate its obb folder automatically with this code.
