@@ -1,3 +1,6 @@
-= Fixed startup crash after updating.
-= Fixed adb version clashing issues.
-HFP
+RSL 2.9.9
+
+• Fixed startup crash after updating.
+• Fixed adb version clashing issues.
+
+-HFP
