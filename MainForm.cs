@@ -52,20 +52,19 @@ namespace AndroidSideloader
         {
             InitializeComponent();
             //Time between asking for new apps if user clicks No.
-            TimeSpan newDayReference = new TimeSpan(0, 30, 0);
+            TimeSpan newDayReference = new TimeSpan(0, 1, 0);
             //Time between asking for updates after uploading.
-            TimeSpan newDayReference2 = new TimeSpan(0, 15, 0);
+            TimeSpan newDayReference2 = new TimeSpan(0, 1, 0);
             TimeSpan comparison;
             TimeSpan comparison2;
 
             //These two variables set to show difference.
             DateTime A = Properties.Settings.Default.LastLaunch;
             DateTime B = DateTime.Now;
-            //Property set for last time updates were asked for.
             DateTime C = Properties.Settings.Default.LastLaunch2;
             comparison = B - A;
             comparison2 = B - C;
-            // If enough time has passed reset property containing packagenames.
+            // If enough time has passed reset property containing packagenames
             if (comparison > newDayReference)
             {
                 Properties.Settings.Default.ListUpped = false;
@@ -73,16 +72,15 @@ namespace AndroidSideloader
                 Properties.Settings.Default.LastLaunch = DateTime.Now;
                 Properties.Settings.Default.Save();
             }
-            //If enough time has passed reset property containing Updated App packages.
             if (comparison2 > newDayReference2)
             {
                 Properties.Settings.Default.LastLaunch2 = DateTime.Now;
                 Properties.Settings.Default.SubmittedUpdates = "";
                 Properties.Settings.Default.Save();
             }
-
-            //launchtime for debug log
+            //Time for debuglog
             string launchtime = DateTime.Now.ToString("hh:mmtt(UTC)");
+            Logger.Log($"\n------\n------\nProgram Launched at: {launchtime}\n------\n------");
             if (String.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
                 if (File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))
@@ -106,7 +104,6 @@ namespace AndroidSideloader
                 }
 
             }
-            Logger.Log($"-----------------\n-----------------\nProgram Launched at {launchtime}-----------------\n\n-----------------");
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
             t.Interval = 840000; // 14 mins between wakeup commands
             t.Tick += new EventHandler(timer_Tick);
@@ -137,13 +134,15 @@ namespace AndroidSideloader
         private async void Form1_Load(object sender, EventArgs e)
         {
             if (File.Exists("C:\\RSL\\platform-tools\\adb.exe"))
+            {
                 ADB.RunAdbCommandToString("kill-server");
+                ADB.RunAdbCommandToString("start-server");
+            }
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
             CheckForInternet();
             Sideloader.downloadFiles();
             await Task.Delay(100);
-
             if (!Directory.Exists(BackupFolder))
                 Directory.CreateDirectory(BackupFolder);
 
@@ -183,9 +182,10 @@ namespace AndroidSideloader
             try
             {
                 ADB.WakeDevice();
+                if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+                    ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
                 await CheckForDevice();
                 ChangeTitlebarToDevice();
-
             }
             catch { }
             if (File.Exists("crashlog.txt"))
@@ -329,7 +329,7 @@ namespace AndroidSideloader
             ToolTip GetAPKToolTip = new ToolTip();
             GetAPKToolTip.SetToolTip(this.getApkButton, "Saves the selected apk to the folder where the sideloader is");
             ToolTip sideloadFolderToolTip = new ToolTip();
-            sideloadFolderToolTip.SetToolTip(this.sideloadFolderButton, "Sideloads every apk from a folder");
+            sideloadFolderToolTip.SetToolTip(this.pullAppToDesktopBtn, "Sideloads every apk from a folder");
             ToolTip uninstallAppToolTip = new ToolTip();
             uninstallAppToolTip.SetToolTip(this.uninstallAppButton, "Uninstalls selected app");
             ToolTip userjsonToolTip = new ToolTip();
@@ -494,7 +494,7 @@ namespace AndroidSideloader
             battery = Utilities.StringUtilities.RemoveEverythingBeforeFirst(battery, "level:");
             battery = Utilities.StringUtilities.RemoveEverythingAfterFirst(battery, "\n");
             battery = Utilities.StringUtilities.KeepOnlyNumbers(battery);
-            BatteryLbl.Text = BatteryLbl.Text.Replace("N/A", battery);
+            BatteryLbl.Text = battery + "%";
             return devicesComboBox.SelectedIndex;
 
 
@@ -642,7 +642,7 @@ namespace AndroidSideloader
             Ping myPing = new Ping();
             String host = "8.8.8.8"; //google dns
             byte[] buffer = new byte[32];
-            int timeout = 10000;
+            int timeout = 1000;
             PingOptions pingOptions = new PingOptions();
             try
             {
@@ -903,29 +903,8 @@ namespace AndroidSideloader
 
         private async void sideloadFolderButton_Click(object sender, EventArgs e)
         {
-            ADB.WakeDevice();
-
-            var dialog = new FolderSelectDialog
-            {
-                Title = "Select your folder with APKs"
-            };
-            if (dialog.Show(Handle))
-            {
-                Thread t1 = new Thread(() =>
-                {
-                    Sideloader.RecursiveOutput = new ProcessOutput("", "");
-                    Sideloader.RecursiveSideload(dialog.FileName);
-                });
-                t1.IsBackground = true;
-                t1.Start();
-                while (t1.IsAlive)
-                    await Task.Delay(100);
-                showAvailableSpace();
-
-                ShowPrcOutput(Sideloader.RecursiveOutput);
-            }
+           
         }
-
         private async void copyBulkObbButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
@@ -1388,7 +1367,7 @@ namespace AndroidSideloader
                 GameList.Add(Game);
             }
 
-            if (blacklistItems.Count == 0 || GameList.Count == 0 && !Properties.Settings.Default.nodevicemode)
+            if (blacklistItems.Count == 0 && GameList.Count == 0 && !Properties.Settings.Default.nodevicemode)
             {
                 //This means either the user does not have headset connected or the blacklist
                 //did not load, so we are just going to skip everything
@@ -1431,27 +1410,29 @@ namespace AndroidSideloader
             {
 
                 //This is for games that we already have on rookie and user has an update
-                foreach (UpdateGameData gameData in gamesToAskForUpdate)
+                if (blacklistItems.Count > 100 && rookieList.Count > 100)
                 {
-                    bool onupdatelist = false;
-                    string[] UpdatedApps = Properties.Settings.Default.SubmittedUpdates.Split('\n');
-                    foreach (string app in UpdatedApps)
+                    foreach (UpdateGameData gameData in gamesToAskForUpdate)
                     {
-                        if (app.Equals(gameData.Packagename))
-                            onupdatelist = true;
-                    }
-                    if (!updatesnotified && !onupdatelist)
-                    {
-                        DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
+                        bool onupdatelist = false;
+                        string[] UpdatedApps = Properties.Settings.Default.SubmittedUpdates.Split('\n');
+                        foreach (string app in UpdatedApps)
                         {
-                            Properties.Settings.Default.SubmittedUpdates += gameData.Packagename + ("\n");
-                            Properties.Settings.Default.Save();
-                            await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
+                            if (app.Equals(gameData.Packagename))
+                                onupdatelist = true;
+                        }
+                        if (!updatesnotified && !onupdatelist)
+                        {
+                            DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                Properties.Settings.Default.SubmittedUpdates += gameData.Packagename + ("\n");
+                                Properties.Settings.Default.Save();
+                                await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
+                            }
                         }
                     }
                 }
-                
 
                 //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
                 foreach (string newGamesToUpload in newGamesToUploadList)
@@ -1495,61 +1476,64 @@ namespace AndroidSideloader
                     }
                 }
                 //This is for games that are not blacklisted and we dont have on rookie
-                foreach (string newGamesToUpload in newGamesList)
+                if (blacklistItems.Count > 100 && rookieList.Count > 100)
                 {
-                    bool onapplist = false;
-                    string[] NewApp = Properties.Settings.Default.NonAppPackages.Split('\n');
-                    foreach (string app in NewApp)
+                    foreach (string newGamesToUpload in newGamesList)
                     {
-                        if (app.Equals(newGamesToUpload))
-                            onapplist = true;
-                    }
-                    string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-
-
-                    if (!updatesnotified && !onapplist)
-                    {
-                        //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                        string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                        apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                        apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                        if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
-                            File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                        ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                        string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                        string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
-                        string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                        ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                        ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                        ReleaseName = ReleaseName.Replace("'", "");
-                        File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                        if (ReleaseName.Contains("Microsoft Windows"))
-                            ReleaseName = RlsName;
-                        //end
-                        string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                        Logger.Log(newGamesToUpload);
-
-                        DialogResult dialogResult = FlexibleMessageBox.Show($"New App detected:\n\n{ReleaseName}\n\nIs this a paid VR app?\n\n" +
-                            "If so Rookie will only extract the APK/OBB which contain NO personal info." +
-                            "\n\n\n\nPLEASE DON'T SHARE FREE/NON-VR APPS, INSTEAD PRESS \"NO\"!\n" +
-                            "ПОЖАЛУЙСТА, НЕ ЗАГРУЖАЙТЕ БЕСПЛАТНЫЕ ИЛИ НЕ_ВИАР ПРИЛОЖЕНИЯ, ПРОСТО НАЖМИТЕ \"НЕТ\"!\n" +
-                            "POR FAVOR, NO COMPARTAS APLICACIONES GRATUITAS/QUE NO SEAN DE RV, ¡PULSA \"NO\" EN SU LUGAR!\n" +
-                            "BITTE TEILT KEINE KOSTENLOSEN ODER APPS DIE NICHT IN VR SIND, DRÜCKT STATTDESSEN \"NEIN\"!\n" +
-                            "رجاءً لا تنشر برامج في ار مجانيه او برامج ليس لها صله بالفي ار ، عوضا عن ذلك اضغط لا\n"
-                            , "CONTRIBUTE PAID VR APP?", MessageBoxButtons.YesNoCancel);
-                        if (dialogResult == DialogResult.Yes)
+                        bool onapplist = false;
+                        string[] NewApp = Properties.Settings.Default.NonAppPackages.Split('\n');
+                        foreach (string app in NewApp)
                         {
-                            string InstalledVersionCode;
-                            InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                            ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                            await extractAndPrepareGameToUploadAsync(ReleaseName, newGamesToUpload, installedVersionInt);
+                            if (app.Equals(newGamesToUpload))
+                                onapplist = true;
                         }
-                        if (dialogResult == DialogResult.No)
+                        string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+
+
+                        if (!updatesnotified && !onapplist)
                         {
-                            Properties.Settings.Default.NonAppPackages += newGamesToUpload + ("\n");
-                            Properties.Settings.Default.Save();
+                            //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                            string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                            apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                            apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                            if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                                File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                            ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                            string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                            string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
+                            string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                            ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                            ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                            ReleaseName = ReleaseName.Replace("'", "");
+                            File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                            if (ReleaseName.Contains("Microsoft Windows"))
+                                ReleaseName = RlsName;
+                            //end
+                            string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                            Logger.Log(newGamesToUpload);
+
+                            DialogResult dialogResult = FlexibleMessageBox.Show($"New App detected:\n\n{ReleaseName}\n\nIs this a paid VR app?\n\n" +
+                                "If so Rookie will only extract the APK/OBB which contain NO personal info." +
+                                "\n\n\n\nPLEASE DON'T SHARE FREE/NON-VR APPS, INSTEAD PRESS \"NO\"!\n" +
+                                "ПОЖАЛУЙСТА, НЕ ЗАГРУЖАЙТЕ БЕСПЛАТНЫЕ ИЛИ НЕ_ВИАР ПРИЛОЖЕНИЯ, ПРОСТО НАЖМИТЕ \"НЕТ\"!\n" +
+                                "POR FAVOR, NO COMPARTAS APLICACIONES GRATUITAS/QUE NO SEAN DE RV, ¡PULSA \"NO\" EN SU LUGAR!\n" +
+                                "BITTE TEILT KEINE KOSTENLOSEN ODER APPS DIE NICHT IN VR SIND, DRÜCKT STATTDESSEN \"NEIN\"!\n" +
+                                "رجاءً لا تنشر برامج في ار مجانيه او برامج ليس لها صله بالفي ار ، عوضا عن ذلك اضغط لا\n"
+                                , "CONTRIBUTE PAID VR APP?", MessageBoxButtons.YesNoCancel);
+                            if (dialogResult == DialogResult.Yes)
+                            {
+                                string InstalledVersionCode;
+                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                await extractAndPrepareGameToUploadAsync(ReleaseName, newGamesToUpload, installedVersionInt);
+                            }
+                            if (dialogResult == DialogResult.No)
+                            {
+                                Properties.Settings.Default.NonAppPackages += newGamesToUpload + ("\n");
+                                Properties.Settings.Default.Save();
+                            }
                         }
                     }
                 }
@@ -2783,6 +2767,69 @@ without him none of this would be possible
         private void gamesQueListBox_DragOver(object sender, DragEventArgs e)
         {
             e.Effect = DragDropEffects.Move;
+        }
+
+        private async void pullAppToDesktopBtn_Click(object sender, EventArgs e)
+        {
+            ADB.WakeDevice();
+
+            if (m_combo.SelectedIndex == -1)
+            {
+                notify("Please select an app first");
+                return;
+            }
+            DialogResult dialogResult1 = FlexibleMessageBox.Show($"Do you want to extract {m_combo.SelectedItem.ToString()}'s apk and obb to a folder on your desktop now?", "Extract app?", MessageBoxButtons.YesNo);
+            if (dialogResult1 == DialogResult.No)
+                return;
+            if (!isworking)
+            {
+                isworking = true;
+                progressBar.Style = ProgressBarStyle.Marquee;
+                string HWID = SideloaderUtilities.UUID();
+                string GameName = m_combo.SelectedItem.ToString();
+                string packageName = Sideloader.gameNameToPackageName(GameName);
+                string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
+                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                ulong VersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
+                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                ProcessOutput output = new ProcessOutput("", "");
+                ChangeTitle("Extracting APK....");
+
+                Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
+
+                Thread t1 = new Thread(() =>
+                {
+                    output = Sideloader.getApk(GameName);
+                });
+                t1.IsBackground = true;
+                t1.Start();
+
+                while (t1.IsAlive)
+                    await Task.Delay(100);
+                ChangeTitle("Extracting obb if it exists....");
+                Thread t2 = new Thread(() =>
+                {
+                    output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
+                });
+                t2.IsBackground = true;
+                t2.Start();
+
+                while (t2.IsAlive)
+                    await Task.Delay(100);
+                if (!Directory.Exists($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})"))
+                {
+                    Directory.CreateDirectory($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})");
+                }
+                else
+                {
+                    Directory.Delete($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})", true);
+                    Directory.CreateDirectory($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})");
+                }
+                Directory.Move($"{Properties.Settings.Default.MainDir}\\{packageName}", $"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})");
+                FlexibleMessageBox.Show($"{m_combo.SelectedItem.ToString()} pulled to:\n\n{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})\n\nOn your desktop!");
+            }
         }
     }
 

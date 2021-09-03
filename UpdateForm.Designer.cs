@@ -36,7 +36,9 @@ namespace AndroidSideloader
             this.UpdateVerLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.panel3 = new System.Windows.Forms.Panel();
             this.panel1.SuspendLayout();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // YesUpdate
@@ -44,8 +46,8 @@ namespace AndroidSideloader
             this.YesUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.YesUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.YesUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.YesUpdate.ForeColor = System.Drawing.Color.White;
-            this.YesUpdate.Location = new System.Drawing.Point(281, 246);
+            this.YesUpdate.ForeColor = System.Drawing.Color.Gainsboro;
+            this.YesUpdate.Location = new System.Drawing.Point(284, 246);
             this.YesUpdate.Name = "YesUpdate";
             this.YesUpdate.Size = new System.Drawing.Size(166, 31);
             this.YesUpdate.TabIndex = 0;
@@ -59,7 +61,7 @@ namespace AndroidSideloader
             this.SkipUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.SkipUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.SkipUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.SkipUpdate.Location = new System.Drawing.Point(383, 280);
+            this.SkipUpdate.Location = new System.Drawing.Point(390, 278);
             this.SkipUpdate.Name = "SkipUpdate";
             this.SkipUpdate.Size = new System.Drawing.Size(64, 13);
             this.SkipUpdate.TabIndex = 4;
@@ -72,14 +74,15 @@ namespace AndroidSideloader
             this.UpdateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.UpdateTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
             this.UpdateTextBox.ForeColor = System.Drawing.Color.White;
-            this.UpdateTextBox.Location = new System.Drawing.Point(17, 15);
+            this.UpdateTextBox.Location = new System.Drawing.Point(25, 25);
             this.UpdateTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.UpdateTextBox.Name = "UpdateTextBox";
             this.UpdateTextBox.ReadOnly = true;
             this.UpdateTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.UpdateTextBox.Size = new System.Drawing.Size(432, 222);
+            this.UpdateTextBox.Size = new System.Drawing.Size(416, 209);
             this.UpdateTextBox.TabIndex = 1;
             this.UpdateTextBox.Text = "";
+            this.UpdateTextBox.TextChanged += new System.EventHandler(this.UpdateTextBox_TextChanged);
             // 
             // CurrentVerLabel
             // 
@@ -87,7 +90,7 @@ namespace AndroidSideloader
             this.CurrentVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.CurrentVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.CurrentVerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
-            this.CurrentVerLabel.Location = new System.Drawing.Point(12, 246);
+            this.CurrentVerLabel.Location = new System.Drawing.Point(11, 246);
             this.CurrentVerLabel.Name = "CurrentVerLabel";
             this.CurrentVerLabel.Size = new System.Drawing.Size(94, 15);
             this.CurrentVerLabel.TabIndex = 2;
@@ -99,7 +102,7 @@ namespace AndroidSideloader
             this.UpdateVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.UpdateVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.UpdateVerLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.UpdateVerLabel.Location = new System.Drawing.Point(12, 262);
+            this.UpdateVerLabel.Location = new System.Drawing.Point(11, 262);
             this.UpdateVerLabel.Name = "UpdateVerLabel";
             this.UpdateVerLabel.Size = new System.Drawing.Size(94, 15);
             this.UpdateVerLabel.TabIndex = 3;
@@ -120,11 +123,20 @@ namespace AndroidSideloader
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.Black;
+            this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.Controls.Add(this.panel3);
             this.panel2.Location = new System.Drawing.Point(12, 10);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(438, 227);
             this.panel2.TabIndex = 0;
+            // 
+            // panel3
+            // 
+            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.panel3.Location = new System.Drawing.Point(2, 2);
+            this.panel3.Name = "panel3";
+            this.panel3.Size = new System.Drawing.Size(434, 223);
+            this.panel3.TabIndex = 0;
             // 
             // UpdateForm
             // 
@@ -138,8 +150,10 @@ namespace AndroidSideloader
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
             this.Name = "UpdateForm";
+            this.TopMost = true;
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -153,5 +167,6 @@ namespace AndroidSideloader
         private System.Windows.Forms.Label UpdateVerLabel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.Panel panel3;
     }
 }

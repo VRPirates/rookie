@@ -31,5 +31,10 @@ namespace AndroidSideloader
         {
             this.Close();
         }
+
+        private void UpdateTextBox_TextChanged(object sender, EventArgs e)
+        {
+
+        }
     }
 }

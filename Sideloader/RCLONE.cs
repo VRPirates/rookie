@@ -137,7 +137,6 @@ namespace AndroidSideloader
             if (!string.Equals(localHash, hash))
             {
                 RCLONE.runRcloneCommand(string.Format($"copy \"{remote}:Quest Homebrew/Sideloading Methods/1. Rookie Sideloader - VRP Edition/VRP.download.config\" \"{Environment.CurrentDirectory}\\rclone\""));
-                RCLONE.killRclone();
                 File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", hash);
             }
         }

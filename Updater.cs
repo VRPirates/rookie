@@ -42,17 +42,19 @@ namespace AndroidSideloader
             GitHubUrl = $"https://github.com/nerdunit/androidsideloader";
             if (IsUpdateAvailable())
             {
-                UpdateForm updateForm = new UpdateForm();
-                updateForm.ShowDialog();
+                UpdateForm upForm = new UpdateForm();
+                upForm.ShowDialog(); ;
             }
+
+
         }
 
         //If the user wants to update
         public static void doUpdate()
         {
-            //Download new sideloader with version appended to file name so there is no chance of overwriting the current exe
             try
             {
+                ADB.RunAdbCommandToString("kill-server");
                 var fileClient = new WebClient();
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

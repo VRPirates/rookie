@@ -36,13 +36,15 @@
             this.restorebutton = new System.Windows.Forms.Button();
             this.getApkButton = new System.Windows.Forms.Button();
             this.uninstallAppButton = new System.Windows.Forms.Button();
-            this.sideloadFolderButton = new System.Windows.Forms.Button();
+            this.pullAppToDesktopBtn = new System.Windows.Forms.Button();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.copyBulkObbButton = new System.Windows.Forms.Button();
             this.downloadInstallGameButton = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.ULLabel = new System.Windows.Forms.Label();
+            this.ULGif = new System.Windows.Forms.PictureBox();
             this.BatteryLbl = new System.Windows.Forms.Label();
+            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.downloadingLabel = new System.Windows.Forms.Label();
             this.aboutBtn = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
@@ -94,9 +96,9 @@
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.gamesPictureBox = new System.Windows.Forms.PictureBox();
-            this.ULGif = new System.Windows.Forms.PictureBox();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ULGif)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.otherContainer.SuspendLayout();
             this.backupContainer.SuspendLayout();
             this.sideloadContainer.SuspendLayout();
@@ -107,8 +109,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gamesPictureBox)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ULGif)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
             this.SuspendLayout();
             // 
             // m_combo
@@ -273,26 +273,26 @@
             this.uninstallAppButton.UseVisualStyleBackColor = false;
             this.uninstallAppButton.Click += new System.EventHandler(this.uninstallAppButton_Click);
             // 
-            // sideloadFolderButton
+            // pullAppToDesktopBtn
             // 
-            this.sideloadFolderButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.sideloadFolderButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.sideloadFolderButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.sideloadFolderButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.sideloadFolderButton.Dock = System.Windows.Forms.DockStyle.Top;
-            this.sideloadFolderButton.FlatAppearance.BorderSize = 0;
-            this.sideloadFolderButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.sideloadFolderButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.sideloadFolderButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.sideloadFolderButton.Location = new System.Drawing.Point(0, 112);
-            this.sideloadFolderButton.Name = "sideloadFolderButton";
-            this.sideloadFolderButton.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
-            this.sideloadFolderButton.Size = new System.Drawing.Size(218, 28);
-            this.sideloadFolderButton.TabIndex = 4;
-            this.sideloadFolderButton.Text = "Sideload Folder (recursive)";
-            this.sideloadFolderButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.sideloadFolderButton.UseVisualStyleBackColor = false;
-            this.sideloadFolderButton.Click += new System.EventHandler(this.sideloadFolderButton_Click);
+            this.pullAppToDesktopBtn.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.pullAppToDesktopBtn.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.pullAppToDesktopBtn.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.pullAppToDesktopBtn.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.pullAppToDesktopBtn.Dock = System.Windows.Forms.DockStyle.Top;
+            this.pullAppToDesktopBtn.FlatAppearance.BorderSize = 0;
+            this.pullAppToDesktopBtn.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.pullAppToDesktopBtn.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.pullAppToDesktopBtn.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.pullAppToDesktopBtn.Location = new System.Drawing.Point(0, 112);
+            this.pullAppToDesktopBtn.Name = "pullAppToDesktopBtn";
+            this.pullAppToDesktopBtn.Padding = new System.Windows.Forms.Padding(23, 0, 0, 0);
+            this.pullAppToDesktopBtn.Size = new System.Drawing.Size(218, 28);
+            this.pullAppToDesktopBtn.TabIndex = 4;
+            this.pullAppToDesktopBtn.Text = "Pull App To Desktop";
+            this.pullAppToDesktopBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pullAppToDesktopBtn.UseVisualStyleBackColor = false;
+            this.pullAppToDesktopBtn.Click += new System.EventHandler(this.pullAppToDesktopBtn_Click);
             // 
             // progressBar
             // 
@@ -388,18 +388,39 @@
             this.ULLabel.Text = "Uploading";
             this.ULLabel.Visible = false;
             // 
+            // ULGif
+            // 
+            this.ULGif.Enabled = false;
+            this.ULGif.Image = global::AndroidSideloader.Properties.Resources.ajax_loader;
+            this.ULGif.Location = new System.Drawing.Point(178, 699);
+            this.ULGif.Name = "ULGif";
+            this.ULGif.Size = new System.Drawing.Size(34, 17);
+            this.ULGif.TabIndex = 86;
+            this.ULGif.TabStop = false;
+            this.ULGif.Visible = false;
+            // 
             // BatteryLbl
             // 
             this.BatteryLbl.AutoSize = true;
             this.BatteryLbl.BackColor = System.Drawing.Color.Transparent;
-            this.BatteryLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.BatteryLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BatteryLbl.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.BatteryLbl.Location = new System.Drawing.Point(156, 580);
+            this.BatteryLbl.Location = new System.Drawing.Point(159, 583);
             this.BatteryLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.BatteryLbl.Name = "BatteryLbl";
-            this.BatteryLbl.Size = new System.Drawing.Size(47, 17);
+            this.BatteryLbl.Size = new System.Drawing.Size(0, 13);
             this.BatteryLbl.TabIndex = 84;
-            this.BatteryLbl.Text = "N/A%";
+            // 
+            // pictureBox5
+            // 
+            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox5.Image = global::AndroidSideloader.Properties.Resources.battery11;
+            this.pictureBox5.Location = new System.Drawing.Point(155, 576);
+            this.pictureBox5.Margin = new System.Windows.Forms.Padding(2);
+            this.pictureBox5.Name = "pictureBox5";
+            this.pictureBox5.Size = new System.Drawing.Size(55, 29);
+            this.pictureBox5.TabIndex = 85;
+            this.pictureBox5.TabStop = false;
             // 
             // downloadingLabel
             // 
@@ -662,7 +683,7 @@
             this.sideloadContainer.Controls.Add(this.UpdateGamesButton);
             this.sideloadContainer.Controls.Add(this.listApkButton);
             this.sideloadContainer.Controls.Add(this.startsideloadbutton);
-            this.sideloadContainer.Controls.Add(this.sideloadFolderButton);
+            this.sideloadContainer.Controls.Add(this.pullAppToDesktopBtn);
             this.sideloadContainer.Controls.Add(this.uninstallAppButton);
             this.sideloadContainer.Controls.Add(this.getApkButton);
             this.sideloadContainer.Controls.Add(this.copyBulkObbButton);
@@ -1259,28 +1280,6 @@
             this.gamesPictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.gamesPictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
-            // ULGif
-            // 
-            this.ULGif.Enabled = false;
-            this.ULGif.Image = global::AndroidSideloader.Properties.Resources.ajax_loader;
-            this.ULGif.Location = new System.Drawing.Point(178, 699);
-            this.ULGif.Name = "ULGif";
-            this.ULGif.Size = new System.Drawing.Size(34, 17);
-            this.ULGif.TabIndex = 86;
-            this.ULGif.TabStop = false;
-            this.ULGif.Visible = false;
-            // 
-            // pictureBox5
-            // 
-            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox5.Image = global::AndroidSideloader.Properties.Resources.battery11;
-            this.pictureBox5.Location = new System.Drawing.Point(155, 576);
-            this.pictureBox5.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(55, 29);
-            this.pictureBox5.TabIndex = 85;
-            this.pictureBox5.TabStop = false;
-            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -1337,6 +1336,8 @@
             this.DragLeave += new System.EventHandler(this.Form1_DragLeave);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.ULGif)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.otherContainer.ResumeLayout(false);
             this.backupContainer.ResumeLayout(false);
             this.sideloadContainer.ResumeLayout(false);
@@ -1347,8 +1348,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gamesPictureBox)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.ULGif)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1363,7 +1362,7 @@
         private System.Windows.Forms.Button getApkButton;
         private SergeUtils.EasyCompletionComboBox m_combo;
         private System.Windows.Forms.Button uninstallAppButton;
-        private System.Windows.Forms.Button sideloadFolderButton;
+        private System.Windows.Forms.Button pullAppToDesktopBtn;
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button copyBulkObbButton;
         private System.Windows.Forms.Button downloadInstallGameButton;
