@@ -247,17 +247,17 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             {
                 if (!File.Exists("Sideloader Launcher.exe"))
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
-                if (!File.Exists("C:\\RSL\\platform-tools\\aug2021.txt")) //if adb is not updated, download and auto extract
+                //if adb is not updated, download and auto extract
+                if (!File.Exists("C:\\RSL\\platform-tools\\aug2021.txt") || !File.Exists("C:\\RSL\\platform-tools\\adb.exe")) 
                 {
-                    if (Directory.Exists($"C:\\RSL"))
-                        Directory.Delete("C:\\RSL", true);
                     if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\adb"))
                         Directory.Delete($"{Properties.Settings.Default.MainDir}\\adb", true);
-                    if (!Directory.Exists("C:\\RSL\\platform-tools"))
+                    if (Directory.Exists("C:\\RSL\\2.8.2"))
+                        Directory.Delete("C:\\RSL\\2.8.2", true);
                     Directory.CreateDirectory("C:\\RSL\\platform-tools");
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb2.zip", "adb2.zip");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\adb2.zip", "C:\\RSL\\platform-tools");
-                    File.Delete("adb2.zip");
+                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Ad.7z", "Ad.7z");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\Ad.7z", "C:\\RSL\\platform-tools");
+                    File.Delete("Ad.7z");
                 }
 
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
@@ -289,7 +289,6 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
             catch
             {
-                FlexibleMessageBox.Show("Your internet is not working properly or rclone/github servers are down, some files may be missing (adb, rclone or launcher)");
             }
         }
     }

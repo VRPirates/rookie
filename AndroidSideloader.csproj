@@ -162,6 +162,12 @@
     <Compile Include="ADB.cs" />
     <Compile Include="ColumnSort.cs" />
     <Compile Include="FlexibleMessageBox.cs" />
+    <Compile Include="UpdateForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UpdateForm.Designer.cs">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -213,6 +219,9 @@
     <Compile Include="Utilities\GeneralUtilities.cs" />
     <Compile Include="Utilities\UpdateGameData.cs" />
     <Compile Include="Utilities\UploadGame.cs" />
+    <EmbeddedResource Include="UpdateForm.resx">
+      <DependentUpon>UpdateForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>

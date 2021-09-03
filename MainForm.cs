@@ -52,16 +52,20 @@ namespace AndroidSideloader
         {
             InitializeComponent();
             //Time between asking for new apps if user clicks No.
-            TimeSpan newDayReference = new TimeSpan(48, 0, 0);
+            TimeSpan newDayReference = new TimeSpan(0, 30, 0);
             //Time between asking for updates after uploading.
-            TimeSpan newDayReference2 = new TimeSpan(72, 0, 0);
+            TimeSpan newDayReference2 = new TimeSpan(0, 15, 0);
             TimeSpan comparison;
+            TimeSpan comparison2;
 
             //These two variables set to show difference.
             DateTime A = Properties.Settings.Default.LastLaunch;
             DateTime B = DateTime.Now;
+            //Property set for last time updates were asked for.
+            DateTime C = Properties.Settings.Default.LastLaunch2;
             comparison = B - A;
-            // If enough time has passed reset property containing packagenames
+            comparison2 = B - C;
+            // If enough time has passed reset property containing packagenames.
             if (comparison > newDayReference)
             {
                 Properties.Settings.Default.ListUpped = false;
@@ -69,11 +73,15 @@ namespace AndroidSideloader
                 Properties.Settings.Default.LastLaunch = DateTime.Now;
                 Properties.Settings.Default.Save();
             }
-            if (comparison > newDayReference2)
+            //If enough time has passed reset property containing Updated App packages.
+            if (comparison2 > newDayReference2)
             {
+                Properties.Settings.Default.LastLaunch2 = DateTime.Now;
                 Properties.Settings.Default.SubmittedUpdates = "";
                 Properties.Settings.Default.Save();
             }
+
+            //launchtime for debug log
             string launchtime = DateTime.Now.ToString("hh:mmtt(UTC)");
             if (String.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
@@ -128,19 +136,13 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            if (File.Exists("C:\\RSL\\platform-tools\\adb.exe"))
+                ADB.RunAdbCommandToString("kill-server");
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
             CheckForInternet();
-            if (HasInternet == true) {
-                Sideloader.downloadFiles();
-            }
-            else { 
-                FlexibleMessageBox.Show("Cannot connect to google dns, your internet may be down, won't use rclone or online features!");
-            }
+            Sideloader.downloadFiles();
             await Task.Delay(100);
-            ADB.RunAdbCommandToString("kill-server");
-            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
 
             if (!Directory.Exists(BackupFolder))
                 Directory.CreateDirectory(BackupFolder);
@@ -640,7 +642,7 @@ namespace AndroidSideloader
             Ping myPing = new Ping();
             String host = "8.8.8.8"; //google dns
             byte[] buffer = new byte[32];
-            int timeout = 1000;
+            int timeout = 10000;
             PingOptions pingOptions = new PingOptions();
             try
             {

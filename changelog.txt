@@ -1,15 +1,3 @@
-RSL 2.9.8
-
-+ Added timer that detects if user has uploaded an
-update to an app, if they have it will wait til the
-set amount of time passes to ask again.
-
-+ When new app is detected user is now asked if it
-is a paid app.
-
-= Fixed debuglog/crashlog upload.
-
-= After sending debuglog to server RSL will now properly
-copy Debug Log ID to clipboard.
-
+= Fixed startup crash after updating.
+= Fixed adb version clashing issues.
 HFP

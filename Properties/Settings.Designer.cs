@@ -717,5 +717,17 @@ namespace AndroidSideloader.Properties {
                 this["ListUpped"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("04/20/1969 16:20:00")]
+        public global::System.DateTime LastLaunch2 {
+            get {
+                return ((global::System.DateTime)(this["LastLaunch2"]));
+            }
+            set {
+                this["LastLaunch2"] = value;
+            }
+        }
     }
 }

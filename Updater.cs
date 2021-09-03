@@ -17,7 +17,7 @@ namespace AndroidSideloader
         private static string RawGitHubUrl;
         private static string GitHubUrl;
 
-        static readonly public string LocalVersion = "2.9.8";
+        static readonly public string LocalVersion = "2.9.9";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
@@ -41,21 +41,18 @@ namespace AndroidSideloader
             RawGitHubUrl = $"https://raw.githubusercontent.com/nerdunit/androidsideloader";
             GitHubUrl = $"https://github.com/nerdunit/androidsideloader";
             if (IsUpdateAvailable())
-                doUpdate();
+            {
+                UpdateForm updateForm = new UpdateForm();
+                updateForm.ShowDialog();
+            }
         }
 
         //If the user wants to update
-        private static void doUpdate()
+        public static void doUpdate()
         {
-            DialogResult dialogResult = FlexibleMessageBox.Show($"There is a new update you have version {LocalVersion}, do you want to update?\nCHANGELOG\n{changelog}", $"Version {currentVersion} is available", MessageBoxButtons.YesNo);
-            if (dialogResult != DialogResult.Yes)
-                return;
-
             //Download new sideloader with version appended to file name so there is no chance of overwriting the current exe
             try
             {
-                RCLONE.killRclone();
-                ADB.RunAdbCommandToString("kill-server");
                 var fileClient = new WebClient();
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;

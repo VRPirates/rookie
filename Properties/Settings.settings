@@ -176,5 +176,8 @@
     <Setting Name="ListUpped" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="LastLaunch2" Type="System.DateTime" Scope="User">
+      <Value Profile="(Default)">04/20/1969 16:20:00</Value>
+    </Setting>
   </Settings>
 </SettingsFile>
