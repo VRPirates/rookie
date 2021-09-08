@@ -1,13 +1,17 @@
 # androidsideloader
+![GitHub last commit](https://img.shields.io/github/last-commit/nerdunit/androidsideloader)
+![GitHub release (latest by date)](https://img.shields.io/github/v/release/nerdunit/androidsideloader)
+[![Downloads](https://img.shields.io/github/downloads/nerdunit/androidsideloader/total.svg)](https://github.com/nerdunit/androidsideloader/releases)
+![Issues](https://img.shields.io/github/issues/nerdunit/androidsideloader)
 
-!IMPORTANT!
+## !IMPORTANT!
 This app may be buggy and have problems, I will recode it from scratch when MAUI will be released (This september) and a linux port will be available, making RSL cross-platform.
 
-This app might get detected as malware, however both the sideloader and the sideloader launcher are open source
+### This app might get detected as malware, however both the sideloader and the sideloader launcher are open source
 
 https://www.virustotal.com/gui/file/977105693610cf360fc29339b918e224180ba393ba05a64b6255af3845cbf376/relations
 
-Special thanks to
+## Special thanks to
  - [Everyone who donated!](https://raw.githubusercontent.com/nerdunit/androidsideloader/master/donators.txt)
  - pmow for all of his work, including rclone, wonka and other projects
  - flow for being friendly and helping every one
