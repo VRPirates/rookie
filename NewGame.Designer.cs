@@ -32,7 +32,7 @@ namespace AndroidSideloader
             this.YesUpdate = new System.Windows.Forms.Button();
             this.SkipUpdate = new System.Windows.Forms.Label();
             this.UpdateTextBox = new System.Windows.Forms.RichTextBox();
-            this.Reminder = new System.Windows.Forms.Label();
+            this.CurrentVerLabel = new System.Windows.Forms.Label();
             this.UpdateVerLabel = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -47,11 +47,11 @@ namespace AndroidSideloader
             this.YesUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.YesUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
             this.YesUpdate.ForeColor = System.Drawing.Color.Gainsboro;
-            this.YesUpdate.Location = new System.Drawing.Point(339, 246);
+            this.YesUpdate.Location = new System.Drawing.Point(284, 246);
             this.YesUpdate.Name = "YesUpdate";
-            this.YesUpdate.Size = new System.Drawing.Size(111, 31);
+            this.YesUpdate.Size = new System.Drawing.Size(166, 31);
             this.YesUpdate.TabIndex = 0;
-            this.YesUpdate.Text = "Share App";
+            this.YesUpdate.Text = "Install Update";
             this.YesUpdate.UseVisualStyleBackColor = false;
             this.YesUpdate.Click += new System.EventHandler(this.YesUpdate_Click);
             // 
@@ -84,17 +84,17 @@ namespace AndroidSideloader
             this.UpdateTextBox.Text = "";
             this.UpdateTextBox.TextChanged += new System.EventHandler(this.UpdateTextBox_TextChanged);
             // 
-            // Reminder
+            // CurrentVerLabel
             // 
-            this.Reminder.AutoSize = true;
-            this.Reminder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.Reminder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.Reminder.ForeColor = System.Drawing.SystemColors.Control;
-            this.Reminder.Location = new System.Drawing.Point(11, 246);
-            this.Reminder.Name = "Reminder";
-            this.Reminder.Size = new System.Drawing.Size(247, 30);
-            this.Reminder.TabIndex = 2;
-            this.Reminder.Text = "Remember! None of this is possible without \r\napp donations!";
+            this.CurrentVerLabel.AutoSize = true;
+            this.CurrentVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.CurrentVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.CurrentVerLabel.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(200)))), ((int)(((byte)(200)))), ((int)(((byte)(200)))));
+            this.CurrentVerLabel.Location = new System.Drawing.Point(11, 246);
+            this.CurrentVerLabel.Name = "CurrentVerLabel";
+            this.CurrentVerLabel.Size = new System.Drawing.Size(94, 15);
+            this.CurrentVerLabel.TabIndex = 2;
+            this.CurrentVerLabel.Text = "Current Version:";
             // 
             // UpdateVerLabel
             // 
@@ -104,8 +104,9 @@ namespace AndroidSideloader
             this.UpdateVerLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.UpdateVerLabel.Location = new System.Drawing.Point(11, 262);
             this.UpdateVerLabel.Name = "UpdateVerLabel";
-            this.UpdateVerLabel.Size = new System.Drawing.Size(0, 15);
+            this.UpdateVerLabel.Size = new System.Drawing.Size(94, 15);
             this.UpdateVerLabel.TabIndex = 3;
+            this.UpdateVerLabel.Text = "Update Version:";
             // 
             // panel1
             // 
@@ -113,7 +114,7 @@ namespace AndroidSideloader
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.UpdateVerLabel);
             this.panel1.Controls.Add(this.YesUpdate);
-            this.panel1.Controls.Add(this.Reminder);
+            this.panel1.Controls.Add(this.CurrentVerLabel);
             this.panel1.Controls.Add(this.SkipUpdate);
             this.panel1.Location = new System.Drawing.Point(2, 2);
             this.panel1.Name = "panel1";
@@ -162,7 +163,7 @@ namespace AndroidSideloader
         private System.Windows.Forms.Button YesUpdate;
         private System.Windows.Forms.Label SkipUpdate;
         private System.Windows.Forms.RichTextBox UpdateTextBox;
-        private System.Windows.Forms.Label Reminder;
+        private System.Windows.Forms.Label CurrentVerLabel;
         private System.Windows.Forms.Label UpdateVerLabel;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
