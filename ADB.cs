@@ -269,94 +269,9 @@ namespace AndroidSideloader
 
         public static void WakeDevice()
         {
-            string devicesout = RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP").Output;
-            if (!devicesout.Contains("found") && !Properties.Settings.Default.nodevicemode)
-            {
-                if (wirelessadbON || !String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                {
-                    RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                    string response = RunAdbCommandToString(Properties.Settings.Default.IPAddress).Output;
-
-                        if (response.Contains("cannot") || String.IsNullOrEmpty(response))
-                        {
-                            DialogResult dialogResult = FlexibleMessageBox.Show("RSL can't connect to your Quest IP, this is usually because you have rebooted your Quest or the Quest IP has changed. Set a static IP to prevent this in the future(recommended)!\n\n\nYES = Static IP is set, do not detect my IP again.\nNO = I have not set a static IP, detect my IP again.\nCANCEL = I want to disable Wireless ADB.", "DEVICE REBOOTED/IP HAS CHANGED!", MessageBoxButtons.YesNoCancel);
-                            if (dialogResult == DialogResult.Cancel)
-                            {
-                                wirelessadbON = false;
-                                Properties.Settings.Default.IPAddress = "";
-                                Properties.Settings.Default.Save();
-
-
-                            }
-                            else if (dialogResult == DialogResult.Yes)
-                            {
-                                FlexibleMessageBox.Show("Connect your Quest to USB so we can reconnect to your saved IP address!");
-                                RunAdbCommandToString("devices");
-                                Thread.Sleep(250);
-                                RunAdbCommandToString("disconnect");
-                                Thread.Sleep(50);
-                                RunAdbCommandToString("connect");
-                                Thread.Sleep(50);
-                                RunAdbCommandToString("tcpip 5555");
-                                Thread.Sleep(500);
-                                RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                                MessageBox.Show($"Connected! We can now automatically enable wake on wifi.\n(This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\" at extremely little battery cost (~1% per full charge))", "Enable Wake on Wifi?", MessageBoxButtons.YesNo);
-                                if (dialogResult == DialogResult.Yes)
-                                {
-
-                                    RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
-                                    RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
-                                    Program.form.ChangeTitlebarToDevice();
-                                    return;
-                                }
-                                if (dialogResult == DialogResult.No)
-                                {
-
-                                    Program.form.ChangeTitlebarToDevice();
-                                    return;
-                                }
-                            }
-                            else if (dialogResult == DialogResult.No)
-                            {
-                                FlexibleMessageBox.Show("You must repeat the entire connection process, press OK to begin.", "Reconfigure Wireless ADB", MessageBoxButtons.OK);
-                                RunAdbCommandToString("devices");
-                                RunAdbCommandToString("tcpip 5555");
-                                FlexibleMessageBox.Show("Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OK);
-                                Thread.Sleep(1000);
-                                string input = RunAdbCommandToString("shell ip route").Output;
-
-                                Properties.Settings.Default.WirelessADB = true;
-                                Properties.Settings.Default.Save();
-                                string[] strArrayOne = new string[] { "" };
-                                strArrayOne = input.Split(' ');
-                                if (strArrayOne[0].Length > 7)
-                                {
-                                    string IPaddr = strArrayOne[8];
-                                    string IPcmnd = "connect " + IPaddr + ":5555";
-                                    FlexibleMessageBox.Show($"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
-                                    Thread.Sleep(2000);
-                                    ADB.RunAdbCommandToString(IPcmnd);
-                                    Properties.Settings.Default.IPAddress = IPcmnd;
-                                    Properties.Settings.Default.Save();
-
-                                    MessageBox.Show($"Connected! We can now automatically enable wake on wifi.\n(This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\" at extremely little battery cost (~1% per full charge))", "Enable Wake on Wifi?", MessageBoxButtons.YesNo);
-                                    if (dialogResult == DialogResult.Yes)
-                                    {
-
-                                        ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
-                                        ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
-                                        Program.form.ChangeTitlebarToDevice();
-                                        return;
-                                    }
-                          
-                                }
-
-                            }
-                        }
-                    
-                }
-            }
-
+            RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress) && !Properties.Settings.Default.Wired)
+                     RunAdbCommandToString(Properties.Settings.Default.IPAddress);
         }
 
 

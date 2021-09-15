@@ -109,78 +109,6 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("45, 45, 45")]
-        public global::System.Drawing.Color BackColor {
-            get {
-                return ((global::System.Drawing.Color)(this["BackColor"]));
-            }
-            set {
-                this["BackColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("ActiveCaptionText")]
-        public global::System.Drawing.Color ButtonColor {
-            get {
-                return ((global::System.Drawing.Color)(this["ButtonColor"]));
-            }
-            set {
-                this["ButtonColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("64, 64, 64")]
-        public global::System.Drawing.Color SubButtonColor {
-            get {
-                return ((global::System.Drawing.Color)(this["SubButtonColor"]));
-            }
-            set {
-                this["SubButtonColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("45, 45, 45")]
-        public global::System.Drawing.Color TextBoxColor {
-            get {
-                return ((global::System.Drawing.Color)(this["TextBoxColor"]));
-            }
-            set {
-                this["TextBoxColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("45, 45, 45")]
-        public global::System.Drawing.Color ComboBoxColor {
-            get {
-                return ((global::System.Drawing.Color)(this["ComboBoxColor"]));
-            }
-            set {
-                this["ComboBoxColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("White")]
-        public global::System.Drawing.Color FontColor {
-            get {
-                return ((global::System.Drawing.Color)(this["FontColor"]));
-            }
-            set {
-                this["FontColor"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 11pt")]
         public global::System.Drawing.Font FontStyle {
             get {
@@ -727,6 +655,90 @@ namespace AndroidSideloader.Properties {
             }
             set {
                 this["LastLaunch2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool Wired {
+            get {
+                return ((bool)(this["Wired"]));
+            }
+            set {
+                this["Wired"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("White")]
+        public global::System.Drawing.Color FontColor {
+            get {
+                return ((global::System.Drawing.Color)(this["FontColor"]));
+            }
+            set {
+                this["FontColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        public global::System.Drawing.Color ComboBoxColor {
+            get {
+                return ((global::System.Drawing.Color)(this["ComboBoxColor"]));
+            }
+            set {
+                this["ComboBoxColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        public global::System.Drawing.Color SubButtonColor {
+            get {
+                return ((global::System.Drawing.Color)(this["SubButtonColor"]));
+            }
+            set {
+                this["SubButtonColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        public global::System.Drawing.Color TextBoxColor {
+            get {
+                return ((global::System.Drawing.Color)(this["TextBoxColor"]));
+            }
+            set {
+                this["TextBoxColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        public global::System.Drawing.Color ButtonColor {
+            get {
+                return ((global::System.Drawing.Color)(this["ButtonColor"]));
+            }
+            set {
+                this["ButtonColor"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        public global::System.Drawing.Color BackColor {
+            get {
+                return ((global::System.Drawing.Color)(this["BackColor"]));
+            }
+            set {
+                this["BackColor"] = value;
             }
         }
     }

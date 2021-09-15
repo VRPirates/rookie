@@ -77,7 +77,6 @@ namespace AndroidSideloader
                 rclone.StartInfo.CreateNoWindow = false;
             rclone.StartInfo.UseShellExecute = false;
             rclone.Start();
-
             rclone.StandardInput.WriteLine(command);
             rclone.StandardInput.Flush();
             rclone.StandardInput.Close();

@@ -52,14 +52,14 @@ namespace AndroidSideloader
         {
             InitializeComponent();
             //Time between asking for new apps if user clicks No.
-            TimeSpan newDayReference = new TimeSpan(0, 1, 0);
+            TimeSpan newDayReference = new TimeSpan(48, 0, 0);
             //Time between asking for updates after uploading.
-            TimeSpan newDayReference2 = new TimeSpan(0, 1, 0);
+            TimeSpan newDayReference2 = new TimeSpan(24, 0, 0);
             TimeSpan comparison;
             TimeSpan comparison2;
-
-            //These two variables set to show difference.
-            DateTime A = Properties.Settings.Default.LastLaunch;
+     
+        //These two variables set to show difference.
+        DateTime A = Properties.Settings.Default.LastLaunch;
             DateTime B = DateTime.Now;
             DateTime C = Properties.Settings.Default.LastLaunch2;
             comparison = B - A;
@@ -127,7 +127,7 @@ namespace AndroidSideloader
                 pictureBox4.Image = global::AndroidSideloader.Properties.Resources.greenkey;
         }
 
-
+        public static string DonorApps = "Game;Packagename;Version;Type\n";
         private string oldTitle = "";
         public static bool updatesnotified = false;
 
@@ -170,24 +170,13 @@ namespace AndroidSideloader
                 Properties.Settings.Default.CallUpgrade = false;
                 Properties.Settings.Default.Save();
             }
-
             this.CenterToScreen();
             gamesListView.View = View.Details;
             gamesListView.FullRowSelect = true;
-            gamesListView.GridLines = true;
+            gamesListView.GridLines = false;
             etaLabel.Text = "";
             speedLabel.Text = "";
             diskLabel.Text = "";
-
-            try
-            {
-                ADB.WakeDevice();
-                if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-                    ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
-                await CheckForDevice();
-                ChangeTitlebarToDevice();
-            }
-            catch { }
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(Properties.Settings.Default.CurrentCrashPath))
@@ -302,6 +291,50 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Marquee;
 
             ChangeTitle("Populating update list, please wait...\n\n");
+            Thread t5 = new Thread(() =>
+            {
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+            {
+                string path = "C:\\RSL\\platform-tools\\adb.exe";
+                var wakeywakey = ADB.RunCommandToString("C:\\RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
+                if (wakeywakey.Output.Contains("more than one"))
+                {
+                    Properties.Settings.Default.Wired = true;
+                    Properties.Settings.Default.Save();
+                }
+                else if (wakeywakey.Output.Contains("found"))
+                {
+                    ADB.WakeDevice();
+                    Properties.Settings.Default.Wired = false;
+                    Properties.Settings.Default.Save();
+                }
+            }
+
+            if (File.Exists(@"C:\RSL\platform-tools\StoredIP.txt") || !Properties.Settings.Default.Wired)
+            {
+                string IPcmndfromtxt = File.ReadAllText(@"C:\RSL\platform-tools\StoredIP.txt");
+                Properties.Settings.Default.IPAddress = IPcmndfromtxt;
+                Properties.Settings.Default.Save();
+                var IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
+                if (IPoutput.Output.Contains("attempt failed") || IPoutput.Output.Contains("refused"))
+                {
+                    FlexibleMessageBox.Show("Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
+                    Properties.Settings.Default.IPAddress = "";
+                    Properties.Settings.Default.Save();
+                    File.Delete("C:\\RSL\\platform-tools\\StoredIP.txt");
+                }
+            }
+            else if (!File.Exists(@"C:\RSL\platform-tools\StoredIP.txt"))
+            {
+                Properties.Settings.Default.IPAddress = "";
+                Properties.Settings.Default.Save();
+            }
+            });
+            t5.IsBackground = true;
+            t5.Start();
+            while (t5.IsAlive)
+                await Task.Delay(100);
+            await CheckForDevice();
             listappsbtn();
             showAvailableSpace();
             intToolTips();
@@ -309,7 +342,23 @@ namespace AndroidSideloader
             downloadInstallGameButton.Enabled = true;
             progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
+
             initListView();
+
+            string[] files = Directory.GetFiles(Environment.CurrentDirectory);
+            foreach (string file in files)
+            {
+                string fileName = file;
+                while (fileName.Contains("\\"))
+                {
+                    fileName = fileName.Substring(fileName.IndexOf("\\") + 1);
+                }
+                if (!fileName.Contains(Properties.Settings.Default.CurrentLogName) || !fileName.Contains(Properties.Settings.Default.CurrentCrashName))
+                {
+                    if (!fileName.Contains("debuglog") && fileName.EndsWith(".txt"))
+                        System.IO.File.Delete(fileName);
+                }
+            }
         }
 
 
@@ -407,10 +456,6 @@ namespace AndroidSideloader
                     path = openFileDialog.FileName;
                 else
                     return;
-            }
-            if (Properties.Settings.Default.IPAddress.Contains("connect"))
-            {
-                ADB.RunAdbCommandToString(Properties.Settings.Default.IPAddress);
             }
             ADB.DeviceID = GetDeviceID();
 
@@ -856,7 +901,7 @@ namespace AndroidSideloader
                 {
                     await Task.Delay(100);
                 }
-
+ 
                 ChangeTitle(" \n\n");
                 isuploading = false;
                 ULGif.Visible = false;
@@ -901,10 +946,6 @@ namespace AndroidSideloader
             m_combo.Items.RemoveAt(m_combo.SelectedIndex);
         }
 
-        private async void sideloadFolderButton_Click(object sender, EventArgs e)
-        {
-           
-        }
         private async void copyBulkObbButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
@@ -1422,15 +1463,14 @@ namespace AndroidSideloader
                                 onupdatelist = true;
                         }
                         if (!updatesnotified && !onupdatelist)
-                        {
-                            DialogResult dialogResult = FlexibleMessageBox.Show($"You have a newer version of:\n\n{gameData.GameName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                            if (dialogResult == DialogResult.Yes)
-                            {
-                                Properties.Settings.Default.SubmittedUpdates += gameData.Packagename + ("\n");
-                                Properties.Settings.Default.Save();
-                                await extractAndPrepareGameToUploadAsync(gameData.GameName, gameData.Packagename, gameData.InstalledVersionInt);
-                            }
+                        { 
+                            DonorApps += gameData.GameName + ";" + gameData.Packagename + ";" + gameData.InstalledVersionInt + ";" + "Newer version than RSL" + "\n";
+
+                     
+                            Properties.Settings.Default.Save();
+
                         }
+                        
                     }
                 }
 
@@ -1467,7 +1507,6 @@ namespace AndroidSideloader
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                             InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                             ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                            await extractAndPrepareGameToUploadAsync(GameName, newGamesToUpload, installedVersionInt);
                         }
                         else
                         {
@@ -1478,6 +1517,7 @@ namespace AndroidSideloader
                 //This is for games that are not blacklisted and we dont have on rookie
                 if (blacklistItems.Count > 100 && rookieList.Count > 100)
                 {
+                
                     foreach (string newGamesToUpload in newGamesList)
                     {
                         bool onapplist = false;
@@ -1510,33 +1550,19 @@ namespace AndroidSideloader
                                 ReleaseName = RlsName;
                             //end
                             string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                            Logger.Log(newGamesToUpload);
-
-                            DialogResult dialogResult = FlexibleMessageBox.Show($"New App detected:\n\n{ReleaseName}\n\nIs this a paid VR app?\n\n" +
-                                "If so Rookie will only extract the APK/OBB which contain NO personal info." +
-                                "\n\n\n\nPLEASE DON'T SHARE FREE/NON-VR APPS, INSTEAD PRESS \"NO\"!\n" +
-                                "ПОЖАЛУЙСТА, НЕ ЗАГРУЖАЙТЕ БЕСПЛАТНЫЕ ИЛИ НЕ_ВИАР ПРИЛОЖЕНИЯ, ПРОСТО НАЖМИТЕ \"НЕТ\"!\n" +
-                                "POR FAVOR, NO COMPARTAS APLICACIONES GRATUITAS/QUE NO SEAN DE RV, ¡PULSA \"NO\" EN SU LUGAR!\n" +
-                                "BITTE TEILT KEINE KOSTENLOSEN ODER APPS DIE NICHT IN VR SIND, DRÜCKT STATTDESSEN \"NEIN\"!\n" +
-                                "رجاءً لا تنشر برامج في ار مجانيه او برامج ليس لها صله بالفي ار ، عوضا عن ذلك اضغط لا\n"
-                                , "CONTRIBUTE PAID VR APP?", MessageBoxButtons.YesNoCancel);
-                            if (dialogResult == DialogResult.Yes)
-                            {
-                                string InstalledVersionCode;
-                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                                ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                                await extractAndPrepareGameToUploadAsync(ReleaseName, newGamesToUpload, installedVersionInt);
-                            }
-                            if (dialogResult == DialogResult.No)
-                            {
-                                Properties.Settings.Default.NonAppPackages += newGamesToUpload + ("\n");
-                                Properties.Settings.Default.Save();
-                            }
+                            //Logger.Log(newGamesToUpload);
+                            string InstalledVersionCode;
+                            InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                            ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                            DonorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "Not on RSL" + "\n";
                         }
                     }
+
                 }
+                DonorsListViewForm DonorForm = new DonorsListViewForm();
+                DonorForm.ShowDialog(); 
                 updatesnotified = true;
 
 
@@ -1585,11 +1611,21 @@ namespace AndroidSideloader
                if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
                 {
                     Random r = new Random();
-                    int x = r.Next(999999);
+                    int x = r.Next(9999);
                     int y = x;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\packages{y}.txt", Properties.Settings.Default.NonAppPackages);
-                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\packages{y}.txt\" VRP-debuglogs:InstalledGamesList");
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\packages{y}.txt");
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\pckgs{y}.txt", Properties.Settings.Default.NonAppPackages);
+                    string path = $"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe";
+
+                    Thread t1 = new Thread(() =>
+                    {
+                        ADB.RunCommandToString($"\"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe\" copy \"{Properties.Settings.Default.MainDir}\\pckgs{y}.txt\" VRP-debuglogs:", path);
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\pckgs{y}.txt");
+                    });
+                    t1.IsBackground = true;
+                    t1.Start();
+
+                    while (t1.IsAlive)
+                        await Task.Delay(1000);
                     Properties.Settings.Default.ListUpped = true;
                     Properties.Settings.Default.Save();
                 }
@@ -1597,7 +1633,7 @@ namespace AndroidSideloader
             loaded = true;
         }
 
-        private async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt)
+        public async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt)
         {
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
@@ -1744,16 +1780,13 @@ without him none of this would be possible
                 Program.form.showAvailableSpace();
                 Properties.Settings.Default.IPAddress = IPcmnd;
                 Properties.Settings.Default.Save();
+                File.WriteAllText($"C:\\RSL\\platform-tools\\StoredIP.txt", IPcmnd);
                 ADB.wirelessadbON = true;
-                MessageBox.Show($"Connected! We can now automatically enable wake on wifi.\n(This makes it so Rookie can work wirelessly even if the device has entered \"sleep mode\" at extremely little battery cost (~1% per full charge))", "Enable Wake on Wifi?", MessageBoxButtons.YesNo);
-                if (dialogResult == DialogResult.Yes)
-                {
-                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
-                    ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
-                }
+                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
             }
             else
-                FlexibleMessageBox.Show("No device connected!");
+                FlexibleMessageBox.Show("No device connected! Connect quest via USB and start again!");
 
         }
 
@@ -1834,7 +1867,6 @@ without him none of this would be possible
             {
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (gamesListView.SelectedItems.Count == 0) return;
-
                 string namebox = gamesListView.SelectedItems[0].ToString();
                 string nameboxtranslated = Sideloader.gameNameToSimpleName(namebox);
                 long selectedGamesSize = 0;
@@ -2219,7 +2251,6 @@ without him none of this would be possible
             {
                 ADB.wirelessadbON = false;
                 FlexibleMessageBox.Show("Make sure your device is not connected to USB and press OK.");
-
                 ADB.RunAdbCommandToString("devices");
                 ADB.RunAdbCommandToString("shell USB");
                 Thread.Sleep(2000);
@@ -2233,6 +2264,8 @@ without him none of this would be possible
                 Program.form.GetDeviceID();
                 Program.form.ChangeTitlebarToDevice();
                 FlexibleMessageBox.Show("Relaunch Rookie to complete the process and switch back to USB adb.");
+                if (File.Exists("C:\\RSL\\platform-tools\\StoredIP.txt"))
+                    File.Delete("C:\\RSL\\platform-tools\\StoredIP.txt");
             }
         }
         private void EnablePassthroughAPI_Click(object sender, EventArgs e)

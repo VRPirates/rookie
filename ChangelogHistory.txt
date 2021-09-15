@@ -8,7 +8,7 @@ update to an app, if they have it will wait til the
 set amount of time passes to ask again.
 
 + When new app is detected user is now asked if it
-is a paid app.
+is a   app.
 
 = Fixed debuglog/crashlog upload.
 

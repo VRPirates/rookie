@@ -161,19 +161,14 @@
   <ItemGroup>
     <Compile Include="ADB.cs" />
     <Compile Include="ColumnSort.cs" />
+    <Compile Include="Donors.cs" />
+    <Compile Include="DonorsListView.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="DonorsListView.Designer.cs">
+      <DependentUpon>DonorsListView.cs</DependentUpon>
+    </Compile>
     <Compile Include="FlexibleMessageBox.cs" />
-    <Compile Include="NewGame.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="NewGame.Designer.cs">
-      <DependentUpon>NewGame.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ShareUpdates.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ShareUpdates.Designer.cs">
-      <DependentUpon>ShareUpdates.cs</DependentUpon>
-    </Compile>
     <Compile Include="UpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -231,11 +226,8 @@
     <Compile Include="Utilities\GeneralUtilities.cs" />
     <Compile Include="Utilities\UpdateGameData.cs" />
     <Compile Include="Utilities\UploadGame.cs" />
-    <EmbeddedResource Include="NewGame.resx">
-      <DependentUpon>NewGame.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ShareUpdates.resx">
-      <DependentUpon>ShareUpdates.cs</DependentUpon>
+    <EmbeddedResource Include="DonorsListView.resx">
+      <DependentUpon>DonorsListView.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="UpdateForm.resx">
       <DependentUpon>UpdateForm.cs</DependentUpon>
