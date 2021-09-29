@@ -28,14 +28,8 @@ namespace AndroidSideloader
             donorGames.Clear();
             if (!MainForm.DonorApps.Equals(""))
             {
-                string[] gameListSplited = MainForm.DonorApps.Split(new[] { '\n' }, 2);
-
-                foreach (string gameProperty in gameListSplited[0].Split(';'))
-                {
-                    donorGameProperties.Add(gameProperty);
-                }
-
-                foreach (string game in gameListSplited[1].Split('\n'))
+                string[] gameListSplited = MainForm.DonorApps.Split(new[] { '\n' });
+                foreach (string game in gameListSplited)
                 {
                     if (game.Length > 1)
                     {
@@ -52,12 +46,8 @@ namespace AndroidSideloader
             newApps.Clear();
             if (!DonorsListViewForm.newAppsForList.Equals(""))
             {
-                string[] newListSplited = DonorsListViewForm.newAppsForList.Split(new[] { '\n' }, 2);
-                foreach (string newProperty in newListSplited[0].Split(';'))
-                {
-                    newAppProperties.Add(newProperty);
-                }
-                foreach (string game in newListSplited[1].Split('\n'))
+                string[] newListSplited = DonorsListViewForm.newAppsForList.Split(new[] { '\n' });
+                foreach (string game in newListSplited)
                 {
                     if (game.Length > 1)
                     {

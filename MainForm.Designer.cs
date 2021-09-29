@@ -70,6 +70,12 @@
             this.devicesComboBox = new System.Windows.Forms.ComboBox();
             this.remotesList = new System.Windows.Forms.ComboBox();
             this.gamesListView = new System.Windows.Forms.ListView();
+            this.GameNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ReleaseNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.PackageNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.VersionCodeIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.ReleaseAPKPathIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.VersionNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.gamesQueueLabel = new System.Windows.Forms.Label();
             this.MountButton = new System.Windows.Forms.Button();
@@ -300,9 +306,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.progressBar.ForeColor = System.Drawing.Color.Purple;
-            this.progressBar.Location = new System.Drawing.Point(224, 441);
+            this.progressBar.Location = new System.Drawing.Point(224, 436);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(371, 25);
+            this.progressBar.Size = new System.Drawing.Size(374, 34);
             this.progressBar.TabIndex = 7;
             // 
             // copyBulkObbButton
@@ -333,13 +339,12 @@
             this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.downloadInstallGameButton.Enabled = false;
             this.downloadInstallGameButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.downloadInstallGameButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.downloadInstallGameButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.downloadInstallGameButton.Location = new System.Drawing.Point(601, 439);
+            this.downloadInstallGameButton.Location = new System.Drawing.Point(601, 436);
             this.downloadInstallGameButton.Name = "downloadInstallGameButton";
-            this.downloadInstallGameButton.Size = new System.Drawing.Size(369, 30);
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(369, 34);
             this.downloadInstallGameButton.TabIndex = 8;
             this.downloadInstallGameButton.Text = "Download and Install Game/Add to Queue";
             this.downloadInstallGameButton.UseVisualStyleBackColor = false;
@@ -415,7 +420,7 @@
             // 
             this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox5.Image = global::AndroidSideloader.Properties.Resources.battery11;
-            this.pictureBox5.Location = new System.Drawing.Point(155, 576);
+            this.pictureBox5.Location = new System.Drawing.Point(155, 575);
             this.pictureBox5.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(55, 29);
@@ -812,7 +817,7 @@
             this.freeDisclaimer.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.freeDisclaimer.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.freeDisclaimer.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.freeDisclaimer.Location = new System.Drawing.Point(277, 554);
+            this.freeDisclaimer.Location = new System.Drawing.Point(289, 556);
             this.freeDisclaimer.Name = "freeDisclaimer";
             this.freeDisclaimer.Size = new System.Drawing.Size(246, 40);
             this.freeDisclaimer.TabIndex = 79;
@@ -884,21 +889,60 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gamesListView.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
+            this.gamesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.GameNameIndex,
+            this.ReleaseNameIndex,
+            this.PackageNameIndex,
+            this.VersionCodeIndex,
+            this.ReleaseAPKPathIndex,
+            this.VersionNameIndex});
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesListView.HideSelection = false;
-            this.gamesListView.Location = new System.Drawing.Point(224, 71);
+            this.gamesListView.Location = new System.Drawing.Point(224, 70);
             this.gamesListView.Name = "gamesListView";
             this.gamesListView.Size = new System.Drawing.Size(746, 360);
             this.gamesListView.TabIndex = 6;
             this.gamesListView.UseCompatibleStateImageBehavior = false;
+            this.gamesListView.View = System.Windows.Forms.View.Details;
             this.gamesListView.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
             this.gamesListView.SelectedIndexChanged += new System.EventHandler(this.gamesListView_SelectedIndexChanged);
             this.gamesListView.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.gamesListView.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             this.gamesListView.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.gamesListView_KeyPress);
             this.gamesListView.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.gamesListView_MouseDoubleClick);
+            // 
+            // GameNameIndex
+            // 
+            this.GameNameIndex.Text = "Game Name";
+            this.GameNameIndex.Width = 121;
+            // 
+            // ReleaseNameIndex
+            // 
+            this.ReleaseNameIndex.Text = "Release Name";
+            this.ReleaseNameIndex.Width = 227;
+            // 
+            // PackageNameIndex
+            // 
+            this.PackageNameIndex.Text = "Package Name";
+            this.PackageNameIndex.Width = 87;
+            // 
+            // VersionCodeIndex
+            // 
+            this.VersionCodeIndex.Text = "Version";
+            this.VersionCodeIndex.Width = 109;
+            // 
+            // ReleaseAPKPathIndex
+            // 
+            this.ReleaseAPKPathIndex.Text = "Last Updated";
+            this.ReleaseAPKPathIndex.Width = 116;
+            // 
+            // VersionNameIndex
+            // 
+            this.VersionNameIndex.Text = "Size (MB)";
+            this.VersionNameIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.VersionNameIndex.Width = 82;
             // 
             // searchTextBox
             // 
@@ -1026,9 +1070,9 @@
             this.pictureBox1.ErrorImage = null;
             this.pictureBox1.ImageLocation = global::AndroidSideloader.Properties.Settings.Default.BackPicturePath;
             this.pictureBox1.InitialImage = null;
-            this.pictureBox1.Location = new System.Drawing.Point(217, -2);
+            this.pictureBox1.Location = new System.Drawing.Point(218, -15);
             this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(767, 718);
+            this.pictureBox1.Size = new System.Drawing.Size(767, 751);
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
@@ -1093,7 +1137,7 @@
             this.label6.AutoSize = true;
             this.label6.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label6.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label6.Location = new System.Drawing.Point(828, 9);
+            this.label6.Location = new System.Drawing.Point(825, 7);
             this.label6.Name = "label6";
             this.label6.Size = new System.Drawing.Size(145, 17);
             this.label6.TabIndex = 90;
@@ -1272,7 +1316,7 @@
             // 
             this.gamesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.gamesPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.gamesPictureBox.Location = new System.Drawing.Point(224, 474);
+            this.gamesPictureBox.Location = new System.Drawing.Point(227, 475);
             this.gamesPictureBox.Name = "gamesPictureBox";
             this.gamesPictureBox.Size = new System.Drawing.Size(371, 214);
             this.gamesPictureBox.TabIndex = 84;
@@ -1422,6 +1466,12 @@
         private System.Windows.Forms.PictureBox pictureBox6;
         private System.Windows.Forms.PictureBox pictureBox7;
         private System.Windows.Forms.Label label10;
+        public System.Windows.Forms.ColumnHeader GameNameIndex;
+        public System.Windows.Forms.ColumnHeader ReleaseNameIndex;
+        private System.Windows.Forms.ColumnHeader PackageNameIndex;
+        private System.Windows.Forms.ColumnHeader VersionCodeIndex;
+        private System.Windows.Forms.ColumnHeader ReleaseAPKPathIndex;
+        private System.Windows.Forms.ColumnHeader VersionNameIndex;
     }
 }
 

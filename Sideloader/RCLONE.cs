@@ -92,14 +92,8 @@ namespace AndroidSideloader
             }
             if (!tempGameList.Equals(""))
             {
-                string[] gameListSplited = tempGameList.Split(new[] { '\n' }, 2);
-
-                foreach (string gameProperty in gameListSplited[0].Split(';'))
-                {
-                    gameProperties.Add(gameProperty);
-                }
-                
-                foreach (string game in gameListSplited[1].Split('\n'))
+                string[] gameListSplited = tempGameList.Split(new[] { '\n' });
+                foreach (string game in gameListSplited)
                 {
                     if (game.Length > 1)
                     {
