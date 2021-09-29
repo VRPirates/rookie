@@ -8,22 +8,20 @@ namespace AndroidSideloader
 {
     class Donors
     {
-
-        //This shit sucks but i'll switch to programatically adding indexes from the gamelist txt sometimes maybe
-
         public static int GameNameIndex = 0;
         public static int PackageNameIndex = 1;
         public static int VersionCodeIndex = 2;
         public static int UpdateOrNew = 3;
-
-
-        public static List<string> donorGameProperties = new List<string>();
-        /* Game Name
+         /* Game Name
          * Package Name
          * Version Code
          * Update or New app
          */
+        public static List<string> newAppProperties = new List<string>();
+        public static List<string> donorGameProperties = new List<string>();
+
         public static List<string[]> donorGames = new List<string[]>();
+        public static List<string[]> newApps = new List<string[]>();
         public static void initDonorGames()
         {
             donorGameProperties.Clear();
@@ -43,6 +41,28 @@ namespace AndroidSideloader
                     {
                         string[] splitGame = game.Split(';');
                         donorGames.Add(splitGame);
+                    }
+                }
+            }
+
+
+        }
+        public static void initNewApps()
+        {
+            newApps.Clear();
+            if (!DonorsListViewForm.newAppsForList.Equals(""))
+            {
+                string[] newListSplited = DonorsListViewForm.newAppsForList.Split(new[] { '\n' }, 2);
+                foreach (string newProperty in newListSplited[0].Split(';'))
+                {
+                    newAppProperties.Add(newProperty);
+                }
+                foreach (string game in newListSplited[1].Split('\n'))
+                {
+                    if (game.Length > 1)
+                    {
+                        string[] splitGame = game.Split(';');
+                        newApps.Add(splitGame); 
                     }
                 }
             }

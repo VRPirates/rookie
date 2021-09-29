@@ -58,7 +58,7 @@
             this.checkForUpdatesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(12, 12);
             this.checkForUpdatesCheckBox.Name = "checkForUpdatesCheckBox";
-            this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(148, 22);
+            this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(165, 22);
             this.checkForUpdatesCheckBox.TabIndex = 0;
             this.checkForUpdatesCheckBox.Text = "Check for updates";
             this.checkForUpdatesCheckBox.UseVisualStyleBackColor = true;
@@ -88,7 +88,7 @@
             this.enableMessageBoxesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(12, 39);
             this.enableMessageBoxesCheckBox.Name = "enableMessageBoxesCheckBox";
-            this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(309, 22);
+            this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(347, 22);
             this.enableMessageBoxesCheckBox.TabIndex = 1;
             this.enableMessageBoxesCheckBox.Text = "Enable Message Boxes on task completed";
             this.enableMessageBoxesCheckBox.UseVisualStyleBackColor = true;
@@ -118,7 +118,7 @@
             this.deleteAfterInstallCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(12, 65);
             this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
-            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(288, 22);
+            this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(327, 22);
             this.deleteAfterInstallCheckBox.TabIndex = 3;
             this.deleteAfterInstallCheckBox.Text = "Delete games after download and install";
             this.deleteAfterInstallCheckBox.UseVisualStyleBackColor = true;
@@ -131,7 +131,7 @@
             this.updateConfigCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.updateConfigCheckBox.Location = new System.Drawing.Point(12, 92);
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
-            this.updateConfigCheckBox.Size = new System.Drawing.Size(208, 22);
+            this.updateConfigCheckBox.Size = new System.Drawing.Size(235, 22);
             this.updateConfigCheckBox.TabIndex = 6;
             this.updateConfigCheckBox.Text = "Update config automatically";
             this.updateConfigCheckBox.UseVisualStyleBackColor = true;
@@ -144,7 +144,7 @@
             this.userJsonOnGameInstall.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.userJsonOnGameInstall.Location = new System.Drawing.Point(12, 119);
             this.userJsonOnGameInstall.Name = "userJsonOnGameInstall";
-            this.userJsonOnGameInstall.Size = new System.Drawing.Size(243, 22);
+            this.userJsonOnGameInstall.Size = new System.Drawing.Size(275, 22);
             this.userJsonOnGameInstall.TabIndex = 9;
             this.userJsonOnGameInstall.Text = "Push random user.json on install";
             this.userJsonOnGameInstall.UseVisualStyleBackColor = true;
@@ -170,7 +170,7 @@
             this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.label1.Location = new System.Drawing.Point(40, 273);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(245, 18);
+            this.label1.Size = new System.Drawing.Size(281, 18);
             this.label1.TabIndex = 12;
             this.label1.Text = "Download speed limiter, 0 to disable";
             // 
@@ -302,7 +302,7 @@
             this.CblindBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.CblindBox.Location = new System.Drawing.Point(12, 145);
             this.CblindBox.Name = "CblindBox";
-            this.CblindBox.Size = new System.Drawing.Size(182, 22);
+            this.CblindBox.Size = new System.Drawing.Size(204, 22);
             this.CblindBox.TabIndex = 9;
             this.CblindBox.Text = "Enable colorblind mode";
             this.CblindBox.UseVisualStyleBackColor = true;
@@ -316,7 +316,7 @@
             this.nodevicemodeBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.nodevicemodeBox.Location = new System.Drawing.Point(12, 196);
             this.nodevicemodeBox.Name = "nodevicemodeBox";
-            this.nodevicemodeBox.Size = new System.Drawing.Size(181, 22);
+            this.nodevicemodeBox.Size = new System.Drawing.Size(202, 22);
             this.nodevicemodeBox.TabIndex = 9;
             this.nodevicemodeBox.Text = "Enable no device mode";
             this.nodevicemodeBox.UseVisualStyleBackColor = true;
@@ -329,7 +329,7 @@
             this.bmbfBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.bmbfBox.Location = new System.Drawing.Point(12, 170);
             this.bmbfBox.Name = "bmbfBox";
-            this.bmbfBox.Size = new System.Drawing.Size(281, 22);
+            this.bmbfBox.Size = new System.Drawing.Size(316, 22);
             this.bmbfBox.TabIndex = 9;
             this.bmbfBox.Text = "Enable BMBF song zips drag and drop";
             this.bmbfBox.UseVisualStyleBackColor = true;
@@ -342,7 +342,7 @@
             this.AutoReinstBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.AutoReinstBox.Location = new System.Drawing.Point(12, 222);
             this.AutoReinstBox.Name = "AutoReinstBox";
-            this.AutoReinstBox.Size = new System.Drawing.Size(280, 22);
+            this.AutoReinstBox.Size = new System.Drawing.Size(322, 22);
             this.AutoReinstBox.TabIndex = 9;
             this.AutoReinstBox.Text = "Enable auto reinstall upon install failure";
             this.AutoReinstBox.UseVisualStyleBackColor = true;
@@ -382,6 +382,7 @@
             this.MaximizeBox = false;
             this.Name = "SettingsForm";
             this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings";
             this.TopMost = true;
             this.Load += new System.EventHandler(this.SettingsForm_Load);

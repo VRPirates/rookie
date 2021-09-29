@@ -29,31 +29,17 @@ namespace AndroidSideloader
         /// </summary>
         private void InitializeComponent()
         {
-            this.YesUpdate = new System.Windows.Forms.Button();
             this.SkipUpdate = new System.Windows.Forms.Label();
-            this.UpdateTextBox = new System.Windows.Forms.RichTextBox();
-            this.Reminder = new System.Windows.Forms.Label();
+            this.CurVerLabel = new System.Windows.Forms.Label();
+            this.YesUpdate = new System.Windows.Forms.Button();
             this.UpdateVerLabel = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
+            this.UpdateTextBox = new System.Windows.Forms.RichTextBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.panel3.SuspendLayout();
             this.panel1.SuspendLayout();
-            this.panel2.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // YesUpdate
-            // 
-            this.YesUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.YesUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.YesUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.YesUpdate.ForeColor = System.Drawing.Color.Gainsboro;
-            this.YesUpdate.Location = new System.Drawing.Point(339, 246);
-            this.YesUpdate.Name = "YesUpdate";
-            this.YesUpdate.Size = new System.Drawing.Size(111, 31);
-            this.YesUpdate.TabIndex = 0;
-            this.YesUpdate.Text = "Share App";
-            this.YesUpdate.UseVisualStyleBackColor = false;
-            this.YesUpdate.Click += new System.EventHandler(this.YesUpdate_Click);
             // 
             // SkipUpdate
             // 
@@ -61,40 +47,38 @@ namespace AndroidSideloader
             this.SkipUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.SkipUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.SkipUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
-            this.SkipUpdate.Location = new System.Drawing.Point(390, 278);
+            this.SkipUpdate.Location = new System.Drawing.Point(386, 279);
             this.SkipUpdate.Name = "SkipUpdate";
             this.SkipUpdate.Size = new System.Drawing.Size(64, 13);
             this.SkipUpdate.TabIndex = 4;
             this.SkipUpdate.Text = "skip for now";
             this.SkipUpdate.Click += new System.EventHandler(this.SkipUpdate_Click);
             // 
-            // UpdateTextBox
+            // CurVerLabel
             // 
-            this.UpdateTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.UpdateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.UpdateTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
-            this.UpdateTextBox.ForeColor = System.Drawing.Color.White;
-            this.UpdateTextBox.Location = new System.Drawing.Point(25, 25);
-            this.UpdateTextBox.Margin = new System.Windows.Forms.Padding(6);
-            this.UpdateTextBox.Name = "UpdateTextBox";
-            this.UpdateTextBox.ReadOnly = true;
-            this.UpdateTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.UpdateTextBox.Size = new System.Drawing.Size(416, 209);
-            this.UpdateTextBox.TabIndex = 1;
-            this.UpdateTextBox.Text = "";
-            this.UpdateTextBox.TextChanged += new System.EventHandler(this.UpdateTextBox_TextChanged);
+            this.CurVerLabel.AutoSize = true;
+            this.CurVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.CurVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
+            this.CurVerLabel.ForeColor = System.Drawing.SystemColors.Control;
+            this.CurVerLabel.Location = new System.Drawing.Point(21, 245);
+            this.CurVerLabel.Name = "CurVerLabel";
+            this.CurVerLabel.Size = new System.Drawing.Size(94, 15);
+            this.CurVerLabel.TabIndex = 2;
+            this.CurVerLabel.Text = "Current Version:";
             // 
-            // Reminder
+            // YesUpdate
             // 
-            this.Reminder.AutoSize = true;
-            this.Reminder.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.Reminder.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
-            this.Reminder.ForeColor = System.Drawing.SystemColors.Control;
-            this.Reminder.Location = new System.Drawing.Point(11, 246);
-            this.Reminder.Name = "Reminder";
-            this.Reminder.Size = new System.Drawing.Size(247, 30);
-            this.Reminder.TabIndex = 2;
-            this.Reminder.Text = "Remember! None of this is possible without \r\napp donations!";
+            this.YesUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.YesUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.YesUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
+            this.YesUpdate.ForeColor = System.Drawing.Color.Gainsboro;
+            this.YesUpdate.Location = new System.Drawing.Point(339, 245);
+            this.YesUpdate.Name = "YesUpdate";
+            this.YesUpdate.Size = new System.Drawing.Size(111, 31);
+            this.YesUpdate.TabIndex = 0;
+            this.YesUpdate.Text = "Update Now";
+            this.YesUpdate.UseVisualStyleBackColor = false;
+            this.YesUpdate.Click += new System.EventHandler(this.YesUpdate_Click);
             // 
             // UpdateVerLabel
             // 
@@ -102,70 +86,97 @@ namespace AndroidSideloader
             this.UpdateVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
             this.UpdateVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.UpdateVerLabel.ForeColor = System.Drawing.SystemColors.Control;
-            this.UpdateVerLabel.Location = new System.Drawing.Point(11, 262);
+            this.UpdateVerLabel.Location = new System.Drawing.Point(21, 261);
             this.UpdateVerLabel.Name = "UpdateVerLabel";
-            this.UpdateVerLabel.Size = new System.Drawing.Size(0, 15);
+            this.UpdateVerLabel.Size = new System.Drawing.Size(94, 15);
             this.UpdateVerLabel.TabIndex = 3;
-            // 
-            // panel1
-            // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
-            this.panel1.Controls.Add(this.panel2);
-            this.panel1.Controls.Add(this.UpdateVerLabel);
-            this.panel1.Controls.Add(this.YesUpdate);
-            this.panel1.Controls.Add(this.Reminder);
-            this.panel1.Controls.Add(this.SkipUpdate);
-            this.panel1.Location = new System.Drawing.Point(2, 2);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(462, 297);
-            this.panel1.TabIndex = 5;
+            this.UpdateVerLabel.Text = "Update Version:";
             // 
             // panel2
             // 
             this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Controls.Add(this.panel3);
-            this.panel2.Location = new System.Drawing.Point(12, 10);
+            this.panel2.Location = new System.Drawing.Point(21, 21);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(438, 227);
+            this.panel2.Size = new System.Drawing.Size(432, 218);
             this.panel2.TabIndex = 0;
             // 
             // panel3
             // 
             this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.panel3.Location = new System.Drawing.Point(2, 2);
+            this.panel3.Controls.Add(this.UpdateTextBox);
+            this.panel3.Location = new System.Drawing.Point(24, 24);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(434, 223);
+            this.panel3.Size = new System.Drawing.Size(426, 212);
             this.panel3.TabIndex = 0;
+            // 
+            // UpdateTextBox
+            // 
+            this.UpdateTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.UpdateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.UpdateTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
+            this.UpdateTextBox.ForeColor = System.Drawing.Color.White;
+            this.UpdateTextBox.Location = new System.Drawing.Point(9, 6);
+            this.UpdateTextBox.Margin = new System.Windows.Forms.Padding(6);
+            this.UpdateTextBox.Name = "UpdateTextBox";
+            this.UpdateTextBox.ReadOnly = true;
+            this.UpdateTextBox.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
+            this.UpdateTextBox.Size = new System.Drawing.Size(408, 200);
+            this.UpdateTextBox.TabIndex = 1;
+            this.UpdateTextBox.Text = "";
+            this.UpdateTextBox.TextChanged += new System.EventHandler(this.UpdateTextBox_TextChanged);
+            this.UpdateTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseDown);
+            this.UpdateTextBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseMove);
+            this.UpdateTextBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseUp);
+            // 
+            // panel1
+            // 
+            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.panel1.Controls.Add(this.panel3);
+            this.panel1.Controls.Add(this.panel2);
+            this.panel1.Controls.Add(this.UpdateVerLabel);
+            this.panel1.Controls.Add(this.YesUpdate);
+            this.panel1.Controls.Add(this.CurVerLabel);
+            this.panel1.Controls.Add(this.SkipUpdate);
+            this.panel1.Location = new System.Drawing.Point(-6, -6);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(474, 305);
+            this.panel1.TabIndex = 5;
+            this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseDown);
+            this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseMove);
+            this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseUp);
             // 
             // UpdateForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;
-            this.BackColor = System.Drawing.Color.Gainsboro;
-            this.ClientSize = new System.Drawing.Size(466, 301);
+            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.ClientSize = new System.Drawing.Size(462, 291);
             this.ControlBox = false;
-            this.Controls.Add(this.UpdateTextBox);
             this.Controls.Add(this.panel1);
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "UpdateForm";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.TopMost = true;
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseDown);
+            this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseMove);
+            this.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseUp);
+            this.panel3.ResumeLayout(false);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
-            this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.Button YesUpdate;
         private System.Windows.Forms.Label SkipUpdate;
-        private System.Windows.Forms.RichTextBox UpdateTextBox;
-        private System.Windows.Forms.Label Reminder;
+        private System.Windows.Forms.Label CurVerLabel;
+        private System.Windows.Forms.Button YesUpdate;
         private System.Windows.Forms.Label UpdateVerLabel;
-        private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.RichTextBox UpdateTextBox;
+        private System.Windows.Forms.Panel panel1;
     }
 }

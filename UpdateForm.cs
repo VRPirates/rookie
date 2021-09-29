@@ -12,11 +12,14 @@ namespace AndroidSideloader
 {
     public partial class UpdateForm : Form
     {
+        private bool mouseDown;
+        private Point lastLocation;
+
         public UpdateForm()
         {
             InitializeComponent();
             this.CenterToScreen();
-            CurrentVerLabel.Text += " " + Updater.LocalVersion;
+            CurVerLabel.Text += " " + Updater.LocalVersion;
             UpdateVerLabel.Text += " " + Updater.currentVersion;
             UpdateTextBox.Text = Updater.changelog;
         }
@@ -35,6 +38,28 @@ namespace AndroidSideloader
         private void UpdateTextBox_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void UpdateForm_MouseDown(object sender, MouseEventArgs e)
+        {
+            mouseDown = true;
+            lastLocation = e.Location;
+        }
+
+        private void UpdateForm_MouseMove(object sender, MouseEventArgs e)
+        {
+            if (mouseDown)
+            {
+                this.Location = new Point(
+                    (this.Location.X - lastLocation.X) + e.X, (this.Location.Y - lastLocation.Y) + e.Y);
+
+                this.Update();
+            }
+        }
+
+        private void UpdateForm_MouseUp(object sender, MouseEventArgs e)
+        {
+            mouseDown = false;
         }
     }
 }

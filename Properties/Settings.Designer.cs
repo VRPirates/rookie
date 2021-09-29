@@ -109,7 +109,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 11pt")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 11.25pt, style=Bold")]
         public global::System.Drawing.Font FontStyle {
             get {
                 return ((global::System.Drawing.Font)(this["FontStyle"]));
@@ -684,7 +684,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("29, 29, 29")]
         public global::System.Drawing.Color ComboBoxColor {
             get {
                 return ((global::System.Drawing.Color)(this["ComboBoxColor"]));
@@ -696,7 +696,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("29, 29, 29")]
         public global::System.Drawing.Color SubButtonColor {
             get {
                 return ((global::System.Drawing.Color)(this["SubButtonColor"]));
@@ -708,7 +708,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("29, 29, 29")]
         public global::System.Drawing.Color TextBoxColor {
             get {
                 return ((global::System.Drawing.Color)(this["TextBoxColor"]));
@@ -720,7 +720,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("50, 50, 50")]
         public global::System.Drawing.Color ButtonColor {
             get {
                 return ((global::System.Drawing.Color)(this["ButtonColor"]));
@@ -732,7 +732,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("10, 10, 10")]
+        [global::System.Configuration.DefaultSettingValueAttribute("50, 50, 50")]
         public global::System.Drawing.Color BackColor {
             get {
                 return ((global::System.Drawing.Color)(this["BackColor"]));

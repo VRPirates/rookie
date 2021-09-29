@@ -38,6 +38,7 @@ namespace AndroidSideloader
         public bool keyheld;
         public static string CurrAPK;
         public static string CurrPCKG;
+        List<UploadGame> gamesToUpload = new List<UploadGame>();
         public static bool debugMode = false;
         public bool DeviceConnected = false;
 
@@ -52,9 +53,9 @@ namespace AndroidSideloader
         {
             InitializeComponent();
             //Time between asking for new apps if user clicks No.
-            TimeSpan newDayReference = new TimeSpan(48, 0, 0);
+            TimeSpan newDayReference = new TimeSpan(0, 0, 0);
             //Time between asking for updates after uploading.
-            TimeSpan newDayReference2 = new TimeSpan(24, 0, 0);
+            TimeSpan newDayReference2 = new TimeSpan(0, 0, 0);
             TimeSpan comparison;
             TimeSpan comparison2;
      
@@ -225,7 +226,7 @@ namespace AndroidSideloader
                 freeDisclaimer.Invoke(() => { freeDisclaimer.Dispose(); });
             }).Start();
 
-            progressBar.Style = ProgressBarStyle.Continuous;
+            progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
             {
                 if (!debugMode && Properties.Settings.Default.checkForUpdates)
@@ -236,6 +237,7 @@ namespace AndroidSideloader
                 }
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
 
+                progressBar.Style = ProgressBarStyle.Marquee;
                 ChangeTitle("Initializing Mirrors");
                 initMirrors(true);
                 ChangeTitle("Checking if config is updated and updating config");
@@ -252,6 +254,49 @@ namespace AndroidSideloader
             if (HasInternet)
                 t1.Start();
             while (t1.IsAlive)
+                await Task.Delay(100);
+            Thread t5 = new Thread(() =>
+            {
+                if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+                {
+                    string path = "C:\\RSL\\platform-tools\\adb.exe";
+                    var wakeywakey = ADB.RunCommandToString("C:\\RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
+                    if (wakeywakey.Output.Contains("more than one"))
+                    {
+                        Properties.Settings.Default.Wired = true;
+                        Properties.Settings.Default.Save();
+                    }
+                    else if (wakeywakey.Output.Contains("found"))
+                    {
+                        ADB.WakeDevice();
+                        Properties.Settings.Default.Wired = false;
+                        Properties.Settings.Default.Save();
+                    }
+                }
+
+                if (File.Exists(@"C:\RSL\platform-tools\StoredIP.txt") && !Properties.Settings.Default.Wired)
+                {
+                    string IPcmndfromtxt = File.ReadAllText(@"C:\RSL\platform-tools\StoredIP.txt");
+                    Properties.Settings.Default.IPAddress = IPcmndfromtxt;
+                    Properties.Settings.Default.Save();
+                    var IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
+                    if (IPoutput.Output.Contains("attempt failed") || IPoutput.Output.Contains("refused"))
+                    {
+                        FlexibleMessageBox.Show("Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
+                        Properties.Settings.Default.IPAddress = "";
+                        Properties.Settings.Default.Save();
+                        File.Delete("C:\\RSL\\platform-tools\\StoredIP.txt");
+                    }
+                }
+                else if (!File.Exists(@"C:\RSL\platform-tools\StoredIP.txt"))
+                {
+                    Properties.Settings.Default.IPAddress = "";
+                    Properties.Settings.Default.Save();
+                }
+            });
+            t5.IsBackground = true;
+            t5.Start();
+            while (t5.IsAlive)
                 await Task.Delay(100);
             Thread t2 = new Thread(() =>
             {
@@ -281,70 +326,27 @@ namespace AndroidSideloader
                 t4.Start();
             }
             while (t2.IsAlive)
-                await Task.Delay(100);        
+                await Task.Delay(50);        
             while (t3.IsAlive)
-                await Task.Delay(100);         
+                await Task.Delay(50);         
             while (t4.IsAlive)
-                await Task.Delay(100);        
-            ChangeTitle("Loaded");
+                await Task.Delay(50);        
 
             progressBar.Style = ProgressBarStyle.Marquee;
 
             ChangeTitle("Populating update list, please wait...\n\n");
-            Thread t5 = new Thread(() =>
-            {
-            if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
-            {
-                string path = "C:\\RSL\\platform-tools\\adb.exe";
-                var wakeywakey = ADB.RunCommandToString("C:\\RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
-                if (wakeywakey.Output.Contains("more than one"))
-                {
-                    Properties.Settings.Default.Wired = true;
-                    Properties.Settings.Default.Save();
-                }
-                else if (wakeywakey.Output.Contains("found"))
-                {
-                    ADB.WakeDevice();
-                    Properties.Settings.Default.Wired = false;
-                    Properties.Settings.Default.Save();
-                }
-            }
-
-            if (File.Exists(@"C:\RSL\platform-tools\StoredIP.txt") || !Properties.Settings.Default.Wired)
-            {
-                string IPcmndfromtxt = File.ReadAllText(@"C:\RSL\platform-tools\StoredIP.txt");
-                Properties.Settings.Default.IPAddress = IPcmndfromtxt;
-                Properties.Settings.Default.Save();
-                var IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
-                if (IPoutput.Output.Contains("attempt failed") || IPoutput.Output.Contains("refused"))
-                {
-                    FlexibleMessageBox.Show("Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
-                    Properties.Settings.Default.IPAddress = "";
-                    Properties.Settings.Default.Save();
-                    File.Delete("C:\\RSL\\platform-tools\\StoredIP.txt");
-                }
-            }
-            else if (!File.Exists(@"C:\RSL\platform-tools\StoredIP.txt"))
-            {
-                Properties.Settings.Default.IPAddress = "";
-                Properties.Settings.Default.Save();
-            }
-            });
-            t5.IsBackground = true;
-            t5.Start();
-            while (t5.IsAlive)
-                await Task.Delay(100);
+          
             await CheckForDevice();
-            listappsbtn();
+            if (ADB.DeviceID.Length < 5)
+            {
+                nodeviceonstart = true;
+            }
+                listappsbtn();
             showAvailableSpace();
             intToolTips();
-            ChangeTitle(" \n\n");
             downloadInstallGameButton.Enabled = true;
-            progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
-
             initListView();
-
             string[] files = Directory.GetFiles(Environment.CurrentDirectory);
             foreach (string file in files)
             {
@@ -353,7 +355,7 @@ namespace AndroidSideloader
                 {
                     fileName = fileName.Substring(fileName.IndexOf("\\") + 1);
                 }
-                if (!fileName.Contains(Properties.Settings.Default.CurrentLogName) || !fileName.Contains(Properties.Settings.Default.CurrentCrashName))
+                if (!fileName.Contains(Properties.Settings.Default.CurrentLogName) && !fileName.Contains(Properties.Settings.Default.CurrentCrashName))
                 {
                     if (!fileName.Contains("debuglog") && fileName.EndsWith(".txt"))
                         System.IO.File.Delete(fileName);
@@ -580,16 +582,14 @@ namespace AndroidSideloader
             {
                 progressBar.Style = ProgressBarStyle.Marquee;
                 string path = dialog.FileName;
-                string dirname = Path.GetFileName(path);
-
+                ChangeTitle($"Copying {path} obb to device...");
                 Thread t1 = new Thread(() =>
                 {
-
-                    output += ADB.RunAdbCommandToString($"push -p \"{path}\" \"/sdcard/Android/obb\"");
+                    output += output += ADB.CopyOBB(path);
                 });
                 t1.IsBackground = true;
                 t1.Start();
-                ChangeTitle($"Copying {dirname} obb to device...");
+
                 while (t1.IsAlive)
                 {
                     await Task.Delay(100);
@@ -833,12 +833,12 @@ namespace AndroidSideloader
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                 ulong VersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
-                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{packageName} v{VersionInt}.zip"))
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{packageName} v{VersionInt}.zip");
-                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt}.zip"))
-                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt}.zip");
+                if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}"))
+                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}", true);
+                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip"))
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
+                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip"))
+                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
                 ProcessOutput output = new ProcessOutput("", "");
                 ChangeTitle("Extracting APK....");
 
@@ -867,7 +867,7 @@ namespace AndroidSideloader
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
                 ChangeTitle("Zipping extracted application...");
-                string cmd = $"7z a \"{GameName} v{VersionInt}.zip\" .\\{packageName}\\*";
+                string cmd = $"7z a \"{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
                 string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
                 progressBar.Style = ProgressBarStyle.Continuous;
                 Thread t4 = new Thread(() =>
@@ -888,8 +888,8 @@ namespace AndroidSideloader
                 {
                     string currentlyuploading = GameName;
                     ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
-                    string Uploadoutput = RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip\" RSL-gameuploads:").Output;
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt}.zip");
+                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" RSL-gameuploads:");
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
                     FlexibleMessageBox.Show($"Upload of {currentlyuploading} is complete! Thank you for your contribution!");
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
                 });
@@ -902,13 +902,13 @@ namespace AndroidSideloader
                     await Task.Delay(100);
                 }
  
-                ChangeTitle(" \n\n");
+                ChangeTitle("                         \n\n");
                 isuploading = false;
                 ULGif.Visible = false;
                 ULLabel.Visible = false;
                 ULGif.Enabled = false;
             }
-            else MessageBox.Show("You must wait until each app is finished extracting to start another.");
+            else MessageBox.Show("You must wait until each app is finished uploading to start another.");
         }
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
@@ -946,6 +946,7 @@ namespace AndroidSideloader
             m_combo.Items.RemoveAt(m_combo.SelectedIndex);
         }
 
+
         private async void copyBulkObbButton_Click(object sender, EventArgs e)
         {
             ADB.WakeDevice();
@@ -975,6 +976,15 @@ namespace AndroidSideloader
 
         private async void Form1_DragDrop(object sender, DragEventArgs e)
         {
+            if (nodeviceonstart && !updatesnotified)
+            {
+                await CheckForDevice();
+                ChangeTitlebarToDevice();
+                showAvailableSpace();
+                ChangeTitle("Device now detected... refreshing update list.");
+                listappsbtn();
+                initListView();
+            }
             DragDropLbl.Visible = false;
             ProcessOutput output = new ProcessOutput("", "");
             ADB.WakeDevice();
@@ -990,42 +1000,27 @@ namespace AndroidSideloader
                 string path = $"{dir}\\Install.txt";
                 if (Directory.Exists(data))
                 {
+                    if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
+                    {
+                        Program.form.ChangeTitle($"Copying {data} to device...");
+
+                        Thread t2 = new Thread(() =>
+
+                        {
+                            output += ADB.CopyOBB(data);
+                        });
+                        t2.IsBackground = true;
+                        t2.Start();
+
+                        while (t2.IsAlive)
+                            await Task.Delay(100);
+
+                        Program.form.ChangeTitle("");
+                        Properties.Settings.Default.CurrPckg = dir;
+                        Properties.Settings.Default.Save();
+                    }
                     Program.form.ChangeTitle($"");
                     string extension = Path.GetExtension(data);
-                    if (extension == ".apk")
-                    {
-
-                        if (File.Exists($"{Environment.CurrentDirectory}\\Install.txt"))
-                        {
-
-
-                            DialogResult dialogResult = FlexibleMessageBox.Show("Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
-                            if (dialogResult == DialogResult.Cancel)
-                                return;
-                            else
-                                ChangeTitle("Sideloading custom install.txt automatically.");
-
-                            Thread t2 = new Thread(() =>
-
-                            {
-                                output += Sideloader.RunADBCommandsFromFile(path);
-
-                            });
-                            t2.IsBackground = true;
-                            t2.Start();
-
-                            while (t2.IsAlive)
-                                await Task.Delay(100);
-
-                            Logger.Log($"Sideloading {path}");
-                            if (output.Error.Contains("mkdir"))
-                                output.Error = "";
-                            if (output.Error.Contains("reserved"))
-                                output.Output = "";
-
-                            ChangeTitle(" \n\n");
-                        }
-                    }
                     string[] files = Directory.GetFiles(data);
                     foreach (string file2 in files)
                     {
@@ -1295,12 +1290,18 @@ namespace AndroidSideloader
         }
         List<String> newGamesList = new List<string>();
         List<String> newGamesToUploadList = new List<string>();
-        private List<UploadGame> gamesToUpload = new List<UploadGame>();
+
         private List<UpdateGameData> gamesToAskForUpdate = new List<UpdateGameData>();
         public static bool loaded = false;
         public static string rookienamelist;
         public static string rookienamelist2;
         private bool errorOnList;
+        public static bool updates = false;
+        public static bool newapps = false;
+        public static int newint = 0;
+        public static int updint = 0;
+        public static bool nodeviceonstart = false;
+        public static bool either = false;
         private async void initListView()
         {
             rookienamelist = "";
@@ -1333,80 +1334,98 @@ namespace AndroidSideloader
             List<String> blacklistItems = blacklist.ToList();
             List<String> whitelistItems = whitelist.ToList();
             errorOnList = false;
-
             //This is for black list, but temporarly will be whitelist
             //this list has games that we are actually going to upload
             newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
-
-            foreach (string[] release in SideloaderRCLONE.games)
+            progressBar.Style = ProgressBarStyle.Marquee;
+            if (SideloaderRCLONE.games.Count > 5)
             {
-                rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
-                if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
+                Thread t1 = new Thread(() =>
                 {
-                    rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                    rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
-                }
-
-                ListViewItem Game = new ListViewItem(release);
-
-                foreach (string packagename in packageList)
-                {
-                    if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
+                    foreach (string[] release in SideloaderRCLONE.games)
                     {
-                        if (Properties.Settings.Default.QblindOn)
+                        rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
+                        if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                         {
-                            Game.BackColor = Color.FromArgb(0, 112, 138);
+                            rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
+                            rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                         }
-                        else
-                        {
-                            Game.BackColor = Color.Green;
-                        }
-                        string InstalledVersionCode;
-                        InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
-                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                        try
-                        {
-                            ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                            ulong cloudVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
 
-                            //Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
-                            if (installedVersionInt < cloudVersionInt)
+                        ListViewItem Game = new ListViewItem(release);
+
+                        foreach (string packagename in packageList)
+                        {
+                            if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                             {
                                 if (Properties.Settings.Default.QblindOn)
-                                    Game.BackColor = Color.FromArgb(120, 0, 0);
-                                else
-                                    Game.BackColor = Color.FromArgb(102, 77, 0);
-                            }
-
-                            if (installedVersionInt > cloudVersionInt)
-                            {
-                                bool dontget = false;
-                                if (blacklist.Contains(packagename))
-                                    dontget = true;
-                                if (!dontget)
-                                    Game.BackColor = Color.FromArgb(20, 20, 20);
-                                string RlsName = Sideloader.PackageNametoGameName(packagename);
-                                string GameName = Sideloader.gameNameToSimpleName(RlsName);
-
-                                if (!dontget && !updatesnotified && !isworking)
                                 {
-                                    UpdateGameData gameData = new UpdateGameData(GameName, packagename, installedVersionInt);
-                                    gamesToAskForUpdate.Add(gameData);
+                                    Game.BackColor = Color.FromArgb(0, 112, 138);
+                                }
+                                else
+                                {
+                                    Game.BackColor = Color.Green;
+                                }
+                                string InstalledVersionCode;
+                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                try
+                                {
+                                    ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                    ulong cloudVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+
+                                    //Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
+                                    if (installedVersionInt < cloudVersionInt)
+                                    {
+                                        if (Properties.Settings.Default.QblindOn)
+                                            Game.BackColor = Color.FromArgb(120, 0, 0);
+                                        else
+                                            Game.BackColor = Color.FromArgb(102, 77, 0);
+                                    }
+
+                                    if (installedVersionInt > cloudVersionInt)
+                                    {
+                                        bool dontget = false;
+                                        if (blacklist.Contains(packagename))
+                                            dontget = true;
+                                        if (!dontget)
+                                            Game.BackColor = Color.FromArgb(20, 20, 20);
+                                        string RlsName = Sideloader.PackageNametoGameName(packagename);
+                                        string GameName = Sideloader.gameNameToSimpleName(RlsName);
+
+                                        if (!dontget && !updatesnotified && !isworking && updint < 6 && !Properties.Settings.Default.SubmittedUpdates.Contains(packagename))
+                                        {
+                                            either = true;
+                                            updates = true;
+                                            updint++;
+                                            UpdateGameData gameData = new UpdateGameData(GameName, packagename, installedVersionInt);
+                                            gamesToAskForUpdate.Add(gameData);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Game.BackColor = Color.FromArgb(121, 25, 194);
+                                    Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
+                                    Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
                                 }
                             }
                         }
-                        catch (Exception ex)
-                        {
-                            Game.BackColor = Color.FromArgb(121, 25, 194);
-                            Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
-                            ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                            Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
-                        }
+                        GameList.Add(Game);
                     }
-                }
-                GameList.Add(Game);
+                });
+                t1.IsBackground = true;
+                t1.Start();
+                while (t1.IsAlive)
+                    await Task.Delay(100);
             }
+            else
+            {
+                SwitchMirrors();
+                initListView();
+            }
+                
 
             if (blacklistItems.Count == 0 && GameList.Count == 0 && !Properties.Settings.Default.nodevicemode)
             {
@@ -1435,11 +1454,6 @@ namespace AndroidSideloader
                 gamesListView.Columns[5].Text = "Size (MB)";
             }
 
-            ListViewItem[] arr = GameList.ToArray();
-            gamesListView.BeginUpdate();
-            gamesListView.Items.Clear();
-            gamesListView.Items.AddRange(arr);
-            gamesListView.EndUpdate();
             try
             {
                 if (topItemIndex != 0)
@@ -1447,195 +1461,217 @@ namespace AndroidSideloader
             }
             catch (Exception ex)
             { }
-            if (!errorOnList)
+            Thread t2 = new Thread(() =>
             {
-
-                //This is for games that we already have on rookie and user has an update
-                if (blacklistItems.Count > 100 && rookieList.Count > 100)
+                if (!errorOnList)
                 {
-                    foreach (UpdateGameData gameData in gamesToAskForUpdate)
+
+                    //This is for games that we already have on rookie and user has an update
+                    if (blacklistItems.Count > 100 && rookieList.Count > 100)
                     {
-                        bool onupdatelist = false;
-                        string[] UpdatedApps = Properties.Settings.Default.SubmittedUpdates.Split('\n');
-                        foreach (string app in UpdatedApps)
+                        foreach (UpdateGameData gameData in gamesToAskForUpdate)
                         {
-                            if (app.Equals(gameData.Packagename))
-                                onupdatelist = true;
-                        }
-                        if (!updatesnotified && !onupdatelist)
-                        { 
-                            DonorApps += gameData.GameName + ";" + gameData.Packagename + ";" + gameData.InstalledVersionInt + ";" + "Newer version than RSL" + "\n";
-
-                     
-                            Properties.Settings.Default.Save();
-
-                        }
-                        
-                    }
-                }
-
-                //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
-                foreach (string newGamesToUpload in newGamesToUploadList)
-                {
-                    string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-
-                    //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                    string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                    apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                    apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                    if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
-                        File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                    ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                    string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                    string workingpath = "C:\\RSL\\platform-tools\\aapt.exe";
-                    string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                    ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                    ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                    ReleaseName = ReleaseName.Replace("'", "");
-                    File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                    //end
-
-                    string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                    Logger.Log(newGamesToUpload);
-                    if (!updatesnotified)
-                    {
-                        DialogResult dialogResult = FlexibleMessageBox.Show($"You have an in demand game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                        if (dialogResult == DialogResult.Yes)
-                        {
-                            string InstalledVersionCode;
-                            InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                            ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                        }
-                        else
-                        {
+                            if (!updatesnotified && !Properties.Settings.Default.SubmittedUpdates.Contains(gameData.Packagename))
+                            {
+                                either = true;
+                                updates = true;
+                                DonorApps += gameData.GameName + ";" + gameData.Packagename + ";" + gameData.InstalledVersionInt + ";" + "Update" + "\n";
+                            }
 
                         }
                     }
-                }
-                //This is for games that are not blacklisted and we dont have on rookie
-                if (blacklistItems.Count > 100 && rookieList.Count > 100)
-                {
-                
-                    foreach (string newGamesToUpload in newGamesList)
+
+                    //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
+                    /* foreach (string newGamesToUpload in newGamesToUploadList)
+                       {
+                           string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+
+                           //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                           string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                           apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                           apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                           if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                               File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                           ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                           string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                           string workingpath = "C:\\RSL\\platform-tools\\aapt.exe";
+                           string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                           ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                           ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                           ReleaseName = ReleaseName.Replace("'", "");
+                           File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                           //end
+
+                           string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                           Logger.Log(newGamesToUpload);
+                           if (!updatesnotified)
+                           {
+                               DialogResult dialogResult = FlexibleMessageBox.Show($"You have an in demand game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                               if (dialogResult == DialogResult.Yes)
+                               {
+                                   string InstalledVersionCode;
+                                   InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                                   InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                   InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                   ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                               }
+                               else
+                               {
+                                   return;
+                               }
+                           }
+                       }*/
+                    //This is for games that are not blacklisted and we dont have on rookie
+                    if (blacklistItems.Count > 100 && rookieList.Count > 100)
                     {
-                        bool onapplist = false;
-                        string[] NewApp = Properties.Settings.Default.NonAppPackages.Split('\n');
-                        foreach (string app in NewApp)
+
+                        foreach (string newGamesToUpload in newGamesList)
                         {
-                            if (app.Equals(newGamesToUpload))
+                            bool onapplist = false;
+                            string NewApp = Properties.Settings.Default.NonAppPackages;
+                            if (NewApp.Contains(newGamesToUpload))
                                 onapplist = true;
-                        }
-                        string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+                            string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
 
-
-                        if (!updatesnotified && !onapplist)
-                        {
-                            //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                            string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                            apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                            apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                            if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                            if (!updatesnotified && !onapplist && newint < 6)
+                            {
+                                either = true;
+                                newapps = true;
+                                //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                                string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                                apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                                apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                                if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                                    File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                                ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                                string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                                string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
+                                string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                                ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                                ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                                ReleaseName = ReleaseName.Replace("'", "");
                                 File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                            ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                            string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                            string workingpath = $"C:\\RSL\\platform-tools\\aapt.exe";
-                            string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                            ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                            ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                            ReleaseName = ReleaseName.Replace("'", "");
-                            File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                            if (ReleaseName.Contains("Microsoft Windows"))
-                                ReleaseName = RlsName;
-                            //end
-                            string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                            //Logger.Log(newGamesToUpload);
-                            string InstalledVersionCode;
-                            InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                            InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                            ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                            DonorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "Not on RSL" + "\n";
+                                if (ReleaseName.Contains("Microsoft Windows"))
+                                    ReleaseName = RlsName;
+                                //end
+                                string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                                //Logger.Log(newGamesToUpload);
+                                string InstalledVersionCode;
+                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                DonorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "New App" + "\n";
+                                newint++;
+                            }
                         }
                     }
-
                 }
-                DonorsListViewForm DonorForm = new DonorsListViewForm();
-                DonorForm.ShowDialog(); 
-                updatesnotified = true;
-
-
-                if (!isworking && gamesToUpload.Count > 0)
-                {
-                    ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
-                    ULGif.Visible = true;
-                    ULLabel.Visible = true;
-                    ULGif.Enabled = true;
-                    isworking = true;
-
-                    foreach (UploadGame game in gamesToUpload)
-                    {
-
-                        Thread t3 = new Thread(() =>
-                        {
-                            string packagename = Sideloader.gameNameToPackageName(game.Uploadgamename);
-                            if (File.Exists($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip"))
-                                File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
-                            string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                            string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" .\\{game.Pckgcommand}\\*";
-                            ChangeTitle("Zipping extracted application...");
-                            ADB.RunCommandToString(cmd, path);
-                            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
-                            ChangeTitle("Uploading to drive, you may continue to use Rookie while it uploads.");
-                            RCLONE.runRcloneCommand(game.Uploadcommand);
-                            File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip");
-
-                        });
-                        t3.IsBackground = true;
-                        t3.Start();
-                        while (t3.IsAlive)
-                        {
-                            isuploading = true;
-                            await Task.Delay(100);
-                        }
-                    }
-                    gamesToUpload.Clear();
-                    isworking = false;
-                    isuploading = false;
-                    ULGif.Visible = false;
-                    ULLabel.Visible = false;
-                    ULGif.Enabled = false;
-                    ChangeTitle(" \n\n");
-                }
-               if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
-                {
-                    Random r = new Random();
-                    int x = r.Next(9999);
-                    int y = x;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\pckgs{y}.txt", Properties.Settings.Default.NonAppPackages);
-                    string path = $"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe";
-
-                    Thread t1 = new Thread(() =>
-                    {
-                        ADB.RunCommandToString($"\"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe\" copy \"{Properties.Settings.Default.MainDir}\\pckgs{y}.txt\" VRP-debuglogs:", path);
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\pckgs{y}.txt");
-                    });
-                    t1.IsBackground = true;
-                    t1.Start();
-
-                    while (t1.IsAlive)
-                        await Task.Delay(1000);
-                    Properties.Settings.Default.ListUpped = true;
-                    Properties.Settings.Default.Save();
-                }
+            });
+            t2.IsBackground = true;
+            t2.Start();
+            while (t2.IsAlive)
+            {
+                await Task.Delay(100);
             }
+            progressBar.Style = ProgressBarStyle.Continuous;
+
+            if (either && !updatesnotified)
+            {
+                ChangeTitle("                                                \n\n");
+                DonorsListViewForm DonorForm = new DonorsListViewForm();
+                DonorForm.ShowDialog();
+                this.Focus();
+            }
+            ChangeTitle("Populating update list...                               \n\n");
+            ListViewItem[] arr = GameList.ToArray();
+            gamesListView.BeginUpdate();
+            gamesListView.Items.Clear();
+            gamesListView.Items.AddRange(arr);
+            gamesListView.EndUpdate();
+            ChangeTitle("                                                \n\n");
             loaded = true;
         }
 
-        public async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt)
+        public static async void DoUpload()
+        {
+            Program.form.ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
+            Program.form.ULGif.Visible = true;
+            Program.form.ULLabel.Visible = true;
+            Program.form.ULGif.Enabled = true;
+            isworking = true;
+
+            foreach (UploadGame game in Program.form.gamesToUpload)
+            {
+
+                Thread t3 = new Thread(() =>
+                {
+                    string packagename = game.Pckgcommand;
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip"))
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
+                    string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                    string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" .\\{game.Pckgcommand}\\*";
+                    Program.form.ChangeTitle("Zipping extracted application...");
+                    ADB.RunCommandToString(cmd, path);
+                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                    Program.form.ChangeTitle("Uploading to drive, you may continue to use Rookie while it uploads.");
+                    RCLONE.runRcloneCommand(game.Uploadcommand);
+                    if (game.isUpdate)
+                    {
+                        Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + ("\n");
+                        Properties.Settings.Default.Save();
+                    }
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip");
+
+                });
+                t3.IsBackground = true;
+                t3.Start();
+                while (t3.IsAlive)
+                {
+                    isuploading = true;
+                    await Task.Delay(100);
+                }
+            }
+            Program.form.gamesToUpload.Clear();
+            isworking = false;
+            isuploading = false;
+            Program.form.ULGif.Visible = false;
+            Program.form.ULLabel.Visible = false;
+            Program.form.ULGif.Enabled = false;
+            Program.form.ChangeTitle(" \n\n");
+        }
+
+        public static async void newpackageupload()
+        {
+              if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
+            {
+                Random r = new Random();
+                int x = r.Next(9999);
+                int y = x;
+                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\FreeOrNonVR{y}.txt", Properties.Settings.Default.NonAppPackages);
+                string path = $"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe";
+
+                Thread t1 = new Thread(() =>
+                {
+                    ADB.RunCommandToString($"\"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe\" copy \"{Properties.Settings.Default.MainDir}\\FreeOrNonVR{y}.txt\" VRP-debuglogs:InstalledGamesList", path);
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\FreeOrNonVR{y}.txt");
+                });
+                t1.IsBackground = true;
+                t1.Start();
+
+                while (t1.IsAlive)
+                    await Task.Delay(100);
+                Properties.Settings.Default.ListUpped = true;
+                Properties.Settings.Default.Save();
+
+            }
+        }
+
+
+        public async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt, bool isupdate)
         {
             progressBar.Style = ProgressBarStyle.Marquee;
+            ChangeTitle("Extracting APK file....");
             Thread t1 = new Thread(() =>
             {
                 Sideloader.getApk(packagename);
@@ -1644,7 +1680,7 @@ namespace AndroidSideloader
             t1.Start();
 
             while (t1.IsAlive)
-                await Task.Delay(1000);
+                await Task.Delay(100);
             ChangeTitle("Extracting obb if it exists....");
             Thread t2 = new Thread(() =>
             {
@@ -1654,20 +1690,18 @@ namespace AndroidSideloader
             t2.Start();
 
             while (t2.IsAlive)
-                await Task.Delay(1000);
+                await Task.Delay(100);
             string HWID = SideloaderUtilities.UUID();
             File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packagename}\\HWID.txt", HWID);
             progressBar.Style = ProgressBarStyle.Continuous;
             UploadGame game = new UploadGame();
+
+            game.isUpdate = isupdate;
             game.Pckgcommand = packagename;
             game.Uploadgamename = GameName;
             game.Uploadversion = installedVersionInt;
             game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" RSL-gameuploads:";
-
-      
             gamesToUpload.Add(game);
-
-            ChangeTitle(" \n\n");
         }
         private void initMirrors(bool random)
         {
@@ -1813,7 +1847,6 @@ without him none of this would be possible
             while (t1.IsAlive)
                 await Task.Delay(100);
             initListView();
-            progressBar.Style = ProgressBarStyle.Continuous;
             isLoading = false;
 
             ChangeTitle(" \n\n");
@@ -1849,14 +1882,10 @@ without him none of this would be possible
                 if (reset)
                 {
                     remotesList.SelectedIndex--;
-                    SideloaderRCLONE.initGames(currentRemote);
-                    initListView();
                 }
                 if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
                 {
                     remotesList.SelectedIndex++;
-                    SideloaderRCLONE.initGames(currentRemote);
-                    initListView();
                     steps++;
                 }
             });
@@ -1865,6 +1894,16 @@ without him none of this would be possible
         private async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
+                if (nodeviceonstart && !updatesnotified)
+                {
+                    await CheckForDevice();
+                    ChangeTitlebarToDevice();
+                    showAvailableSpace();
+                    ChangeTitle("Device now detected... refreshing update list.");
+                    listappsbtn();
+                    initListView();     
+                }
+               
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (gamesListView.SelectedItems.Count == 0) return;
                 string namebox = gamesListView.SelectedItems[0].ToString();
@@ -2010,7 +2049,7 @@ without him none of this would be possible
                         }
                         catch { }
 
-                        await Task.Delay(1000);
+                        await Task.Delay(100);
 
 
                     }
@@ -2187,7 +2226,7 @@ without him none of this would be possible
                 }
                 else
                 {
-                    DialogResult dialogResult2 = FlexibleMessageBox.Show("This install is taking an usual amount of time, you can keep waiting or cancel the install.\n" +
+                    DialogResult dialogResult2 = FlexibleMessageBox.Show("This install is taking an unusual amount of time, you can keep waiting or cancel the install.\n" +
                         "Would you like to cancel the installation?", "Cancel install?", MessageBoxButtons.YesNo);
                     if (dialogResult2 == DialogResult.Yes)
                     {
@@ -2851,17 +2890,29 @@ without him none of this would be possible
 
                 while (t2.IsAlive)
                     await Task.Delay(100);
-                if (!Directory.Exists($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})"))
+
+                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip"))
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
+
+                string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
+                Program.form.ChangeTitle("Zipping extracted application...");
+                Thread t3 = new Thread(() =>
                 {
-                    Directory.CreateDirectory($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})");
-                }
-                else
-                {
-                    Directory.Delete($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})", true);
-                    Directory.CreateDirectory($"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})");
-                }
-                Directory.Move($"{Properties.Settings.Default.MainDir}\\{packageName}", $"{Environment.SpecialFolder.Desktop}\\{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})");
-                FlexibleMessageBox.Show($"{m_combo.SelectedItem.ToString()} pulled to:\n\n{m_combo.SelectedItem.ToString()}.{packageName}.(v{VersionInt})\n\nOn your desktop!");
+                    ADB.RunCommandToString(cmd, path);
+                });
+                t3.IsBackground = true;
+                t3.Start();
+
+                while (t3.IsAlive)
+                    await Task.Delay(100);
+                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip"))
+                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
+                Directory.Move($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
+                Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                Program.form.ChangeTitle("                                   \n\n");
+                progressBar.Style = ProgressBarStyle.Continuous;
+                FlexibleMessageBox.Show($"{GameName} pulled to:\n\n{GameName} v{VersionInt} {packageName}.zip\n\nOn your desktop!");
             }
         }
     }

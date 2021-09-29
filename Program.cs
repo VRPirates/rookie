@@ -19,7 +19,6 @@ namespace AndroidSideloader
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-
             form = new MainForm();
             Application.Run(form);
             //form.Show();

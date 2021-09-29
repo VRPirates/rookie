@@ -371,7 +371,7 @@ namespace AndroidSideloader
             this.label7.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label7.Location = new System.Drawing.Point(13, 532);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(56, 18);
+            this.label7.Size = new System.Drawing.Size(63, 18);
             this.label7.TabIndex = 3;
             this.label7.Text = "Fov - X";
             this.label7.Visible = false;
@@ -386,7 +386,7 @@ namespace AndroidSideloader
             this.label8.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label8.Location = new System.Drawing.Point(191, 532);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(55, 18);
+            this.label8.Size = new System.Drawing.Size(62, 18);
             this.label8.TabIndex = 3;
             this.label8.Text = "Fov - Y";
             this.label8.Visible = false;
@@ -401,7 +401,7 @@ namespace AndroidSideloader
             this.label9.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label9.Location = new System.Drawing.Point(12, 583);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(95, 18);
+            this.label9.Size = new System.Drawing.Size(107, 18);
             this.label9.TabIndex = 3;
             this.label9.Text = "Refresh Rate";
             this.label9.Visible = false;
@@ -416,7 +416,7 @@ namespace AndroidSideloader
             this.label6.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label6.Location = new System.Drawing.Point(93, 484);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(173, 18);
+            this.label6.Size = new System.Drawing.Size(194, 18);
             this.label6.TabIndex = 3;
             this.label6.Text = "Enter Custom Username";
             this.label6.Visible = false;
@@ -431,7 +431,7 @@ namespace AndroidSideloader
             this.label5.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label5.Location = new System.Drawing.Point(16, 434);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(337, 18);
+            this.label5.Size = new System.Drawing.Size(385, 18);
             this.label5.TabIndex = 3;
             this.label5.Text = "Custom Resolution Width (Height auto calculated)";
             this.label5.Visible = false;
@@ -446,7 +446,7 @@ namespace AndroidSideloader
             this.ResolutionLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.ResolutionLabel.Location = new System.Drawing.Point(9, 180);
             this.ResolutionLabel.Name = "ResolutionLabel";
-            this.ResolutionLabel.Size = new System.Drawing.Size(153, 18);
+            this.ResolutionLabel.Size = new System.Drawing.Size(175, 18);
             this.ResolutionLabel.TabIndex = 3;
             this.ResolutionLabel.Text = "Resolution (0=default)";
             // 

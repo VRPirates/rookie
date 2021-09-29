@@ -182,7 +182,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             if (File.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk"))
                 File.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk");
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
-           
+
             if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
                 Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
 
