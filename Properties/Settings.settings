@@ -168,10 +168,10 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="ComboBoxColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">29, 29, 29</Value>
+      <Value Profile="(Default)">40, 40, 40</Value>
     </Setting>
     <Setting Name="SubButtonColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">64, 64, 64</Value>
+      <Value Profile="(Default)">40, 40, 40</Value>
     </Setting>
     <Setting Name="TextBoxColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">29, 29, 29</Value>

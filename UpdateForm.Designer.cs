@@ -33,7 +33,6 @@ namespace AndroidSideloader
             this.CurVerLabel = new System.Windows.Forms.Label();
             this.YesUpdate = new System.Windows.Forms.Button();
             this.UpdateVerLabel = new System.Windows.Forms.Label();
-            this.panel2 = new System.Windows.Forms.Panel();
             this.panel3 = new System.Windows.Forms.Panel();
             this.UpdateTextBox = new System.Windows.Forms.RichTextBox();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -44,7 +43,7 @@ namespace AndroidSideloader
             // SkipUpdate
             // 
             this.SkipUpdate.AutoSize = true;
-            this.SkipUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.SkipUpdate.BackColor = System.Drawing.Color.Transparent;
             this.SkipUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 8F);
             this.SkipUpdate.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(100)))), ((int)(((byte)(100)))), ((int)(((byte)(100)))));
             this.SkipUpdate.Location = new System.Drawing.Point(386, 279);
@@ -57,7 +56,7 @@ namespace AndroidSideloader
             // CurVerLabel
             // 
             this.CurVerLabel.AutoSize = true;
-            this.CurVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.CurVerLabel.BackColor = System.Drawing.Color.Transparent;
             this.CurVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.CurVerLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.CurVerLabel.Location = new System.Drawing.Point(21, 245);
@@ -68,10 +67,13 @@ namespace AndroidSideloader
             // 
             // YesUpdate
             // 
-            this.YesUpdate.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.YesUpdate.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.YesUpdate.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.YesUpdate.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.YesUpdate.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.YesUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.YesUpdate.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.YesUpdate.ForeColor = System.Drawing.Color.Gainsboro;
+            this.YesUpdate.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.YesUpdate.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.YesUpdate.Location = new System.Drawing.Point(339, 245);
             this.YesUpdate.Name = "YesUpdate";
             this.YesUpdate.Size = new System.Drawing.Size(111, 31);
@@ -83,7 +85,7 @@ namespace AndroidSideloader
             // UpdateVerLabel
             // 
             this.UpdateVerLabel.AutoSize = true;
-            this.UpdateVerLabel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.UpdateVerLabel.BackColor = System.Drawing.Color.Transparent;
             this.UpdateVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
             this.UpdateVerLabel.ForeColor = System.Drawing.SystemColors.Control;
             this.UpdateVerLabel.Location = new System.Drawing.Point(21, 261);
@@ -92,30 +94,24 @@ namespace AndroidSideloader
             this.UpdateVerLabel.TabIndex = 3;
             this.UpdateVerLabel.Text = "Update Version:";
             // 
-            // panel2
-            // 
-            this.panel2.BackColor = System.Drawing.Color.Gray;
-            this.panel2.Location = new System.Drawing.Point(21, 21);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(432, 218);
-            this.panel2.TabIndex = 0;
-            // 
             // panel3
             // 
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.panel3.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.panel3.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel3.Controls.Add(this.UpdateTextBox);
-            this.panel3.Location = new System.Drawing.Point(24, 24);
+            this.panel3.Location = new System.Drawing.Point(21, 19);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(426, 212);
+            this.panel3.Size = new System.Drawing.Size(432, 218);
             this.panel3.TabIndex = 0;
             // 
             // UpdateTextBox
             // 
-            this.UpdateTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.UpdateTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.ComboBoxColor;
             this.UpdateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.UpdateTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ComboBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.UpdateTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.25F);
             this.UpdateTextBox.ForeColor = System.Drawing.Color.White;
-            this.UpdateTextBox.Location = new System.Drawing.Point(9, 6);
+            this.UpdateTextBox.Location = new System.Drawing.Point(12, 8);
             this.UpdateTextBox.Margin = new System.Windows.Forms.Padding(6);
             this.UpdateTextBox.Name = "UpdateTextBox";
             this.UpdateTextBox.ReadOnly = true;
@@ -130,13 +126,13 @@ namespace AndroidSideloader
             // 
             // panel1
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.panel1.Controls.Add(this.panel3);
-            this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.UpdateVerLabel);
             this.panel1.Controls.Add(this.YesUpdate);
             this.panel1.Controls.Add(this.CurVerLabel);
             this.panel1.Controls.Add(this.SkipUpdate);
+            this.panel1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel1.Location = new System.Drawing.Point(-6, -6);
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(474, 305);
@@ -174,7 +170,6 @@ namespace AndroidSideloader
         private System.Windows.Forms.Label CurVerLabel;
         private System.Windows.Forms.Button YesUpdate;
         private System.Windows.Forms.Label UpdateVerLabel;
-        private System.Windows.Forms.Panel panel2;
         private System.Windows.Forms.Panel panel3;
         private System.Windows.Forms.RichTextBox UpdateTextBox;
         private System.Windows.Forms.Panel panel1;

@@ -41,13 +41,14 @@ namespace AndroidSideloader
             // NewAppsListView
             // 
             this.NewAppsListView.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
-            this.NewAppsListView.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.NewAppsListView.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.NewAppsListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.NewAppsListView.CausesValidation = false;
             this.NewAppsListView.CheckBoxes = true;
             this.NewAppsListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.GameNameIndex,
             this.PackageNameIndex});
+            this.NewAppsListView.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.NewAppsListView.ForeColor = System.Drawing.Color.White;
             this.NewAppsListView.FullRowSelect = true;
             this.NewAppsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
@@ -74,9 +75,13 @@ namespace AndroidSideloader
             // 
             // NewAppsButton
             // 
+            this.NewAppsButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.NewAppsButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.NewAppsButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.NewAppsButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.NewAppsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.NewAppsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F);
-            this.NewAppsButton.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.NewAppsButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.NewAppsButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.NewAppsButton.Location = new System.Drawing.Point(12, 212);
             this.NewAppsButton.Name = "NewAppsButton";
             this.NewAppsButton.Size = new System.Drawing.Size(288, 29);
@@ -90,8 +95,9 @@ namespace AndroidSideloader
             // 
             // panel2
             // 
-            this.panel2.BackColor = System.Drawing.Color.Gray;
+            this.panel2.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
             this.panel2.Controls.Add(this.NewAppsListView);
+            this.panel2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel2.Location = new System.Drawing.Point(9, 31);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(295, 175);
@@ -117,12 +123,13 @@ namespace AndroidSideloader
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(29)))), ((int)(((byte)(29)))), ((int)(((byte)(29)))));
+            this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.ClientSize = new System.Drawing.Size(313, 248);
             this.ControlBox = false;
             this.Controls.Add(this.label2);
             this.Controls.Add(this.NewAppsButton);
             this.Controls.Add(this.panel2);
+            this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "NewApps";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;

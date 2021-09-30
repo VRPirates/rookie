@@ -355,7 +355,7 @@
             // panel1
             // 
             this.panel1.AutoScroll = true;
-            this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.ButtonColor;
+            this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
             this.panel1.Controls.Add(this.ULLabel);
             this.panel1.Controls.Add(this.ULGif);
             this.panel1.Controls.Add(this.BatteryLbl);
@@ -373,7 +373,7 @@
             this.panel1.Controls.Add(this.diskLabel);
             this.panel1.Controls.Add(this.speedLabel);
             this.panel1.Controls.Add(this.etaLabel);
-            this.panel1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.panel1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel1.Dock = System.Windows.Forms.DockStyle.Left;
             this.panel1.Location = new System.Drawing.Point(0, 0);
             this.panel1.Margin = new System.Windows.Forms.Padding(2);
@@ -410,7 +410,7 @@
             this.BatteryLbl.BackColor = System.Drawing.Color.Transparent;
             this.BatteryLbl.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.BatteryLbl.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.BatteryLbl.Location = new System.Drawing.Point(159, 583);
+            this.BatteryLbl.Location = new System.Drawing.Point(170, 635);
             this.BatteryLbl.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.BatteryLbl.Name = "BatteryLbl";
             this.BatteryLbl.Size = new System.Drawing.Size(0, 13);
@@ -420,7 +420,7 @@
             // 
             this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox5.Image = global::AndroidSideloader.Properties.Resources.battery11;
-            this.pictureBox5.Location = new System.Drawing.Point(155, 576);
+            this.pictureBox5.Location = new System.Drawing.Point(166, 629);
             this.pictureBox5.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(55, 29);
@@ -773,7 +773,7 @@
             this.diskLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.diskLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.diskLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.diskLabel.Location = new System.Drawing.Point(7, 622);
+            this.diskLabel.Location = new System.Drawing.Point(4, 623);
             this.diskLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.diskLabel.Name = "diskLabel";
             this.diskLabel.Size = new System.Drawing.Size(77, 18);
@@ -888,7 +888,7 @@
             this.gamesListView.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.gamesListView.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
+            this.gamesListView.BackColor = global::AndroidSideloader.Properties.Settings.Default.ComboBoxColor;
             this.gamesListView.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.GameNameIndex,
             this.ReleaseNameIndex,
@@ -896,7 +896,7 @@
             this.VersionCodeIndex,
             this.ReleaseAPKPathIndex,
             this.VersionNameIndex});
-            this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ComboBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesListView.HideSelection = false;

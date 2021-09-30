@@ -274,6 +274,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\AndroidSideloader.Properties.Resources.datasource" />
+    <None Include="Properties\DataSources\AndroidSideloader.Properties.Settings.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>

@@ -1,6 +1,59 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.10.0
+
++ Added code to store wireless ADB connect command in 
+StoredIP.txt so RSL updates will no longer wipe Wireless 
+ADB settings.
++ Added code to prefer wired if wireless ADB is setup 
+but user plugs device in via USB.
++ Added new Updater form for RSL updates.
++ Added new Donor form with listview so all detected 
+donatable apps will appear in a list.
++ Added NewApps list so users can select free/non-VR 
+apps. This will then upload to pre-determined debuglogs 
+server (so the packagenames can be added to blacklist).
++ Threaded entire list population procedure so RSL will 
+no longer freeze when the list is being populated.
++ Added Pull to Desktop option if user wishes to just 
+pull an app without uploading.
++ Added code to allow removing currently downloading 
+app as long as all other items in queue have been removed 
+first.
+= Fixed logic for listview columns (removed duplicate 
+column headers when expanding RSL borders.
+= Fixed OBB drag and drop and Copy OBB button.
+= Colorblind mode switched on by default.
+- - Removed gridlines from main updates list for cleaner 
+look.
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmFVDWAACgkQx/Rql1Vo
+czcJCQ//RH66MUjjVqjCbVAj8XkIJfltZ0g8MhPANrlHQforWlvewpzSHV561cwv
+yYxlbM84UQhzjgayBeLHXjbeMbvjJk/1lE1x5EWbZ4hOLVaGseG4ffM+O+OyCIi3
+m4O9Z3Xj2+W9/YPjSxQ971IiaxjWeWPBZgM8NYhdzv5lQ9Khq1Y+gcIb0hGbXIgy
+CEiFuBifEn89cJl66TqsIyPP1dBKYSJcon/sGgjlW+2iKptrUD4J1Gy6YkQLlYPI
+pzMPYP9gsXFq4ihNULsFYW4phEA2S2S6EKzCLODSoAcleuDvFboJiG3dD5xsMYam
+EEvtt4vDNPyVLmjgBiGWrPs9yApL7Z5al+nqdg+MxHzZGb/WVVi1K18UI5iCa92P
+7pYmY5IA20nFfT+8VBPh6t+aAQxlAAXRHeTSAT1qH2RyTd17FgX5AjQLANf7pY1X
+x/emyue8BcoLci5nfnsstRtzXAzkCps6KJLSpRTcjfCCfzkR6azdSCl++p0+rmL6
+bfbpdw6WR8R+g+An2WSs+nqj02GIcutX3XXlbk18bIsLTQUj7cWrLXDoj06RJNUo
+knEWvLsv911TlZkwnh4D4UQXJQHL/9LXWbzcQ5FrhpMUqLJ4LuqhBvPRnUrSh49/
+VGm0e1mdsuOJAhi6IDN+0xEq8dLahpMGDlK6VbxEfswY0J3rVSE=
+=gISr
+-----END PGP SIGNATURE-----
+
+RSL 2.9.9
+
+- Fixed startup crash after updating.
+- Fixed adb version clashing issues.
+
+-HFP
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.9.8
 
 + Added timer that detects if user has uploaded an
