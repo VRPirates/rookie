@@ -420,7 +420,7 @@
             // 
             this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
             this.pictureBox5.Image = global::AndroidSideloader.Properties.Resources.battery11;
-            this.pictureBox5.Location = new System.Drawing.Point(155, 575);
+            this.pictureBox5.Location = new System.Drawing.Point(155, 576);
             this.pictureBox5.Margin = new System.Windows.Forms.Padding(2);
             this.pictureBox5.Name = "pictureBox5";
             this.pictureBox5.Size = new System.Drawing.Size(55, 29);
@@ -776,7 +776,7 @@
             this.diskLabel.Location = new System.Drawing.Point(7, 622);
             this.diskLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.diskLabel.Name = "diskLabel";
-            this.diskLabel.Size = new System.Drawing.Size(87, 18);
+            this.diskLabel.Size = new System.Drawing.Size(77, 18);
             this.diskLabel.TabIndex = 7;
             this.diskLabel.Text = "Disk Label";
             // 
@@ -790,7 +790,7 @@
             this.speedLabel.Location = new System.Drawing.Point(7, 680);
             this.speedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.speedLabel.Name = "speedLabel";
-            this.speedLabel.Size = new System.Drawing.Size(167, 18);
+            this.speedLabel.Size = new System.Drawing.Size(149, 18);
             this.speedLabel.TabIndex = 76;
             this.speedLabel.Text = "DLS: Speed in MBPS";
             // 
@@ -804,7 +804,7 @@
             this.etaLabel.Location = new System.Drawing.Point(7, 699);
             this.etaLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.etaLabel.Name = "etaLabel";
-            this.etaLabel.Size = new System.Drawing.Size(166, 18);
+            this.etaLabel.Size = new System.Drawing.Size(148, 18);
             this.etaLabel.TabIndex = 75;
             this.etaLabel.Text = "ETA: HH:MM:SS Left";
             // 
@@ -921,7 +921,7 @@
             // ReleaseNameIndex
             // 
             this.ReleaseNameIndex.Text = "Release Name";
-            this.ReleaseNameIndex.Width = 227;
+            this.ReleaseNameIndex.Width = 244;
             // 
             // PackageNameIndex
             // 
@@ -931,18 +931,18 @@
             // VersionCodeIndex
             // 
             this.VersionCodeIndex.Text = "Version";
-            this.VersionCodeIndex.Width = 109;
+            this.VersionCodeIndex.Width = 75;
             // 
             // ReleaseAPKPathIndex
             // 
             this.ReleaseAPKPathIndex.Text = "Last Updated";
-            this.ReleaseAPKPathIndex.Width = 116;
+            this.ReleaseAPKPathIndex.Width = 132;
             // 
             // VersionNameIndex
             // 
             this.VersionNameIndex.Text = "Size (MB)";
             this.VersionNameIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.VersionNameIndex.Width = 82;
+            this.VersionNameIndex.Width = 66;
             // 
             // searchTextBox
             // 
@@ -977,7 +977,7 @@
             this.gamesQueueLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.gamesQueueLabel.Location = new System.Drawing.Point(597, 601);
             this.gamesQueueLabel.Name = "gamesQueueLabel";
-            this.gamesQueueLabel.Size = new System.Drawing.Size(57, 18);
+            this.gamesQueueLabel.Size = new System.Drawing.Size(52, 18);
             this.gamesQueueLabel.TabIndex = 86;
             this.gamesQueueLabel.Text = "Queue";
             // 
@@ -1056,7 +1056,7 @@
             this.label1.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label1.Location = new System.Drawing.Point(597, 674);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(53, 18);
+            this.label1.Size = new System.Drawing.Size(48, 18);
             this.label1.TabIndex = 86;
             this.label1.Text = "Notes";
             // 
@@ -1109,9 +1109,10 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label4.AutoSize = true;
+            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(506, 283);
+            this.label4.Location = new System.Drawing.Point(509, 284);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(183, 17);
             this.label4.TabIndex = 90;
@@ -1178,7 +1179,7 @@
             this.EnterInstallBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.EnterInstallBox.Location = new System.Drawing.Point(593, 7);
             this.EnterInstallBox.Name = "EnterInstallBox";
-            this.EnterInstallBox.Size = new System.Drawing.Size(93, 54);
+            this.EnterInstallBox.Size = new System.Drawing.Size(80, 54);
             this.EnterInstallBox.TabIndex = 93;
             this.EnterInstallBox.Text = "  Install w/ \r\n Enter Key";
             this.EnterInstallBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -1215,6 +1216,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label11.AutoSize = true;
+            this.label11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label11.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label11.Location = new System.Drawing.Point(528, 285);
@@ -1231,6 +1233,7 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.label9.AutoSize = true;
+            this.label9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.label9.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.label9.Location = new System.Drawing.Point(514, 206);
@@ -1316,9 +1319,9 @@
             // 
             this.gamesPictureBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.gamesPictureBox.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Zoom;
-            this.gamesPictureBox.Location = new System.Drawing.Point(227, 475);
+            this.gamesPictureBox.Location = new System.Drawing.Point(224, 475);
             this.gamesPictureBox.Name = "gamesPictureBox";
-            this.gamesPictureBox.Size = new System.Drawing.Size(371, 214);
+            this.gamesPictureBox.Size = new System.Drawing.Size(374, 214);
             this.gamesPictureBox.TabIndex = 84;
             this.gamesPictureBox.TabStop = false;
             this.gamesPictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);

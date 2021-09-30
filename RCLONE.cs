@@ -86,7 +86,7 @@ namespace AndroidSideloader
             rclone.WaitForExit();
 
             //if there is one of these errors, we switch the mirrors
-            if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("couldn't list"))
+            if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
                 string oldRemote = MainForm.currentRemote;
                 try

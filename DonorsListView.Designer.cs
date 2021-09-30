@@ -65,7 +65,7 @@ namespace AndroidSideloader
             this.DonorsListView.FullRowSelect = true;
             this.DonorsListView.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.Nonclickable;
             this.DonorsListView.HideSelection = false;
-            this.DonorsListView.Location = new System.Drawing.Point(5, 6);
+            this.DonorsListView.Location = new System.Drawing.Point(5, 5);
             this.DonorsListView.Name = "DonorsListView";
             this.DonorsListView.RightToLeftLayout = true;
             this.DonorsListView.Size = new System.Drawing.Size(420, 223);
@@ -145,7 +145,7 @@ namespace AndroidSideloader
             this.bothdet.AutoSize = true;
             this.bothdet.BackColor = System.Drawing.Color.Transparent;
             this.bothdet.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
-            this.bothdet.Location = new System.Drawing.Point(125, 46);
+            this.bothdet.Location = new System.Drawing.Point(125, 47);
             this.bothdet.Name = "bothdet";
             this.bothdet.Size = new System.Drawing.Size(213, 17);
             this.bothdet.TabIndex = 3;
@@ -177,11 +177,11 @@ namespace AndroidSideloader
             this.upddet.AutoSize = true;
             this.upddet.BackColor = System.Drawing.Color.Transparent;
             this.upddet.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
-            this.upddet.Location = new System.Drawing.Point(161, 46);
+            this.upddet.Location = new System.Drawing.Point(163, 46);
             this.upddet.Name = "upddet";
-            this.upddet.Size = new System.Drawing.Size(140, 17);
+            this.upddet.Size = new System.Drawing.Size(136, 17);
             this.upddet.TabIndex = 3;
-            this.upddet.Text = "Updates detected!";
+            this.upddet.Text = "Updates detected";
             this.upddet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.upddet.Visible = false;
             this.upddet.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
@@ -193,11 +193,11 @@ namespace AndroidSideloader
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(98, 64);
+            this.label2.Location = new System.Drawing.Point(101, 65);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(266, 17);
+            this.label2.Size = new System.Drawing.Size(261, 17);
             this.label2.TabIndex = 3;
-            this.label2.Text = "All RSL apps are donated by users.";
+            this.label2.Text = "All RSL apps are donated by users";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
             this.label2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseMove);

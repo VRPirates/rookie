@@ -1439,8 +1439,6 @@ namespace AndroidSideloader
             catch (Exception ex)
             { }
 
-                gamesListView.Columns[5].Text = "Size (MB)";
-
             try
             {
                 if (topItemIndex != 0)

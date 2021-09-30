@@ -109,7 +109,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 11.25pt, style=Bold")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Microsoft Sans Serif, 11.25pt")]
         public global::System.Drawing.Font FontStyle {
             get {
                 return ((global::System.Drawing.Font)(this["FontStyle"]));
@@ -696,7 +696,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("29, 29, 29")]
+        [global::System.Configuration.DefaultSettingValueAttribute("64, 64, 64")]
         public global::System.Drawing.Color SubButtonColor {
             get {
                 return ((global::System.Drawing.Color)(this["SubButtonColor"]));

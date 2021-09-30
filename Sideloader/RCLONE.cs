@@ -105,19 +105,6 @@ namespace AndroidSideloader
             
         }
 
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public static long GetFolderSize(string FolderName, string remote)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
-        {
-            try
-            {
-                dynamic results = JsonConvert.DeserializeObject<dynamic>(RCLONE.runRcloneCommand($"size \"{remote}:{RcloneGamesFolder}/{FolderName}\" --json").Output);
-                long gameSize = results.bytes.ToObject<long>();
-                return gameSize / 1000000;
-            }
-            catch { return 0; }
-        }
-
         public static void updateConfig(string remote)
         {
             string localHash = "";
