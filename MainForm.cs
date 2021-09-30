@@ -287,6 +287,11 @@ namespace AndroidSideloader
                         Properties.Settings.Default.Save();
                         File.Delete("C:\\RSL\\platform-tools\\StoredIP.txt");
                     }
+                    else
+                    {
+                        ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                        ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+                    }
                 }
                 else if (!File.Exists(@"C:\RSL\platform-tools\StoredIP.txt"))
                 {
@@ -1656,11 +1661,12 @@ namespace AndroidSideloader
         public async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt, bool isupdate)
         {
             progressBar.Style = ProgressBarStyle.Marquee;
-            ChangeTitle("Extracting APK file....");
+
             Thread t1 = new Thread(() =>
             {
                 Sideloader.getApk(packagename);
             });
+            ChangeTitle("Extracting APK file....");
             t1.IsBackground = true;
             t1.Start();
 
@@ -2018,6 +2024,8 @@ without him none of this would be possible
                     }
                     if (removedownloading)
                     { 
+                            ChangeTitle("Deleting game files", false);
+                            try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
                         ChangeTitle("");
                         break;
                     }
@@ -2310,6 +2318,8 @@ without him none of this would be possible
         {
             if (gamesQueListBox.SelectedIndex == 0 && gamesQueueList.Count == 1)
             {
+                speedLabel.Text = "";
+                etaLabel.Text = "";
                 removedownloading = true;
                 RCLONE.killRclone();
                 gamesQueueList.Remove(gamesQueListBox.SelectedItem.ToString());
