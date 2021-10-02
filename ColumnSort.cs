@@ -123,7 +123,7 @@ public class ListViewColumnSorter : IComparer
 
     private string cleanNumber(string number)
     {
-        return number.Substring(0, number.LastIndexOf('.'));
+        return number.Substring(0);
     }
 
 }

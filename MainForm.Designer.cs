@@ -1474,7 +1474,7 @@
         private System.Windows.Forms.ColumnHeader PackageNameIndex;
         private System.Windows.Forms.ColumnHeader VersionCodeIndex;
         private System.Windows.Forms.ColumnHeader ReleaseAPKPathIndex;
-        private System.Windows.Forms.ColumnHeader VersionNameIndex;
+        public System.Windows.Forms.ColumnHeader VersionNameIndex;
     }
 }
 

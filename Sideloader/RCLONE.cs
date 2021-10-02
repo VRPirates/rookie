@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
@@ -93,6 +94,7 @@ namespace AndroidSideloader
             if (!tempGameList.Equals(""))
             {
                 string[] gameListSplited = tempGameList.Split(new[] { '\n' });
+                gameListSplited = gameListSplited.Skip(1).ToArray();
                 foreach (string game in gameListSplited)
                 {
                     if (game.Length > 1)

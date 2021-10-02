@@ -1,26 +1,7 @@
-RSL 2.10.0
+RSL 2.10.1
 
-+ Added code to store wireless ADB connect command in 
-StoredIP.txt so RSL updates will no longer wipe Wireless 
-ADB settings.
-+ Added code to prefer wired if wireless ADB is setup 
-but user plugs device in via USB.
-+ Added new Updater form for RSL updates.
-+ Added new Donor form with listview so all detected 
-donatable apps will appear in a list.
-+ Added NewApps list so users can select free/non-VR 
-apps. This will then upload to pre-determined debuglogs 
-server (so the packagenames can be added to blacklist).
-+ Threaded entire list population procedure so RSL will 
-no longer freeze when the list is being populated.
-+ Added Pull to Desktop option if user wishes to just 
-pull an app without uploading.
-+ Added code to allow removing currently downloading 
-app as long as all other items in queue have been removed 
-first.
-= Fixed logic for listview columns (removed duplicate 
-column headers when expanding RSL borders.
-= Fixed OBB drag and drop and Copy OBB button.
-= Colorblind mode switched on by default.
-- Removed gridlines from main updates list for cleaner 
-look.
+= Fixed sort by Size (MB).
+= Fixed issue where game list column headers 
+were appearing as a game in the games list.
+
+HFP

@@ -1,6 +1,34 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.10.1
+
+= Fixed sort by Size (MB).
+= Fixed issue where game list column headers 
+were appearing as a game in the games list.
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmFX75kACgkQx/Rql1Vo
+czewPw//c8KDn9EdatBCeH3lWCkrACrxAEtUAhv55Gu+KCZFw4t5YKFvuE0L+tL+
+K5FYT225TVycWKos2LN2e5lRP1LZJPQ/xFQAon8sG/GgujtubgX/JPwpWKn0kl8B
+2QZXwhrDA2wM1Cn78cuC6zpaQjbiofoaMWH9J8q/1nkjvXmxijoMGkz37raNfnas
+sEr66FCyRb5naDujiNAXLg/wZokbWLirmupQLFb11ai6ahVExgqM+mPqNIadzSBW
+3I0KMYBQ5zFNQCdjcAYOTIWBUaF+ObjdjsNhZNr2axmoxdcPvwG2ToAXHJjXDaIz
+3iNRQRfBg3LobCBtZEjXT/DHlBWAP9++bacgNoB6VFEjStMfQqduYgUz2tuj0Zv0
+OjtWnU/Fc8kAK3l2a+aGFKkBmW6dHtFhWzt9WpRiDJ3JXnjBXahy0Zhd1X1/g4dd
+8ORzAbRj6cRbW8M42awqecN6pU3PxKdZBG4m0yX44uDXqsKHLWjufuWcc8p+Q3pE
+h5TkYFfr7rpPAK6Qh5nRKJQPoSelruR7v4GMqfQIDbt267PTViSn+29EYh4Jn+Y8
+YQoDC2ba+iYbqBez2ypBRgXiAk6lOmESKs+v77QAnx8pqprFLx3fkulB6gczwGwZ
+B1Uq6SQR1i8IXGs3l8/bYByKBp/Xt9X+JkJggbj5UKOdeNsGTyA=
+=Pn1f
+-----END PGP SIGNATURE-----
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.10.0
 
 + Added code to store wireless ADB connect command in 
