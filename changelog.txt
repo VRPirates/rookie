@@ -1,7 +1,12 @@
-RSL 2.10.1
+RSL 2.10.2
 
-= Fixed sort by Size (MB).
-= Fixed issue where game list column headers 
-were appearing as a game in the games list.
+= Fixed issue where same new apps were being 
+asked for before 72 hr window if not marked as 
+free..
+= Changed 7zip compression level to Store for
+faster zipping for donations (since apks are
+already compressed the file size only changes
+1-2MB at most, so upload time will be virtually 
+the same).
 
 HFP

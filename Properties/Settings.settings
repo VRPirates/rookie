@@ -182,5 +182,8 @@
     <Setting Name="BackColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">50, 50, 50</Value>
     </Setting>
+    <Setting Name="AppPackages" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

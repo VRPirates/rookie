@@ -741,5 +741,17 @@ namespace AndroidSideloader.Properties {
                 this["BackColor"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string AppPackages {
+            get {
+                return ((string)(this["AppPackages"]));
+            }
+            set {
+                this["AppPackages"] = value;
+            }
+        }
     }
 }

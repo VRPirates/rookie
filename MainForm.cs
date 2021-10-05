@@ -70,6 +70,7 @@ namespace AndroidSideloader
             {
                 Properties.Settings.Default.ListUpped = false;
                 Properties.Settings.Default.NonAppPackages = "";
+                Properties.Settings.Default.AppPackages = "";
                 Properties.Settings.Default.LastLaunch = DateTime.Now;
                 Properties.Settings.Default.Save();
             }
@@ -872,7 +873,7 @@ namespace AndroidSideloader
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
                 ChangeTitle("Zipping extracted application...");
-                string cmd = $"7z a \"{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
+                string cmd = $"7z a -mx1 \"{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
                 string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
                 progressBar.Style = ProgressBarStyle.Continuous;
                 Thread t4 = new Thread(() =>
@@ -1518,7 +1519,7 @@ namespace AndroidSideloader
                         foreach (string newGamesToUpload in newGamesList)
                         {
                             bool onapplist = false;
-                            string NewApp = Properties.Settings.Default.NonAppPackages;
+                            string NewApp = Properties.Settings.Default.NonAppPackages + "\n" + Properties.Settings.Default.AppPackages;
                             if (NewApp.Contains(newGamesToUpload))
                                 onapplist = true;
                             string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
@@ -1600,7 +1601,7 @@ namespace AndroidSideloader
                     if (File.Exists($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip"))
                         File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
                     string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                    string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" .\\{game.Pckgcommand}\\*";
+                    string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" .\\{game.Pckgcommand}\\*";
                     Program.form.ChangeTitle("Zipping extracted application...");
                     ADB.RunCommandToString(cmd, path);
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
@@ -2891,7 +2892,7 @@ without him none of this would be possible
                     File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
 
                 string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                string cmd = $"7z a \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
+                string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
                 Program.form.ChangeTitle("Zipping extracted application...");
                 Thread t3 = new Thread(() =>
                 {

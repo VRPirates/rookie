@@ -52,6 +52,11 @@ namespace AndroidSideloader
                     Properties.Settings.Default.NonAppPackages += listItem.SubItems[Donors.PackageNameIndex].Text + ";" + HWID + "\n";
                     Properties.Settings.Default.Save();
                 }
+                else
+                {
+                    Properties.Settings.Default.AppPackages += listItem.SubItems[Donors.PackageNameIndex].Text + "\n";
+                    Properties.Settings.Default.Save();
+                }
             }
             MainForm.newpackageupload();
             this.Close();

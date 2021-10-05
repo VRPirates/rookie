@@ -1,6 +1,38 @@
 ﻿-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
+RSL 2.10.2
+
+= Fixed issue where same new apps were being 
+asked for before 72 hr window if not marked as 
+free..
+= Changed 7zip compression level to Store for
+faster zipping for donations (since apks are
+already compressed the file size only changes
+1-2MB at most, so upload time will be virtually 
+the same).
+
+HFP
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCAAdFiEEKjgtlwMyrpVu4TGfx/Rql1VoczcFAmFb+0gACgkQx/Rql1Vo
+czedmBAAloms6WvjP1glyASuzm4wzyFtrf/yhDGpgXIeVJMoZ9tbp9SncvB+C4j5
+uL9D/3lnZjhqulTHjxocccuKdp4iawHTlROFX6zWMOK2eGHY3rcDl0ZISxXNHvkw
+YqoaDqXxk0Ib6+FY7RoINKKHGOnRLRuWivpWjhVDBpMt6A9PSmGpFAghrFmpgNqI
+5+dGvXEgQiuK5INhA9pipM5d++X7EKQ3NyW9RKkeUduYyEKJ9nH6JbmTNm3VbvAP
+l718n5MObvVGbRYgd/CCvAF8oIUoj5mBig/yFqJOHCeEZPEfRP4NHuxwpprtaotM
+I6D3nBAvUldDy4B8tCJnlg0P6BAqg5AffcJyn5zoCPsgINcGMQfm5dFfcGN6Ckwv
+cZ4G1eGxRgI+hkWmMVjZb3+r4T2lCWgdGWpE4EsdKRg6Q0ZaXZa8Hwm/YcM2N8lm
+n5+Li2qXO9uRalCZZEMArFx6BpmvG6nT1bT5hLOFfN2XUsQ5ZK2vlxBPeT7sKWU5
+L7l/WaLRmFlb4fKo/5kv0eYZMCa9TmpXo8MFIwH7V01InrWhB0p6cZA5j4DhVm/x
+2zBVEoEYRVPnyfHYCc79xXFkF9v5Xq0GHeGC7DHqveMqx0VTj/kBlL18fYsHjXkL
+YrvgSQ2gDv9IA02J+BuQq8dWFl7pWSCXULdb2y0yJA0lXe3mk7Y=
+=qetN
+-----END PGP SIGNATURE-----
+
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA256
+
 RSL 2.10.1
 
 = Fixed sort by Size (MB).
