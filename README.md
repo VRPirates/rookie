@@ -5,7 +5,9 @@
 ![Issues](https://img.shields.io/github/issues/nerdunit/androidsideloader)
 
 ## !IMPORTANT!
-This app may be buggy and have problems, I will recode it from scratch when MAUI will be released (This september) and a linux port will be available, making RSL cross-platform.
+
+This app may be buggy and have problems, I will recode it from scratch ~~when MAUI will be released (This september) and a linux port will be available, making RSL cross-platform.~~
+Since microsoft delayed MAUI and they don't support linux, I decided to try to rewrite it in go, a language that I started learning recently, so there is no ETA for that.
 
 ### This app might get detected as malware, however both the sideloader and the sideloader launcher are open source
 
