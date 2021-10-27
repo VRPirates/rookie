@@ -48,9 +48,20 @@ namespace AndroidSideloader
 #endif
 
         private bool isLoading = true;
+        public static bool isOffline = false;
         public MainForm()
 
         {
+            // check for offline mode
+            string[] args = Environment.GetCommandLineArgs();
+            foreach (var arg in args)
+            {
+                if (arg == "--offline")
+                {
+                    isOffline = true;
+                    FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
+                }
+            }
             InitializeComponent();
             //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
             TimeSpan newDayReference = new TimeSpan(96, 0, 0);
@@ -162,8 +173,10 @@ namespace AndroidSideloader
                 if (length > 5000000)
                     File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
             }
-
-            RCLONE.Init();
+            if (!isOffline)
+            {
+                RCLONE.Init();
+            }            
             try { Spoofer.spoofer.Init(); } catch { }
 
             if (Properties.Settings.Default.CallUpgrade)
@@ -239,15 +252,22 @@ namespace AndroidSideloader
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
 
                 progressBar.Style = ProgressBarStyle.Marquee;
-                ChangeTitle("Initializing Mirrors");
-                initMirrors(true);
-                ChangeTitle("Checking if config is updated and updating config");
-                SideloaderRCLONE.updateConfig(currentRemote);
-                ChangeTitle("Initializing Games");
-                SideloaderRCLONE.initGames(currentRemote);
-                //ChangeTitle("Syncing Game Photos");
-                //ChangeTitle("Updating list of needed clean apps...");
-                //ChangeTitle("Checking for Updates on server...");
+                if (!isOffline)
+                {
+                    ChangeTitle("Initializing Mirrors");
+                    initMirrors(true);
+                    ChangeTitle("Checking if config is updated and updating config");
+                    SideloaderRCLONE.updateConfig(currentRemote);
+                    ChangeTitle("Initializing Games");
+                    SideloaderRCLONE.initGames(currentRemote);
+                    //ChangeTitle("Syncing Game Photos");
+                    //ChangeTitle("Updating list of needed clean apps...");
+                    //ChangeTitle("Checking for Updates on server...");
+                }
+                else
+                {
+                    ChangeTitle("Offline mode enabled, no Rclone");
+                }
 
             });
             t1.SetApartmentState(ApartmentState.STA);
@@ -1421,14 +1441,14 @@ namespace AndroidSideloader
                 while (t1.IsAlive)
                     await Task.Delay(100);
             }
-            else
+            else if(!isOffline)
             {
                 SwitchMirrors();
                 initListView();
             }
                 
 
-            if (blacklistItems.Count == 0 && GameList.Count == 0 && !Properties.Settings.Default.nodevicemode)
+            if (blacklistItems.Count == 0 && GameList.Count == 0 && !Properties.Settings.Default.nodevicemode && !isOffline)
             {
                 //This means either the user does not have headset connected or the blacklist
                 //did not load, so we are just going to skip everything
@@ -1862,7 +1882,7 @@ without him none of this would be possible
             {
                 if (quotaTries > remotesList.Items.Count)
                 {
-                    FlexibleMessageBox.Show("Quota reached for all mirrors exiting program...");
+                    FlexibleMessageBox.Show("Quota reached for all mirrors ,exiting Application. Try the offline mode instead...");
                     Application.Exit();
                 }
                 if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
@@ -2034,14 +2054,13 @@ without him none of this would be possible
                         //Quota Errors
                         bool isinstalltxt = false;
                         bool quotaError = false;
-                        if (gameDownloadOutput.Error.Length > 0)
+                        if (gameDownloadOutput.Error.Length > 0 && !isOffline)
                         {
                             string err = gameDownloadOutput.Error.ToLower();
                             err += gameDownloadOutput.Output.ToLower();
                             if (err.Contains("quota") && err.Contains("exceeded") || err.Contains("directory not found"))
                             {
                                 quotaError = true;
-
 
                                 SwitchMirrors();
 

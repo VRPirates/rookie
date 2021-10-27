@@ -36,7 +36,7 @@ namespace AndroidSideloader
         //Run rclone command
         public static ProcessOutput runRcloneCommand(string command, string bandwithLimit = "")
         {
-            if (!MainForm.HasInternet) return new ProcessOutput("", "No internet");
+            if (!MainForm.HasInternet || MainForm.isOffline) return new ProcessOutput("", "No internet");
 
             ProcessOutput prcoutput = new ProcessOutput();
             //Rclone output is unicode, else it will show garbage instead of unicode characters
