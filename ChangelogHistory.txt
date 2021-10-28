@@ -1,4 +1,11 @@
-﻿-----BEGIN PGP SIGNED MESSAGE-----
+﻿RSL 2.10.3
+
+Added offline mode merge.
+
+~pmow
+
+
+-----BEGIN PGP SIGNED MESSAGE-----
 Hash: SHA256
 
 RSL 2.10.2
