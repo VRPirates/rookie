@@ -1,12 +1,3 @@
-RSL 2.10.2
+RSL 2.10.3
 
-= Fixed issue where same new apps were being 
-asked for before 72 hr window if not marked as 
-free..
-= Changed 7zip compression level to Store for
-faster zipping for donations (since apks are
-already compressed the file size only changes
-1-2MB at most, so upload time will be virtually 
-the same).
-
-HFP
+Imported offline mode commit.
