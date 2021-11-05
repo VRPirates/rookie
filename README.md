@@ -4,6 +4,8 @@
 [![Downloads](https://img.shields.io/github/downloads/nerdunit/androidsideloader/total.svg)](https://github.com/nerdunit/androidsideloader/releases)
 ![Issues](https://img.shields.io/github/issues/nerdunit/androidsideloader)
 
+androidsideloader uses the GPL license, any forks of it must have their source code made public on the internet.
+
 ## !IMPORTANT!
 
 This app may be buggy and have problems, I will recode it from scratch ~~when MAUI will be released (This september) and a linux port will be available, making RSL cross-platform.~~
