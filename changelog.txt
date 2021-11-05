@@ -1,6 +1,5 @@
-RSL 2.10.3
+RSL 2.10.4
 
-Imported offline mode commit.
-This update allows you to run with a --offline switch to circumvent Google Drive mirrors in the case of a quota meltdown.
+Made mirror ID start at first again.
 
 ~pmow

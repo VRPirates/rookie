@@ -1739,15 +1739,26 @@ namespace AndroidSideloader
 
             if (itemsCount > 0)
             {
+                
                 var rand = new Random();
-                if (random == true && index < itemsCount)
-                    index = rand.Next(0, itemsCount);
+                // Code that implements a randomized mirror.  The rotation logic (the rotation) is reported as being bugged so I just disabled as a workaround ~pmow
+                //  if (random == true && index < itemsCount)
+                //    index = rand.Next(0, itemsCount);
+                //    remotesList.Invoke(() =>
+                // {
+                //     remotesList.SelectedIndex = index;
+                //     remotesList.SelectedIndex = 0;
+                //    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
+                //  });
+
                 remotesList.Invoke(() =>
-                {
-                    remotesList.SelectedIndex = index;
+            {
+                remotesList.SelectedIndex = 0; //set mirror to first
                     currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
-                });
-            }
+            });
+                
+                
+            };
         }
 
         public static string processError = string.Empty;

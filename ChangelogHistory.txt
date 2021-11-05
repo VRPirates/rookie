@@ -1,4 +1,11 @@
-﻿RSL 2.10.3
+﻿RSL 2.10.4
+
+Made mirror ID start at first again.
+
+~pmow
+
+
+RSL 2.10.3
 
 Added offline mode merge.
 
