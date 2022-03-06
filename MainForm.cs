@@ -31,6 +31,7 @@ namespace AndroidSideloader
         public bool keyheld2;
         public static string CurrAPK;
         public static string CurrPCKG;
+        List<UploadGame> gamesToUpload = new List<UploadGame>();
 
 
         public static string currremotesimple = "";
@@ -1893,7 +1894,7 @@ without him none of this would be possible
             {
                 if (quotaTries > remotesList.Items.Count)
                 {
-                    FlexibleMessageBox.Show("Quota reached for all mirrors ,exiting Application. Try the offline mode instead...");
+                    ShowError_QuotaExceeded();
                     Application.Exit();
                 }
                 if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
@@ -1914,6 +1915,26 @@ without him none of this would be possible
                 }
             });
         }
+
+        private static void ShowError_QuotaExceeded()
+        {
+            const string errorMessage =
+@"Quota reached for all mirrors.
+
+This just means that the download quota has been exceeded for the mirror(s).
+Unfortunately, this is an error from Google and is outside of our control.
+
+Things you can try:
+1) Use a third party config from the wiki (https://wiki.vrpirates.club/general_information/third-party-rclone-configs)
+2) Wait for the quota to reset sometime in the next 24 hours.
+3) Use Resilio for p2p downloads (https://wiki.vrpirates.club/en/Howto/Resilio-Sync-setup-guide)
+4) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
+
+The application will now exit.";
+
+            FlexibleMessageBox.Show(errorMessage, "Quota exceeded");
+        }
+
         public bool isinstalling = false;
         public static bool removedownloading = false;
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
