@@ -257,8 +257,7 @@ namespace AndroidSideloader
                 {
                     ChangeTitle("Initializing Mirrors");
                     initMirrors(true);
-                    ChangeTitle("Checking if config is updated and updating config");
-                    SideloaderRCLONE.updateConfig(currentRemote);
+                    ChangeTitle("Checking if config is updated");
                     ChangeTitle("Initializing Games");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
