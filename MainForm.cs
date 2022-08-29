@@ -60,9 +60,13 @@ namespace AndroidSideloader
                 if (arg == "--offline")
                 {
                     isOffline = true;
-                    FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
                 }
             }
+            if (isOffline)
+            {
+                FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
+            }
+
             InitializeComponent();
             //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
             TimeSpan newDayReference = new TimeSpan(96, 0, 0);
@@ -258,7 +262,7 @@ namespace AndroidSideloader
                     ChangeTitle("Initializing Mirrors");
                     initMirrors(true);
                     ChangeTitle("Checking if config is updated and updating config");
-                    SideloaderRCLONE.updateConfig(currentRemote);
+                    //SideloaderRCLONE.updateConfig(currentRemote);
                     ChangeTitle("Initializing Games");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
@@ -1919,20 +1923,16 @@ without him none of this would be possible
         private static void ShowError_QuotaExceeded()
         {
             const string errorMessage =
-@"Quota reached for all mirrors.
-
-This just means that the download quota has been exceeded for the mirror(s).
-Unfortunately, this is an error from Google and is outside of our control.
+@"Unable to connect to Remote Server. Rookie is unable to connect to our Servers.
 
 Things you can try:
 1) Use a third party config from the wiki (https://wiki.vrpirates.club/general_information/third-party-rclone-configs)
-2) Wait for the quota to reset sometime in the next 24 hours.
-3) Use Resilio for p2p downloads (https://wiki.vrpirates.club/en/Howto/Resilio-Sync-setup-guide)
-4) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
+2) Use Resilio for p2p downloads (https://wiki.vrpirates.club/en/Howto/Resilio-Sync-setup-guide)
+3) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
 
-The application will now exit.";
+Rookie will now relaunch in Offline Mode.";
 
-            FlexibleMessageBox.Show(errorMessage, "Quota exceeded");
+            FlexibleMessageBox.Show(errorMessage, "Unable to connect to Remote Server");
         }
 
         public bool isinstalling = false;
@@ -2011,7 +2011,7 @@ The application will now exit.";
 
                     Thread t1 = new Thread(() =>
                     {
-                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
+                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc --transfers 1", Properties.Settings.Default.BandwithLimit);
                     });
                     t1.IsBackground = true;
                     t1.Start();
