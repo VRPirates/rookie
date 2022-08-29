@@ -1806,7 +1806,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HarryEffinPotter Thanks: Roma/Rookie, Pmow, Ivan, Kaladin, John, Sam Hoque, Flow, and the mod staff!";
+ - Thanks: Roma/Rookie, Pmow, Ivan, Kaladin, John, Sam Hoque, Flow, HarryEffinPotter, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
@@ -1893,31 +1893,35 @@ without him none of this would be possible
 
         public void SwitchMirrors()
         {
-            quotaTries++;
-            remotesList.Invoke(() =>
+            try
             {
-                if (quotaTries > remotesList.Items.Count)
+                quotaTries++;
+                remotesList.Invoke(() =>
                 {
-                    ShowError_QuotaExceeded();
-                    Application.Exit();
-                }
-                if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
-                {
-                    reset = true;
-                    for (int i = 0; i < steps; i++)
-                        remotesList.SelectedIndex--;
+                    if (quotaTries > remotesList.Items.Count)
+                    {
+                        ShowError_QuotaExceeded();
+                        Application.Exit();
+                    }
+                    if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
+                    {
+                        reset = true;
+                        for (int i = 0; i < steps; i++)
+                            remotesList.SelectedIndex--;
 
-                }
-                if (reset)
-                {
-                    remotesList.SelectedIndex--;
-                }
-                if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
-                {
-                    remotesList.SelectedIndex++;
-                    steps++;
-                }
-            });
+                    }
+                    if (reset)
+                    {
+                        remotesList.SelectedIndex--;
+                    }
+                    if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
+                    {
+                        remotesList.SelectedIndex++;
+                        steps++;
+                    }
+                });
+            }
+            catch { }
         }
 
         private static void ShowError_QuotaExceeded()
@@ -2011,7 +2015,7 @@ Rookie will now relaunch in Offline Mode.";
 
                     Thread t1 = new Thread(() =>
                     {
-                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc --transfers 1", Properties.Settings.Default.BandwithLimit);
+                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --transfers 1 --multi-thread-streams 0", Properties.Settings.Default.BandwithLimit);
                     });
                     t1.IsBackground = true;
                     t1.Start();

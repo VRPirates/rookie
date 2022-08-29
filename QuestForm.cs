@@ -37,7 +37,8 @@ namespace AndroidSideloader
             if (TextureResTextBox.Text.Length > 0)
             {
                 ADB.WakeDevice();
-                Int32.TryParse(TextureResTextBox.Text, out int result);
+                int result;
+                Int32.TryParse(TextureResTextBox.Text, out result);
                 ADB.RunAdbCommandToString($"shell settings put global texture_size_Global {TextureResTextBox.Text}");
                 ADB.RunAdbCommandToString($"shell setprop debug.oculus.textureWidth {TextureResTextBox.Text}");
                 ADB.RunAdbCommandToString($"shell setprop debug.oculus.textureHeight {TextureResTextBox.Text}");
@@ -61,7 +62,7 @@ namespace AndroidSideloader
         }
 
 
-        public static void setLength(int value)
+        public static void setLength(Int32 value)
         {
             result = new string[value];
         }

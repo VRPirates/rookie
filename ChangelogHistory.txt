@@ -1,4 +1,18 @@
-﻿RSL 2.10.4
+﻿RSL 2.11
+
+- Updated rclone commands
+- Minor code cleanup/syntax fixes
+
+~f
+
+RSL 2.10.5
+
+- Added auto-offline mode when servers are offline
+- Disabled Auto-Config update
+
+~f
+
+RSL 2.10.4
 
 Made mirror ID start at first again.
 
