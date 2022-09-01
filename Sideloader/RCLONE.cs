@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using System.Net;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks;
-using Newtonsoft.Json;
 
 namespace AndroidSideloader
 {
@@ -109,19 +107,22 @@ namespace AndroidSideloader
 
         public static void updateConfig(string remote)
         {
-            string localHash = "";
-            try { localHash = File.ReadAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt"); } catch { } //file may not exist
-
-            string hash = RCLONE.runRcloneCommand($"md5sum \"{remote}:Quest Homebrew/Sideloading Methods/1. Rookie Sideloader - VRP Edition/VRP.download.config\"").Output;
-            try { hash = hash.Substring(0, hash.LastIndexOf(" ")); } catch { return; } //remove stuff after hash
-
-            Debug.WriteLine("The local file hash is " + localHash + " and the current a file hash is " + hash);
-
-            if (!string.Equals(localHash, hash))
+            try
             {
-                RCLONE.runRcloneCommand(string.Format($"copy \"{remote}:Quest Homebrew/Sideloading Methods/1. Rookie Sideloader - VRP Edition/VRP.download.config\" \"{Environment.CurrentDirectory}\\rclone\""));
-                File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", hash);
+                string configUrl = "https://wiki.vrpirates.club/downloads/vrp.download.config";
+
+                HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
+                using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
+                {
+                    string resultString = responseReader.ReadToEnd();
+
+                    if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
+                        File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config");
+                    File.Create(Environment.CurrentDirectory + "\\rclone\\vrp.download.config").Close();
+                    File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.download.config", resultString);
+                }
             }
+            catch { }
         }
     }
 }

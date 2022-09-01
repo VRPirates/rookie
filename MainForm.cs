@@ -262,7 +262,7 @@ namespace AndroidSideloader
                     ChangeTitle("Initializing Mirrors");
                     initMirrors(true);
                     ChangeTitle("Checking if config is updated and updating config");
-                    //SideloaderRCLONE.updateConfig(currentRemote);
+                    SideloaderRCLONE.updateConfig(currentRemote);
                     ChangeTitle("Initializing Games");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
@@ -1933,8 +1933,7 @@ Things you can try:
 1) Use a third party config from the wiki (https://wiki.vrpirates.club/general_information/third-party-rclone-configs)
 2) Use Resilio for p2p downloads (https://wiki.vrpirates.club/en/Howto/Resilio-Sync-setup-guide)
 3) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
-
-Rookie will now relaunch in Offline Mode.";
+";
 
             FlexibleMessageBox.Show(errorMessage, "Unable to connect to Remote Server");
         }
