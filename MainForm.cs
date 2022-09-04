@@ -60,9 +60,13 @@ namespace AndroidSideloader
                 if (arg == "--offline")
                 {
                     isOffline = true;
-                    FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
                 }
             }
+            if (isOffline)
+            {
+                FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
+            }
+
             InitializeComponent();
             //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
             TimeSpan newDayReference = new TimeSpan(96, 0, 0);
@@ -1801,7 +1805,7 @@ without him none of this would be possible
  - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
  - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
 
- - HarryEffinPotter Thanks: Roma/Rookie, Pmow, Ivan, Kaladin, John, Sam Hoque, Flow, and the mod staff!";
+ - Thanks: Roma/Rookie, Pmow, Ivan, Kaladin, John, Sam Hoque, Flow, HarryEffinPotter, and the mod staff!";
 
             FlexibleMessageBox.Show(about);
         }
@@ -1888,50 +1892,49 @@ without him none of this would be possible
 
         public void SwitchMirrors()
         {
-            quotaTries++;
-            remotesList.Invoke(() =>
+            try
             {
-                if (quotaTries > remotesList.Items.Count)
+                quotaTries++;
+                remotesList.Invoke(() =>
                 {
-                    ShowError_QuotaExceeded();
-                    Application.Exit();
-                }
-                if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
-                {
-                    reset = true;
-                    for (int i = 0; i < steps; i++)
-                        remotesList.SelectedIndex--;
+                    if (quotaTries > remotesList.Items.Count)
+                    {
+                        ShowError_QuotaExceeded();
+                        Application.Exit();
+                    }
+                    if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
+                    {
+                        reset = true;
+                        for (int i = 0; i < steps; i++)
+                            remotesList.SelectedIndex--;
 
-                }
-                if (reset)
-                {
-                    remotesList.SelectedIndex--;
-                }
-                if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
-                {
-                    remotesList.SelectedIndex++;
-                    steps++;
-                }
-            });
+                    }
+                    if (reset)
+                    {
+                        remotesList.SelectedIndex--;
+                    }
+                    if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
+                    {
+                        remotesList.SelectedIndex++;
+                        steps++;
+                    }
+                });
+            }
+            catch { }
         }
 
         private static void ShowError_QuotaExceeded()
         {
             const string errorMessage =
-@"Quota reached for all mirrors.
-
-This just means that the download quota has been exceeded for the mirror(s).
-Unfortunately, this is an error from Google and is outside of our control.
+@"Unable to connect to Remote Server. Rookie is unable to connect to our Servers.
 
 Things you can try:
 1) Use a third party config from the wiki (https://wiki.vrpirates.club/general_information/third-party-rclone-configs)
-2) Wait for the quota to reset sometime in the next 24 hours.
-3) Use Resilio for p2p downloads (https://wiki.vrpirates.club/en/Howto/Resilio-Sync-setup-guide)
-4) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
+2) Use Resilio for p2p downloads (https://wiki.vrpirates.club/en/Howto/Resilio-Sync-setup-guide)
+3) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
+";
 
-The application will now exit.";
-
-            FlexibleMessageBox.Show(errorMessage, "Quota exceeded");
+            FlexibleMessageBox.Show(errorMessage, "Unable to connect to Remote Server");
         }
 
         public bool isinstalling = false;
@@ -2010,7 +2013,7 @@ The application will now exit.";
 
                     Thread t1 = new Thread(() =>
                     {
-                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --drive-acknowledge-abuse --rc", Properties.Settings.Default.BandwithLimit);
+                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --transfers 1 --multi-thread-streams 0", Properties.Settings.Default.BandwithLimit);
                     });
                     t1.IsBackground = true;
                     t1.Start();
