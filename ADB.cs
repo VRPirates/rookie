@@ -309,7 +309,7 @@ namespace AndroidSideloader
                     ADB.RunAdbCommandToString("kill-server");
                     ADB.RunAdbCommandToString("devices");
                     ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{MainForm.CurrPCKG} \"{Environment.CurrentDirectory}\"");
-                    Program.form.ChangeTitle("Uinstalling game...");
+                    Program.form.ChangeTitle("Uninstalling game...");
                     Sideloader.UninstallGame(MainForm.CurrPCKG);
                     Program.form.ChangeTitle("Reinstalling Game");
                     ret += ADB.RunAdbCommandToString($"install -g \"{path}\"");
