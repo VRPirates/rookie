@@ -84,7 +84,7 @@ namespace AndroidSideloader
         {
             gameProperties.Clear();
             games.Clear();
-            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
+            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\" --transfers 1 --multi-thread-streams 0").Output;
             if (MainForm.debugMode)
             {
                 File.WriteAllText("VRP-GamesList.txt", tempGameList);

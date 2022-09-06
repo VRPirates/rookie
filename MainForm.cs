@@ -1913,8 +1913,14 @@ without him none of this would be possible
                     if (quotaTries > remotesList.Items.Count)
                     {
                         ShowError_QuotaExceeded();
-                        Application.ExitThread();
-                        Application.Exit();
+                        if (System.Windows.Forms.Application.MessageLoop) 
+                        {
+                            System.Windows.Forms.Application.Exit();
+                        }
+                        else
+                        {
+                            System.Environment.Exit(1);
+                        }
                     }
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
                     {
