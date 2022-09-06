@@ -259,10 +259,11 @@ namespace AndroidSideloader
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (!isOffline)
                 {
-                    ChangeTitle("Initializing Mirrors");
+                    ChangeTitle("Initializing Servers...");
                     initMirrors(true);
-                    ChangeTitle("Checking if config is updated");
-                    ChangeTitle("Initializing Games");
+                    ChangeTitle("Checking for a new Configuration File...");
+                    SideloaderRCLONE.updateConfig(currentRemote);
+                    ChangeTitle("Initializing Games List...");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
                     //ChangeTitle("Updating list of needed clean apps...");
@@ -330,11 +331,13 @@ namespace AndroidSideloader
                 await Task.Delay(100);
             Thread t2 = new Thread(() =>
             {
+                ChangeTitle("Updating Game Notes...");
                 SideloaderRCLONE.UpdateGameNotes(currentRemote);
             });
 
             Thread t3 = new Thread(() =>
             {
+                ChangeTitle("Updating Game Thumbnails (This may take a minute or two)...");
                 SideloaderRCLONE.UpdateGamePhotos(currentRemote);
             });
 
@@ -349,22 +352,32 @@ namespace AndroidSideloader
             t2.IsBackground = true;
             t3.IsBackground = true;
             t4.IsBackground = true;
+            
             if (HasInternet)
             {
                 t2.Start();
-                t3.Start();
-                t4.Start();
             }
             while (t2.IsAlive)
-                await Task.Delay(50);        
+                await Task.Delay(50);
+        
+            if (HasInternet)
+            {
+                t3.Start();
+            }
             while (t3.IsAlive)
-                await Task.Delay(50);         
+                await Task.Delay(50);
+
+            if (HasInternet)
+            {
+                t4.Start();
+            }
             while (t4.IsAlive)
-                await Task.Delay(50);        
+                await Task.Delay(50);
+
 
             progressBar.Style = ProgressBarStyle.Marquee;
 
-            ChangeTitle("Populating update list, please wait...\n\n");
+            ChangeTitle("Populating Game Update List, Almost There!");
           
             await CheckForDevice();
             if (ADB.DeviceID.Length < 5)
@@ -1900,6 +1913,7 @@ without him none of this would be possible
                     if (quotaTries > remotesList.Items.Count)
                     {
                         ShowError_QuotaExceeded();
+                        Application.ExitThread();
                         Application.Exit();
                     }
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
@@ -1927,6 +1941,8 @@ without him none of this would be possible
         {
             const string errorMessage =
 @"Unable to connect to Remote Server. Rookie is unable to connect to our Servers.
+
+First time launching Rookie? Please relaunch and try again.
 
 Things you can try:
 1) Use a third party config from the wiki (https://wiki.vrpirates.club/general_information/third-party-rclone-configs)
