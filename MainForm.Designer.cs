@@ -1116,7 +1116,7 @@
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(183, 17);
             this.label4.TabIndex = 90;
-            this.label4.Text = "Shorcuts: CTRL+F or F2";
+            this.label4.Text = "Shortcuts: CTRL+F or F2";
             this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             this.label4.Visible = false;
             // 

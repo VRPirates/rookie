@@ -46,22 +46,25 @@ namespace AndroidSideloader
 
         public static void UpdateNouns(string remote)
         {
+            Logger.Log($"Updating Nouns");
             RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
         }
 
         public static void UpdateGamePhotos(string remote)
         {
+            Logger.Log($"Updating Thumbnails");
             RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
         }
 
         public static void UpdateGameNotes(string remote)
         {
-
+            Logger.Log($"Updating Game Notes");
             RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
         }
 
         public static void RefreshRemotes()
         {
+            Logger.Log($"Refresh / List Remotes");
             RemotesList.Clear();
             var remotes = RCLONE.runRcloneCommand("listremotes").Output.Split('\n');
 
@@ -82,6 +85,8 @@ namespace AndroidSideloader
 
         public static void initGames(string remote)
         {
+            Logger.Log($"Initializing Games List");
+            
             gameProperties.Clear();
             games.Clear();
             string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
@@ -108,6 +113,7 @@ namespace AndroidSideloader
 
         public static void updateConfig(string remote)
         {
+            Logger.Log($"Attempting to Update Config");
             try
             {
                 string configUrl = "https://wiki.vrpirates.club/downloads/vrp.download.config";
@@ -116,6 +122,8 @@ namespace AndroidSideloader
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
                 {
                     string resultString = responseReader.ReadToEnd();
+
+                    Logger.Log($"Retrived updated config from: {configUrl}");
 
                     if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
                         File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config");

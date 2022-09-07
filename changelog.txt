@@ -1,5 +1,11 @@
-RSL 2.10.4
+RSL 2.11
 
-Made mirror ID start at first again.
+- multiple fixes for new servers
+- updated auto-update source
+- update status text
+- change server tasks to synchronous
+- spelling fixes
+- syntax fixes
+- additional logging
 
-~pmow
+~fenopy

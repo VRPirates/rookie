@@ -259,10 +259,11 @@ namespace AndroidSideloader
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (!isOffline)
                 {
-                    ChangeTitle("Initializing Mirrors");
+                    ChangeTitle("Initializing Servers...");
                     initMirrors(true);
-                    ChangeTitle("Checking if config is updated");
-                    ChangeTitle("Initializing Games");
+                    ChangeTitle("Checking for a new Configuration File...");
+                    SideloaderRCLONE.updateConfig(currentRemote);
+                    ChangeTitle("Initializing Games List...");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
                     //ChangeTitle("Updating list of needed clean apps...");
@@ -330,11 +331,13 @@ namespace AndroidSideloader
                 await Task.Delay(100);
             Thread t2 = new Thread(() =>
             {
+                ChangeTitle("Updating Game Notes...");
                 SideloaderRCLONE.UpdateGameNotes(currentRemote);
             });
 
             Thread t3 = new Thread(() =>
             {
+                ChangeTitle("Updating Game Thumbnails (This may take a minute or two)...");
                 SideloaderRCLONE.UpdateGamePhotos(currentRemote);
             });
 
@@ -349,22 +352,32 @@ namespace AndroidSideloader
             t2.IsBackground = true;
             t3.IsBackground = true;
             t4.IsBackground = true;
+            
             if (HasInternet)
             {
                 t2.Start();
-                t3.Start();
-                t4.Start();
             }
             while (t2.IsAlive)
-                await Task.Delay(50);        
+                await Task.Delay(50);
+        
+            if (HasInternet)
+            {
+                t3.Start();
+            }
             while (t3.IsAlive)
-                await Task.Delay(50);         
+                await Task.Delay(50);
+
+            if (HasInternet)
+            {
+                t4.Start();
+            }
             while (t4.IsAlive)
-                await Task.Delay(50);        
+                await Task.Delay(50);
+
 
             progressBar.Style = ProgressBarStyle.Marquee;
 
-            ChangeTitle("Populating update list, please wait...\n\n");
+            ChangeTitle("Populating Game Update List, Almost There!");
           
             await CheckForDevice();
             if (ADB.DeviceID.Length < 5)
@@ -1794,18 +1807,20 @@ namespace AndroidSideloader
  - Software orignally coded by rookie.wtf
  - Thanks to pmow for all of his work, including rclone, wonka and other projects, and for scripting the backend
 without him none of this would be possible
- - Thanks to the data team, they know who they are ;) (Especially HarryEffingPotter, no he did not put this here himself, that is perposterous.)
- - Thanks to flow for being friendly and helping every one, also congrats on being the discord server owner now! :D
- - Thanks to badcoder5000 for helping me redesign the ui
- - Thanks to gotard for the theme changer
- - Thanks to Verb8em for drawing the new icon
- - Thanks to 7zip team for 7zip :)
- - Thanks to rclone team for rclone :D
- - Thanks to https://stackoverflow.com/users/57611/erike for the folder browser dialog code
- - Thanks to Serge Weinstock for developing SergeUtils, which is used to search the combo box
- - Thanks to Mike Gold https://www.c-sharpcorner.com/members/mike-gold2 for the scrollable message box
-
- - Thanks: Roma/Rookie, Pmow, Ivan, Kaladin, John, Sam Hoque, Flow, HarryEffinPotter, and the mod staff!";
+ - Thanks to HarryEffinPotter for all his Rookie improvements
+ - Thanks to the VRP Mod Staff, data team, and anyone else I missed!
+ - Thanks to VRP members of the past and present: Roma/Rookie, Flow, Ivan, Kaladin, John, Sam Hoque
+ 
+ - Additional Thanks and Credits:
+ - -- rclone https://rclone.org/
+ - -- 7zip https://www.7-zip.org/
+ - -- badcoder5000: for help with the UI Redesign
+ - -- gotard: for the Theme Changer
+ - -- Verb8em: for drawning the New Icon
+ - -- ErikE: Folder Browser Dialog Code (https://stackoverflow.com/users/57611/erike)
+ - -- Serge Weinstock: for developing SergeUtils, which is used to search the combobox
+ - -- Mike Gold: for the scrollable message box (https://www.c-sharpcorner.com/members/mike-gold2)
+ ";
 
             FlexibleMessageBox.Show(about);
         }
@@ -1900,7 +1915,14 @@ without him none of this would be possible
                     if (quotaTries > remotesList.Items.Count)
                     {
                         ShowError_QuotaExceeded();
-                        Application.Exit();
+                        if (System.Windows.Forms.Application.MessageLoop) 
+                        {
+                            System.Windows.Forms.Application.Exit();
+                        }
+                        else
+                        {
+                            System.Environment.Exit(1);
+                        }
                     }
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
                     {
@@ -1927,6 +1949,8 @@ without him none of this would be possible
         {
             const string errorMessage =
 @"Unable to connect to Remote Server. Rookie is unable to connect to our Servers.
+
+First time launching Rookie? Please relaunch and try again.
 
 Things you can try:
 1) Use a third party config from the wiki (https://wiki.vrpirates.club/general_information/third-party-rclone-configs)
@@ -2011,9 +2035,12 @@ Things you can try:
                     Directory.CreateDirectory(gameDirectory);
                     ProcessOutput gameDownloadOutput = new ProcessOutput("", "");
 
+                    Logger.Log($"Starting Game Download");
+                    Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
+
                     Thread t1 = new Thread(() =>
                     {
-                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --transfers 1 --multi-thread-streams 0", Properties.Settings.Default.BandwithLimit);
+                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwithLimit);
                     });
                     t1.IsBackground = true;
                     t1.Start();
@@ -2079,8 +2106,14 @@ Things you can try:
                     }
                     if (removedownloading)
                     { 
-                            ChangeTitle("Deleting game files", false);
-                            try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
+                        ChangeTitle("Deleting game files", false);
+                        try
+                        {
+                            Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
+                        }
+                        catch (Exception ex) {
+                            FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}");
+                        }
                         ChangeTitle("");
                         break;
                     }
