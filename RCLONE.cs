@@ -46,9 +46,6 @@ namespace AndroidSideloader
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             string originalCommand = command;
 
-            // global limiters
-            command += $" --http-no-head --transfers 2";
-
             //set bandwidth limit
             if (bandwithLimit.Length > 0)
             {
