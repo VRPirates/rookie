@@ -5,5 +5,7 @@ RSL 2.11
 - update status text
 - change server tasks to synchronous
 - spelling fixes
+- syntax fixes
+- additional logging
 
 ~fenopy
