@@ -47,19 +47,19 @@ namespace AndroidSideloader
         public static void UpdateNouns(string remote)
         {
             Logger.Log($"Updating Nouns");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\" --http-no-head --transfers 2 --multi-thread-streams 1");
         }
 
         public static void UpdateGamePhotos(string remote)
         {
             Logger.Log($"Updating Thumbnails");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --http-no-head --transfers 2 --multi-thread-streams 1");
         }
 
         public static void UpdateGameNotes(string remote)
         {
             Logger.Log($"Updating Game Notes");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\" --http-no-head --transfers 2 --multi-thread-streams 1");
         }
 
         public static void RefreshRemotes()

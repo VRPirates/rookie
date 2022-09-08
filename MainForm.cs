@@ -263,7 +263,7 @@ namespace AndroidSideloader
                     initMirrors(true);
                     ChangeTitle("Checking for a new Configuration File...");
                     SideloaderRCLONE.updateConfig(currentRemote);
-                    ChangeTitle("Initializing Games List...");
+                    ChangeTitle("Grabbing the Games List...");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
                     //ChangeTitle("Updating list of needed clean apps...");
@@ -1480,7 +1480,9 @@ namespace AndroidSideloader
                     topItemIndex = gamesListView.TopItem.Index;
             }
             catch (Exception ex)
-            { }
+            {
+                FlexibleMessageBox.Show($"Error building game list: {ex.Message}");
+            }
 
             try
             {
@@ -1488,7 +1490,9 @@ namespace AndroidSideloader
                     gamesListView.TopItem = gamesListView.Items[topItemIndex];
             }
             catch (Exception ex)
-            { }
+            {
+                FlexibleMessageBox.Show($"Error building game list: {ex.Message}");
+            }
             Thread t2 = new Thread(() =>
             {
                 if (!errorOnList)
@@ -2040,7 +2044,7 @@ Things you can try:
 
                     Thread t1 = new Thread(() =>
                     {
-                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwithLimit);
+                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc --transfers 1 --multi-thread-streams 1 --checkers 1", Properties.Settings.Default.BandwithLimit);
                     });
                     t1.IsBackground = true;
                     t1.Start();
