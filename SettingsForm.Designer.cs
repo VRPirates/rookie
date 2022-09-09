@@ -369,13 +369,12 @@
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Settings";
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.SettingsForm_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.SettingsForm_KeyPress);
             this.Leave += new System.EventHandler(this.SettingsForm_Leave);
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.Activate();
         }
 
         #endregion

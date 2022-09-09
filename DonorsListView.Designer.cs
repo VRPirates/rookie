@@ -1,4 +1,4 @@
-﻿
+
 namespace AndroidSideloader
 {
     partial class DonorsListViewForm
@@ -262,7 +262,6 @@ namespace AndroidSideloader
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "DonorsListViewForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.DonorsListViewForm_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseMove);
@@ -271,7 +270,7 @@ namespace AndroidSideloader
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
-
+            this.Activate();
         }
 
         #endregion

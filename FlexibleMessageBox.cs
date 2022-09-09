@@ -380,7 +380,6 @@ namespace JR.Utils.GUI.Forms
                 // 
                 // FlexibleMessageBoxForm
                 // 
-                this.TopMost = true;
                 this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
                 this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
                 this.ClientSize = new System.Drawing.Size(260, 102);
@@ -403,6 +402,8 @@ namespace JR.Utils.GUI.Forms
                 ((System.ComponentModel.ISupportInitialize)(this.pictureBoxForIcon)).EndInit();
                 this.ResumeLayout(false);
                 this.PerformLayout();
+
+                this.Activate();
             }
 
             private System.Windows.Forms.Button button1;

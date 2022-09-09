@@ -133,7 +133,6 @@ namespace AndroidSideloader
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.Name = "NewApps";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.NewApps_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label2_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.label2_MouseMove);
@@ -141,7 +140,7 @@ namespace AndroidSideloader
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.Activate();
         }
 
         #endregion
