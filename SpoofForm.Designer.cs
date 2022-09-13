@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SpoofForm));
             this.PackageNameTextBox = new System.Windows.Forms.TextBox();
             this.RandomizeButton = new System.Windows.Forms.Button();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
@@ -100,7 +99,6 @@
             this.Controls.Add(this.RandomizeButton);
             this.Controls.Add(this.PackageNameTextBox);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(316, 170);
             this.MinimumSize = new System.Drawing.Size(316, 170);
             this.Name = "SpoofForm";

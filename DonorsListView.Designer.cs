@@ -30,7 +30,6 @@ namespace AndroidSideloader
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DonorsListViewForm));
             this.DonorsListView = new System.Windows.Forms.ListView();
             this.GameNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.PackageNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -148,8 +147,8 @@ namespace AndroidSideloader
             // panel2
             // 
             this.panel2.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.panel2.Controls.Add(this.DonorsListView);
             this.panel2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.panel2.Controls.Add(this.DonorsListView);
             this.panel2.Location = new System.Drawing.Point(16, 43);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(430, 230);
@@ -261,7 +260,6 @@ namespace AndroidSideloader
             this.Controls.Add(this.panel1);
             this.ForeColor = System.Drawing.Color.White;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "DonorsListViewForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.TopMost = true;

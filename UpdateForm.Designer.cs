@@ -29,7 +29,6 @@ namespace AndroidSideloader
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(UpdateForm));
             this.SkipUpdate = new System.Windows.Forms.Label();
             this.CurVerLabel = new System.Windows.Forms.Label();
             this.YesUpdate = new System.Windows.Forms.Button();
@@ -98,8 +97,8 @@ namespace AndroidSideloader
             // panel3
             // 
             this.panel3.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.panel3.Controls.Add(this.UpdateTextBox);
             this.panel3.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.panel3.Controls.Add(this.UpdateTextBox);
             this.panel3.Location = new System.Drawing.Point(21, 19);
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(432, 218);
@@ -138,7 +137,6 @@ namespace AndroidSideloader
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(474, 305);
             this.panel1.TabIndex = 5;
-            this.panel1.Paint += new System.Windows.Forms.PaintEventHandler(this.panel1_Paint);
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseDown);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseMove);
             this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseUp);
@@ -153,7 +151,6 @@ namespace AndroidSideloader
             this.ControlBox = false;
             this.Controls.Add(this.panel1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "UpdateForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.TopMost = true;

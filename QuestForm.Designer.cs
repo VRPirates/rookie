@@ -32,7 +32,6 @@ namespace AndroidSideloader
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuestForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -93,7 +92,7 @@ namespace AndroidSideloader
             this.label2.ForeColor = System.Drawing.Color.LightSteelBlue;
             this.label2.Location = new System.Drawing.Point(70, 28);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(230, 32);
+            this.label2.Size = new System.Drawing.Size(231, 32);
             this.label2.TabIndex = 6;
             this.label2.Text = "Reboot to reset. - Turn screen off, \r\nthen back on with hold button to apply.";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -119,7 +118,7 @@ namespace AndroidSideloader
             this.label4.ForeColor = System.Drawing.Color.LightSteelBlue;
             this.label4.Location = new System.Drawing.Point(16, 363);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(337, 16);
+            this.label4.Size = new System.Drawing.Size(338, 16);
             this.label4.TabIndex = 6;
             this.label4.Text = "Persists on device reboot. Enter 0 to reset any category.\r\n";
             this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -248,7 +247,7 @@ namespace AndroidSideloader
             this.label13.ForeColor = System.Drawing.Color.LightSteelBlue;
             this.label13.Location = new System.Drawing.Point(83, 678);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(203, 16);
+            this.label13.Size = new System.Drawing.Size(204, 16);
             this.label13.TabIndex = 6;
             this.label13.Text = "*For games not released by -QU.";
             this.label13.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -313,7 +312,7 @@ namespace AndroidSideloader
             this.label16.ForeColor = System.Drawing.Color.LightSteelBlue;
             this.label16.Location = new System.Drawing.Point(14, 241);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(342, 16);
+            this.label16.Size = new System.Drawing.Size(343, 16);
             this.label16.TabIndex = 6;
             this.label16.Text = "Desktop\\Quest Screenshots  Desktop\\Quest Videoshots";
             this.label16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -372,7 +371,7 @@ namespace AndroidSideloader
             this.label7.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label7.Location = new System.Drawing.Point(13, 532);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(56, 18);
+            this.label7.Size = new System.Drawing.Size(63, 18);
             this.label7.TabIndex = 3;
             this.label7.Text = "Fov - X";
             this.label7.Visible = false;
@@ -387,7 +386,7 @@ namespace AndroidSideloader
             this.label8.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label8.Location = new System.Drawing.Point(191, 532);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(55, 18);
+            this.label8.Size = new System.Drawing.Size(62, 18);
             this.label8.TabIndex = 3;
             this.label8.Text = "Fov - Y";
             this.label8.Visible = false;
@@ -402,7 +401,7 @@ namespace AndroidSideloader
             this.label9.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label9.Location = new System.Drawing.Point(12, 583);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(95, 18);
+            this.label9.Size = new System.Drawing.Size(107, 18);
             this.label9.TabIndex = 3;
             this.label9.Text = "Refresh Rate";
             this.label9.Visible = false;
@@ -417,7 +416,7 @@ namespace AndroidSideloader
             this.label6.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label6.Location = new System.Drawing.Point(93, 484);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(173, 18);
+            this.label6.Size = new System.Drawing.Size(194, 18);
             this.label6.TabIndex = 3;
             this.label6.Text = "Enter Custom Username";
             this.label6.Visible = false;
@@ -432,7 +431,7 @@ namespace AndroidSideloader
             this.label5.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.label5.Location = new System.Drawing.Point(16, 434);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(337, 18);
+            this.label5.Size = new System.Drawing.Size(385, 18);
             this.label5.TabIndex = 3;
             this.label5.Text = "Custom Resolution Width (Height auto calculated)";
             this.label5.Visible = false;
@@ -447,7 +446,7 @@ namespace AndroidSideloader
             this.ResolutionLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.ResolutionLabel.Location = new System.Drawing.Point(9, 180);
             this.ResolutionLabel.Name = "ResolutionLabel";
-            this.ResolutionLabel.Size = new System.Drawing.Size(153, 18);
+            this.ResolutionLabel.Size = new System.Drawing.Size(175, 18);
             this.ResolutionLabel.TabIndex = 3;
             this.ResolutionLabel.Text = "Resolution (0=default)";
             // 
@@ -683,7 +682,6 @@ namespace AndroidSideloader
             this.Controls.Add(this.QURfrRt);
             this.Controls.Add(this.RefreshRateComboBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(386, 776);
             this.MinimumSize = new System.Drawing.Size(386, 776);
             this.Name = "QuestForm";
