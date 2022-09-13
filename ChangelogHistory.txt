@@ -1,16 +1,27 @@
-﻿RSL 2.11
+﻿RSL 2.12
+
+- updated auto-update source
+- update status text
+- change server tasks to synchronous
+- spelling fixes
+- syntax fixes
+- additional logging
+
+~fenopy
+
+RSL 2.11
 
 - Updated rclone commands
 - Minor code cleanup/syntax fixes
 
-~f
+~fenopy
 
 RSL 2.10.5
 
 - Added auto-offline mode when servers are offline
 - Disabled Auto-Config update
 
-~f
+~fenopy
 
 RSL 2.10.4
 

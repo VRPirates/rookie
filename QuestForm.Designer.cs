@@ -689,12 +689,11 @@ namespace AndroidSideloader
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Quest settings";
-            this.TopMost = true;
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.QuestForm_FormClosed);
             this.Load += new System.EventHandler(this.QuestForm_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
-
+            this.Activate();
         }
 
         #endregion

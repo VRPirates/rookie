@@ -147,8 +147,8 @@ namespace AndroidSideloader
             // panel2
             // 
             this.panel2.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.panel2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel2.Controls.Add(this.DonorsListView);
+            this.panel2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.panel2.Location = new System.Drawing.Point(16, 43);
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(430, 230);
@@ -175,7 +175,7 @@ namespace AndroidSideloader
             this.newdet.AutoSize = true;
             this.newdet.BackColor = System.Drawing.Color.Transparent;
             this.newdet.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
-            this.newdet.Location = new System.Drawing.Point(156, 7);
+            this.newdet.Location = new System.Drawing.Point(120, 7);
             this.newdet.Name = "newdet";
             this.newdet.Size = new System.Drawing.Size(150, 17);
             this.newdet.TabIndex = 3;
@@ -191,11 +191,11 @@ namespace AndroidSideloader
             this.upddet.AutoSize = true;
             this.upddet.BackColor = System.Drawing.Color.Transparent;
             this.upddet.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
-            this.upddet.Location = new System.Drawing.Point(163, 7);
+            this.upddet.Location = new System.Drawing.Point(120, 7);
             this.upddet.Name = "upddet";
-            this.upddet.Size = new System.Drawing.Size(136, 17);
+            this.upddet.Size = new System.Drawing.Size(185, 17);
             this.upddet.TabIndex = 3;
-            this.upddet.Text = "Updates detected";
+            this.upddet.Text = "Game Updates Detected";
             this.upddet.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.upddet.Visible = false;
             this.upddet.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
@@ -206,12 +206,12 @@ namespace AndroidSideloader
             // 
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
-            this.label2.Location = new System.Drawing.Point(101, 23);
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(23, 23);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(261, 17);
+            this.label2.Size = new System.Drawing.Size(416, 15);
             this.label2.TabIndex = 3;
-            this.label2.Text = "All RSL apps are donated by users";
+            this.label2.Text = "All Apps are donated by users! Without them none of this would be possible!";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
             this.label2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseMove);
@@ -222,11 +222,11 @@ namespace AndroidSideloader
             this.TimerDesc.AutoSize = true;
             this.TimerDesc.BackColor = System.Drawing.Color.Transparent;
             this.TimerDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TimerDesc.Location = new System.Drawing.Point(36, 321);
+            this.TimerDesc.Location = new System.Drawing.Point(28, 321);
             this.TimerDesc.Name = "TimerDesc";
-            this.TimerDesc.Size = new System.Drawing.Size(390, 13);
+            this.TimerDesc.Size = new System.Drawing.Size(406, 13);
             this.TimerDesc.TabIndex = 3;
-            this.TimerDesc.Text = "Don\'t share free apps. RSL will extract/upload apps in background.";
+            this.TimerDesc.Text = "Don\'t share free apps. Rookie will extract/upload apps in background.";
             this.TimerDesc.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.TimerDesc.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
             this.TimerDesc.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseMove);
@@ -262,7 +262,6 @@ namespace AndroidSideloader
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Name = "DonorsListViewForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.TopMost = true;
             this.Load += new System.EventHandler(this.DonorsListViewForm_Load);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseDown);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.DonorsListViewForm_MouseMove);
@@ -271,7 +270,7 @@ namespace AndroidSideloader
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
-
+            this.Activate();
         }
 
         #endregion

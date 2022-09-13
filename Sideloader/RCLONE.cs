@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace AndroidSideloader
 {
@@ -125,13 +126,53 @@ namespace AndroidSideloader
 
                     Logger.Log($"Retrived updated config from: {configUrl}");
 
-                    if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
-                        File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config");
-                    File.Create(Environment.CurrentDirectory + "\\rclone\\vrp.download.config").Close();
-                    File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.download.config", resultString);
+                    if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new"))
+                        File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new");
+                    File.Create(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new").Close();
+                    File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new", resultString);
+
+                    if (!File.Exists(Environment.CurrentDirectory + "\\rclone\\hash.txt"))
+                        File.Create(Environment.CurrentDirectory + "\\rclone\\hash.txt").Close();
+
+                    string newConfig = CalculateMD5(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new");
+                    string oldConfig = File.ReadAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt");
+
+                    if (!File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
+                        oldConfig = "Config Doesnt Exist!";
+
+                    Logger.Log($"Online Config Hash: {newConfig}; Local Config Hash: {oldConfig}");
+
+                    if (newConfig != oldConfig)
+                    {
+                        Logger.Log($"Updated Config Hash is different than the current Config. Updating Configuration File.");
+
+                        if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
+                            File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config");
+                        File.Move(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new", Environment.CurrentDirectory + "\\rclone\\vrp.download.config");
+
+                        File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", string.Empty);
+                        File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", newConfig);
+                    } else
+                    {
+                        Logger.Log($"Updated Config Hash matches last download. Not updating.");
+
+                        if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new"))
+                            File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new");
+                    }
                 }
             }
             catch { }
+        }
+        static string CalculateMD5(string filename)
+        {
+            using (var md5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(filename))
+                {
+                    var hash = md5.ComputeHash(stream);
+                    return BitConverter.ToString(hash).Replace("-", "").ToLowerInvariant();
+                }
+            }
         }
     }
 }

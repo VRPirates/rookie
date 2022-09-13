@@ -17,7 +17,7 @@ namespace AndroidSideloader
         private static string RawGitHubUrl;
         private static string GitHubUrl;
 
-        static readonly public string LocalVersion = "2.11";
+        static readonly public string LocalVersion = "2.12";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
@@ -30,9 +30,10 @@ namespace AndroidSideloader
                 currentVersion = client.GetStringAsync($"{RawGitHubUrl}/master/version").Result;
                 changelog = client.GetStringAsync($"{RawGitHubUrl}/master/changelog.txt").Result;
                 client.Dispose();
+                currentVersion = currentVersion.Trim();
             }
             catch { return false; }
-            return LocalVersion != currentVersion;
+            return LocalVersion.Trim() != currentVersion;
         }
 
         //Call this to ask the user if they want to update
@@ -58,7 +59,7 @@ namespace AndroidSideloader
                 var fileClient = new WebClient();
                 ServicePointManager.Expect100Continue = true;
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                Logger.Log($"Downloading update from {RawGitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
+                Logger.Log($"Downloading update from {GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
                 fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
                 fileClient.Dispose();
                 Logger.Log($"Starting {AppName} v{currentVersion}.exe");

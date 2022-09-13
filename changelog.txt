@@ -1,11 +1,11 @@
-RSL 2.11
+RSL 2.12
 
-- multiple fixes for new servers
-- updated auto-update source
-- update status text
-- change server tasks to synchronous
-- spelling fixes
-- syntax fixes
-- additional logging
+- fixed issue with configuration always updating
+- fixed github version vs app version comparison
+- fixed github download url
+- restored "auto update config" checkbox
+- fixed tooltips; added additional tooltips to all menu items
+- gui fixes and updates to game donation menu
+- additional logging and on-screen notifications
 
 ~fenopy
