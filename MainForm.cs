@@ -1903,14 +1903,22 @@ without him none of this would be possible
                     if (quotaTries > remotesList.Items.Count)
                     {
                         ShowError_QuotaExceeded();
+
+                        DialogResult om = MessageBox.Show("Relaunch Rookie in Offline Mode?", "Offline Mode?", MessageBoxButtons.YesNo);
+                        if (om == DialogResult.Yes) {
+                            Process pr = new Process();
+                                pr.StartInfo.WorkingDirectory = Application.StartupPath;
+                                pr.StartInfo.FileName = System.AppDomain.CurrentDomain.FriendlyName;
+                                pr.StartInfo.Arguments = "--offline";
+                                pr.Start();
+                                Process.GetCurrentProcess().Kill();                                   
+                        }
+
                         if (System.Windows.Forms.Application.MessageLoop) 
                         {
-                            System.Windows.Forms.Application.Exit();
+                            Process.GetCurrentProcess().Kill();
                         }
-                        else
-                        {
-                            System.Environment.Exit(1);
-                        }
+                        
                     }
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
                     {
