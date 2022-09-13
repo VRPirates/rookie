@@ -1,4 +1,4 @@
-﻿using AndroidSideloader.Utilities;
+using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
 using SergeUtils;
@@ -261,8 +261,10 @@ namespace AndroidSideloader
                 {
                     ChangeTitle("Initializing Servers...");
                     initMirrors(true);
+                    if (Properties.Settings.Default.autoUpdateConfig) {
                     ChangeTitle("Checking for a new Configuration File...");
                     SideloaderRCLONE.updateConfig(currentRemote);
+                    }
                     ChangeTitle("Grabbing the Games List...");
                     SideloaderRCLONE.initGames(currentRemote);
                     //ChangeTitle("Syncing Game Photos");
