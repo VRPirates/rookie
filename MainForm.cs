@@ -70,7 +70,7 @@ namespace AndroidSideloader
             }
             if (isOffline)
             {
-                FlexibleMessageBox.Show("Couldn't connect to mirrors!\nOffline mode activated. You can't download games in this mode, only do local stuff.");
+                FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
             }
 
             InitializeComponent();
