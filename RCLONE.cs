@@ -95,7 +95,6 @@ namespace AndroidSideloader
                 try
                 {
                     Program.form.SwitchMirrors();
-                    
                 }
                 catch
                 {

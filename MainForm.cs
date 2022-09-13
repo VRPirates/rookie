@@ -10,6 +10,7 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -20,9 +21,14 @@ namespace AndroidSideloader
 {
     public partial class MainForm : Form
     {
-
         private ListViewColumnSorter lvwColumnSorter;
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HTCAPTION = 0x2;
+        [DllImport("User32.dll")]
+        public static extern bool ReleaseCapture();
+        [DllImport("User32.dll")]
 
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
 #if DEBUG
         public static bool debugMode = true;
         public bool DeviceConnected = false;
@@ -64,7 +70,7 @@ namespace AndroidSideloader
             }
             if (isOffline)
             {
-                FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
+                FlexibleMessageBox.Show("Couldn't connect to mirrors!\nOffline mode activated. You can't download games in this mode, only do local stuff.");
             }
 
             InitializeComponent();
@@ -452,7 +458,7 @@ namespace AndroidSideloader
             try
             {
                 if (ProgressText.IsDisposed) return;
-                this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + txt; });
+                this.Invoke(() => { oldTitle = txt; label12.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + txt; });
                 ProgressText.Invoke(() =>
                 {
                     if (!ProgressText.IsDisposed)
@@ -461,7 +467,7 @@ namespace AndroidSideloader
                 if (!reset)
                     return;
                 await Task.Delay(TimeSpan.FromSeconds(5));
-                this.Invoke(() => { this.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + oldTitle; });
+                this.Invoke(() => { label12.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + oldTitle; });
                 ProgressText.Invoke(() =>
                 {
                     if (!ProgressText.IsDisposed)
@@ -921,7 +927,8 @@ namespace AndroidSideloader
                 t4.Start();
                 while (t4.IsAlive)
                     await Task.Delay(100);
-                ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
+                this.label12.Font = new System.Drawing.Font("Consolas", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+                ChangeTitle("Rookie | Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
                 ULGif.Visible = true;
                 ULLabel.Visible = true;
                 ULGif.Enabled = true;
@@ -1919,6 +1926,7 @@ without him none of this would be possible
                     if (quotaTries > remotesList.Items.Count)
                     {
                         ShowError_QuotaExceeded();
+                        isOffline = true;
                         if (System.Windows.Forms.Application.MessageLoop) 
                         {
                             System.Windows.Forms.Application.Exit();
@@ -1937,7 +1945,7 @@ without him none of this would be possible
                     }
                     if (reset)
                     {
-                        remotesList.SelectedIndex--;
+                        remotesList.SelectedIndex --;
                     }
                     if (remotesList.Items.Count > remotesList.SelectedIndex && !reset)
                     {
@@ -3001,6 +3009,32 @@ Things you can try:
                 progressBar.Style = ProgressBarStyle.Continuous;
                 FlexibleMessageBox.Show($"{GameName} pulled to:\n\n{GameName} v{VersionInt} {packageName}.zip\n\nOn your desktop!");
             }
+        }
+
+        private void panel1_onMouseDown(object sender, MouseEventArgs e)
+        {
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ReleaseCapture();
+                    SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+                }
+            }
+        }
+
+        private void exitButton(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void minimizeButton(object sender, EventArgs e)
+        {
+            WindowState = FormWindowState.Minimized;
+        }
+
+        private void label12_MouseDown(object sender, EventArgs e)
+        {
+            panel1_onMouseDown(sender, (MouseEventArgs)e);
         }
     }
 
