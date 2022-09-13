@@ -1,4 +1,7 @@
-﻿namespace AndroidSideloader
+﻿
+using System.Windows.Forms;
+
+namespace AndroidSideloader
 {
     partial class MainForm
     {
@@ -152,6 +155,9 @@
             this.startsideloadbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.startsideloadbutton.UseVisualStyleBackColor = false;
             this.startsideloadbutton.Click += new System.EventHandler(this.startsideloadbutton_Click);
+
+            ToolTip startsideloadbutton_Tooltip = new ToolTip();
+            startsideloadbutton_Tooltip.SetToolTip(this.startsideloadbutton, "Sideload an APK onto your device");
             // 
             // devicesbutton
             // 
@@ -173,6 +179,9 @@
             this.devicesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.devicesbutton.UseVisualStyleBackColor = false;
             this.devicesbutton.Click += new System.EventHandler(this.devicesbutton_Click);
+
+            ToolTip devicesbutton_Tooltip = new ToolTip();
+            devicesbutton_Tooltip.SetToolTip(this.devicesbutton, "Rookie will attempt to reconnect to your Device");
             // 
             // obbcopybutton
             // 
@@ -194,6 +203,9 @@
             this.obbcopybutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.obbcopybutton.UseVisualStyleBackColor = false;
             this.obbcopybutton.Click += new System.EventHandler(this.obbcopybutton_Click);
+
+            ToolTip obbcopybutton_Tooltip = new ToolTip();
+            obbcopybutton_Tooltip.SetToolTip(this.obbcopybutton, "Copies an obb folder to the Android/obb folder from the device (Not all games use obb files)");
             // 
             // backupbutton
             // 
@@ -215,6 +227,9 @@
             this.backupbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.backupbutton.UseVisualStyleBackColor = false;
             this.backupbutton.Click += new System.EventHandler(this.backupbutton_Click);
+
+            ToolTip backupbutton_Tooltip = new ToolTip();
+            backupbutton_Tooltip.SetToolTip(this.backupbutton, "Saves the game and apps data to the sideloader folder (Does not save APKs or OBBs)");
             // 
             // restorebutton
             // 
@@ -236,6 +251,9 @@
             this.restorebutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.restorebutton.UseVisualStyleBackColor = false;
             this.restorebutton.Click += new System.EventHandler(this.restorebutton_Click);
+
+            ToolTip restorebutton_Tooltip = new ToolTip();
+            restorebutton_Tooltip.SetToolTip(this.restorebutton, "Restores the game and apps data to the device (Use the Backup Game Data button first!)");
             // 
             // getApkButton
             // 
@@ -257,6 +275,9 @@
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.getApkButton.UseVisualStyleBackColor = false;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
+
+            ToolTip getApkButton_Tooltip = new ToolTip();
+            getApkButton_Tooltip.SetToolTip(this.getApkButton, "Uploads the selected app to our Servers (Pick app within the Dropdown)");
             // 
             // uninstallAppButton
             // 
@@ -278,6 +299,9 @@
             this.uninstallAppButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.uninstallAppButton.UseVisualStyleBackColor = false;
             this.uninstallAppButton.Click += new System.EventHandler(this.uninstallAppButton_Click);
+
+            ToolTip uninstallAppButton_Tooltip = new ToolTip();
+            uninstallAppButton_Tooltip.SetToolTip(this.uninstallAppButton, "Uninstalls the selected app (Select within the Dropdown)");
             // 
             // pullAppToDesktopBtn
             // 
@@ -299,6 +323,9 @@
             this.pullAppToDesktopBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.pullAppToDesktopBtn.UseVisualStyleBackColor = false;
             this.pullAppToDesktopBtn.Click += new System.EventHandler(this.pullAppToDesktopBtn_Click);
+
+            ToolTip pullAppToDesktopBtn_Tooltip = new ToolTip();
+            pullAppToDesktopBtn_Tooltip.SetToolTip(this.pullAppToDesktopBtn, "Extracts APK and OBB to your Desktop (Select within the Dropdown)");
             // 
             // progressBar
             // 
@@ -331,6 +358,9 @@
             this.copyBulkObbButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.copyBulkObbButton.UseVisualStyleBackColor = false;
             this.copyBulkObbButton.Click += new System.EventHandler(this.copyBulkObbButton_Click);
+
+            ToolTip copyBulkObbButton_Tooltip = new ToolTip();
+            copyBulkObbButton_Tooltip.SetToolTip(this.copyBulkObbButton, "Copies an multiple OBB folders to your device.");
             // 
             // downloadInstallGameButton
             // 
@@ -351,6 +381,9 @@
             this.downloadInstallGameButton.Click += new System.EventHandler(this.downloadInstallGameButton_Click);
             this.downloadInstallGameButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.downloadInstallGameButton.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+
+            ToolTip downloadInstallGameButton_Tooltip = new ToolTip();
+            downloadInstallGameButton_Tooltip.SetToolTip(this.downloadInstallGameButton, "Downloads and Installs the selected game from the Game List");
             // 
             // panel1
             // 
@@ -458,6 +491,9 @@
             this.aboutBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.aboutBtn.UseVisualStyleBackColor = false;
             this.aboutBtn.Click += new System.EventHandler(this.aboutBtn_Click);
+
+            ToolTip aboutBtn_Tooltip = new ToolTip();
+            aboutBtn_Tooltip.SetToolTip(this.aboutBtn, "About the Rookie App and it's amazing creators and contributors");
             // 
             // settingsButton
             // 
@@ -479,6 +515,9 @@
             this.settingsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.settingsButton.UseVisualStyleBackColor = false;
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
+
+            ToolTip settingsButton_Tooltip = new ToolTip();
+            settingsButton_Tooltip.SetToolTip(this.settingsButton, "Rookie App Settings");
             // 
             // otherContainer
             // 
@@ -517,6 +556,9 @@
             this.InstallQUset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.InstallQUset.UseVisualStyleBackColor = false;
             this.InstallQUset.Click += new System.EventHandler(this.InstallQUset_Click);
+
+            ToolTip InstallQUset_Tooltip = new ToolTip();
+            InstallQUset_Tooltip.SetToolTip(this.InstallQUset, "After you enter your username it will create an user.json file needed for some games");
             // 
             // removeQUSetting
             // 
@@ -538,6 +580,9 @@
             this.removeQUSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.removeQUSetting.UseVisualStyleBackColor = false;
             this.removeQUSetting.Click += new System.EventHandler(this.removeQUSetting_Click);
+
+            ToolTip removeQUSetting_Tooltip = new ToolTip();
+            removeQUSetting_Tooltip.SetToolTip(this.removeQUSetting, "Remove QU Settings");
             // 
             // ThemeChangerButton
             // 
@@ -559,6 +604,9 @@
             this.ThemeChangerButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ThemeChangerButton.UseVisualStyleBackColor = false;
             this.ThemeChangerButton.Click += new System.EventHandler(this.ThemeChangerButton_Click);
+
+            ToolTip ThemeChangerButton_Tooltip = new ToolTip();
+            ThemeChangerButton_Tooltip.SetToolTip(this.ThemeChangerButton, "Change Rookie colors and fonts");
             // 
             // QuestOptionsButton
             // 
@@ -580,6 +628,9 @@
             this.QuestOptionsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.QuestOptionsButton.UseVisualStyleBackColor = false;
             this.QuestOptionsButton.Click += new System.EventHandler(this.QuestOptionsButton_Click);
+
+            ToolTip QuestOptionsButton_Tooltip = new ToolTip();
+            QuestOptionsButton_Tooltip.SetToolTip(this.QuestOptionsButton, "Additional Quest Settings and Utilities");
             // 
             // ADBWirelessDisable
             // 
@@ -601,6 +652,9 @@
             this.ADBWirelessDisable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ADBWirelessDisable.UseVisualStyleBackColor = false;
             this.ADBWirelessDisable.Click += new System.EventHandler(this.ADBWirelessDisable_Click);
+
+            ToolTip ADBWirelessDisable_Tooltip = new ToolTip();
+            ADBWirelessDisable_Tooltip.SetToolTip(this.ADBWirelessDisable, "Removes Wireless ADB settings and disconnects any Wireless devices");
             // 
             // ADBWirelessEnable
             // 
@@ -622,6 +676,9 @@
             this.ADBWirelessEnable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.ADBWirelessEnable.UseVisualStyleBackColor = false;
             this.ADBWirelessEnable.Click += new System.EventHandler(this.ADBWirelessEnable_Click);
+
+            ToolTip ADBWirelessEnable_Tooltip = new ToolTip();
+            ADBWirelessEnable_Tooltip.SetToolTip(this.ADBWirelessEnable, "Enables Wireless sideloading. Requires a connected device to activate!");
             // 
             // otherDrop
             // 
@@ -677,7 +734,7 @@
             this.backupDrop.Padding = new System.Windows.Forms.Padding(7, 0, 0, 0);
             this.backupDrop.Size = new System.Drawing.Size(221, 28);
             this.backupDrop.TabIndex = 2;
-            this.backupDrop.Text = "> BACKUP";
+            this.backupDrop.Text = "> BACKUP / RESTORE";
             this.backupDrop.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.backupDrop.UseVisualStyleBackColor = false;
             this.backupDrop.Click += new System.EventHandler(this.backupDrop_Click);
@@ -721,6 +778,9 @@
             this.UpdateGamesButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.UpdateGamesButton.UseVisualStyleBackColor = false;
             this.UpdateGamesButton.Click += new System.EventHandler(this.UpdateGamesButton_Click);
+
+            ToolTip UpdateGamesButton_Tooltip = new ToolTip();
+            UpdateGamesButton_Tooltip.SetToolTip(this.UpdateGamesButton, "Refresh Game List and available updates");
             // 
             // listApkButton
             // 
@@ -742,6 +802,9 @@
             this.listApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.listApkButton.UseVisualStyleBackColor = false;
             this.listApkButton.Click += new System.EventHandler(this.listApkButton_Click);
+
+            ToolTip listApkButton_Tooltip = new ToolTip();
+            listApkButton_Tooltip.SetToolTip(this.listApkButton, "Refresh connected devices, installed apps, and update game list");
             // 
             // sideloadDrop
             // 
@@ -793,6 +856,9 @@
             this.speedLabel.Size = new System.Drawing.Size(149, 18);
             this.speedLabel.TabIndex = 76;
             this.speedLabel.Text = "DLS: Speed in MBPS";
+
+            ToolTip speedLabel_Tooltip = new ToolTip();
+            speedLabel_Tooltip.SetToolTip(this.speedLabel, "Current download speed, updates every second, in mbps");
             // 
             // etaLabel
             // 
@@ -807,6 +873,9 @@
             this.etaLabel.Size = new System.Drawing.Size(148, 18);
             this.etaLabel.TabIndex = 75;
             this.etaLabel.Text = "ETA: HH:MM:SS Left";
+
+            ToolTip etaLabel_Tooltip = new ToolTip();
+            etaLabel_Tooltip.SetToolTip(this.etaLabel, "Estimated time when game will finish download, updates every 5 seconds, format is HH:MM:SS");
             // 
             // freeDisclaimer
             // 
@@ -1000,6 +1069,9 @@
             this.MountButton.UseVisualStyleBackColor = false;
             this.MountButton.Click += new System.EventHandler(this.MountButton_Click);
             this.MountButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+
+            ToolTip MountButton_Tooltip = new ToolTip();
+            MountButton_Tooltip.SetToolTip(this.MountButton, "Set the active device");
             // 
             // ProgressText
             // 
@@ -1076,7 +1148,7 @@
             this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox1.TabIndex = 74;
             this.pictureBox1.TabStop = false;
-            this.pictureBox1.Click += new System.EventHandler(this.pictureBox1_Click);
+            this.pictureBox1.Click += new System.EventHandler(this.updateAvailable_Click);
             // 
             // label2
             // 
@@ -1144,6 +1216,7 @@
             this.label6.TabIndex = 90;
             this.label6.Text = "= Update Available";
             this.label6.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.label6.Click += new System.EventHandler(this.updateAvailable_Click);
             // 
             // label7
             // 
@@ -1185,6 +1258,9 @@
             this.EnterInstallBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.EnterInstallBox.UseVisualStyleBackColor = true;
             this.EnterInstallBox.CheckedChanged += new System.EventHandler(this.EnterInstallBox_CheckedChanged);
+
+            ToolTip EnterInstallBox_Tooltip = new ToolTip();
+            EnterInstallBox_Tooltip.SetToolTip(this.EnterInstallBox, "Use the ENTER key on your keyboard to start installation of games from the Game List");
             // 
             // ADBcommandbox
             // 
@@ -1260,7 +1336,6 @@
             this.pictureBox7.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox7.TabIndex = 74;
             this.pictureBox7.TabStop = false;
-            this.pictureBox7.Click += new System.EventHandler(this.pictureBox1_Click);
             // 
             // label10
             // 

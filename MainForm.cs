@@ -1,4 +1,4 @@
-using AndroidSideloader.Utilities;
+﻿using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Newtonsoft.Json;
 using SergeUtils;
@@ -262,8 +262,8 @@ namespace AndroidSideloader
                     ChangeTitle("Initializing Servers...");
                     initMirrors(true);
                     if (Properties.Settings.Default.autoUpdateConfig) {
-                    ChangeTitle("Checking for a new Configuration File...");
-                    SideloaderRCLONE.updateConfig(currentRemote);
+                        ChangeTitle("Checking for a new Configuration File...");
+                        SideloaderRCLONE.updateConfig(currentRemote);
                     }
                     ChangeTitle("Grabbing the Games List...");
                     SideloaderRCLONE.initGames(currentRemote);
@@ -388,7 +388,6 @@ namespace AndroidSideloader
             }
                 listappsbtn();
             showAvailableSpace();
-            intToolTips();
             downloadInstallGameButton.Enabled = true;
             isLoading = false;
             initListView();
@@ -407,37 +406,6 @@ namespace AndroidSideloader
                 }
             }
         }
-
-
-
-        private void intToolTips()
-        {
-            ToolTip ListDevicesToolTip = new ToolTip();
-            ListDevicesToolTip.SetToolTip(this.devicesbutton, "Lists the devices in a message box, also updates title bar");
-            ToolTip SideloadAPKToolTip = new ToolTip();
-            SideloadAPKToolTip.SetToolTip(this.startsideloadbutton, "Sideloads/Installs one apk on the android device");
-            ToolTip OBBToolTip = new ToolTip();
-            OBBToolTip.SetToolTip(this.obbcopybutton, "Copies an obb folder to the Android/Obb folder from the device, some games/apps need this");
-            ToolTip BackupGameDataToolTip = new ToolTip();
-            BackupGameDataToolTip.SetToolTip(this.backupbutton, "Saves the game and apps data to the sideloader folder, does not save apk's and obb's");
-            ToolTip RestoreGameDataToolTip = new ToolTip();
-            RestoreGameDataToolTip.SetToolTip(this.restorebutton, "Restores the game and apps data to the device, first use Backup Game Data button");
-            ToolTip GetAPKToolTip = new ToolTip();
-            GetAPKToolTip.SetToolTip(this.getApkButton, "Saves the selected apk to the folder where the sideloader is");
-            ToolTip sideloadFolderToolTip = new ToolTip();
-            sideloadFolderToolTip.SetToolTip(this.pullAppToDesktopBtn, "Sideloads every apk from a folder");
-            ToolTip uninstallAppToolTip = new ToolTip();
-            uninstallAppToolTip.SetToolTip(this.uninstallAppButton, "Uninstalls selected app");
-            ToolTip userjsonToolTip = new ToolTip();
-            userjsonToolTip.SetToolTip(this.ADBWirelessEnable, "After you enter your username it will create an user.json file needed for some games");
-            ToolTip etaToolTip = new ToolTip();
-            etaToolTip.SetToolTip(this.etaLabel, "Estimated time when game will finish download, updates every 5 seconds, format is HH:MM:SS");
-            ToolTip dlsToolTip = new ToolTip();
-            dlsToolTip.SetToolTip(this.speedLabel, "Current download speed, updates every second, in mbps");
-        }
-
-
-
 
         void timer_Tick(object sender, EventArgs e)
         {
@@ -611,7 +579,10 @@ namespace AndroidSideloader
         public static void notify(string message)
         {
             if (Properties.Settings.Default.enableMessageBoxes == true)
-                FlexibleMessageBox.Show(new Form { TopMost = true, StartPosition = FormStartPosition.CenterScreen }, message);
+                FlexibleMessageBox.Show(new Form {
+                    TopMost = true,
+                    StartPosition = FormStartPosition.CenterScreen
+                }, message);
         }
 
         private async void obbcopybutton_Click(object sender, EventArgs e)
@@ -998,7 +969,7 @@ namespace AndroidSideloader
 
             var dialog = new FolderSelectDialog
             {
-                Title = "Select your folder with APKs"
+                Title = "Select your folder with OBBs"
             };
             if (dialog.Show(Handle))
             {
@@ -1030,6 +1001,9 @@ namespace AndroidSideloader
                 listappsbtn();
                 initListView();
             }
+
+            Program.form.ChangeTitle($"Processing dropped file. If Rookie freezes, please wait. Do not close Rookie!");
+
             DragDropLbl.Visible = false;
             ProcessOutput output = new ProcessOutput("", "");
             ADB.WakeDevice();
@@ -1047,6 +1021,7 @@ namespace AndroidSideloader
                 {
                     if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
                     {
+                        Logger.Log($"Copying {data} to device");
                         Program.form.ChangeTitle($"Copying {data} to device...");
 
                         Thread t2 = new Thread(() =>
@@ -1077,6 +1052,7 @@ namespace AndroidSideloader
                                 string filename = file2.Replace($"{pathname}\\", "");
 
                                 string cmd = $"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
+                                Logger.Log($"Running adb command-{cmd}");
                                 string cmdout = ADB.RunCommandToString(cmd, file2).Output;
                                 cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
                                 cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
@@ -1088,7 +1064,7 @@ namespace AndroidSideloader
                                 t3.Interval = 150000; // 180 seconds to fail
                                 t3.Tick += timer_Tick4;
                                 t3.Start();
-                                Program.form.ChangeTitle($"Sideloading apk...");
+                                Program.form.ChangeTitle($"Sideloading apk ({filename})");
 
                                 Thread t2 = new Thread(() =>
                                 {
@@ -1101,6 +1077,7 @@ namespace AndroidSideloader
                                 t3.Stop();
                                 if (Directory.Exists($"{pathname}\\{cmdout}"))
                                 {
+                                    Logger.Log($"Copying obb folder to device- {cmdout}");
                                     Program.form.ChangeTitle($"Copying obb folder to device...");
                                     Thread t1 = new Thread(() =>
                                     {
@@ -1141,6 +1118,7 @@ namespace AndroidSideloader
                     string[] folders = Directory.GetDirectories(data);
                     foreach (string folder in folders)
                     {
+                        Logger.Log($"Copying {folder} to device");
                         Program.form.ChangeTitle($"Copying {folder} to device...");
 
                         Thread t2 = new Thread(() =>
@@ -1173,6 +1151,7 @@ namespace AndroidSideloader
                                 return;
                             else
                             {
+                                Logger.Log($"Sideloading custom install.txt");
                                 ChangeTitle("Sideloading custom install.txt automatically.");
 
                                 Thread t1 = new Thread(() =>
@@ -1195,6 +1174,7 @@ namespace AndroidSideloader
                             string pathname = Path.GetDirectoryName(data);
                             string dataname = data.Replace($"{pathname}\\", "");
                             string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
+                            Logger.Log($"Running adb command-{cmd}");
                             string cmdout = ADB.RunCommandToString(cmd, data).Output;
                             cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
                             cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
@@ -1221,6 +1201,7 @@ namespace AndroidSideloader
 
                             if (Directory.Exists($"{pathname}\\{cmdout}"))
                             {
+                                Logger.Log($"Copying obb folder to device- {cmdout}");
                                 Program.form.ChangeTitle($"Copying obb folder to device...");
                                 Thread t2 = new Thread(() =>
                                 {
@@ -1248,11 +1229,12 @@ namespace AndroidSideloader
                         path = foldername;
 
                         Thread t1 = new Thread(() =>
-
                         {
                             output += ADB.CopyOBB(path);
                         });
                         t1.IsBackground = true;
+                        Logger.Log($"Copying obb folder to device- {path}");
+                        Program.form.ChangeTitle($"Copying obb folder to device ({filename})");
                         t1.Start();
 
                         while (t1.IsAlive)
@@ -1982,7 +1964,11 @@ Things you can try:
                     initListView();     
                 }
                 progressBar.Style = ProgressBarStyle.Marquee;
-                if (gamesListView.SelectedItems.Count == 0) return;
+                if (gamesListView.SelectedItems.Count == 0) {
+                    progressBar.Style = ProgressBarStyle.Continuous;
+                    ChangeTitle("You must select a game from the Game List!");
+                    return;
+                }
                 string namebox = gamesListView.SelectedItems[0].ToString();
                 string nameboxtranslated = Sideloader.gameNameToSimpleName(namebox);
                 int count = 0;
@@ -2872,9 +2858,9 @@ Things you can try:
         }
 
 
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void updateAvailable_Click(object sender, EventArgs e)
         {
-
+            // do filtering!
         }
 
         private void EnterInstallBox_CheckedChanged(object sender, EventArgs e)
