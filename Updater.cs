@@ -30,9 +30,10 @@ namespace AndroidSideloader
                 currentVersion = client.GetStringAsync($"{RawGitHubUrl}/master/version").Result;
                 changelog = client.GetStringAsync($"{RawGitHubUrl}/master/changelog.txt").Result;
                 client.Dispose();
+                currentVersion = currentVersion.Trim();
             }
             catch { return false; }
-            return LocalVersion != currentVersion;
+            return LocalVersion.Trim() != currentVersion;
         }
 
         //Call this to ask the user if they want to update
