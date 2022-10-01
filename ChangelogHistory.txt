@@ -1,4 +1,13 @@
-﻿RSL 2.12
+﻿RSL 2.13
+
+- Added new config mode for use with http mirror
+- Removed previous http mirror workarounds
+- Added Offline Mode launcher to package fetch.
+- Add splash screen on startup
+
+~SytheZN
+
+RSL 2.12
 
 - updated auto-update source
 - update status text

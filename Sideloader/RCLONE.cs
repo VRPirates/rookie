@@ -4,6 +4,7 @@ using System.Net;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
+using AndroidSideloader.Utilities;
 
 namespace AndroidSideloader
 {
@@ -48,19 +49,68 @@ namespace AndroidSideloader
         public static void UpdateNouns(string remote)
         {
             Logger.Log($"Updating Nouns");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\" --http-no-head --transfers 2 --multi-thread-streams 1");
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
         }
 
         public static void UpdateGamePhotos(string remote)
         {
             Logger.Log($"Updating Thumbnails");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --http-no-head --transfers 2 --multi-thread-streams 1");
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
         }
 
         public static void UpdateGameNotes(string remote)
         {
             Logger.Log($"Updating Game Notes");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\" --http-no-head --transfers 2 --multi-thread-streams 1");
+            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
+        }
+
+        public static void UpdateMetadataFromPublic()
+        {
+            Logger.Log($"Downloading Metadata");
+            var rclonecommand =
+                $"sync --http-url {MainForm.PublicConfigFile.BaseUri} \":http:/meta.7z\" \"{Environment.CurrentDirectory}\"";
+            RCLONE.runRcloneCommand(rclonecommand);
+        }
+
+        public static void ProcessMetadataFromPublic()
+        {
+            try
+            {
+                Logger.Log($"Extracting Metadata");
+                Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
+                    MainForm.PublicConfigFile.Password);
+
+                Logger.Log($"Updating Metadata");
+
+                if (Directory.Exists(Nouns)) Directory.Delete(Nouns, true);
+                if (Directory.Exists(ThumbnailsFolder)) Directory.Delete(ThumbnailsFolder, true);
+                if (Directory.Exists(NotesFolder)) Directory.Delete(NotesFolder, true);
+
+                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\nouns", Nouns);
+                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\thumbnails", ThumbnailsFolder);
+                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\notes", NotesFolder);
+
+                Logger.Log($"Initializing Games List");
+                var gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
+
+                string[] splitList = gameList.Split('\n');
+                splitList = splitList.Skip(1).ToArray();
+                foreach (string game in splitList)
+                {
+                    if (game.Length > 1)
+                    {
+                        string[] splitGame = game.Split(';');
+                        games.Add(splitGame);
+                    }
+                }
+
+                Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
+            }
+            catch (Exception e)
+            {
+                Logger.Log(e.Message);
+                Logger.Log(e.StackTrace);
+            }
         }
 
         public static void RefreshRemotes()

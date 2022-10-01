@@ -1,11 +1,8 @@
-RSL 2.12
+RSL 2.13
 
-- fixed issue with configuration always updating
-- fixed github version vs app version comparison
-- fixed github download url
-- restored "auto update config" checkbox
-- fixed tooltips; added additional tooltips to all menu items
-- gui fixes and updates to game donation menu
-- additional logging and on-screen notifications
+- Added new config mode for use with http mirror
+- Removed previous http mirror workarounds
+- Added Offline Mode launcher to package fetch.
+- Add splash screen on startup
 
-~fenopy
+~SytheZN
