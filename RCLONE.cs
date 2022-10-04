@@ -27,14 +27,15 @@ namespace AndroidSideloader
         }
 
         //Change if you want to use a config
-        public static string configPath = ""; // ".\\a"
+        public static string configPath = "vrp.download.config";
         public static string rclonepw = "";
 
 
         private static Process rclone = new Process();
         
         //Run rclone command
-        public static ProcessOutput runRcloneCommand(string command, string bandwithLimit = "")
+        // noconfig suppresses the config directive for using with a command specified mirror
+        public static ProcessOutput runRcloneCommand(string command, string bandwithLimit = "", bool noConfig = false)
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -53,7 +54,7 @@ namespace AndroidSideloader
             }
 
             //set configpath if there is any
-            if (configPath.Length > 0)
+            if (configPath.Length > 0 && !noConfig)
             {
                 command += $" --config {configPath}";
             }
@@ -91,6 +92,9 @@ namespace AndroidSideloader
             //if there is one of these errors, we switch the mirrors
             if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
+                if (MainForm.hasPublicConfig)
+                    return new ProcessOutput("Failed to fetch from public mirror.", "Failed to fetch from public mirror.");
+
                 string oldRemote = MainForm.currentRemote;
                 try
                 {

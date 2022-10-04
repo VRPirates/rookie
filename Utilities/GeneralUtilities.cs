@@ -105,6 +105,18 @@ namespace AndroidSideloader.Utilities
     {
         public static void ExtractFile(string sourceArchive, string destination)
         {
+            var args = $"x \"{sourceArchive}\" -y -o\"{destination}\"";
+            DoExtract(args);
+        }
+
+        public static void ExtractFile(string sourceArchive, string destination, string password)
+        {
+            var args = $"x \"{sourceArchive}\" -y -o\"{destination}\" -p\"{password}\"";
+            DoExtract(args);
+        }
+
+        private static void DoExtract(string args)
+        {
             if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe") || !File.Exists(Environment.CurrentDirectory + "\\7z.dll"))
             {
                 WebClient client = new WebClient();
@@ -114,9 +126,11 @@ namespace AndroidSideloader.Utilities
             ProcessStartInfo pro = new ProcessStartInfo();
             pro.WindowStyle = ProcessWindowStyle.Hidden;
             pro.FileName = "7z.exe";
-            pro.Arguments = string.Format("x \"{0}\" -y -o\"{1}\"", sourceArchive, destination);
+            pro.Arguments = args;
             Process x = Process.Start(pro);
             x.WaitForExit();
+            if (x.ExitCode != 0)
+                throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
         }
     }
 

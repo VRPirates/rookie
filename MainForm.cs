@@ -10,10 +10,13 @@ using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Net.NetworkInformation;
+using System.Security.Cryptography;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AndroidSideloader.Models;
 
 
 namespace AndroidSideloader
@@ -50,6 +53,9 @@ namespace AndroidSideloader
 
         private bool isLoading = true;
         public static bool isOffline = false;
+        public static bool hasPublicConfig = false;
+        public static PublicConfig PublicConfigFile;
+
         public MainForm()
 
         {
@@ -66,6 +72,24 @@ namespace AndroidSideloader
             {
                 FlexibleMessageBox.Show("Offline mode activated. You can't download games in this mode, only do local stuff.");
             }
+            else
+            {
+                if (File.Exists($"{Environment.CurrentDirectory}\\vrp-public.json"))
+                {
+                    try
+                    {
+                        var configFileData =
+                            File.ReadAllText($"{Environment.CurrentDirectory}\\vrp-public.json");
+                        var config = JsonConvert.DeserializeObject<PublicConfig>(configFileData);
+                        PublicConfigFile = config;
+                        hasPublicConfig = true;
+                    }
+                    catch
+                    {
+                        hasPublicConfig = false;
+                    }
+                }
+            }
 
             InitializeComponent();
             //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
@@ -74,9 +98,9 @@ namespace AndroidSideloader
             TimeSpan newDayReference2 = new TimeSpan(72, 0, 0);
             TimeSpan comparison;
             TimeSpan comparison2;
-     
-        //These two variables set to show difference.
-        DateTime A = Properties.Settings.Default.LastLaunch;
+
+            //These two variables set to show difference.
+            DateTime A = Properties.Settings.Default.LastLaunch;
             DateTime B = DateTime.Now;
             DateTime C = Properties.Settings.Default.LastLaunch2;
             comparison = B - A;
@@ -151,6 +175,9 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            var splash = new Splash();
+            splash.Show();
+
             if (File.Exists("C:\\RSL\\platform-tools\\adb.exe"))
             {
                 ADB.RunAdbCommandToString("kill-server");
@@ -181,7 +208,7 @@ namespace AndroidSideloader
             if (!isOffline)
             {
                 RCLONE.Init();
-            }            
+            }
             try { Spoofer.spoofer.Init(); } catch { }
 
             if (Properties.Settings.Default.CallUpgrade)
@@ -233,6 +260,19 @@ namespace AndroidSideloader
                     File.Delete($"{Environment.CurrentDirectory}\\crashlog.txt");
                 }
             }
+
+            if (hasPublicConfig)
+            {
+                lblMirror.Text = " Public Mirror";
+                remotesList.Size = Size.Empty;
+            }
+            if (isOffline)
+            {
+                lblMirror.Text = " Offline Mode";
+                remotesList.Size = Size.Empty;
+            }
+
+            splash.Close();
         }
 
 
@@ -261,15 +301,17 @@ namespace AndroidSideloader
                 {
                     ChangeTitle("Initializing Servers...");
                     initMirrors(true);
-                    if (Properties.Settings.Default.autoUpdateConfig) {
+                    if (Properties.Settings.Default.autoUpdateConfig)
+                    {
                         ChangeTitle("Checking for a new Configuration File...");
                         SideloaderRCLONE.updateConfig(currentRemote);
                     }
-                    ChangeTitle("Grabbing the Games List...");
-                    SideloaderRCLONE.initGames(currentRemote);
-                    //ChangeTitle("Syncing Game Photos");
-                    //ChangeTitle("Updating list of needed clean apps...");
-                    //ChangeTitle("Checking for Updates on server...");
+
+                    if (!hasPublicConfig)
+                    {
+                        ChangeTitle("Grabbing the Games List...");
+                        SideloaderRCLONE.initGames(currentRemote);
+                    }
                 }
                 else
                 {
@@ -279,10 +321,12 @@ namespace AndroidSideloader
             });
             t1.SetApartmentState(ApartmentState.STA);
             t1.IsBackground = true;
+            
             if (HasInternet)
                 t1.Start();
             while (t1.IsAlive)
                 await Task.Delay(100);
+
             Thread t5 = new Thread(() =>
             {
                 if (!String.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
@@ -331,62 +375,91 @@ namespace AndroidSideloader
             t5.Start();
             while (t5.IsAlive)
                 await Task.Delay(100);
-            Thread t2 = new Thread(() =>
-            {
-                ChangeTitle("Updating Game Notes...");
-                SideloaderRCLONE.UpdateGameNotes(currentRemote);
-            });
 
-            Thread t3 = new Thread(() =>
+            if (hasPublicConfig)
             {
-                ChangeTitle("Updating Game Thumbnails (This may take a minute or two)...");
-                SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-            });
-
-            Thread t4 = new Thread(() =>
-            {
-                SideloaderRCLONE.UpdateNouns(currentRemote);
-                if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) || !Directory.Exists(SideloaderRCLONE.NotesFolder))
+                var t2 = new Thread((() =>
                 {
-                    FlexibleMessageBox.Show("It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
+                    ChangeTitle("Updating Metadata...");
+                    SideloaderRCLONE.UpdateMetadataFromPublic();
+
+                    ChangeTitle("Processing Metadata...");
+                    SideloaderRCLONE.ProcessMetadataFromPublic();
+                }));
+                
+                t2.IsBackground = true;
+                if (HasInternet)
+                {
+                    t2.Start();
                 }
-            });
-            t2.IsBackground = true;
-            t3.IsBackground = true;
-            t4.IsBackground = true;
-            
-            if (HasInternet)
-            {
-                t2.Start();
-            }
-            while (t2.IsAlive)
-                await Task.Delay(50);
-        
-            if (HasInternet)
-            {
-                t3.Start();
-            }
-            while (t3.IsAlive)
-                await Task.Delay(50);
 
-            if (HasInternet)
-            {
-                t4.Start();
+                while (t2.IsAlive)
+                    await Task.Delay(50);
             }
-            while (t4.IsAlive)
-                await Task.Delay(50);
+            else
+            {
 
+                Thread t2 = new Thread(() =>
+                {
+                    ChangeTitle("Updating Game Notes...");
+                    SideloaderRCLONE.UpdateGameNotes(currentRemote);
+                });
+
+                Thread t3 = new Thread(() =>
+                {
+                    ChangeTitle("Updating Game Thumbnails (This may take a minute or two)...");
+                    SideloaderRCLONE.UpdateGamePhotos(currentRemote);
+                });
+
+                Thread t4 = new Thread(() =>
+                {
+                    SideloaderRCLONE.UpdateNouns(currentRemote);
+                    if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) ||
+                        !Directory.Exists(SideloaderRCLONE.NotesFolder))
+                    {
+                        FlexibleMessageBox.Show(
+                            "It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
+                    }
+                });
+                t2.IsBackground = true;
+                t3.IsBackground = true;
+                t4.IsBackground = true;
+
+                if (HasInternet)
+                {
+                    t2.Start();
+                }
+
+                while (t2.IsAlive)
+                    await Task.Delay(50);
+
+                if (HasInternet)
+                {
+                    t3.Start();
+                }
+
+                while (t3.IsAlive)
+                    await Task.Delay(50);
+
+                if (HasInternet)
+                {
+                    t4.Start();
+                }
+
+                while (t4.IsAlive)
+                    await Task.Delay(50);
+            }
 
             progressBar.Style = ProgressBarStyle.Marquee;
 
             ChangeTitle("Populating Game Update List, Almost There!");
-          
+
             await CheckForDevice();
             if (ADB.DeviceID.Length < 5)
             {
                 nodeviceonstart = true;
             }
-                listappsbtn();
+            listappsbtn();
             showAvailableSpace();
             downloadInstallGameButton.Enabled = true;
             isLoading = false;
@@ -579,7 +652,8 @@ namespace AndroidSideloader
         public static void notify(string message)
         {
             if (Properties.Settings.Default.enableMessageBoxes == true)
-                FlexibleMessageBox.Show(new Form {
+                FlexibleMessageBox.Show(new Form
+                {
                     TopMost = true,
                     StartPosition = FormStartPosition.CenterScreen
                 }, message);
@@ -859,7 +933,7 @@ namespace AndroidSideloader
                 ChangeTitle("Extracting APK....");
 
                 Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
-                
+
                 Thread t1 = new Thread(() =>
                 {
                     output = Sideloader.getApk(GameName);
@@ -906,7 +980,7 @@ namespace AndroidSideloader
                     ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
                     RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" RSL-gameuploads:");
                     File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
-                    FlexibleMessageBox.Show($"Upload of {currentlyuploading} is complete! Thank you for your contribution!");
+                    this.Invoke(() => FlexibleMessageBox.Show($"Upload of {currentlyuploading} is complete! Thank you for your contribution!"));
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
                 });
                 t3.IsBackground = true;
@@ -917,7 +991,7 @@ namespace AndroidSideloader
                 {
                     await Task.Delay(100);
                 }
- 
+
                 ChangeTitle("                         \n\n");
                 isuploading = false;
                 ULGif.Visible = false;
@@ -1442,12 +1516,12 @@ namespace AndroidSideloader
                 while (t1.IsAlive)
                     await Task.Delay(100);
             }
-            else if(!isOffline)
+            else if (!isOffline)
             {
                 SwitchMirrors();
                 initListView();
             }
-                
+
 
             if (blacklistItems.Count == 0 && GameList.Count == 0 && !Properties.Settings.Default.nodevicemode && !isOffline)
             {
@@ -1659,7 +1733,7 @@ namespace AndroidSideloader
 
         public static async void newpackageupload()
         {
-              if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
+            if (!String.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
             {
                 Random r = new Random();
                 int x = r.Next(9999);
@@ -1744,7 +1818,7 @@ namespace AndroidSideloader
 
             if (itemsCount > 0)
             {
-                
+
                 var rand = new Random();
                 // Code that implements a randomized mirror.  The rotation logic (the rotation) is reported as being bugged so I just disabled as a workaround ~pmow
                 //  if (random == true && index < itemsCount)
@@ -1759,10 +1833,10 @@ namespace AndroidSideloader
                 remotesList.Invoke(() =>
             {
                 remotesList.SelectedIndex = 0; //set mirror to first
-                    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
+                currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
             });
-                
-                
+
+
             };
         }
 
@@ -1905,20 +1979,21 @@ without him none of this would be possible
                         ShowError_QuotaExceeded();
 
                         DialogResult om = MessageBox.Show("Relaunch Rookie in Offline Mode?", "Offline Mode?", MessageBoxButtons.YesNo);
-                        if (om == DialogResult.Yes) {
+                        if (om == DialogResult.Yes)
+                        {
                             Process pr = new Process();
-                                pr.StartInfo.WorkingDirectory = Application.StartupPath;
-                                pr.StartInfo.FileName = System.AppDomain.CurrentDomain.FriendlyName;
-                                pr.StartInfo.Arguments = "--offline";
-                                pr.Start();
-                                Process.GetCurrentProcess().Kill();                                   
+                            pr.StartInfo.WorkingDirectory = Application.StartupPath;
+                            pr.StartInfo.FileName = System.AppDomain.CurrentDomain.FriendlyName;
+                            pr.StartInfo.Arguments = "--offline";
+                            pr.Start();
+                            Process.GetCurrentProcess().Kill();
                         }
 
-                        if (System.Windows.Forms.Application.MessageLoop) 
+                        if (System.Windows.Forms.Application.MessageLoop)
                         {
                             Process.GetCurrentProcess().Kill();
                         }
-                        
+
                     }
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
                     {
@@ -1969,10 +2044,11 @@ Things you can try:
                     showAvailableSpace();
                     ChangeTitle("Device now detected... refreshing update list.");
                     listappsbtn();
-                    initListView();     
+                    initListView();
                 }
                 progressBar.Style = ProgressBarStyle.Marquee;
-                if (gamesListView.SelectedItems.Count == 0) {
+                if (gamesListView.SelectedItems.Count == 0)
+                {
                     progressBar.Style = ProgressBarStyle.Continuous;
                     ChangeTitle("You must select a game from the Game List!");
                     return;
@@ -2032,16 +2108,71 @@ Things you can try:
                     string dir = Path.GetDirectoryName(gameName);
                     string gameDirectory = Environment.CurrentDirectory + "\\" + gameName;
                     string path = gameDirectory;
-                    Directory.CreateDirectory(gameDirectory);
+                   
+                    var gameNameHash = string.Empty;
+                    using (var md5 = MD5.Create())
+                    {
+                        var bytes = Encoding.UTF8.GetBytes(gameName + "\n");
+                        var hash = md5.ComputeHash(bytes);
+                        var sb = new StringBuilder();
+                        foreach (var b in hash)
+                        {
+                            sb.Append(b.ToString("x2"));
+                        }
+
+                        gameNameHash = sb.ToString();
+                    }
+
                     ProcessOutput gameDownloadOutput = new ProcessOutput("", "");
 
                     Logger.Log($"Starting Game Download");
-                    Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
 
-                    Thread t1 = new Thread(() =>
+                    Thread t1;
+                    if (hasPublicConfig)
                     {
-                        gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc --transfers 1 --multi-thread-streams 1 --checkers 1", Properties.Settings.Default.BandwithLimit);
-                    });
+                        bool doDownload = true;
+                        if (Directory.Exists(gameDirectory))
+                        {
+                            var res = FlexibleMessageBox.Show(
+                                $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
+                                "Download again?", MessageBoxButtons.YesNo);
+
+                            doDownload = res == DialogResult.Yes;
+
+                            if (doDownload)
+                            {
+                                // only delete after extraction; allows for resume if the fetch fails midway.
+                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameName}"))
+                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameName}", true);
+                            }
+                        }
+
+                        if (doDownload)
+                        {
+                            Logger.Log($"rclone copy \"Public:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
+                            t1 = new Thread(() =>
+                            {
+                                var rclonecommand =
+                                    $"copy --progress --rc --http-url {PublicConfigFile.BaseUri} \":http:/{gameNameHash}/\" \"{Environment.CurrentDirectory}\\{gameNameHash}\"";
+                                gameDownloadOutput = RCLONE.runRcloneCommand(rclonecommand,
+                                    Properties.Settings.Default.BandwithLimit, true);
+                            });
+                        }
+                        else
+                        {
+                            t1 = new Thread(() => { gameDownloadOutput = new ProcessOutput("Download skipped."); });
+                        }
+                    }
+                    else
+                    {
+                        Directory.CreateDirectory(gameDirectory);
+                        Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
+                        t1 = new Thread(() =>
+                        {
+                            gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwithLimit);
+                        });
+                    }
+                    
                     t1.IsBackground = true;
                     t1.Start();
 
@@ -2104,14 +2235,26 @@ Things you can try:
 
 
                     }
+
                     if (removedownloading)
-                    { 
+                    {
                         ChangeTitle("Deleting game files", false);
                         try
                         {
-                            Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
+                            if (hasPublicConfig)
+                            {
+                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameNameHash}"))
+                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameNameHash}", true);
+                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameName}"))
+                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameName}", true);
+                            }
+                            else
+                            {
+                                Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
+                            }
                         }
-                        catch (Exception ex) {
+                        catch (Exception ex)
+                        {
                             FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}");
                         }
                         ChangeTitle("");
@@ -2121,6 +2264,7 @@ Things you can try:
                         //Quota Errors
                         bool isinstalltxt = false;
                         bool quotaError = false;
+                        bool otherError = false;
                         if (gameDownloadOutput.Error.Length > 0 && !isOffline)
                         {
                             string err = gameDownloadOutput.Error.ToLower();
@@ -2135,9 +2279,39 @@ Things you can try:
                                 gamesQueListBox.DataSource = null;
                                 gamesQueListBox.DataSource = gamesQueueList;
                             }
-                            else if (!gameDownloadOutput.Error.Contains("localhost")) FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
+                            else if (!gameDownloadOutput.Error.Contains("localhost"))
+                            {
+                                otherError = true;
+
+                                //Remove current game
+                                gamesQueueList.RemoveAt(0);
+                                gamesQueListBox.DataSource = null;
+                                gamesQueListBox.DataSource = gamesQueueList;
+
+                                FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
+                                output += new ProcessOutput("", "Download Failed");
+                            }
                         }
-                        if (quotaError == false)
+
+                        if (hasPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
+                        {
+                            try
+                            {
+                                ChangeTitle("Extracting " + gameName, false);
+                                Zip.ExtractFile($"{Environment.CurrentDirectory}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Environment.CurrentDirectory}", PublicConfigFile.Password);
+                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameNameHash}"))
+                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameNameHash}", true);
+
+                            }
+                            catch (Exception ex)
+                            {
+                                otherError = true;
+                                FlexibleMessageBox.Show($"7zip error: {ex.Message}");
+                                output += new ProcessOutput("", "Extract Failed");
+                            }
+                        }
+
+                        if (quotaError == false && otherError == false)
                         {
                             ADB.WakeDevice();
                             ADB.DeviceID = GetDeviceID();
@@ -2238,17 +2412,17 @@ Things you can try:
                     isinstalling = false;
                     return;
                 }
-                    ChangeTitle("Refreshing games list, please wait...         \n");
-                    showAvailableSpace();
-                    listappsbtn();
-                    initListView();
-                    ShowPrcOutput(output);
-                    progressBar.Style = ProgressBarStyle.Continuous;
-                    etaLabel.Text = "ETA: Finished Queue";
-                    speedLabel.Text = "DLS: Finished Queue";
-                    ProgressText.Text = "";
-                    gamesAreDownloading = false;
-                    isinstalling = false;
+                ChangeTitle("Refreshing games list, please wait...         \n");
+                showAvailableSpace();
+                listappsbtn();
+                initListView();
+                ShowPrcOutput(output);
+                progressBar.Style = ProgressBarStyle.Continuous;
+                etaLabel.Text = "ETA: Finished Queue";
+                speedLabel.Text = "DLS: Finished Queue";
+                ProgressText.Text = "";
+                gamesAreDownloading = false;
+                isinstalling = false;
 
                 ChangeTitle(" \n\n");
             }
