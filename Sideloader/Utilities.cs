@@ -17,8 +17,12 @@ namespace AndroidSideloader
                     return true;
             return false;
         }
+
+        private static string uuid = null;
         public static string UUID()
         {
+            if (uuid != null) return uuid;
+
             StringBuilder sb = new StringBuilder();
 
             ManagementObjectSearcher searcher = new ManagementObjectSearcher("root\\CIMV2",
@@ -56,7 +60,8 @@ namespace AndroidSideloader
 
             byte[] hash = sha.ComputeHash(bytes);
 
-            return BitConverter.ToString(hash).Replace("-", "");
+            uuid = BitConverter.ToString(hash).Replace("-", "");
+            return uuid;
         }
 
     }

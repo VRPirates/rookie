@@ -119,9 +119,6 @@
     <Setting Name="QUturnedon" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="QblindOn" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">True</Value>
-    </Setting>
     <Setting Name="adbdebugwarned" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
@@ -168,7 +165,7 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="ComboBoxColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">40, 40, 40</Value>
+      <Value Profile="(Default)">50, 50, 50</Value>
     </Setting>
     <Setting Name="SubButtonColor" Type="System.Drawing.Color" Scope="User">
       <Value Profile="(Default)">40, 40, 40</Value>

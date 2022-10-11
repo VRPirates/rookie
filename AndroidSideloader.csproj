@@ -219,12 +219,6 @@
     <Compile Include="SpoofForm.Designer.cs">
       <DependentUpon>SpoofForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="ThemeForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ThemeForm.Designer.cs">
-      <DependentUpon>ThemeForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="Updater.cs" />
     <Compile Include="UsernameForm.cs">
       <SubType>Form</SubType>
@@ -239,6 +233,7 @@
     <Compile Include="Utilities\GeneralUtilities.cs" />
     <Compile Include="Utilities\UpdateGameData.cs" />
     <Compile Include="Utilities\UploadGame.cs" />
+    <Compile Include="Utilities\Zip.cs" />
     <EmbeddedResource Include="DonorsListView.resx">
       <DependentUpon>DonorsListView.cs</DependentUpon>
     </EmbeddedResource>
@@ -276,9 +271,6 @@
     <EmbeddedResource Include="SpoofForm.resx">
       <DependentUpon>SpoofForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="ThemeForm.resx">
-      <DependentUpon>ThemeForm.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="UsernameForm.resx">
       <DependentUpon>UsernameForm.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -308,16 +300,10 @@
     <Content Include="icon.ico" />
     <Content Include="ChangelogHistory.txt" />
     <Content Include="Resources\splash.jpg" />
-    <None Include="Resources\UpdatesKey.png" />
     <None Include="Resources\battery11.png" />
     <None Include="Resources\battery.png" />
     <None Include="Resources\battery1.png" />
     <None Include="Resources\ajax-loader.gif" />
-    <Content Include="Resources\bluekey.png" />
-    <None Include="Resources\gametoupload.png" />
-    <Content Include="Resources\redkey.png" />
-    <None Include="Resources\greenkey.png" />
-    <None Include="Resources\orangekey.png" />
     <None Include="Resources\SearchGlass.PNG" />
   </ItemGroup>
   <ItemGroup>

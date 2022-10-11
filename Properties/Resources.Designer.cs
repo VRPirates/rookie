@@ -103,56 +103,6 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap bluekey {
-            get {
-                object obj = ResourceManager.GetObject("bluekey", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap gametoupload {
-            get {
-                object obj = ResourceManager.GetObject("gametoupload", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap greenkey {
-            get {
-                object obj = ResourceManager.GetObject("greenkey", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap orangekey {
-            get {
-                object obj = ResourceManager.GetObject("orangekey", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap redkey {
-            get {
-                object obj = ResourceManager.GetObject("redkey", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap SearchGlass {
             get {
                 object obj = ResourceManager.GetObject("SearchGlass", resourceCulture);
@@ -166,16 +116,6 @@ namespace AndroidSideloader.Properties {
         public static System.Drawing.Bitmap splash {
             get {
                 object obj = ResourceManager.GetObject("splash", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap UpdatesKey {
-            get {
-                object obj = ResourceManager.GetObject("UpdatesKey", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

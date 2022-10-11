@@ -55,9 +55,9 @@ namespace AndroidSideloader
         public static bool isOffline = false;
         public static bool hasPublicConfig = false;
         public static PublicConfig PublicConfigFile;
+        public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 1";
 
         public MainForm()
-
         {
             // check for offline mode
             string[] args = Environment.GetCommandLineArgs();
@@ -76,6 +76,7 @@ namespace AndroidSideloader
             {
                 if (File.Exists($"{Environment.CurrentDirectory}\\vrp-public.json"))
                 {
+                    SideloaderRCLONE.updatePublicConfig();
                     try
                     {
                         var configFileData =
@@ -159,14 +160,6 @@ namespace AndroidSideloader
             this.gamesListView.ListViewItemSorter = lvwColumnSorter;
             if (searchTextBox.Visible)
                 searchTextBox.Focus();
-            if (Properties.Settings.Default.QblindOn)
-                pictureBox3.Image = global::AndroidSideloader.Properties.Resources.redkey;
-            else
-                pictureBox3.Image = global::AndroidSideloader.Properties.Resources.orangekey;
-            if (Properties.Settings.Default.QblindOn)
-                pictureBox4.Image = global::AndroidSideloader.Properties.Resources.bluekey;
-            else
-                pictureBox4.Image = global::AndroidSideloader.Properties.Resources.greenkey;
         }
 
         public static string DonorApps = "";
@@ -248,7 +241,7 @@ namespace AndroidSideloader
                         Properties.Settings.Default.Save();
 
                         Clipboard.SetText(combined);
-                        RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" VRP-debuglogs:CrashLogs");
+                        RCLONE.runRcloneCommand_DownloadConfig($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" VRP-debuglogs:CrashLogs");
                         FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
                         Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
 
@@ -304,8 +297,10 @@ namespace AndroidSideloader
                     if (Properties.Settings.Default.autoUpdateConfig)
                     {
                         ChangeTitle("Checking for a new Configuration File...");
-                        SideloaderRCLONE.updateConfig(currentRemote);
+                        SideloaderRCLONE.updateDownloadConfig();
                     }
+
+                    SideloaderRCLONE.updateUploadConfig();
 
                     if (!hasPublicConfig)
                     {
@@ -495,7 +490,7 @@ namespace AndroidSideloader
             try
             {
                 if (ProgressText.IsDisposed) return;
-                this.Invoke(() => { oldTitle = txt; this.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + txt; });
+                this.Invoke(() => { oldTitle = txt; this.Text = "Rookie Sideloader v" + Updater.LocalVersion + " | " + txt; });
                 ProgressText.Invoke(() =>
                 {
                     if (!ProgressText.IsDisposed)
@@ -504,7 +499,7 @@ namespace AndroidSideloader
                 if (!reset)
                     return;
                 await Task.Delay(TimeSpan.FromSeconds(5));
-                this.Invoke(() => { this.Text = "Rookie's Sideloader v" + Updater.LocalVersion + " | " + oldTitle; });
+                this.Invoke(() => { this.Text = "Rookie Sideloader v" + Updater.LocalVersion + " | " + oldTitle; });
                 ProgressText.Invoke(() =>
                 {
                     if (!ProgressText.IsDisposed)
@@ -923,12 +918,12 @@ namespace AndroidSideloader
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                 ulong VersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}"))
-                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}", true);
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip"))
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
-                if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip"))
-                    File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
+
+                var gameZipName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0,1)}.zip";
+
+                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+
                 ProcessOutput output = new ProcessOutput("", "");
                 ChangeTitle("Extracting APK....");
 
@@ -957,7 +952,7 @@ namespace AndroidSideloader
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
                 File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
                 ChangeTitle("Zipping extracted application...");
-                string cmd = $"7z a -mx1 \"{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
+                string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
                 string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
                 progressBar.Style = ProgressBarStyle.Continuous;
                 Thread t4 = new Thread(() =>
@@ -978,8 +973,8 @@ namespace AndroidSideloader
                 {
                     string currentlyuploading = GameName;
                     ChangeTitle("Uploading to shared drive, you can continue to use Rookie while it uploads in the background.");
-                    RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" RSL-gameuploads:");
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
+                    RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
                     this.Invoke(() => FlexibleMessageBox.Show($"Upload of {currentlyuploading} is complete! Thank you for your contribution!"));
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
                 });
@@ -1403,6 +1398,7 @@ namespace AndroidSideloader
         public static int updint = 0;
         public static bool nodeviceonstart = false;
         public static bool either = false;
+
         private async void initListView()
         {
             rookienamelist = "";
@@ -1424,7 +1420,9 @@ namespace AndroidSideloader
             {
                 whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
             }
+
             List<ListViewItem> GameList = new List<ListViewItem>();
+
             List<String> rookieList = new List<String>();
             List<String> installedGames = packageList.ToList();
             List<String> blacklistItems = blacklist.ToList();
@@ -1449,18 +1447,20 @@ namespace AndroidSideloader
 
                         ListViewItem Game = new ListViewItem(release);
 
+                        Color colorFont_installedGame = ColorTranslator.FromHtml("#3c91e6");
+                        lblUpToDate.ForeColor = colorFont_installedGame;
+                        Color colorFont_updateAvailable = ColorTranslator.FromHtml("#4daa57");
+                        lblUpdateAvailable.ForeColor = colorFont_updateAvailable;
+                        Color colorFont_donateGame = ColorTranslator.FromHtml("#cb9cf2");
+                        lblNeedsDonate.ForeColor = colorFont_donateGame;
+                        Color colorFont_error = ColorTranslator.FromHtml("#f52f57");
+
                         foreach (string packagename in packageList)
                         {
                             if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                             {
-                                if (Properties.Settings.Default.QblindOn)
-                                {
-                                    Game.BackColor = Color.FromArgb(0, 112, 138);
-                                }
-                                else
-                                {
-                                    Game.BackColor = Color.Green;
-                                }
+                                Game.ForeColor = colorFont_installedGame;
+
                                 string InstalledVersionCode;
                                 InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
                                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
@@ -1470,13 +1470,10 @@ namespace AndroidSideloader
                                     ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
                                     ulong cloudVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
 
-                                    //Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
+                                    Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
                                     if (installedVersionInt < cloudVersionInt)
                                     {
-                                        if (Properties.Settings.Default.QblindOn)
-                                            Game.BackColor = Color.FromArgb(120, 0, 0);
-                                        else
-                                            Game.BackColor = Color.FromArgb(102, 77, 0);
+                                        Game.ForeColor = colorFont_updateAvailable;
                                     }
 
                                     if (installedVersionInt > cloudVersionInt)
@@ -1485,7 +1482,8 @@ namespace AndroidSideloader
                                         if (blacklist.Contains(packagename))
                                             dontget = true;
                                         if (!dontget)
-                                            Game.BackColor = Color.FromArgb(20, 20, 20);
+                                            Game.ForeColor = colorFont_donateGame;
+
                                         string RlsName = Sideloader.PackageNametoGameName(packagename);
                                         string GameName = Sideloader.gameNameToSimpleName(RlsName);
 
@@ -1501,7 +1499,7 @@ namespace AndroidSideloader
                                 }
                                 catch (Exception ex)
                                 {
-                                    Game.BackColor = Color.FromArgb(121, 25, 194);
+                                    Game.ForeColor = colorFont_error;
                                     Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
                                     ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
                                     Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
@@ -1697,21 +1695,24 @@ namespace AndroidSideloader
                 Thread t3 = new Thread(() =>
                 {
                     string packagename = game.Pckgcommand;
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip"))
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion}.zip");
+                    var gameZipName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0,1)}.zip";
+
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+
                     string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                    string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" .\\{game.Pckgcommand}\\*";
+                    string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
                     Program.form.ChangeTitle("Zipping extracted application...");
                     ADB.RunCommandToString(cmd, path);
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
                     Program.form.ChangeTitle("Uploading to drive, you may continue to use Rookie while it uploads.");
-                    RCLONE.runRcloneCommand(game.Uploadcommand);
+                    RCLONE.runRcloneCommand_UploadConfig(game.Uploadcommand);
                     if (game.isUpdate)
                     {
                         Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + ("\n");
                         Properties.Settings.Default.Save();
                     }
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip");
+                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
 
                 });
                 t3.IsBackground = true;
@@ -1799,7 +1800,7 @@ namespace AndroidSideloader
             int index = 0;
             remotesList.Invoke(() => { index = remotesList.SelectedIndex; remotesList.Items.Clear(); });
 
-            string[] mirrors = RCLONE.runRcloneCommand("listremotes").Output.Split('\n');
+            string[] mirrors = RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n');
 
             Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
@@ -1877,7 +1878,6 @@ without him none of this would be possible
  - -- rclone https://rclone.org/
  - -- 7zip https://www.7-zip.org/
  - -- badcoder5000: for help with the UI Redesign
- - -- gotard: for the Theme Changer
  - -- Verb8em: for drawning the New Icon
  - -- ErikE: Folder Browser Dialog Code (https://stackoverflow.com/users/57611/erike)
  - -- Serge Weinstock: for developing SergeUtils, which is used to search the combobox
@@ -1943,7 +1943,10 @@ without him none of this would be possible
             Thread t1 = new Thread(() =>
             {
                 initMirrors(false);
-                SideloaderRCLONE.initGames(currentRemote);
+                if (!hasPublicConfig)
+                {
+                    SideloaderRCLONE.initGames(currentRemote);
+                }
                 listappsbtn();
             });
             t1.IsBackground = false;
@@ -2153,9 +2156,8 @@ Things you can try:
                             t1 = new Thread(() =>
                             {
                                 var rclonecommand =
-                                    $"copy --progress --rc --http-url {PublicConfigFile.BaseUri} \":http:/{gameNameHash}/\" \"{Environment.CurrentDirectory}\\{gameNameHash}\"";
-                                gameDownloadOutput = RCLONE.runRcloneCommand(rclonecommand,
-                                    Properties.Settings.Default.BandwithLimit, true);
+                                    $"copy \":http:/{gameNameHash}/\" \"{Environment.CurrentDirectory}\\{gameNameHash}\" --progress --rc";
+                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, Properties.Settings.Default.BandwithLimit);
                             });
                         }
                         else
@@ -2169,7 +2171,7 @@ Things you can try:
                         Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwithLimit);
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwithLimit);
                         });
                     }
                     
@@ -2617,12 +2619,6 @@ Things you can try:
             Form.Show();
         }
 
-        private void ThemeChangerButton_Click(object sender, EventArgs e)
-        {
-            themeForm Form = new themeForm();
-            Form.Show();
-        }
-
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
         {
             // Determine if clicked column is already the column that is being sorted.
@@ -2786,7 +2782,7 @@ Things you can try:
             if (keyData == (Keys.F1) && !dialogisup)
             {
                 dialogisup = true;
-                FlexibleMessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie's Sideloader.");
+                FlexibleMessageBox.Show("Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie Sideloader.");
                 dialogisup = false;
             }
             if (keyData == (Keys.Control | Keys.P))
@@ -2833,8 +2829,6 @@ Things you can try:
             }
         }
 
-
-
         private void ADBcommandbox_Enter(object sender, EventArgs e)
         {
             ADBcommandbox.Focus();
@@ -2842,10 +2836,9 @@ Things you can try:
 
         }
 
-
+        
         public void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
-
             if (gamesListView.SelectedItems.Count < 1)
                 return;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;

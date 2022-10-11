@@ -27,7 +27,6 @@ namespace AndroidSideloader
         //Init form objects with values from settings
         private void intSettings()
         {
-            CblindBox.Checked = Properties.Settings.Default.QblindOn;
             checkForUpdatesCheckBox.Checked = Properties.Settings.Default.checkForUpdates;
             enableMessageBoxesCheckBox.Checked = Properties.Settings.Default.enableMessageBoxes;
             deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
@@ -63,7 +62,7 @@ namespace AndroidSideloader
         {
             if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
             {
-                RCLONE.runRcloneCommand($"copy \"{Properties.Settings.Default.CurrentLogPath}\" VRP-debuglogs:DebugLogs");
+                RCLONE.runRcloneCommand_DownloadConfig($"copy \"{Properties.Settings.Default.CurrentLogPath}\" VRP-debuglogs:DebugLogs");
                 Clipboard.SetText(DebugID.Text);
                 MessageBox.Show($"Your debug log has been copied to the server. Please mention your DebugLog ID ({Properties.Settings.Default.CurrentLogName}) to the Mods (it has been automatically copied to your clipboard).");
             }
@@ -197,20 +196,6 @@ namespace AndroidSideloader
                 Clipboard.SetText(textBox1.Text);
                 MessageBox.Show("CrashLogID copied to clipboard! Paste it to a moderator/helper for assistance!");
             }
-        }
-
-        private void CblindBox_CheckedChanged(object sender, EventArgs e)
-        {
-
-            Properties.Settings.Default.QblindOn = CblindBox.Checked;
-            Properties.Settings.Default.Save();
-            
-        }
-
-        private void CblindBox_Click(object sender, EventArgs e)
-        {
-            if (CblindBox.Checked)
-                MessageBox.Show("You must restart Rookie's Sideloader OR click Refresh Updates List for changes to take effect.\n\nNOTE: Colors in the legend at the top right of the main window of Rookie won't update until you restart the program.");
         }
 
         private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)

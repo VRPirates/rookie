@@ -7,7 +7,7 @@ using System.Runtime.InteropServices;
 // associated with an assembly.
 //[assembly: AssemblyKeyFileAttribute("keypair.snk")]
 [assembly: AssemblyTitle("AndroidSideloader")]
-[assembly: AssemblyDescription("Rookie's Sideloader")]
+[assembly: AssemblyDescription("Rookie Sideloader")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Rookie.WTF")]
 [assembly: AssemblyProduct("AndroidSideloader")]
