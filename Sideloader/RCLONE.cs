@@ -14,7 +14,6 @@ namespace AndroidSideloader
         public string Name { get; set; }
         public string Size { get; set; }
         public string ModTime { get; set; }
-
     }
 
     class SideloaderRCLONE
@@ -49,27 +48,27 @@ namespace AndroidSideloader
         public static void UpdateNouns(string remote)
         {
             Logger.Log($"Updating Nouns");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
+            RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
         }
 
         public static void UpdateGamePhotos(string remote)
         {
             Logger.Log($"Updating Thumbnails");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
+            RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
         }
 
         public static void UpdateGameNotes(string remote)
         {
             Logger.Log($"Updating Game Notes");
-            RCLONE.runRcloneCommand($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
+            RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
         }
 
         public static void UpdateMetadataFromPublic()
         {
             Logger.Log($"Downloading Metadata");
             var rclonecommand =
-                $"sync --http-url {MainForm.PublicConfigFile.BaseUri} \":http:/meta.7z\" \"{Environment.CurrentDirectory}\"";
-            RCLONE.runRcloneCommand(rclonecommand);
+                $"sync \":http:/meta.7z\" \"{Environment.CurrentDirectory}\"";
+            RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
         }
 
         public static void ProcessMetadataFromPublic()
@@ -117,7 +116,7 @@ namespace AndroidSideloader
         {
             Logger.Log($"Refresh / List Remotes");
             RemotesList.Clear();
-            var remotes = RCLONE.runRcloneCommand("listremotes").Output.Split('\n');
+            var remotes = RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n');
 
             Logger.Log("Loaded following remotes: ");
             foreach (string r in remotes)
@@ -140,7 +139,7 @@ namespace AndroidSideloader
             
             gameProperties.Clear();
             games.Clear();
-            string tempGameList = RCLONE.runRcloneCommand($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
+            string tempGameList = RCLONE.runRcloneCommand_DownloadConfig($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
             if (MainForm.debugMode)
             {
                 File.WriteAllText("VRP-GamesList.txt", tempGameList);
@@ -158,13 +157,15 @@ namespace AndroidSideloader
                     }
                 }
             }
-
-            
         }
 
-        public static void updateConfig(string remote)
+        public static void updateDownloadConfig()
         {
-            Logger.Log($"Attempting to Update Config");
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                 | SecurityProtocolType.Tls11
+                                                 | SecurityProtocolType.Tls12
+                                                 | SecurityProtocolType.Ssl3;
+            Logger.Log($"Attempting to Update Download Config");
             try
             {
                 string configUrl = "https://wiki.vrpirates.club/downloads/vrp.download.config";
@@ -213,6 +214,66 @@ namespace AndroidSideloader
             }
             catch { }
         }
+
+        public static void updateUploadConfig()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                 | SecurityProtocolType.Tls11
+                                                 | SecurityProtocolType.Tls12
+                                                 | SecurityProtocolType.Ssl3;
+            Logger.Log($"Attempting to Update Upload Config");
+            try
+            {
+                string configUrl = "https://wiki.vrpirates.club/downloads/vrp.upload.config";
+
+                HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
+                using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
+                {
+                    string resultString = responseReader.ReadToEnd();
+
+                    Logger.Log($"Retrived updated config from: {configUrl}");
+
+                    File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.upload.config", resultString);
+
+                    Logger.Log("Upload config updated successfully.");
+                }
+            }
+            catch (Exception e)
+            {
+                Logger.Log($"Failed to update Upload config: {e.Message}");
+            }
+        }
+
+        public static void updatePublicConfig()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                 | SecurityProtocolType.Tls11
+                                                 | SecurityProtocolType.Tls12
+                                                 | SecurityProtocolType.Ssl3;
+            Logger.Log($"Attempting to Update Public Config");
+            try
+            {
+                string configUrl = "https://wiki.vrpirates.club/downloads/vrp-public.json";
+
+                HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
+                using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
+                {
+                    string resultString = responseReader.ReadToEnd();
+
+                    Logger.Log($"Retrived updated config from: {configUrl}");
+
+                    File.WriteAllText(Environment.CurrentDirectory + "\\vrp-public.json", resultString);
+
+                    Logger.Log("Public config updated successfully.");
+                }
+            }
+            catch (Exception e) 
+            {
+                Logger.Log($"Failed to update Public config: {e.Message}");
+            }
+        }
+
+
         static string CalculateMD5(string filename)
         {
             using (var md5 = MD5.Create())

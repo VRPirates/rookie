@@ -1,8 +1,10 @@
-RSL 2.13
+RSL 2.14
 
-- Added new config mode for use with http mirror
-- Removed previous http mirror workarounds
-- Added Offline Mode launcher to package fetch.
-- Add splash screen on startup
+- Added upload config for easier config management
+- Improved upload logic to handle failures better
 
 ~SytheZN
+
+- Much better theme
+
+~fenopy
