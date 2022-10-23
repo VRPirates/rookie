@@ -1,10 +1,12 @@
-RSL 2.14
+RSL 2.15
 
-- Added upload config for easier config management
-- Improved upload logic to handle failures better
+- Massive UI Changes:
+- Rounded buttons
+- Added version Number at Bottom Left
+- Changed fonts to some extend
+- Added background pattern to category buttons and MainForm background
+- Added an animation when opening/closing category 
+- Overall darker theme
+- New splash
 
-~SytheZN
-
-- Much better theme
-
-~fenopy
+~Chax

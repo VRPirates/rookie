@@ -165,19 +165,19 @@
       <Value Profile="(Default)">White</Value>
     </Setting>
     <Setting Name="ComboBoxColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">50, 50, 50</Value>
+      <Value Profile="(Default)">25, 25, 25</Value>
     </Setting>
     <Setting Name="SubButtonColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">40, 40, 40</Value>
+      <Value Profile="(Default)">25, 25, 25</Value>
     </Setting>
     <Setting Name="TextBoxColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">29, 29, 29</Value>
+      <Value Profile="(Default)">25, 25, 25</Value>
     </Setting>
     <Setting Name="ButtonColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">50, 50, 50</Value>
+      <Value Profile="(Default)">Black</Value>
     </Setting>
     <Setting Name="BackColor" Type="System.Drawing.Color" Scope="User">
-      <Value Profile="(Default)">50, 50, 50</Value>
+      <Value Profile="(Default)">1, 1, 1</Value>
     </Setting>
     <Setting Name="AppPackages" Type="System.String" Scope="User">
       <Value Profile="(Default)" />

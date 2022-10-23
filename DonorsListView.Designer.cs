@@ -110,6 +110,7 @@ namespace AndroidSideloader
             // panel1
             // 
             this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
+            this.panel1.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
             this.panel1.Controls.Add(this.SkipButton);
             this.panel1.Controls.Add(this.panel2);
             this.panel1.Controls.Add(this.bothdet);
@@ -236,12 +237,10 @@ namespace AndroidSideloader
             // 
             this.DonateButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
             this.DonateButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DonateButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.DonateButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DonateButton.Enabled = false;
             this.DonateButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.DonateButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.DonateButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.DonateButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.DonateButton.ForeColor = System.Drawing.Color.White;
             this.DonateButton.Location = new System.Drawing.Point(130, 277);
             this.DonateButton.Name = "DonateButton";
             this.DonateButton.Size = new System.Drawing.Size(311, 36);
@@ -270,7 +269,7 @@ namespace AndroidSideloader
             this.panel1.PerformLayout();
             this.panel2.ResumeLayout(false);
             this.ResumeLayout(false);
-            this.Activate();
+
         }
 
         #endregion
