@@ -2,6 +2,7 @@
 using System.Windows.Forms;
 using System.Security.Permissions;
 using System.IO;
+using System.Drawing.Drawing2D;
 
 namespace AndroidSideloader
 {
@@ -14,7 +15,7 @@ namespace AndroidSideloader
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         static void Main()
         {
-            
+
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
             Application.EnableVisualStyles();

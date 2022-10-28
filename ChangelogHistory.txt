@@ -1,4 +1,15 @@
-﻿RSL 2.13
+﻿RSL 2.14
+
+- Added upload config for easier config management
+- Improved upload logic to handle failures better
+
+~SytheZN
+
+- Much better theme
+
+~fenopy
+
+RSL 2.13
 
 - Added new config mode for use with http mirror
 - Removed previous http mirror workarounds

@@ -30,6 +30,7 @@
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <BootstrapperEnabled>true</BootstrapperEnabled>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup>
     <UseShortFileNames>True</UseShortFileNames>
@@ -146,6 +147,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.DirectoryServices" />
     <Reference Include="System.Management" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -160,6 +162,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADB.cs" />
+    <Compile Include="RoundButton.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ColumnSort.cs" />
     <Compile Include="Donors.cs" />
     <Compile Include="DonorsListView.cs">
@@ -169,6 +174,7 @@
       <DependentUpon>DonorsListView.cs</DependentUpon>
     </Compile>
     <Compile Include="FlexibleMessageBox.cs" />
+    <Compile Include="RoundedRectangleF.cs" />
     <Compile Include="Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -182,6 +188,7 @@
     <Compile Include="NewApps.Designer.cs">
       <DependentUpon>NewApps.cs</DependentUpon>
     </Compile>
+    <Compile Include="Transparenter.cs" />
     <Compile Include="UpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -299,6 +306,8 @@
     <Content Include="changelog.txt" />
     <Content Include="icon.ico" />
     <Content Include="ChangelogHistory.txt" />
+    <Content Include="Resources\pattern_cubes-1_1_1_0-0_0_1__000000_212121.png" />
+    <Content Include="Resources\pattern_herringbone-2_1_3_0-0_90_1__000000_1c1c1c.png" />
     <Content Include="Resources\splash.jpg" />
     <None Include="Resources\battery11.png" />
     <None Include="Resources\battery.png" />

@@ -103,6 +103,36 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap Pattern {
+            get {
+                object obj = ResourceManager.GetObject("Pattern", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pattern_cubes_1_1_1_0_0_0_1__000000_212121 {
+            get {
+                object obj = ResourceManager.GetObject("pattern_cubes-1_1_1_0-0_0_1__000000_212121", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c {
+            get {
+                object obj = ResourceManager.GetObject("pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap SearchGlass {
             get {
                 object obj = ResourceManager.GetObject("SearchGlass", resourceCulture);
@@ -113,9 +143,9 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap splash {
+        public static System.Drawing.Bitmap splashimage {
             get {
-                object obj = ResourceManager.GetObject("splash", resourceCulture);
+                object obj = ResourceManager.GetObject("splashimage", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

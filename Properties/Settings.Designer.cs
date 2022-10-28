@@ -672,7 +672,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("50, 50, 50")]
+        [global::System.Configuration.DefaultSettingValueAttribute("25, 25, 25")]
         public global::System.Drawing.Color ComboBoxColor {
             get {
                 return ((global::System.Drawing.Color)(this["ComboBoxColor"]));
@@ -684,7 +684,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("40, 40, 40")]
+        [global::System.Configuration.DefaultSettingValueAttribute("25, 25, 25")]
         public global::System.Drawing.Color SubButtonColor {
             get {
                 return ((global::System.Drawing.Color)(this["SubButtonColor"]));
@@ -696,7 +696,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("29, 29, 29")]
+        [global::System.Configuration.DefaultSettingValueAttribute("25, 25, 25")]
         public global::System.Drawing.Color TextBoxColor {
             get {
                 return ((global::System.Drawing.Color)(this["TextBoxColor"]));
@@ -708,7 +708,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("50, 50, 50")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Black")]
         public global::System.Drawing.Color ButtonColor {
             get {
                 return ((global::System.Drawing.Color)(this["ButtonColor"]));
@@ -720,7 +720,7 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("50, 50, 50")]
+        [global::System.Configuration.DefaultSettingValueAttribute("1, 1, 1")]
         public global::System.Drawing.Color BackColor {
             get {
                 return ((global::System.Drawing.Color)(this["BackColor"]));

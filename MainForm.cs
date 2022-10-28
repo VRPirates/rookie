@@ -17,7 +17,9 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AndroidSideloader.Models;
-
+using System.ComponentModel;
+using System.Runtime.InteropServices;
+using System.Drawing.Drawing2D;
 
 namespace AndroidSideloader
 {
@@ -56,8 +58,7 @@ namespace AndroidSideloader
         public static bool hasPublicConfig = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 1";
-
-        public MainForm()
+            public MainForm()
         {
             // check for offline mode
             string[] args = Environment.GetCommandLineArgs();
@@ -217,6 +218,7 @@ namespace AndroidSideloader
             etaLabel.Text = "";
             speedLabel.Text = "";
             diskLabel.Text = "";
+            verLabel.Text = Updater.LocalVersion;
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(Properties.Settings.Default.CurrentCrashPath))
@@ -512,8 +514,6 @@ namespace AndroidSideloader
             }
         }
 
-
-
         private void ShowSubMenu(Panel subMenu)
         {
             if (subMenu.Visible == false)
@@ -521,8 +521,6 @@ namespace AndroidSideloader
             else
                 subMenu.Visible = false;
         }
-
-
 
         private async void startsideloadbutton_Click(object sender, EventArgs e)
         {
@@ -557,9 +555,6 @@ namespace AndroidSideloader
             ShowPrcOutput(output);
         }
 
-
-
-
         public void ShowPrcOutput(ProcessOutput prcout)
         {
             string message = $"Output: {prcout.Output}";
@@ -568,13 +563,7 @@ namespace AndroidSideloader
             FlexibleMessageBox.Show(this, message);
         }
 
-
-
-
         public List<string> Devices = new List<string>();
-
-
-
 
         public async Task<int> CheckForDevice()
         {
@@ -628,10 +617,6 @@ namespace AndroidSideloader
 
 
         }
-
-
-
-
 
         public async void devicesbutton_Click(object sender, EventArgs e)
         {
@@ -1850,11 +1835,27 @@ namespace AndroidSideloader
         private void sideloadContainer_Click(object sender, EventArgs e)
         {
             ShowSubMenu(sideloadContainer);
+            if (sideloadDrop.Text == "▼ SIDELOAD ▼")
+            {
+                sideloadDrop.Text = "▶ SIDELOAD ◀";
+            }
+            else if (sideloadDrop.Text == "▶ SIDELOAD ◀")
+            {
+                sideloadDrop.Text = "▼ SIDELOAD ▼";
+            }
         }
 
         private void backupDrop_Click(object sender, EventArgs e)
         {
             ShowSubMenu(backupContainer);
+            if (backupDrop.Text == "▼ BACKUP / RESTORE ▼")
+            {
+                backupDrop.Text = "▶ BACKUP / RESTORE ◀";
+            }
+            else if (backupDrop.Text == "▶ BACKUP / RESTORE ◀")
+            {
+                backupDrop.Text = "▼ BACKUP / RESTORE ▼";
+            }
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
@@ -2576,6 +2577,14 @@ Things you can try:
         private void otherDrop_Click(object sender, EventArgs e)
         {
             ShowSubMenu(otherContainer);
+            if (otherDrop.Text == "▼ OTHER ▼")
+            {
+                otherDrop.Text = "▶ OTHER ◀";
+            }
+            else if (otherDrop.Text == "▶ OTHER ◀")
+            {
+                otherDrop.Text = "▼ OTHER ▼";
+            }
         }
         private void gamesQueListBox_MouseClick(object sender, MouseEventArgs e)
         {
