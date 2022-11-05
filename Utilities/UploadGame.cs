@@ -10,7 +10,6 @@ namespace AndroidSideloader.Utilities
     {
         public UploadGame(string Uploadcommand, string Pckgcommand, string Uploadgamename, ulong Uploadversion, bool isUpdate)
         {
-            this.Uploadcommand = Uploadcommand;
             this.Pckgcommand = Pckgcommand;
             this.Uploadgamename = Uploadgamename;
             this.Uploadversion = Uploadversion;
@@ -21,8 +20,6 @@ namespace AndroidSideloader.Utilities
             
         }
         public bool isUpdate { get; set; }
-
-        public string Uploadcommand { get; set; }
 
         public string Pckgcommand { get; set; }
         

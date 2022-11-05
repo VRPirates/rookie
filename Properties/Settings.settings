@@ -32,7 +32,7 @@
     <Setting Name="SpoofGames" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="BandwithLimit" Type="System.String" Scope="User">
+    <Setting Name="BandwidthLimit" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="BigFontStyle" Type="System.Drawing.Font" Scope="User">

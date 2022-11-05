@@ -2,6 +2,9 @@
 using System.Diagnostics;
 using System.Net;
 using System.IO;
+using System.Linq;
+using JR.Utils.GUI.Forms;
+using System.Windows.Forms;
 
 namespace AndroidSideloader.Utilities
 {
@@ -35,15 +38,27 @@ namespace AndroidSideloader.Utilities
             pro.Arguments = args;
             pro.CreateNoWindow = true;
             pro.UseShellExecute = false;
-            
-            Logger.Log($"Extract: 7z {args}");
+            pro.RedirectStandardInput = true;
+            pro.RedirectStandardError = true;
+            pro.RedirectStandardOutput = true;
+
+            Logger.Log($"Extract: 7z {string.Join(" ", args.Split(' ').Where(a => !a.StartsWith("-p")))}");
 
             Process x = Process.Start(pro);
             x.WaitForExit();
             if (x.ExitCode != 0)
             {
-                Logger.Log($"Extract failed");
+                string error = x.StandardError.ReadToEnd();
+
+                if (error.Contains("There is not enough space on the disk"))
+                {
+                    FlexibleMessageBox.Show($"Not enough space to extract archive.\r\nCheck free space in {Environment.CurrentDirectory} and try again.",
+                        "NOT ENOUGH SPACE",
+                        MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                }
                 Logger.Log(x.StandardOutput.ReadToEnd());
+                Logger.Log(error);
                 throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
             }
         }

@@ -1,4 +1,5 @@
-﻿namespace AndroidSideloader
+﻿
+namespace AndroidSideloader
 {
     partial class SettingsForm
     {
@@ -33,21 +34,18 @@
             this.deleteAfterInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.updateConfigCheckBox = new System.Windows.Forms.CheckBox();
             this.userJsonOnGameInstall = new System.Windows.Forms.CheckBox();
-            this.BandwithTextbox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.BandwithComboBox = new System.Windows.Forms.ComboBox();
+            this.txtBandwidth = new System.Windows.Forms.TextBox();
+            this.lblDownloadSpeedLimiter = new System.Windows.Forms.Label();
             this.crashlogID = new System.Windows.Forms.Label();
-            this.debuglogID = new System.Windows.Forms.Label();
-            this.DebugID = new System.Windows.Forms.TextBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
             this.nodevicemodeBox = new System.Windows.Forms.CheckBox();
             this.bmbfBox = new System.Windows.Forms.CheckBox();
             this.AutoReinstBox = new System.Windows.Forms.CheckBox();
             this.applyButton = new AndroidSideloader.RoundButton();
             this.resetSettingsButton = new AndroidSideloader.RoundButton();
-            this.DebugLogCopy = new AndroidSideloader.RoundButton();
-            this.Button1 = new AndroidSideloader.RoundButton();
+            this.btnResetDebug = new AndroidSideloader.RoundButton();
+            this.btnUploadDebug = new AndroidSideloader.RoundButton();
+            this.btnOpenDebug = new AndroidSideloader.RoundButton();
+            this.lblMibs = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -63,23 +61,6 @@
             this.checkForUpdatesCheckBox.Text = "Check for updates";
             this.checkForUpdatesCheckBox.UseVisualStyleBackColor = false;
             this.checkForUpdatesCheckBox.CheckedChanged += new System.EventHandler(this.checkForUpdatesCheckBox_CheckedChanged);
-            // 
-            // applyButton
-            // 
-            this.applyButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.applyButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.applyButton.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.applyButton.Location = new System.Drawing.Point(67, 328);
-            this.applyButton.Name = "applyButton";
-            this.applyButton.Size = new System.Drawing.Size(101, 31);
-            this.applyButton.TabIndex = 5;
-            this.applyButton.Text = "Apply";
-            this.applyButton.UseVisualStyleBackColor = false;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // enableMessageBoxesCheckBox
             // 
@@ -137,50 +118,30 @@
             this.userJsonOnGameInstall.UseVisualStyleBackColor = false;
             this.userJsonOnGameInstall.CheckedChanged += new System.EventHandler(this.userJsonOnGameInstall_CheckedChanged);
             // 
-            // BandwithTextbox
+            // txtBandwidth
             // 
-            this.BandwithTextbox.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
-            this.BandwithTextbox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.BandwithTextbox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.BandwithTextbox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.BandwithTextbox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.BandwithTextbox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.BandwithTextbox.Location = new System.Drawing.Point(29, 248);
-            this.BandwithTextbox.Name = "BandwithTextbox";
-            this.BandwithTextbox.Size = new System.Drawing.Size(177, 24);
-            this.BandwithTextbox.TabIndex = 11;
+            this.txtBandwidth.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
+            this.txtBandwidth.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.txtBandwidth.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.txtBandwidth.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.txtBandwidth.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.txtBandwidth.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.txtBandwidth.Location = new System.Drawing.Point(49, 254);
+            this.txtBandwidth.Name = "txtBandwidth";
+            this.txtBandwidth.Size = new System.Drawing.Size(103, 24);
+            this.txtBandwidth.TabIndex = 11;
             // 
-            // label1
+            // lblDownloadSpeedLimiter
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.label1.Location = new System.Drawing.Point(48, 225);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(245, 18);
-            this.label1.TabIndex = 12;
-            this.label1.Text = "Download speed limiter, 0 to disable";
-            // 
-            // BandwithComboBox
-            // 
-            this.BandwithComboBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.ComboBoxColor;
-            this.BandwithComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.BandwithComboBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.BandwithComboBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ComboBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.BandwithComboBox.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.BandwithComboBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.BandwithComboBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.BandwithComboBox.FormattingEnabled = true;
-            this.BandwithComboBox.Items.AddRange(new object[] {
-            "B",
-            "K",
-            "M",
-            "G"});
-            this.BandwithComboBox.Location = new System.Drawing.Point(258, 246);
-            this.BandwithComboBox.Name = "BandwithComboBox";
-            this.BandwithComboBox.Size = new System.Drawing.Size(55, 26);
-            this.BandwithComboBox.TabIndex = 13;
+            this.lblDownloadSpeedLimiter.AutoSize = true;
+            this.lblDownloadSpeedLimiter.BackColor = System.Drawing.Color.Transparent;
+            this.lblDownloadSpeedLimiter.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.lblDownloadSpeedLimiter.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.lblDownloadSpeedLimiter.Location = new System.Drawing.Point(87, 230);
+            this.lblDownloadSpeedLimiter.Name = "lblDownloadSpeedLimiter";
+            this.lblDownloadSpeedLimiter.Size = new System.Drawing.Size(169, 18);
+            this.lblDownloadSpeedLimiter.TabIndex = 12;
+            this.lblDownloadSpeedLimiter.Text = "Download Speed Limiter";
             // 
             // crashlogID
             // 
@@ -190,66 +151,6 @@
             this.crashlogID.Name = "crashlogID";
             this.crashlogID.Size = new System.Drawing.Size(0, 13);
             this.crashlogID.TabIndex = 15;
-            // 
-            // debuglogID
-            // 
-            this.debuglogID.BackColor = System.Drawing.Color.Transparent;
-            this.debuglogID.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.debuglogID.Location = new System.Drawing.Point(29, 434);
-            this.debuglogID.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.debuglogID.Name = "debuglogID";
-            this.debuglogID.Size = new System.Drawing.Size(285, 48);
-            this.debuglogID.TabIndex = 14;
-            this.debuglogID.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // DebugID
-            // 
-            this.DebugID.AccessibleRole = System.Windows.Forms.AccessibleRole.Row;
-            this.DebugID.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.DebugID.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.DebugID.Cursor = System.Windows.Forms.Cursors.Default;
-            this.DebugID.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold);
-            this.DebugID.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.DebugID.Location = new System.Drawing.Point(29, 405);
-            this.DebugID.Margin = new System.Windows.Forms.Padding(2);
-            this.DebugID.Name = "DebugID";
-            this.DebugID.ReadOnly = true;
-            this.DebugID.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.DebugID.Size = new System.Drawing.Size(285, 21);
-            this.DebugID.TabIndex = 16;
-            this.DebugID.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.DebugID.Click += new System.EventHandler(this.DebugID_Click);
-            // 
-            // label2
-            // 
-            this.label2.BackColor = System.Drawing.Color.Transparent;
-            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 11F);
-            this.label2.Location = new System.Drawing.Point(29, 505);
-            this.label2.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(284, 86);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "This is your most recent CrashLogID. Click on the CrashLogID to copy it to your c" +
-    "lipboard.";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // textBox1
-            // 
-            this.textBox1.AccessibleRole = System.Windows.Forms.AccessibleRole.Row;
-            this.textBox1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.textBox1.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textBox1.Cursor = System.Windows.Forms.Cursors.Default;
-            this.textBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 13.8F, System.Drawing.FontStyle.Bold);
-            this.textBox1.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textBox1.Location = new System.Drawing.Point(29, 488);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(2);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Horizontal;
-            this.textBox1.Size = new System.Drawing.Size(285, 21);
-            this.textBox1.TabIndex = 16;
-            this.textBox1.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
-            this.textBox1.Click += new System.EventHandler(this.textBox1_Click);
             // 
             // nodevicemodeBox
             // 
@@ -298,20 +199,23 @@
             // 
             this.applyButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.applyButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.applyButton.BackColor = System.Drawing.Color.Transparent;
+            this.applyButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.applyButton.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.applyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.applyButton.ForeColor = System.Drawing.Color.White;
+            this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Location = new System.Drawing.Point(29, 286);
+            this.applyButton.Location = new System.Drawing.Point(29, 301);
             this.applyButton.Name = "applyButton";
             this.applyButton.Radius = 5;
-            this.applyButton.Size = new System.Drawing.Size(101, 31);
+            this.applyButton.Size = new System.Drawing.Size(133, 31);
             this.applyButton.Stroke = true;
             this.applyButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
             this.applyButton.TabIndex = 17;
-            this.applyButton.Text = "Apply";
+            this.applyButton.Text = "Apply Settings";
             this.applyButton.Transparency = false;
             this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
@@ -325,58 +229,91 @@
             this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
             this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Location = new System.Drawing.Point(212, 286);
+            this.resetSettingsButton.Location = new System.Drawing.Point(181, 301);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Radius = 5;
-            this.resetSettingsButton.Size = new System.Drawing.Size(101, 31);
+            this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
             this.resetSettingsButton.Stroke = true;
             this.resetSettingsButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
             this.resetSettingsButton.TabIndex = 18;
-            this.resetSettingsButton.Text = "Reset";
+            this.resetSettingsButton.Text = "Reset Settings";
             this.resetSettingsButton.Transparency = false;
             this.resetSettingsButton.Click += new System.EventHandler(this.resetSettingsButton_Click);
             // 
-            // DebugLogCopy
+            // btnResetDebug
             // 
-            this.DebugLogCopy.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.DebugLogCopy.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.DebugLogCopy.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.DebugLogCopy.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.DebugLogCopy.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.DebugLogCopy.ForeColor = System.Drawing.Color.White;
-            this.DebugLogCopy.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.DebugLogCopy.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.DebugLogCopy.Location = new System.Drawing.Point(29, 323);
-            this.DebugLogCopy.Name = "DebugLogCopy";
-            this.DebugLogCopy.Radius = 5;
-            this.DebugLogCopy.Size = new System.Drawing.Size(285, 31);
-            this.DebugLogCopy.Stroke = true;
-            this.DebugLogCopy.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.DebugLogCopy.TabIndex = 19;
-            this.DebugLogCopy.Text = "Send DebugLog to server.";
-            this.DebugLogCopy.Transparency = false;
-            this.DebugLogCopy.Click += new System.EventHandler(this.DebugLogCopy_click);
+            this.btnResetDebug.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnResetDebug.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnResetDebug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnResetDebug.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnResetDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.btnResetDebug.ForeColor = System.Drawing.Color.White;
+            this.btnResetDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnResetDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnResetDebug.Location = new System.Drawing.Point(29, 385);
+            this.btnResetDebug.Name = "btnResetDebug";
+            this.btnResetDebug.Radius = 5;
+            this.btnResetDebug.Size = new System.Drawing.Size(285, 31);
+            this.btnResetDebug.Stroke = true;
+            this.btnResetDebug.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.btnResetDebug.TabIndex = 20;
+            this.btnResetDebug.Text = "Reset Debug Log";
+            this.btnResetDebug.Transparency = false;
+            this.btnResetDebug.Click += new System.EventHandler(this.btnResetDebug_click);
             // 
-            // Button1
+            // btnUploadDebug
             // 
-            this.Button1.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.Button1.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.Button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.Button1.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.Button1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.Button1.ForeColor = System.Drawing.Color.White;
-            this.Button1.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.Button1.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.Button1.Location = new System.Drawing.Point(29, 358);
-            this.Button1.Name = "Button1";
-            this.Button1.Radius = 5;
-            this.Button1.Size = new System.Drawing.Size(285, 31);
-            this.Button1.Stroke = true;
-            this.Button1.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.Button1.TabIndex = 20;
-            this.Button1.Text = "Reset Debug Log";
-            this.Button1.Transparency = false;
-            this.Button1.Click += new System.EventHandler(this.button1_click);
+            this.btnUploadDebug.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnUploadDebug.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnUploadDebug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnUploadDebug.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnUploadDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.btnUploadDebug.ForeColor = System.Drawing.Color.White;
+            this.btnUploadDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnUploadDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnUploadDebug.Location = new System.Drawing.Point(29, 422);
+            this.btnUploadDebug.Name = "btnUploadDebug";
+            this.btnUploadDebug.Radius = 5;
+            this.btnUploadDebug.Size = new System.Drawing.Size(285, 31);
+            this.btnUploadDebug.Stroke = true;
+            this.btnUploadDebug.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.btnUploadDebug.TabIndex = 19;
+            this.btnUploadDebug.Text = "Upload Debug Log";
+            this.btnUploadDebug.Transparency = false;
+            this.btnUploadDebug.Click += new System.EventHandler(this.btnUploadDebug_click);
+            // 
+            // btnOpenDebug
+            // 
+            this.btnOpenDebug.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnOpenDebug.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnOpenDebug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnOpenDebug.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOpenDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
+            this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnOpenDebug.Location = new System.Drawing.Point(29, 348);
+            this.btnOpenDebug.Name = "btnOpenDebug";
+            this.btnOpenDebug.Radius = 5;
+            this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
+            this.btnOpenDebug.Stroke = true;
+            this.btnOpenDebug.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.btnOpenDebug.TabIndex = 21;
+            this.btnOpenDebug.Text = "Open Debug Log";
+            this.btnOpenDebug.Transparency = false;
+            this.btnOpenDebug.Click += new System.EventHandler(this.btnOpenDebug_Click);
+            // 
+            // lblMibs
+            // 
+            this.lblMibs.AutoSize = true;
+            this.lblMibs.BackColor = System.Drawing.Color.Transparent;
+            this.lblMibs.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.lblMibs.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.lblMibs.Location = new System.Drawing.Point(159, 257);
+            this.lblMibs.Name = "lblMibs";
+            this.lblMibs.Size = new System.Drawing.Size(135, 18);
+            this.lblMibs.TabIndex = 22;
+            this.lblMibs.Text = "MiB/s (0 to disable)";
             // 
             // SettingsForm
             // 
@@ -384,19 +321,16 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.ClientSize = new System.Drawing.Size(342, 601);
-            this.Controls.Add(this.Button1);
-            this.Controls.Add(this.DebugLogCopy);
+            this.ClientSize = new System.Drawing.Size(342, 469);
+            this.Controls.Add(this.lblMibs);
+            this.Controls.Add(this.btnOpenDebug);
+            this.Controls.Add(this.btnResetDebug);
+            this.Controls.Add(this.btnUploadDebug);
             this.Controls.Add(this.resetSettingsButton);
             this.Controls.Add(this.applyButton);
-            this.Controls.Add(this.textBox1);
-            this.Controls.Add(this.DebugID);
             this.Controls.Add(this.crashlogID);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.debuglogID);
-            this.Controls.Add(this.BandwithComboBox);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.BandwithTextbox);
+            this.Controls.Add(this.lblDownloadSpeedLimiter);
+            this.Controls.Add(this.txtBandwidth);
             this.Controls.Add(this.bmbfBox);
             this.Controls.Add(this.AutoReinstBox);
             this.Controls.Add(this.nodevicemodeBox);
@@ -428,20 +362,17 @@
         private System.Windows.Forms.CheckBox deleteAfterInstallCheckBox;
         private System.Windows.Forms.CheckBox updateConfigCheckBox;
         private System.Windows.Forms.CheckBox userJsonOnGameInstall;
-        private System.Windows.Forms.TextBox BandwithTextbox;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.ComboBox BandwithComboBox;
+        private System.Windows.Forms.TextBox txtBandwidth;
+        private System.Windows.Forms.Label lblDownloadSpeedLimiter;
         private System.Windows.Forms.Label crashlogID;
-        public System.Windows.Forms.Label debuglogID;
-        private System.Windows.Forms.TextBox DebugID;
-        public System.Windows.Forms.Label label2;
-        private System.Windows.Forms.TextBox textBox1;
         private System.Windows.Forms.CheckBox nodevicemodeBox;
         private System.Windows.Forms.CheckBox bmbfBox;
         private System.Windows.Forms.CheckBox AutoReinstBox;
         private RoundButton applyButton;
         private RoundButton resetSettingsButton;
-        private RoundButton DebugLogCopy;
-        private RoundButton Button1;
+        private RoundButton btnResetDebug;
+        private RoundButton btnUploadDebug;
+        private RoundButton btnOpenDebug;
+        private System.Windows.Forms.Label lblMibs;
     }
 }

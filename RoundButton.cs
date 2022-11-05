@@ -17,8 +17,6 @@ namespace AndroidSideloader
         Color inactive1, inactive2, active1, active2;
         private Color strokeColor;
         private bool stroke;
-        internal bool UseVisualStyleBackColor;
-        internal FlatStyle FlatStyle;
 
         public bool Stroke
         {

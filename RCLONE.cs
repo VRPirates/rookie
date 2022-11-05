@@ -35,7 +35,7 @@ namespace AndroidSideloader
         private static Process rclone = new Process();
         
         //Run rclone command
-        public static ProcessOutput runRcloneCommand_DownloadConfig(string command, string bandwithLimit = "")
+        public static ProcessOutput runRcloneCommand_DownloadConfig(string command, string BandwidthLimit = "")
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -48,9 +48,9 @@ namespace AndroidSideloader
             string originalCommand = command;
 
             //set bandwidth limit
-            if (bandwithLimit.Length > 0)
+            if (BandwidthLimit.Length > 0)
             {
-                command += $" --bwlimit={bandwithLimit}";
+                command += $" --bwlimit={BandwidthLimit}";
             }
 
             //set configpath if there is any
@@ -89,6 +89,15 @@ namespace AndroidSideloader
             string error = rclone.StandardError.ReadToEnd();
             rclone.WaitForExit();
 
+            if (error.Contains("There is not enough space"))
+            {
+                FlexibleMessageBox.Show($"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Environment.CurrentDirectory} and try again.",
+                                        "NOT ENOUGH SPACE",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                return new ProcessOutput("Download failed.", "");
+            }
+
             //if there is one of these errors, we switch the mirrors
             if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
@@ -102,7 +111,7 @@ namespace AndroidSideloader
                 {
                     return new ProcessOutput("All mirrors are on quota or down...", "All mirrors are on quota or down...");
                 }
-                prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote), bandwithLimit);
+                prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote), BandwidthLimit);
             }
             else
             {
@@ -122,15 +131,10 @@ namespace AndroidSideloader
                     Logger.Log($"Rclone Output: {output}");
                 }
             }
-            
-            if (output.Contains("There is not enough space"))
-            {
-                FlexibleMessageBox.Show("There isn't enough space on your PC to properly install this game. Please have at least 2x the size of the game you are trying to download/install available on the drive where Rookie is installed.", "NOT ENOUGH SPACE");
-            }
-            return prcoutput;
+                        return prcoutput;
         }
 
-        public static ProcessOutput runRcloneCommand_UploadConfig(string command, string bandwithLimit = "")
+        public static ProcessOutput runRcloneCommand_UploadConfig(string command, string BandwidthLimit = "")
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -143,9 +147,9 @@ namespace AndroidSideloader
             string originalCommand = command;
 
             //set bandwidth limit
-            if (bandwithLimit.Length > 0)
+            if (BandwidthLimit.Length > 0)
             {
-                command += $" --bwlimit={bandwithLimit}";
+                command += $" --bwlimit={BandwidthLimit}";
             }
 
             //set configpath if there is any
@@ -207,15 +211,10 @@ namespace AndroidSideloader
                     Logger.Log($"Rclone Output: {output}");
                 }
             }
-
-            if (output.Contains("There is not enough space"))
-            {
-                FlexibleMessageBox.Show("There isn't enough space on your PC to properly install this game. Please have at least 2x the size of the game you are trying to download/install available on the drive where Rookie is installed.", "NOT ENOUGH SPACE");
-            }
             return prcoutput;
         }
 
-        public static ProcessOutput runRcloneCommand_PublicConfig(string command, string bandwithLimit = "")
+        public static ProcessOutput runRcloneCommand_PublicConfig(string command, string BandwidthLimit = "")
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -228,9 +227,9 @@ namespace AndroidSideloader
             string originalCommand = command;
 
             //set bandwidth limit
-            if (bandwithLimit.Length > 0)
+            if (BandwidthLimit.Length > 0)
             {
-                command += $" --bwlimit={bandwithLimit}";
+                command += $" --bwlimit={BandwidthLimit}";
             }
 
             string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
@@ -265,8 +264,22 @@ namespace AndroidSideloader
             string error = rclone.StandardError.ReadToEnd();
             rclone.WaitForExit();
 
-            //if there is one of these errors, we switch the mirrors
-            if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
+            if (error.Contains("There is not enough space"))
+            {
+                FlexibleMessageBox.Show($"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Environment.CurrentDirectory} and try again.",
+                                        "NOT ENOUGH SPACE",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                return new ProcessOutput("Download failed.", "");
+            }
+
+            if (error.Contains("400 Bad Request")
+                || error.Contains("cannot fetch token")
+                || error.Contains("authError")
+                || error.Contains("quota")
+                || error.Contains("exceeded")
+                || error.Contains("directory not found")
+                || error.Contains("Failed to"))
             {
                 Logger.Log(error);
                 return new ProcessOutput("Failed to fetch from public mirror.", "Failed to fetch from public mirror.");
@@ -290,10 +303,6 @@ namespace AndroidSideloader
                 }
             }
 
-            if (output.Contains("There is not enough space"))
-            {
-                FlexibleMessageBox.Show("There isn't enough space on your PC to properly install this game. Please have at least 2x the size of the game you are trying to download/install available on the drive where Rookie is installed.", "NOT ENOUGH SPACE");
-            }
             return prcoutput;
         }
     }

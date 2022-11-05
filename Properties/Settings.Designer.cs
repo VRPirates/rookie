@@ -146,12 +146,12 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string BandwithLimit {
+        public string BandwidthLimit {
             get {
-                return ((string)(this["BandwithLimit"]));
+                return ((string)(this["BandwidthLimit"]));
             }
             set {
-                this["BandwithLimit"] = value;
+                this["BandwidthLimit"] = value;
             }
         }
         

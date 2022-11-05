@@ -33,6 +33,7 @@ namespace AndroidSideloader
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.m_combo = new SergeUtils.EasyCompletionComboBox();
             this.startsideloadbutton = new System.Windows.Forms.Button();
             this.devicesbutton = new System.Windows.Forms.Button();
@@ -49,7 +50,7 @@ namespace AndroidSideloader
             this.ULLabel = new System.Windows.Forms.Label();
             this.ULGif = new System.Windows.Forms.PictureBox();
             this.BatteryLbl = new System.Windows.Forms.Label();
-            this.pictureBox5 = new System.Windows.Forms.PictureBox();
+            this.imgBattery = new System.Windows.Forms.PictureBox();
             this.downloadingLabel = new System.Windows.Forms.Label();
             this.aboutBtn = new System.Windows.Forms.Button();
             this.settingsButton = new System.Windows.Forms.Button();
@@ -85,35 +86,58 @@ namespace AndroidSideloader
             this.ProgressText = new System.Windows.Forms.Label();
             this.notesRichTextBox = new System.Windows.Forms.RichTextBox();
             this.DragDropLbl = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
+            this.lblNotes = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.lblSearchHelp = new System.Windows.Forms.Label();
+            this.lblShortcutsF2 = new System.Windows.Forms.Label();
+            this.lblQuickSearch = new System.Windows.Forms.Label();
             this.lblUpdateAvailable = new System.Windows.Forms.Label();
             this.lblUpToDate = new System.Windows.Forms.Label();
             this.lblMirror = new System.Windows.Forms.Label();
             this.EnterInstallBox = new System.Windows.Forms.CheckBox();
             this.ADBcommandbox = new System.Windows.Forms.TextBox();
-            this.label11 = new System.Windows.Forms.Label();
-            this.label9 = new System.Windows.Forms.Label();
+            this.lblShortcutCtrlR = new System.Windows.Forms.Label();
+            this.lblAdbCommand = new System.Windows.Forms.Label();
             this.pictureBox7 = new System.Windows.Forms.PictureBox();
             this.lblNeedsDonate = new System.Windows.Forms.Label();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.btnSearch = new System.Windows.Forms.PictureBox();
             this.gamesPictureBox = new System.Windows.Forms.PictureBox();
-            this.MountButton = new AndroidSideloader.RoundButton();
+            this.startsideloadbutton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.devicesbutton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.obbcopybutton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.backupbutton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.restorebutton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.getApkButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.uninstallAppButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.pullAppToDesktopBtn_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.copyBulkObbButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.aboutBtn_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.settingsButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.InstallQUset_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.removeQUSetting_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.QuestOptionsButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.ADBWirelessDisable_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.ADBWirelessEnable_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.UpdateGamesButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.listApkButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.speedLabel_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.etaLabel_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.EnterInstallBox_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.panel2 = new System.Windows.Forms.Panel();
             this.downloadInstallGameButton = new AndroidSideloader.RoundButton();
+            this.MountButton = new AndroidSideloader.RoundButton();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ULGif)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBattery)).BeginInit();
             this.otherContainer.SuspendLayout();
             this.backupContainer.SuspendLayout();
             this.sideloadContainer.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSearch)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gamesPictureBox)).BeginInit();
+            this.panel2.SuspendLayout();
             this.SuspendLayout();
             // 
             // m_combo
@@ -147,6 +171,7 @@ namespace AndroidSideloader
             this.startsideloadbutton.TabIndex = 5;
             this.startsideloadbutton.Text = "Sideload APK";
             this.startsideloadbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.startsideloadbutton_Tooltip.SetToolTip(this.startsideloadbutton, "Sideload an APK onto your device");
             this.startsideloadbutton.UseVisualStyleBackColor = false;
             this.startsideloadbutton.Click += new System.EventHandler(this.startsideloadbutton_Click);
             // 
@@ -167,6 +192,7 @@ namespace AndroidSideloader
             this.devicesbutton.TabIndex = 0;
             this.devicesbutton.Text = "RECONNECT DEVICE";
             this.devicesbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.devicesbutton_Tooltip.SetToolTip(this.devicesbutton, "Rookie will attempt to reconnect to your Device");
             this.devicesbutton.UseVisualStyleBackColor = false;
             this.devicesbutton.Click += new System.EventHandler(this.devicesbutton_Click);
             // 
@@ -187,6 +213,8 @@ namespace AndroidSideloader
             this.obbcopybutton.TabIndex = 0;
             this.obbcopybutton.Text = "Copy OBB";
             this.obbcopybutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.obbcopybutton_Tooltip.SetToolTip(this.obbcopybutton, "Copies an obb folder to the Android/obb folder from the device (Not all games use" +
+        " obb files)");
             this.obbcopybutton.UseVisualStyleBackColor = false;
             this.obbcopybutton.Click += new System.EventHandler(this.obbcopybutton_Click);
             // 
@@ -207,6 +235,8 @@ namespace AndroidSideloader
             this.backupbutton.TabIndex = 1;
             this.backupbutton.Text = "Backup Gamedata";
             this.backupbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.backupbutton_Tooltip.SetToolTip(this.backupbutton, "Saves the game and apps data to the sideloader folder (Does not save APKs or OBBs" +
+        ")");
             this.backupbutton.UseVisualStyleBackColor = false;
             this.backupbutton.Click += new System.EventHandler(this.backupbutton_Click);
             // 
@@ -227,6 +257,8 @@ namespace AndroidSideloader
             this.restorebutton.TabIndex = 0;
             this.restorebutton.Text = "Restore Gamedata";
             this.restorebutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.restorebutton_Tooltip.SetToolTip(this.restorebutton, "Restores the game and apps data to the device (Use the Backup Game Data button fi" +
+        "rst!)");
             this.restorebutton.UseVisualStyleBackColor = false;
             this.restorebutton.Click += new System.EventHandler(this.restorebutton_Click);
             // 
@@ -247,6 +279,7 @@ namespace AndroidSideloader
             this.getApkButton.TabIndex = 2;
             this.getApkButton.Text = "Share Selected App";
             this.getApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.getApkButton_Tooltip.SetToolTip(this.getApkButton, "Uploads the selected app to our Servers (Pick app within the Dropdown)");
             this.getApkButton.UseVisualStyleBackColor = false;
             this.getApkButton.Click += new System.EventHandler(this.getApkButton_Click);
             // 
@@ -267,6 +300,7 @@ namespace AndroidSideloader
             this.uninstallAppButton.TabIndex = 3;
             this.uninstallAppButton.Text = "Uninstall Selected App";
             this.uninstallAppButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.uninstallAppButton_Tooltip.SetToolTip(this.uninstallAppButton, "Uninstalls the selected app (Select within the Dropdown)");
             this.uninstallAppButton.UseVisualStyleBackColor = false;
             this.uninstallAppButton.Click += new System.EventHandler(this.uninstallAppButton_Click);
             // 
@@ -287,18 +321,20 @@ namespace AndroidSideloader
             this.pullAppToDesktopBtn.TabIndex = 4;
             this.pullAppToDesktopBtn.Text = "Pull App To Desktop";
             this.pullAppToDesktopBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.pullAppToDesktopBtn_Tooltip.SetToolTip(this.pullAppToDesktopBtn, "Extracts APK and OBB to your Desktop (Select within the Dropdown)");
             this.pullAppToDesktopBtn.UseVisualStyleBackColor = false;
             this.pullAppToDesktopBtn.Click += new System.EventHandler(this.pullAppToDesktopBtn_Click);
             // 
             // progressBar
             // 
-            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.progressBar.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.progressBar.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
             this.progressBar.ForeColor = System.Drawing.Color.Purple;
-            this.progressBar.Location = new System.Drawing.Point(224, 436);
+            this.progressBar.Location = new System.Drawing.Point(2, 0);
+            this.progressBar.MinimumSize = new System.Drawing.Size(200, 13);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(426, 13);
+            this.progressBar.Size = new System.Drawing.Size(418, 13);
             this.progressBar.TabIndex = 7;
             // 
             // copyBulkObbButton
@@ -318,6 +354,7 @@ namespace AndroidSideloader
             this.copyBulkObbButton.TabIndex = 1;
             this.copyBulkObbButton.Text = "Recursive Copy OBB";
             this.copyBulkObbButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.copyBulkObbButton_Tooltip.SetToolTip(this.copyBulkObbButton, "Copies an multiple OBB folders to your device.");
             this.copyBulkObbButton.UseVisualStyleBackColor = false;
             this.copyBulkObbButton.Click += new System.EventHandler(this.copyBulkObbButton_Click);
             // 
@@ -329,7 +366,7 @@ namespace AndroidSideloader
             this.panel1.Controls.Add(this.ULLabel);
             this.panel1.Controls.Add(this.ULGif);
             this.panel1.Controls.Add(this.BatteryLbl);
-            this.panel1.Controls.Add(this.pictureBox5);
+            this.panel1.Controls.Add(this.imgBattery);
             this.panel1.Controls.Add(this.downloadingLabel);
             this.panel1.Controls.Add(this.aboutBtn);
             this.panel1.Controls.Add(this.settingsButton);
@@ -393,17 +430,17 @@ namespace AndroidSideloader
             this.BatteryLbl.Size = new System.Drawing.Size(0, 13);
             this.BatteryLbl.TabIndex = 84;
             // 
-            // pictureBox5
+            // imgBattery
             // 
-            this.pictureBox5.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox5.BackgroundImage = global::AndroidSideloader.Properties.Resources.battery11;
-            this.pictureBox5.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictureBox5.Location = new System.Drawing.Point(163, 596);
-            this.pictureBox5.Margin = new System.Windows.Forms.Padding(2);
-            this.pictureBox5.Name = "pictureBox5";
-            this.pictureBox5.Size = new System.Drawing.Size(55, 29);
-            this.pictureBox5.TabIndex = 85;
-            this.pictureBox5.TabStop = false;
+            this.imgBattery.BackColor = System.Drawing.Color.Transparent;
+            this.imgBattery.BackgroundImage = global::AndroidSideloader.Properties.Resources.battery11;
+            this.imgBattery.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.imgBattery.Location = new System.Drawing.Point(163, 596);
+            this.imgBattery.Margin = new System.Windows.Forms.Padding(2);
+            this.imgBattery.Name = "imgBattery";
+            this.imgBattery.Size = new System.Drawing.Size(55, 29);
+            this.imgBattery.TabIndex = 85;
+            this.imgBattery.TabStop = false;
             // 
             // downloadingLabel
             // 
@@ -433,6 +470,7 @@ namespace AndroidSideloader
             this.aboutBtn.TabIndex = 5;
             this.aboutBtn.Text = " ?   ABOUT";
             this.aboutBtn.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.aboutBtn_Tooltip.SetToolTip(this.aboutBtn, "About the Rookie App and it\'s amazing creators and contributors");
             this.aboutBtn.UseVisualStyleBackColor = false;
             this.aboutBtn.Click += new System.EventHandler(this.aboutBtn_Click);
             // 
@@ -454,6 +492,7 @@ namespace AndroidSideloader
             this.settingsButton.TabIndex = 4;
             this.settingsButton.Text = "⚙ SETTINGS";
             this.settingsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.settingsButton_Tooltip.SetToolTip(this.settingsButton, "Rookie App Settings");
             this.settingsButton.UseVisualStyleBackColor = false;
             this.settingsButton.Click += new System.EventHandler(this.settingsButton_Click);
             // 
@@ -490,6 +529,8 @@ namespace AndroidSideloader
             this.InstallQUset.TabIndex = 5;
             this.InstallQUset.Text = "Install QU Setting";
             this.InstallQUset.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.InstallQUset_Tooltip.SetToolTip(this.InstallQUset, "After you enter your username it will create an user.json file needed for some ga" +
+        "mes");
             this.InstallQUset.UseVisualStyleBackColor = false;
             this.InstallQUset.Click += new System.EventHandler(this.InstallQUset_Click);
             // 
@@ -510,6 +551,7 @@ namespace AndroidSideloader
             this.removeQUSetting.TabIndex = 4;
             this.removeQUSetting.Text = "Remove QU Setting";
             this.removeQUSetting.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.removeQUSetting_Tooltip.SetToolTip(this.removeQUSetting, "Remove QU Settings");
             this.removeQUSetting.UseVisualStyleBackColor = false;
             this.removeQUSetting.Click += new System.EventHandler(this.removeQUSetting_Click);
             // 
@@ -530,6 +572,7 @@ namespace AndroidSideloader
             this.QuestOptionsButton.TabIndex = 2;
             this.QuestOptionsButton.Text = "Quest Options";
             this.QuestOptionsButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.QuestOptionsButton_Tooltip.SetToolTip(this.QuestOptionsButton, "Additional Quest Settings and Utilities");
             this.QuestOptionsButton.UseVisualStyleBackColor = false;
             this.QuestOptionsButton.Click += new System.EventHandler(this.QuestOptionsButton_Click);
             // 
@@ -550,6 +593,7 @@ namespace AndroidSideloader
             this.ADBWirelessDisable.TabIndex = 1;
             this.ADBWirelessDisable.Text = "Disable Wireless ADB";
             this.ADBWirelessDisable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ADBWirelessDisable_Tooltip.SetToolTip(this.ADBWirelessDisable, "Removes Wireless ADB settings and disconnects any Wireless devices");
             this.ADBWirelessDisable.UseVisualStyleBackColor = false;
             this.ADBWirelessDisable.Click += new System.EventHandler(this.ADBWirelessDisable_Click);
             // 
@@ -570,6 +614,7 @@ namespace AndroidSideloader
             this.ADBWirelessEnable.TabIndex = 0;
             this.ADBWirelessEnable.Text = "Enable  Wireless ADB";
             this.ADBWirelessEnable.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.ADBWirelessEnable_Tooltip.SetToolTip(this.ADBWirelessEnable, "Enables Wireless sideloading. Requires a connected device to activate!");
             this.ADBWirelessEnable.UseVisualStyleBackColor = false;
             this.ADBWirelessEnable.Click += new System.EventHandler(this.ADBWirelessEnable_Click);
             // 
@@ -665,6 +710,7 @@ namespace AndroidSideloader
             this.UpdateGamesButton.TabIndex = 7;
             this.UpdateGamesButton.Text = "Refresh Update List";
             this.UpdateGamesButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.UpdateGamesButton_Tooltip.SetToolTip(this.UpdateGamesButton, "Refresh Game List and available updates");
             this.UpdateGamesButton.UseVisualStyleBackColor = false;
             this.UpdateGamesButton.Click += new System.EventHandler(this.UpdateGamesButton_Click);
             // 
@@ -685,6 +731,7 @@ namespace AndroidSideloader
             this.listApkButton.TabIndex = 6;
             this.listApkButton.Text = "Refresh All";
             this.listApkButton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.listApkButton_Tooltip.SetToolTip(this.listApkButton, "Refresh connected devices, installed apps, and update game list");
             this.listApkButton.UseVisualStyleBackColor = false;
             this.listApkButton.Click += new System.EventHandler(this.listApkButton_Click);
             // 
@@ -731,27 +778,31 @@ namespace AndroidSideloader
             this.speedLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.speedLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.speedLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.speedLabel.Location = new System.Drawing.Point(225, 452);
+            this.speedLabel.Location = new System.Drawing.Point(2, 14);
             this.speedLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.speedLabel.Name = "speedLabel";
             this.speedLabel.Size = new System.Drawing.Size(149, 18);
             this.speedLabel.TabIndex = 76;
             this.speedLabel.Text = "DLS: Speed in MBPS";
+            this.speedLabel_Tooltip.SetToolTip(this.speedLabel, "Current download speed, updates every second, in mbps");
             // 
             // etaLabel
             // 
-            this.etaLabel.AutoSize = true;
+            this.etaLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.etaLabel.BackColor = System.Drawing.Color.Transparent;
             this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.etaLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.etaLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.etaLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.etaLabel.Location = new System.Drawing.Point(502, 452);
+            this.etaLabel.Location = new System.Drawing.Point(224, 14);
             this.etaLabel.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.etaLabel.Name = "etaLabel";
-            this.etaLabel.Size = new System.Drawing.Size(148, 18);
+            this.etaLabel.Size = new System.Drawing.Size(196, 18);
             this.etaLabel.TabIndex = 75;
             this.etaLabel.Text = "ETA: HH:MM:SS Left";
+            this.etaLabel.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            this.etaLabel_Tooltip.SetToolTip(this.etaLabel, "Estimated time when game will finish download, updates every 5 seconds, format is" +
+        " HH:MM:SS");
             // 
             // freeDisclaimer
             // 
@@ -971,20 +1022,20 @@ namespace AndroidSideloader
             this.DragDropLbl.Text = "DragDropLBL";
             this.DragDropLbl.Visible = false;
             // 
-            // label1
+            // lblNotes
             // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.label1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.label1.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.label1.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.label1.Location = new System.Drawing.Point(597, 674);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(48, 18);
-            this.label1.TabIndex = 86;
-            this.label1.Text = "Notes";
+            this.lblNotes.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.lblNotes.AutoSize = true;
+            this.lblNotes.BackColor = System.Drawing.Color.Transparent;
+            this.lblNotes.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.lblNotes.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.lblNotes.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.lblNotes.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.lblNotes.Location = new System.Drawing.Point(597, 674);
+            this.lblNotes.Name = "lblNotes";
+            this.lblNotes.Size = new System.Drawing.Size(48, 18);
+            this.lblNotes.TabIndex = 86;
+            this.lblNotes.Text = "Notes";
             // 
             // pictureBox1
             // 
@@ -1013,51 +1064,51 @@ namespace AndroidSideloader
             this.label2.TabIndex = 89;
             this.label2.Visible = false;
             // 
-            // label3
+            // lblSearchHelp
             // 
-            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lblSearchHelp.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label3.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label3.Location = new System.Drawing.Point(516, 209);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(170, 51);
-            this.label3.TabIndex = 90;
-            this.label3.Text = "Start typing to search.\r\nPress ESC to close.\r\n\r\n";
-            this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label3.Visible = false;
+            this.lblSearchHelp.AutoSize = true;
+            this.lblSearchHelp.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.lblSearchHelp.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblSearchHelp.Location = new System.Drawing.Point(516, 209);
+            this.lblSearchHelp.Name = "lblSearchHelp";
+            this.lblSearchHelp.Size = new System.Drawing.Size(170, 51);
+            this.lblSearchHelp.TabIndex = 90;
+            this.lblSearchHelp.Text = "Start typing to search.\r\nPress ESC to close.\r\n\r\n";
+            this.lblSearchHelp.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblSearchHelp.Visible = false;
             // 
-            // label4
+            // lblShortcutsF2
             // 
-            this.label4.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lblShortcutsF2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label4.AutoSize = true;
-            this.label4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.label4.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label4.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label4.Location = new System.Drawing.Point(509, 284);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(188, 17);
-            this.label4.TabIndex = 90;
-            this.label4.Text = "Shortcuts: CTRL+F or F2";
-            this.label4.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label4.Visible = false;
+            this.lblShortcutsF2.AutoSize = true;
+            this.lblShortcutsF2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.lblShortcutsF2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.lblShortcutsF2.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblShortcutsF2.Location = new System.Drawing.Point(509, 284);
+            this.lblShortcutsF2.Name = "lblShortcutsF2";
+            this.lblShortcutsF2.Size = new System.Drawing.Size(188, 17);
+            this.lblShortcutsF2.TabIndex = 90;
+            this.lblShortcutsF2.Text = "Shortcuts: CTRL+F or F2";
+            this.lblShortcutsF2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblShortcutsF2.Visible = false;
             // 
-            // label5
+            // lblQuickSearch
             // 
-            this.label5.AutoSize = true;
-            this.label5.BackColor = System.Drawing.Color.Transparent;
-            this.label5.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label5.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label5.Location = new System.Drawing.Point(738, 11);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(105, 17);
-            this.label5.TabIndex = 90;
-            this.label5.Text = "Quick Search";
-            this.label5.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblQuickSearch.AutoSize = true;
+            this.lblQuickSearch.BackColor = System.Drawing.Color.Transparent;
+            this.lblQuickSearch.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.lblQuickSearch.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblQuickSearch.Location = new System.Drawing.Point(738, 11);
+            this.lblQuickSearch.Name = "lblQuickSearch";
+            this.lblQuickSearch.Size = new System.Drawing.Size(105, 17);
+            this.lblQuickSearch.TabIndex = 90;
+            this.lblQuickSearch.Text = "Quick Search";
+            this.lblQuickSearch.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // lblUpdateAvailable
             // 
@@ -1115,7 +1166,9 @@ namespace AndroidSideloader
             this.EnterInstallBox.TabIndex = 93;
             this.EnterInstallBox.Text = "  Install w/ \r\n Enter Key";
             this.EnterInstallBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.EnterInstallBox.UseVisualStyleBackColor = false;
+            this.EnterInstallBox_Tooltip.SetToolTip(this.EnterInstallBox, "Use the ENTER key on your keyboard to start installation of games from the Game L" +
+        "ist");
+            this.EnterInstallBox.UseVisualStyleBackColor = true;
             this.EnterInstallBox.CheckedChanged += new System.EventHandler(this.EnterInstallBox_CheckedChanged);
             // 
             // ADBcommandbox
@@ -1142,39 +1195,39 @@ namespace AndroidSideloader
             this.ADBcommandbox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.ADBcommandbox_KeyPress);
             this.ADBcommandbox.Leave += new System.EventHandler(this.ADBcommandbox_Leave);
             // 
-            // label11
+            // lblShortcutCtrlR
             // 
-            this.label11.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lblShortcutCtrlR.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label11.AutoSize = true;
-            this.label11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
-            this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label11.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label11.Location = new System.Drawing.Point(528, 285);
-            this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(143, 17);
-            this.label11.TabIndex = 90;
-            this.label11.Text = "Shorcut = CTRL+R";
-            this.label11.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label11.Visible = false;
+            this.lblShortcutCtrlR.AutoSize = true;
+            this.lblShortcutCtrlR.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
+            this.lblShortcutCtrlR.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.lblShortcutCtrlR.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblShortcutCtrlR.Location = new System.Drawing.Point(528, 285);
+            this.lblShortcutCtrlR.Name = "lblShortcutCtrlR";
+            this.lblShortcutCtrlR.Size = new System.Drawing.Size(148, 17);
+            this.lblShortcutCtrlR.TabIndex = 90;
+            this.lblShortcutCtrlR.Text = "Shortcut = CTRL+R";
+            this.lblShortcutCtrlR.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblShortcutCtrlR.Visible = false;
             // 
-            // label9
+            // lblAdbCommand
             // 
-            this.label9.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.lblAdbCommand.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.label9.AutoSize = true;
-            this.label9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.label9.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
-            this.label9.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.label9.Location = new System.Drawing.Point(514, 206);
-            this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(173, 68);
-            this.label9.TabIndex = 90;
-            this.label9.Text = "Type command without\r\n\"adb\" prefix.\r\n\r\n\r\n";
-            this.label9.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label9.Visible = false;
+            this.lblAdbCommand.AutoSize = true;
+            this.lblAdbCommand.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.lblAdbCommand.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
+            this.lblAdbCommand.ForeColor = System.Drawing.SystemColors.ControlLightLight;
+            this.lblAdbCommand.Location = new System.Drawing.Point(514, 206);
+            this.lblAdbCommand.Name = "lblAdbCommand";
+            this.lblAdbCommand.Size = new System.Drawing.Size(173, 68);
+            this.lblAdbCommand.TabIndex = 90;
+            this.lblAdbCommand.Text = "Type command without\r\n\"adb\" prefix.\r\n\r\n\r\n";
+            this.lblAdbCommand.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblAdbCommand.Visible = false;
             // 
             // pictureBox7
             // 
@@ -1207,18 +1260,18 @@ namespace AndroidSideloader
             this.lblNeedsDonate.Text = "𝖭𝖤𝖶𝖤𝖱 𝖳𝖧𝖠𝖭 𝖫𝖨𝖲𝖳";
             this.lblNeedsDonate.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // pictureBox2
+            // btnSearch
             // 
-            this.pictureBox2.BackColor = System.Drawing.Color.Transparent;
-            this.pictureBox2.BackgroundImage = global::AndroidSideloader.Properties.Resources.SearchGlass;
-            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.pictureBox2.Location = new System.Drawing.Point(773, 37);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(28, 24);
-            this.pictureBox2.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
-            this.pictureBox2.TabIndex = 91;
-            this.pictureBox2.TabStop = false;
-            this.pictureBox2.Click += new System.EventHandler(this.pictureBox2_Click);
+            this.btnSearch.BackColor = System.Drawing.Color.Transparent;
+            this.btnSearch.BackgroundImage = global::AndroidSideloader.Properties.Resources.SearchGlass;
+            this.btnSearch.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.btnSearch.Location = new System.Drawing.Point(773, 37);
+            this.btnSearch.Name = "btnSearch";
+            this.btnSearch.Size = new System.Drawing.Size(28, 24);
+            this.btnSearch.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.btnSearch.TabIndex = 91;
+            this.btnSearch.TabStop = false;
+            this.btnSearch.Click += new System.EventHandler(this.pictureBox2_Click);
             // 
             // gamesPictureBox
             // 
@@ -1233,6 +1286,50 @@ namespace AndroidSideloader
             this.gamesPictureBox.TabStop = false;
             this.gamesPictureBox.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             this.gamesPictureBox.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
+            // 
+            // panel2
+            // 
+            this.panel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Controls.Add(this.downloadInstallGameButton);
+            this.panel2.Controls.Add(this.progressBar);
+            this.panel2.Controls.Add(this.etaLabel);
+            this.panel2.Controls.Add(this.speedLabel);
+            this.panel2.Location = new System.Drawing.Point(224, 436);
+            this.panel2.MinimumSize = new System.Drawing.Size(600, 34);
+            this.panel2.Name = "panel2";
+            this.panel2.Size = new System.Drawing.Size(798, 34);
+            this.panel2.TabIndex = 96;
+            // 
+            // downloadInstallGameButton
+            // 
+            this.downloadInstallGameButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.downloadInstallGameButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.downloadInstallGameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.downloadInstallGameButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.downloadInstallGameButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.downloadInstallGameButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.downloadInstallGameButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.downloadInstallGameButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.downloadInstallGameButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.downloadInstallGameButton.Location = new System.Drawing.Point(433, 0);
+            this.downloadInstallGameButton.Margin = new System.Windows.Forms.Padding(0);
+            this.downloadInstallGameButton.Name = "downloadInstallGameButton";
+            this.downloadInstallGameButton.Radius = 5;
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(364, 34);
+            this.downloadInstallGameButton.Stroke = true;
+            this.downloadInstallGameButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.downloadInstallGameButton.TabIndex = 94;
+            this.downloadInstallGameButton.Text = "Download and Install Game/Add To Queue ⮩ ";
+            this.downloadInstallGameButton.Transparency = false;
+            this.downloadInstallGameButton.Click += new System.EventHandler(this.downloadInstallGameButton_Click);
+            this.downloadInstallGameButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
+            this.downloadInstallGameButton.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
             // 
             // MountButton
             // 
@@ -1261,36 +1358,6 @@ namespace AndroidSideloader
             this.MountButton.Click += new System.EventHandler(this.MountButton_Click);
             this.MountButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
             // 
-            // downloadInstallGameButton
-            // 
-            this.downloadInstallGameButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.downloadInstallGameButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.downloadInstallGameButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.downloadInstallGameButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.downloadInstallGameButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.downloadInstallGameButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.downloadInstallGameButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.downloadInstallGameButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.downloadInstallGameButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.downloadInstallGameButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.downloadInstallGameButton.Location = new System.Drawing.Point(654, 436);
-            this.downloadInstallGameButton.Margin = new System.Windows.Forms.Padding(0);
-            this.downloadInstallGameButton.Name = "downloadInstallGameButton";
-            this.downloadInstallGameButton.Radius = 5;
-            this.downloadInstallGameButton.Size = new System.Drawing.Size(369, 34);
-            this.downloadInstallGameButton.Stroke = true;
-            this.downloadInstallGameButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.downloadInstallGameButton.TabIndex = 94;
-            this.downloadInstallGameButton.Text = "Download and Install Game/Add To Queue ⮩ ";
-            this.downloadInstallGameButton.Transparency = false;
-            this.downloadInstallGameButton.Click += new System.EventHandler(this.downloadInstallGameButton_Click);
-            this.downloadInstallGameButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
-            this.downloadInstallGameButton.DragEnter += new System.Windows.Forms.DragEventHandler(this.Form1_DragEnter);
-            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -1298,36 +1365,32 @@ namespace AndroidSideloader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.ClientSize = new System.Drawing.Size(1032, 721);
+            this.Controls.Add(this.panel2);
             this.Controls.Add(this.MountButton);
-            this.Controls.Add(this.downloadInstallGameButton);
-            this.Controls.Add(this.label4);
+            this.Controls.Add(this.lblShortcutsF2);
             this.Controls.Add(this.EnterInstallBox);
             this.Controls.Add(this.ProgressText);
-            this.Controls.Add(this.pictureBox2);
+            this.Controls.Add(this.btnSearch);
             this.Controls.Add(this.lblNeedsDonate);
             this.Controls.Add(this.lblUpToDate);
             this.Controls.Add(this.lblUpdateAvailable);
             this.Controls.Add(this.lblMirror);
-            this.Controls.Add(this.label5);
-            this.Controls.Add(this.label11);
+            this.Controls.Add(this.lblQuickSearch);
+            this.Controls.Add(this.lblShortcutCtrlR);
             this.Controls.Add(this.ADBcommandbox);
             this.Controls.Add(this.searchTextBox);
-            this.Controls.Add(this.label9);
-            this.Controls.Add(this.label3);
+            this.Controls.Add(this.lblAdbCommand);
+            this.Controls.Add(this.lblSearchHelp);
             this.Controls.Add(this.freeDisclaimer);
-            this.Controls.Add(this.speedLabel);
             this.Controls.Add(this.DragDropLbl);
-            this.Controls.Add(this.etaLabel);
-            this.Controls.Add(this.label1);
+            this.Controls.Add(this.lblNotes);
             this.Controls.Add(this.gamesQueueLabel);
             this.Controls.Add(this.gamesPictureBox);
             this.Controls.Add(this.remotesList);
             this.Controls.Add(this.devicesComboBox);
             this.Controls.Add(this.gamesQueListBox);
             this.Controls.Add(this.panel1);
-            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.m_combo);
             this.Controls.Add(this.notesRichTextBox);
             this.Controls.Add(this.label2);
@@ -1337,6 +1400,7 @@ namespace AndroidSideloader
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DoubleBuffered = true;
             this.MaximizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(1048, 760);
             this.Name = "MainForm";
             this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
@@ -1350,14 +1414,16 @@ namespace AndroidSideloader
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ULGif)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox5)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.imgBattery)).EndInit();
             this.otherContainer.ResumeLayout(false);
             this.backupContainer.ResumeLayout(false);
             this.sideloadContainer.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox7)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.btnSearch)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gamesPictureBox)).EndInit();
+            this.panel2.ResumeLayout(false);
+            this.panel2.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1403,24 +1469,24 @@ namespace AndroidSideloader
         private System.Windows.Forms.Label downloadingLabel;
         private System.Windows.Forms.RichTextBox notesRichTextBox;
         private System.Windows.Forms.Label DragDropLbl;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label lblNotes;
         private System.Windows.Forms.Button removeQUSetting;
         private System.Windows.Forms.Button InstallQUset;
         private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label lblSearchHelp;
+        private System.Windows.Forms.Label lblShortcutsF2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.PictureBox pictureBox2;
+        private System.Windows.Forms.Label lblQuickSearch;
+        private System.Windows.Forms.PictureBox btnSearch;
         private System.Windows.Forms.Label lblUpdateAvailable;
         private System.Windows.Forms.Label lblUpToDate;
         private System.Windows.Forms.Label lblMirror;
         private System.Windows.Forms.CheckBox EnterInstallBox;
         private System.Windows.Forms.TextBox ADBcommandbox;
-        private System.Windows.Forms.Label label11;
-        private System.Windows.Forms.Label label9;
+        private System.Windows.Forms.Label lblShortcutCtrlR;
+        private System.Windows.Forms.Label lblAdbCommand;
         private System.Windows.Forms.Label BatteryLbl;
-        private System.Windows.Forms.PictureBox pictureBox5;
+        private System.Windows.Forms.PictureBox imgBattery;
         public System.Windows.Forms.ComboBox remotesList;
         private System.Windows.Forms.PictureBox ULGif;
         private System.Windows.Forms.Label ULLabel;
@@ -1432,6 +1498,9 @@ namespace AndroidSideloader
         private System.Windows.Forms.ColumnHeader VersionCodeIndex;
         private System.Windows.Forms.ColumnHeader ReleaseAPKPathIndex;
         public System.Windows.Forms.ColumnHeader VersionNameIndex;
+        private Label verLabel;
+        private RoundButton downloadInstallGameButton;
+        private RoundButton MountButton;
         private ToolTip startsideloadbutton_Tooltip;
         private ToolTip devicesbutton_Tooltip;
         private ToolTip obbcopybutton_Tooltip;
@@ -1441,7 +1510,6 @@ namespace AndroidSideloader
         private ToolTip uninstallAppButton_Tooltip;
         private ToolTip pullAppToDesktopBtn_Tooltip;
         private ToolTip copyBulkObbButton_Tooltip;
-        private ToolTip downloadInstallGameButton_Tooltip;
         private ToolTip aboutBtn_Tooltip;
         private ToolTip settingsButton_Tooltip;
         private ToolTip InstallQUset_Tooltip;
@@ -1453,10 +1521,7 @@ namespace AndroidSideloader
         private ToolTip listApkButton_Tooltip;
         private ToolTip speedLabel_Tooltip;
         private ToolTip etaLabel_Tooltip;
-        private ToolTip MountButton_Tooltip;
         private ToolTip EnterInstallBox_Tooltip;
-        private Label verLabel;
-        private RoundButton downloadInstallGameButton;
-        private RoundButton MountButton;
+        private Panel panel2;
     }
 }

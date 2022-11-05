@@ -1,12 +1,10 @@
-RSL 2.15
+RSL 2.16
 
-- Massive UI Changes:
-- Rounded buttons
-- Added version Number at Bottom Left
-- Changed fonts to some extend
-- Added background pattern to category buttons and MainForm background
-- Added an animation when opening/closing category 
-- Overall darker theme
-- New splash
+- Fix misleading error message when not enough disk space
+- Fix downloads silently failing in some cases
+- Fix failure to detect failed extraction when archive corrupt
+- Fix UI issues when resizing main form
+- Various code cleanups
 
-~Chax
+~SytheZN
+~fenopy

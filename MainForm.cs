@@ -17,9 +17,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using AndroidSideloader.Models;
-using System.ComponentModel;
-using System.Runtime.InteropServices;
-using System.Drawing.Drawing2D;
 
 namespace AndroidSideloader
 {
@@ -57,7 +54,7 @@ namespace AndroidSideloader
         public static bool isOffline = false;
         public static bool hasPublicConfig = false;
         public static PublicConfig PublicConfigFile;
-        public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 1";
+        public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
             public MainForm()
         {
             // check for offline mode
@@ -228,26 +225,16 @@ namespace AndroidSideloader
                 {
                     if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt") && File.Exists($"{Environment.CurrentDirectory}\\nouns\\nouns.txt"))
                     {
-                        Random r = new Random();
-                        int x = r.Next(6806);
-                        int y = r.Next(6806);
-
-                        string[] lines = File.ReadAllLines($"{Environment.CurrentDirectory}\\nouns\\nouns.txt");
-                        string randomnoun = lines[new Random(x).Next(lines.Length)];
-                        string randomnoun2 = lines[new Random(y).Next(lines.Length)];
-                        string combined = randomnoun + "-" + randomnoun2;
-
-                        System.IO.File.Move("crashlog.txt", $"{Environment.CurrentDirectory}\\{combined}.txt");
-                        Properties.Settings.Default.CurrentCrashPath = $"{Environment.CurrentDirectory}\\{combined}.txt";
-                        Properties.Settings.Default.CurrentCrashName = combined;
+                        string UUID = SideloaderUtilities.UUID();
+                        System.IO.File.Move("crashlog.txt", $"{Environment.CurrentDirectory}\\{UUID}.log");
+                        Properties.Settings.Default.CurrentCrashPath = $"{Environment.CurrentDirectory}\\{UUID}.log";
+                        Properties.Settings.Default.CurrentCrashName = UUID;
                         Properties.Settings.Default.Save();
 
-                        Clipboard.SetText(combined);
-                        RCLONE.runRcloneCommand_DownloadConfig($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" VRP-debuglogs:CrashLogs");
-                        FlexibleMessageBox.Show($"Your CrashLog has been copied to the server. Please mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods (it has been automatically copied to your clipboard).");
+                        Clipboard.SetText(UUID);
+                        RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
+                        FlexibleMessageBox.Show($"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
                         Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
-
-
                     }
                 }
                 else
@@ -1691,7 +1678,7 @@ namespace AndroidSideloader
                     ADB.RunCommandToString(cmd, path);
                     Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
                     Program.form.ChangeTitle("Uploading to drive, you may continue to use Rookie while it uploads.");
-                    RCLONE.runRcloneCommand_UploadConfig(game.Uploadcommand);
+                    RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
                     if (game.isUpdate)
                     {
                         Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + ("\n");
@@ -1777,7 +1764,6 @@ namespace AndroidSideloader
             game.Pckgcommand = packagename;
             game.Uploadgamename = GameName;
             game.Uploadversion = installedVersionInt;
-            game.Uploadcommand = $"copy \"{Properties.Settings.Default.MainDir}\\{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand}.zip\" RSL-gameuploads:";
             gamesToUpload.Add(game);
         }
         private void initMirrors(bool random)
@@ -2158,7 +2144,7 @@ Things you can try:
                             {
                                 var rclonecommand =
                                     $"copy \":http:/{gameNameHash}/\" \"{Environment.CurrentDirectory}\\{gameNameHash}\" --progress --rc";
-                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, Properties.Settings.Default.BandwithLimit);
+                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, Properties.Settings.Default.BandwidthLimit);
                             });
                         }
                         else
@@ -2172,7 +2158,7 @@ Things you can try:
                         Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwithLimit);
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwidthLimit);
                         });
                     }
                     
@@ -2669,8 +2655,8 @@ Things you can try:
                 }
                 searchTextBox.Visible = false;
                 label2.Visible = false;
-                label3.Visible = false;
-                label4.Visible = false;
+                lblSearchHelp.Visible = false;
+                lblShortcutsF2.Visible = false;
 
                 if (ADBcommandbox.Visible)
                 {
@@ -2679,8 +2665,8 @@ Things you can try:
                     ChangeTitle(" \n\n");
                 }
                 ADBcommandbox.Visible = false;
-                label9.Visible = false;
-                label11.Visible = false;
+                lblAdbCommand.Visible = false;
+                lblShortcutCtrlR.Visible = false;
                 label2.Visible = false;
 
             }
@@ -2688,11 +2674,11 @@ Things you can try:
             {
                 searchTextBox.Visible = false;
                 label2.Visible = false;
-                label3.Visible = false;
-                label4.Visible = false;
+                lblSearchHelp.Visible = false;
+                lblShortcutsF2.Visible = false;
                 ADBcommandbox.Visible = false;
-                label9.Visible = false;
-                label11.Visible = false;
+                lblAdbCommand.Visible = false;
+                lblShortcutCtrlR.Visible = false;
                 label2.Visible = false;
             }
         }
@@ -2704,8 +2690,8 @@ Things you can try:
                 searchTextBox.Clear();
                 searchTextBox.Visible = true;
                 label2.Visible = true;
-                label3.Visible = true;
-                label4.Visible = true;
+                lblSearchHelp.Visible = true;
+                lblShortcutsF2.Visible = true;
                 searchTextBox.Focus();
             }
             if (keyData == (Keys.Control | Keys.L))
@@ -2736,8 +2722,8 @@ Things you can try:
             {
                 ADBcommandbox.Visible = true;
                 ADBcommandbox.Clear();
-                label9.Visible = true;
-                label11.Visible = true;
+                lblAdbCommand.Visible = true;
+                lblShortcutCtrlR.Visible = true;
                 label2.Visible = true;
                 ADBcommandbox.Focus();
             }
@@ -2746,8 +2732,8 @@ Things you can try:
                 searchTextBox.Clear();
                 searchTextBox.Visible = true;
                 label2.Visible = true;
-                label3.Visible = true;
-                label4.Visible = true;
+                lblSearchHelp.Visible = true;
+                lblShortcutsF2.Visible = true;
                 searchTextBox.Focus();
             }
             if (keyData == (Keys.Control | Keys.F4))
@@ -3008,8 +2994,8 @@ Things you can try:
             searchTextBox.Clear();
             searchTextBox.Visible = true;
             label2.Visible = true;
-            label3.Visible = true;
-            label4.Visible = true;
+            lblSearchHelp.Visible = true;
+            lblShortcutsF2.Visible = true;
             searchTextBox.Focus();
         }
         private void EnterInstallBox1_CheckedChanged(object sender, EventArgs e)
@@ -3022,8 +3008,8 @@ Things you can try:
             {
                 searchTextBox.Visible = false;
                 label2.Visible = false;
-                label3.Visible = false;
-                label4.Visible = false;
+                lblSearchHelp.Visible = false;
+                lblShortcutsF2.Visible = false;
             }
             else
                 gamesListView.Focus();
@@ -3064,8 +3050,8 @@ Things you can try:
                 string output = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
                 FlexibleMessageBox.Show($"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
                 ADBcommandbox.Visible = false;
-                label9.Visible = false;
-                label11.Visible = false;
+                lblAdbCommand.Visible = false;
+                lblShortcutCtrlR.Visible = false;
                 label2.Visible = false;
                 gamesListView.Focus();
                 Program.form.ChangeTitle("");
@@ -3073,8 +3059,8 @@ Things you can try:
             if (e.KeyChar == (char)Keys.Escape)
             {
                 ADBcommandbox.Visible = false;
-                label11.Visible = false;
-                label9.Visible = false;
+                lblShortcutCtrlR.Visible = false;
+                lblAdbCommand.Visible = false;
                 label2.Visible = false;
                 gamesListView.Focus();
             }
@@ -3085,8 +3071,8 @@ Things you can try:
 
             label2.Visible = false;
             ADBcommandbox.Visible = false;
-            label9.Visible = false;
-            label11.Visible = false;
+            lblAdbCommand.Visible = false;
+            lblShortcutCtrlR.Visible = false;
         }
 
         private void gamesQueListBox_MouseDown(object sender, MouseEventArgs e)
