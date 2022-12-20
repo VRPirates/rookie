@@ -62,8 +62,8 @@ namespace AndroidSideloader
             progressBar1.Style = ProgressBarStyle.Continuous;
 
             _ = output.Contains("is not recognized as an internal or external command")
-                ? FlexibleMessageBox.Show(Sideloader.SpooferWarning)
-                : FlexibleMessageBox.Show($"App spoofed from {spoofer.originalPackageName} to {NewPackageName}");
+                ? FlexibleMessageBox.Show(Program.form, Sideloader.SpooferWarning)
+                : FlexibleMessageBox.Show(Program.form, $"App spoofed from {spoofer.originalPackageName} to {NewPackageName}");
         }
 
         private void SpoofForm_Load(object sender, EventArgs e)

@@ -84,7 +84,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.BandwidthLimit = txtBandwidth.Text.Length > 0 && txtBandwidth.Text != "0" ? $"{txtBandwidth.Text.Replace(" ", "")}M" : "";
 
             Properties.Settings.Default.Save();
-            _ = FlexibleMessageBox.Show("Settings applied!");
+            _ = FlexibleMessageBox.Show(this, "Settings applied!");
         }
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -170,7 +170,7 @@ namespace AndroidSideloader
         {
             if (AutoReinstBox.Checked)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show("WARNING: This box enables automatic reinstall when installs fail,\ndue to some games not allowing " +
+                DialogResult dialogResult = FlexibleMessageBox.Show(this, "WARNING: This box enables automatic reinstall when installs fail,\ndue to some games not allowing " +
                     "access to their save data (less than 5%) this\noption can lead to losing your progress." +
                     " However with this option\nchecked when installs fail you won't have to agree to a prompt to preform\nthe reinstall. " +
                     "(ideal when installing from a queue).\n\nNOTE: If your usb/wireless adb connection is extremely slow this option can\ncause larger" +

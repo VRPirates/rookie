@@ -105,7 +105,7 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                _ = FlexibleMessageBox.Show($"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Environment.CurrentDirectory} and try again.",
+                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Environment.CurrentDirectory} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
@@ -295,7 +295,7 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                _ = FlexibleMessageBox.Show($"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Environment.CurrentDirectory} and try again.",
+                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Environment.CurrentDirectory} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);

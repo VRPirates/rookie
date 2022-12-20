@@ -71,7 +71,7 @@ namespace AndroidSideloader
 
             if (error.Contains("ADB_VENDOR_KEYS") && !Properties.Settings.Default.adbdebugwarned)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
                     Properties.Settings.Default.adbdebugwarned = true;
@@ -84,7 +84,7 @@ namespace AndroidSideloader
             }
             if (error.Contains("not enough storage space"))
             {
-                _ = FlexibleMessageBox.Show("There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
+                _ = FlexibleMessageBox.Show(Program.form, "There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
             }
             if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null))
             {
@@ -154,7 +154,7 @@ namespace AndroidSideloader
 
             if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
                     Properties.Settings.Default.adbdebugwarned = true;
@@ -217,7 +217,7 @@ namespace AndroidSideloader
 
             if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show("Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
                     Properties.Settings.Default.adbdebugwarned = true;
@@ -312,7 +312,7 @@ namespace AndroidSideloader
                 _ = Logger.Log(out2);
                 if (out2.Contains("offline") && !Properties.Settings.Default.nodevicemode)
                 {
-                    DialogResult dialogResult2 = FlexibleMessageBox.Show("Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
+                    DialogResult dialogResult2 = FlexibleMessageBox.Show(Program.form, "Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                     if (dialogResult2 == DialogResult.Yes)
                     {
                         ADB.WakeDevice();
@@ -325,7 +325,7 @@ namespace AndroidSideloader
                     ADB.WakeDevice();
                     if (!Properties.Settings.Default.AutoReinstall)
                     {
-                        DialogResult dialogResult1 = FlexibleMessageBox.Show("In place upgrade has failed. Rookie can attempt to backup your save data and\nreinstall the game automatically, however " +
+                        DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed. Rookie can attempt to backup your save data and\nreinstall the game automatically, however " +
                             "some games do not store their saves\nin an accessible location(less than 5%). Continue with reinstall?", "In place upgrade failed.", MessageBoxButtons.OKCancel);
                         if (dialogResult1 == DialogResult.Cancel)
                         {

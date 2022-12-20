@@ -156,7 +156,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
 
             string packageName = Sideloader.gameNameToPackageName(GameName);
 
-            DialogResult dialogResult = FlexibleMessageBox.Show($"Are you sure you want to uninstall custom QU settings for {packageName}? this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"Are you sure you want to uninstall custom QU settings for {packageName}? this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
             {
                 return output;
@@ -332,7 +332,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             }
             catch
             {
-                _ = FlexibleMessageBox.Show("Your internet is not working properly or rclone/github servers are down, some files may be missing (adb, rclone or launcher)");
+                _ = FlexibleMessageBox.Show(Program.form, "Your internet is not working properly or rclone/github servers are down, some files may be missing (adb, rclone or launcher)");
             }
         }
     }
