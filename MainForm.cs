@@ -5,10 +5,12 @@ using Newtonsoft.Json;
 using SergeUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Net.NetworkInformation;
 using System.Security.Cryptography;
@@ -3146,6 +3148,55 @@ Things you can try:
 
         }
 
+        private bool fullScreen = false;
+        [DefaultValue(false)]
+        public bool FullScreen
+        {
+            get { return fullScreen; }
+            set
+            {
+                fullScreen = value;
+                if (value)
+                {
+                    MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.None;
+                    webView21.Location = new Point(0, 0);
+                    webView21.Size = MainForm.ActiveForm.Size;
+                }
+                else
+                {
+                    MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.Sizable;
+                    webView21.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
+                    webView21.Location = gamesPictureBox.Location;
+                    webView21.Size = new Size(374, 214);
+                }
+            }
+        }
+
+        static string ExtractVideoUrl(string html)
+        {
+            // Use the regular expression to find the first video URL in the search results page HTML
+            string pattern = @"url""\:\""/watch\?v\=(.*?(?=""))";
+            Match match = Regex.Match(html, pattern);
+            if (!match.Success)
+            {
+                return "";
+            }
+            // Extract the video URL from the match
+            string url = match.Groups[1].Value;
+            // Create the embed URL
+            return "https://www.youtube.com/embed/" + url + "?autoplay=1&mute=1&enablejsapi=1&modestbranding=1";
+        }
+
+        private async Task WebView_CoreWebView2ReadyAsync(string videoUrl)
+        {
+            await webView21.EnsureCoreWebView2Async(null);
+            // Load the video URL in the web browser control
+            webView21.CoreWebView2.Navigate(videoUrl);
+            webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+            {
+                this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+            };
+        }
 
         public void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
@@ -3156,35 +3207,67 @@ Things you can try:
 
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
             string CurrentReleaseName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
-            if (!keyheld)
+            string CurrentGameName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.GameNameIndex].Text;
+            Console.WriteLine(CurrentGameName);
+
+            if (!Properties.Settings.Default.TrailersOn)
             {
-                if (Properties.Settings.Default.PackageNameToCB)
+
+                if (!keyheld)
                 {
-                    Clipboard.SetText(CurrentPackageName);
+                    if (Properties.Settings.Default.PackageNameToCB)
+                    {
+                        Clipboard.SetText(CurrentPackageName);
+                    }
+
+                    keyheld = true;
                 }
 
-                keyheld = true;
-            }
+                string ImagePath = "";
+                if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg"))
+                {
+                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
+                }
+                else if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png"))
+                {
+                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png";
+                }
 
-            string ImagePath = "";
-            if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg"))
+                if (gamesPictureBox.BackgroundImage != null)
+                {
+                    gamesPictureBox.BackgroundImage.Dispose();
+                }
+
+                gamesPictureBox.BackgroundImage = File.Exists(ImagePath) ? Image.FromFile(ImagePath) : new Bitmap(367, 214);
+
+                string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
+                notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
+            }
+            else
             {
-                ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
-            }
-            else if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png"))
-            {
-                ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png";
-            }
+                webView21.Show();
+                string query = CurrentGameName + " VR trailer";
+                // Encode the search query for use in a URL
+                string encodedQuery = WebUtility.UrlEncode(query);
+                // Construct the YouTube search URL
+                string url = "https://www.youtube.com/results?search_query=" + encodedQuery;
 
-            if (gamesPictureBox.BackgroundImage != null)
-            {
-                gamesPictureBox.BackgroundImage.Dispose();
+                // Download the search results page HTML
+                string html;
+                using (var client = new WebClient())
+                {
+                    html = client.DownloadString(url);
+                }
+                // Extract the first video URL from the HTML
+                string videoUrl = ExtractVideoUrl(html);
+                if (videoUrl == "")
+                {
+                    MessageBox.Show("No video URL found in search results.");
+                    return;
+                }
+
+                WebView_CoreWebView2ReadyAsync(videoUrl);
             }
-
-            gamesPictureBox.BackgroundImage = File.Exists(ImagePath) ? Image.FromFile(ImagePath) : new Bitmap(367, 214);
-
-            string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
-            notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
         }
 
         public void UpdateGamesButton_Click(object sender, EventArgs e)
