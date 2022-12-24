@@ -2,6 +2,7 @@
 using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
 using Newtonsoft.Json;
 using SergeUtils;
 using System;
@@ -57,6 +58,7 @@ namespace AndroidSideloader
         private bool isLoading = true;
         public static bool isOffline = false;
         public static bool hasPublicConfig = false;
+        public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
         public MainForm()
@@ -199,6 +201,11 @@ namespace AndroidSideloader
                     if (!hasPublicConfig)
                     {
                         _ = FlexibleMessageBox.Show("Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://wiki.vrpirates.club/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                    }
+
+                    if (Directory.Exists(@"C:\RSL\EBWebView"))
+                    {
+                        Directory.Delete(@"C:\RSL\EBWebView", true);
                     }
                 }
             }
@@ -2798,7 +2805,7 @@ Things you can try:
         }
 
 
-        private void Form1_FormClosing(object sender, FormClosingEventArgs e)
+        private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (isinstalling)
             {
@@ -2832,6 +2839,12 @@ Things you can try:
             }
 
         }
+
+        private void disPosed(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
         private void ADBWirelessDisable_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = FlexibleMessageBox.Show("Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
@@ -3189,16 +3202,29 @@ Things you can try:
             return "https://www.youtube.com/embed/" + url + "?autoplay=1&mute=1&enablejsapi=1&modestbranding=1";
         }
 
+        private async Task CreateEnviroment()
+        {
+            string appDataLocation = @"C:\RSL\";
+            var webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: appDataLocation);
+            await webView21.EnsureCoreWebView2Async(webView2Environment);
+        }
+
         private async Task WebView_CoreWebView2ReadyAsync(string videoUrl)
         {
-            CoreWebView2Environment cwv2Environment = await CoreWebView2Environment.CreateAsync(null, Path.GetTempPath(), new CoreWebView2EnvironmentOptions());
-            await webView21.EnsureCoreWebView2Async(cwv2Environment);
-            // Load the video URL in the web browser control
-            webView21.CoreWebView2.Navigate(videoUrl);
-            webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+            try
             {
-                this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
-            };
+                // Load the video URL in the web browser control
+                webView21.CoreWebView2.Navigate(videoUrl);
+                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+                {
+                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+
         }
 
         public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -3247,8 +3273,11 @@ Things you can try:
             }
             else
             {
+                if (!enviromentCreated) {
+                await CreateEnviroment();
+                enviromentCreated = true;
+                }
                 webView21.Show();
-                await webView21.CoreWebView2.CallDevToolsProtocolMethodAsync("Network.clearBrowserCache", "{}");
                 string query = CurrentGameName + " VR trailer";
                 // Encode the search query for use in a URL
                 string encodedQuery = WebUtility.UrlEncode(query);
@@ -3269,7 +3298,7 @@ Things you can try:
                     return;
                 }
 
-                WebView_CoreWebView2ReadyAsync(videoUrl);
+                await WebView_CoreWebView2ReadyAsync(videoUrl);
             }
         }
 
