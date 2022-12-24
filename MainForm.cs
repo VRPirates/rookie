@@ -1,9 +1,11 @@
 ﻿using AndroidSideloader.Models;
 using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
+using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using SergeUtils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -3189,7 +3191,8 @@ Things you can try:
 
         private async Task WebView_CoreWebView2ReadyAsync(string videoUrl)
         {
-            await webView21.EnsureCoreWebView2Async(null);
+            CoreWebView2Environment cwv2Environment = await CoreWebView2Environment.CreateAsync(null, Path.GetTempPath(), new CoreWebView2EnvironmentOptions());
+            await webView21.EnsureCoreWebView2Async(cwv2Environment);
             // Load the video URL in the web browser control
             webView21.CoreWebView2.Navigate(videoUrl);
             webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
@@ -3198,13 +3201,14 @@ Things you can try:
             };
         }
 
-        public void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
+        public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (gamesListView.SelectedItems.Count < 1)
             {
                 return;
             }
 
+            string UserDataFolder;
             string CurrentPackageName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.PackageNameIndex].Text;
             string CurrentReleaseName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.ReleaseNameIndex].Text;
             string CurrentGameName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.GameNameIndex].Text;
@@ -3246,6 +3250,7 @@ Things you can try:
             else
             {
                 webView21.Show();
+                await webView21.CoreWebView2.CallDevToolsProtocolMethodAsync("Network.clearBrowserCache", "{}");
                 string query = CurrentGameName + " VR trailer";
                 // Encode the search query for use in a URL
                 string encodedQuery = WebUtility.UrlEncode(query);
