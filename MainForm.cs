@@ -3174,6 +3174,7 @@ Things you can try:
                 if (value)
                 {
                     MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.None;
+                    webView21.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
                     webView21.Location = new Point(0, 0);
                     webView21.Size = MainForm.ActiveForm.Size;
                 }
