@@ -318,7 +318,6 @@
     <Content Include="Resources\pattern_cubes-1_1_1_0-0_0_1__000000_212121.png" />
     <Content Include="Resources\pattern_herringbone-2_1_3_0-0_90_1__000000_1c1c1c.png" />
     <Content Include="Resources\splash.jpg" />
-    <Content Include="WebView2Loader.dll" />
     <None Include="Resources\battery11.png" />
     <None Include="Resources\battery.png" />
     <None Include="Resources\battery1.png" />
