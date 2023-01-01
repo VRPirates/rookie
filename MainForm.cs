@@ -427,7 +427,7 @@ namespace AndroidSideloader
                     if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) ||
                         !Directory.Exists(SideloaderRCLONE.NotesFolder))
                     {
-                        _ = FlexibleMessageBox.Show(Program.form, 
+                        _ = FlexibleMessageBox.Show(Program.form,
                             "It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                     }
                 });
@@ -1106,12 +1106,17 @@ namespace AndroidSideloader
                 return;
             }
             string GameName = m_combo.SelectedItem.ToString();
-            DialogResult dialogresult = FlexibleMessageBox.Show(Program.form, $"Are you sure you want to unintsall {GameName}? Rookie will attempt to automatically backup any saves to Documents\\Rookie Backups\\(TodaysDate)", "Proceed with uninstall?", MessageBoxButtons.YesNo);
+            DialogResult dialogresult = FlexibleMessageBox.Show($"Are you sure you want to uninstall {GameName}?", "Proceed with uninstall?", MessageBoxButtons.YesNo);
             if (dialogresult == DialogResult.No)
             {
                 return;
             }
+            DialogResult dialogresult2 = FlexibleMessageBox.Show($"Do you want to attempt to automatically backup any saves to Documents/Rookie Backups/(TodaysDate)", "Attempt Game Backup?", MessageBoxButtons.YesNo);
             packagename = !GameName.Contains(".") ? Sideloader.gameNameToPackageName(GameName) : GameName;
+            if (dialogresult2 == DialogResult.Yes)
+            {
+                Sideloader.BackupGame(packagename);
+            }
             ProcessOutput output = new ProcessOutput("", "");
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
@@ -2389,7 +2394,7 @@ Things you can try:
                         bool doDownload = true;
                         if (Directory.Exists(gameDirectory))
                         {
-                            DialogResult res = FlexibleMessageBox.Show(Program.form, 
+                            DialogResult res = FlexibleMessageBox.Show(Program.form,
                                 $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
                                 "Download again?", MessageBoxButtons.YesNo);
 
@@ -2758,7 +2763,7 @@ Things you can try:
                                 IsBackground = true
                             };
                             obbThread.Start();
-                            
+
                             while (obbThread.IsAlive)
                             {
                                 await Task.Delay(100);
@@ -2824,7 +2829,7 @@ Things you can try:
             return totalLocalFolderSize;
         }
 
-            private void timer_Tick4(object sender, EventArgs e)
+        private void timer_Tick4(object sender, EventArgs e)
         {
             _ = new ProcessOutput("", "");
             if (!timerticked)
