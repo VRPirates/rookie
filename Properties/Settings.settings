@@ -185,5 +185,8 @@
     <Setting Name="TrailersOn" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
+    <Setting Name="downloadDir" Type="System.String" Scope="User">
+      <Value Profile="(Default)">Enviroment.CurrentDirectory</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

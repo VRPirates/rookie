@@ -2378,7 +2378,7 @@ Things you can try:
                     gameName = gamesQueueList.ToArray()[0];
                     string packagename = Sideloader.gameNameToPackageName(gameName);
                     string dir = Path.GetDirectoryName(gameName);
-                    string gameDirectory = Environment.CurrentDirectory + "\\" + gameName;
+                    string gameDirectory = Properties.Settings.Default.downloadDir + "\\" + gameName;
                     string path = gameDirectory;
 
                     string gameNameHash = string.Empty;
@@ -2414,9 +2414,9 @@ Things you can try:
                             if (doDownload)
                             {
                                 // only delete after extraction; allows for resume if the fetch fails midway.
-                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameName}"))
+                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}"))
                                 {
-                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameName}", true);
+                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameName}", true);
                                 }
                             }
                         }
@@ -2427,7 +2427,7 @@ Things you can try:
                             t1 = new Thread(() =>
                             {
                                 string rclonecommand =
-                                    $"copy \":http:/{gameNameHash}/\" \"{Environment.CurrentDirectory}\\{gameNameHash}\" --progress --rc";
+                                    $"copy \":http:/{gameNameHash}/\" \"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\" --progress --rc";
                                 gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, Properties.Settings.Default.BandwidthLimit);
                             });
                         }
@@ -2442,7 +2442,7 @@ Things you can try:
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Environment.CurrentDirectory}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwidthLimit);
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwidthLimit);
                         });
                     }
 
@@ -2516,19 +2516,19 @@ Things you can try:
                         {
                             if (hasPublicConfig)
                             {
-                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameNameHash}"))
+                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
                                 {
-                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameNameHash}", true);
+                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
                                 }
 
-                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameName}"))
+                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}"))
                                 {
-                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameName}", true);
+                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameName}", true);
                                 }
                             }
                             else
                             {
-                                Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true);
+                                Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true);
                             }
                         }
                         catch (Exception ex)
@@ -2576,10 +2576,10 @@ Things you can try:
                             try
                             {
                                 ChangeTitle("Extracting " + gameName, false);
-                                Zip.ExtractFile($"{Environment.CurrentDirectory}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Environment.CurrentDirectory}", PublicConfigFile.Password);
-                                if (Directory.Exists($"{Environment.CurrentDirectory}\\{gameNameHash}"))
+                                Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
                                 {
-                                    Directory.Delete($"{Environment.CurrentDirectory}\\{gameNameHash}", true);
+                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
                                 }
                             }
                             catch (Exception ex)
@@ -2600,19 +2600,19 @@ Things you can try:
                             ChangeTitle("Installing game apk " + gameName, false);
                             etaLabel.Text = "ETA: Wait for install...";
                             speedLabel.Text = "DLS: Finished";
-                            if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\install.txt"))
+                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\install.txt"))
                             {
                                 isinstalltxt = true;
                             }
 
-                            if (File.Exists(Environment.CurrentDirectory + "\\" + gameName + "\\Install.txt"))
+                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\Install.txt"))
                             {
                                 isinstalltxt = true;
                             }
 
-                            string[] files = Directory.GetFiles(Environment.CurrentDirectory + "\\" + gameName);
+                            string[] files = Directory.GetFiles(Properties.Settings.Default.downloadDir + "\\" + gameName);
 
-                            Debug.WriteLine("Game Folder is: " + Environment.CurrentDirectory + "\\" + gameName);
+                            Debug.WriteLine("Game Folder is: " + Properties.Settings.Default.downloadDir + "\\" + gameName);
                             Debug.WriteLine("FILES IN GAME FOLDER: ");
                             foreach (string file in files)
                             {
@@ -2667,13 +2667,13 @@ Things you can try:
                                     }
 
                                     Debug.WriteLine(wrDelimiter);
-                                    if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}"))
+                                    if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                     {
                                         Thread obbThread = new Thread(() =>
                                         {
 
                                             ChangeTitle($"Copying {packagename} obb to device...");
-                                            output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                            output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                             Program.form.ChangeTitle("");
                                         })
                                         {
@@ -2701,7 +2701,7 @@ Things you can try:
                             if (Properties.Settings.Default.deleteAllAfterInstall)
                             {
                                 ChangeTitle("Deleting game files", false);
-                                try { Directory.Delete(Environment.CurrentDirectory + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}"); }
+                                try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
                             }
 
                             //Remove current game
@@ -2739,7 +2739,7 @@ Things you can try:
 
         private async Task<bool> compareOBBSizes(string packagename, string gameName, ProcessOutput output)
         {
-            if (!Directory.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}"))
+            if (!Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
             {
                 return false;
             }
@@ -2747,7 +2747,7 @@ Things you can try:
             {
                 ChangeTitle("Comparing obbs...");
                 ADB.WakeDevice();
-                DirectoryInfo localFolder = new DirectoryInfo($"{Properties.Settings.Default.MainDir}/{gameName}/{packagename}/");
+                DirectoryInfo localFolder = new DirectoryInfo($"{Properties.Settings.Default.downloadDir}/{gameName}/{packagename}/");
                 long totalLocalFolderSize = localFolderSize(localFolder) / (1024 * 1024);
                 string totalRemoteFolderSize = ADB.RunAdbCommandToString($"shell du -m /sdcard/Android/obb/{packagename}").Output;
                 string firstreplacedtotalRemoteFolderSize = Regex.Replace(totalRemoteFolderSize, "[^c]*$", "");
@@ -2762,12 +2762,12 @@ Things you can try:
                     if (om == DialogResult.Yes)
                     {
                         ChangeTitle("Retrying push");
-                        if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}"))
+                        if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                         {
                             Thread obbThread = new Thread(() =>
                             {
                                 ChangeTitle($"Copying {packagename} obb to device...");
-                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                 Program.form.ChangeTitle("");
                             })
                             {
@@ -3376,9 +3376,10 @@ Things you can try:
             }
             else
             {
-                if (!enviromentCreated) {
-                await CreateEnviroment();
-                enviromentCreated = true;
+                if (!enviromentCreated)
+                {
+                    await CreateEnviroment();
+                    enviromentCreated = true;
                 }
                 webView21.Show();
                 string query = CurrentGameName + " VR trailer";
