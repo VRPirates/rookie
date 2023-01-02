@@ -2730,7 +2730,7 @@ Things you can try:
         {
             if (!Directory.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}\\{packagename}"))
             {
-                return await Task.FromResult(false);
+                return false;
             }
             try
             {
@@ -2745,7 +2745,7 @@ Things you can try:
                 int remoteOBB = Convert.ToInt32(secondreplacedtotalRemoteFolderSize);
                 Console.WriteLine(localFolder.FullName);
                 Console.WriteLine("Total local folder size in bytes: " + totalLocalFolderSize + " Remote Size: " + secondreplacedtotalRemoteFolderSize);
-                if (remoteOBB < localOBB)
+                if (remoteOBB > localOBB)
                 {
                     DialogResult om = MessageBox.Show("Warning! It seems like the OBB wasnt pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
                     if (om == DialogResult.Yes)
@@ -2769,7 +2769,7 @@ Things you can try:
                                 await Task.Delay(100);
                             }
                             await compareOBBSizes(packagename, gameName, output);
-                            return await Task.FromResult(true);
+                            return true;
                         }
                     }
                     else
@@ -2791,14 +2791,14 @@ Things you can try:
                 }
                 else
                 {
-                    return await Task.FromResult(false);
+                    return false;
                 }
-                return await Task.FromResult(true);
+                return true;
             }
             catch (Exception ex)
             {
                 _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
-                return await Task.FromResult(false);
+                return false;
             }
         }
 
