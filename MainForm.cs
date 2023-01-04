@@ -2702,7 +2702,7 @@ Things you can try:
                     isinstalling = false;
                     return;
                 }
-                if (!obbsMismatch) ;
+                if (!obbsMismatch)
                 {
                     ChangeTitle("Refreshing games list, please wait...         \n");
                     showAvailableSpace();
