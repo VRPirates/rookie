@@ -1,4 +1,11 @@
-﻿RSL 2.16
+﻿RSL 2.17
+
+- Various bugfixes
+
+~SytheZN
+~fenopy
+
+RSL 2.16
 
 - Fix misleading error message when not enough disk space
 - Fix downloads silently failing in some cases
