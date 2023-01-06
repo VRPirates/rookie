@@ -101,7 +101,8 @@ namespace AndroidSideloader
         private void resetSettingsButton_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Reset();
-            Properties.Settings.Default.downloadDir = Environment.CurrentDirectory;
+            Properties.Settings.Default.customDir = false;
+            Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
             intSettings();
         }
 
@@ -203,6 +204,7 @@ namespace AndroidSideloader
         {
             if (downloadDirectorySetter.ShowDialog() == DialogResult.OK)
             {
+                Properties.Settings.Default.customDir = true;
                 Properties.Settings.Default.downloadDir = downloadDirectorySetter.SelectedPath;
                 Properties.Settings.Default.Save();
             }

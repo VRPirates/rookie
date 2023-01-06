@@ -2303,6 +2303,10 @@ Things you can try:
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
+                if (!Properties.Settings.Default.customDir)
+                {
+                    Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
+                }
                 bool obbsMismatch = false;
                 if (nodeviceonstart && !updatesnotified)
                 {

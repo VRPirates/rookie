@@ -756,13 +756,25 @@ namespace AndroidSideloader.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Environment.CurrentDirectory")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string downloadDir {
             get {
                 return ((string)(this["downloadDir"]));
             }
             set {
                 this["downloadDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool customDir {
+            get {
+                return ((bool)(this["customDir"]));
+            }
+            set {
+                this["customDir"] = value;
             }
         }
     }
