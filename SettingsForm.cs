@@ -101,7 +101,9 @@ namespace AndroidSideloader
         private void resetSettingsButton_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Reset();
-            Properties.Settings.Default.customDir = false;
+            Properties.Settings.Default.customDownloadDir = false;
+            Properties.Settings.Default.customBackupDir = false;
+            MainForm.BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
             intSettings();
         }
@@ -204,8 +206,19 @@ namespace AndroidSideloader
         {
             if (downloadDirectorySetter.ShowDialog() == DialogResult.OK)
             {
-                Properties.Settings.Default.customDir = true;
+                Properties.Settings.Default.customDownloadDir = true;
                 Properties.Settings.Default.downloadDir = downloadDirectorySetter.SelectedPath;
+                Properties.Settings.Default.Save();
+            }
+        }
+
+        private void setBackupDirectory_Click(object sender, EventArgs e)
+        {
+            if (backupDirectorySetter.ShowDialog() == DialogResult.OK)
+            {
+                Properties.Settings.Default.customBackupDir = true;
+                Properties.Settings.Default.backupDir = backupDirectorySetter.SelectedPath;
+                MainForm.BackupFolder = Properties.Settings.Default.backupDir;
                 Properties.Settings.Default.Save();
             }
         }

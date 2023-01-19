@@ -136,6 +136,7 @@ namespace AndroidSideloader
         public static string DonorApps = "";
         private string oldTitle = "";
         public static bool updatesnotified = false;
+        public static string BackupFolder;
 
         private async void Form1_Load(object sender, EventArgs e)
         {
@@ -197,11 +198,6 @@ namespace AndroidSideloader
             CheckForInternet();
             Sideloader.downloadFiles();
             await Task.Delay(100);
-            if (!Directory.Exists(BackupFolder))
-            {
-                _ = Directory.CreateDirectory(BackupFolder);
-            }
-
             if (Directory.Exists(Sideloader.TempFolder))
 
             {
@@ -837,23 +833,31 @@ namespace AndroidSideloader
             catch { HasInternet = false; }
         }
 
-        public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
-
         public static string taa = "";
         private async void backupbutton_Click(object sender, EventArgs e)
         {
+            if (!Properties.Settings.Default.customBackupDir)
+            {
+                BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
+            {
+                BackupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
+            if (!Directory.Exists(BackupFolder))
+            {
+                _ = Directory.CreateDirectory(BackupFolder);
+            }
             ProcessOutput output = new ProcessOutput("", "");
             Thread t1 = new Thread(() =>
             {
                 ADB.WakeDevice();
-
                 string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(BackupFolder, date_str);
-                _ = FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str} (year.month.date)");
+                _ = FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to {BackupFolder}\\{date_str} (year.month.date)");
                 _ = Directory.CreateDirectory(CurrBackups);
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{CurrBackups}\"");
-
-
+                ChangeTitle("Backing up gamedatas...");
                 try
                 {
                     Directory.Move(ADB.adbFolderPath + "\\data", CurrBackups + "\\data");
@@ -872,8 +876,8 @@ namespace AndroidSideloader
             {
                 await Task.Delay(100);
             }
-
             ShowPrcOutput(output);
+            ChangeTitle("                         \n\n");
         }
 
         private async void restorebutton_Click(object sender, EventArgs e)
@@ -1109,6 +1113,14 @@ namespace AndroidSideloader
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
+            if (!Properties.Settings.Default.customBackupDir)
+            {
+                BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
+            {
+                BackupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
             string packagename;
             ADB.WakeDevice();
             if (m_combo.SelectedIndex == -1)
@@ -1122,7 +1134,7 @@ namespace AndroidSideloader
             {
                 return;
             }
-            DialogResult dialogresult2 = FlexibleMessageBox.Show($"Do you want to attempt to automatically backup any saves to Documents/Rookie Backups/(TodaysDate)", "Attempt Game Backup?", MessageBoxButtons.YesNo);
+            DialogResult dialogresult2 = FlexibleMessageBox.Show($"Do you want to attempt to automatically backup any saves to {BackupFolder}\\(TodaysDate)", "Attempt Game Backup?", MessageBoxButtons.YesNo);
             packagename = !GameName.Contains(".") ? Sideloader.gameNameToPackageName(GameName) : GameName;
             if (dialogresult2 == DialogResult.Yes)
             {
@@ -2303,7 +2315,7 @@ Things you can try:
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
-                if (!Properties.Settings.Default.customDir)
+                if (!Properties.Settings.Default.customDownloadDir)
                 {
                     Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
                 }
@@ -2760,6 +2772,7 @@ Things you can try:
             try
             {
                 ChangeTitle("Comparing obbs...");
+                Logger.Log("Comparing OBBs");
                 ADB.WakeDevice();
                 DirectoryInfo localFolder = new DirectoryInfo($"{Properties.Settings.Default.downloadDir}/{gameName}/{packagename}/");
                 long totalLocalFolderSize = localFolderSize(localFolder) / (1024 * 1024);
