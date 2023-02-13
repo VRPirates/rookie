@@ -2781,8 +2781,7 @@ Things you can try:
                 string secondreplacedtotalRemoteFolderSize = Regex.Replace(firstreplacedtotalRemoteFolderSize, "[^0-9]", "");
                 int localOBB = (int)totalLocalFolderSize;
                 int remoteOBB = Convert.ToInt32(secondreplacedtotalRemoteFolderSize);
-                Console.WriteLine(localFolder.FullName);
-                Console.WriteLine("Total local folder size in bytes: " + totalLocalFolderSize + " Remote Size: " + secondreplacedtotalRemoteFolderSize);
+                Logger.Log("Total local folder size in bytes: " + totalLocalFolderSize + " Remote Size: " + secondreplacedtotalRemoteFolderSize);
                 if (remoteOBB < localOBB)
                 {
                     DialogResult om = MessageBox.Show("Warning! It seems like the OBB wasnt pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
@@ -2835,8 +2834,17 @@ Things you can try:
             }
             catch (Exception ex)
             {
-                _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
-                return false;
+                string inputstringerror = "Input string";
+                if (ex.Message.Contains(inputstringerror)) 
+                {
+                    _ = FlexibleMessageBox.Show("The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
+                    return false;
+                }
+                else
+                {
+                    _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
+                    return false;
+                }
             }
         }
 
