@@ -3626,6 +3626,9 @@ Things you can try:
         bool updateAvailableClicked = false;
         private async void updateAvailable_Click(object sender, EventArgs e)
         {
+            lblUpToDate.Click -= lblUpToDate_Click;
+            lblUpdateAvailable.Click -= updateAvailable_Click;
+            lblNeedsDonate.Click -= lblNeedsDonate_Click;
             ChangeTitle("Filtering Game List... This may take a few seconds...  \n\n");
             if (upToDate_Clicked || NeedsDonation_Clicked)
             {
@@ -3750,6 +3753,9 @@ Things you can try:
             gamesListView.EndUpdate();
             ChangeTitle("                                                \n\n");
             loaded = true;
+            lblUpToDate.Click += lblUpToDate_Click;
+            lblUpdateAvailable.Click += updateAvailable_Click;
+            lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
         private void EnterInstallBox_CheckedChanged(object sender, EventArgs e)
@@ -3914,6 +3920,9 @@ Things you can try:
         bool upToDate_Clicked = false;
         private async void lblUpToDate_Click(object sender, EventArgs e)
         {
+            lblUpToDate.Click -= lblUpToDate_Click;
+            lblUpdateAvailable.Click -= updateAvailable_Click;
+            lblNeedsDonate.Click -= lblNeedsDonate_Click;
             ChangeTitle("Filtering Game List... This may take a few seconds...  \n\n");
             if (updateAvailableClicked || NeedsDonation_Clicked)
             {
@@ -4038,11 +4047,17 @@ Things you can try:
             gamesListView.EndUpdate();
             ChangeTitle("                                                \n\n");
             loaded = true;
+            lblUpToDate.Click += lblUpToDate_Click;
+            lblUpdateAvailable.Click += updateAvailable_Click;
+            lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
         bool NeedsDonation_Clicked = false;
         private async void lblNeedsDonate_Click(object sender, EventArgs e)
         {
+            lblUpToDate.Click -= lblUpToDate_Click;
+            lblUpdateAvailable.Click -= updateAvailable_Click;
+            lblNeedsDonate.Click -= lblNeedsDonate_Click;
             ChangeTitle("Filtering Game List... This may take a few seconds...  \n\n");
             if (updateAvailableClicked || upToDate_Clicked)
             {
@@ -4176,6 +4191,9 @@ Things you can try:
             gamesListView.EndUpdate();
             ChangeTitle("                                                \n\n");
             loaded = true;
+            lblUpToDate.Click += lblUpToDate_Click;
+            lblUpdateAvailable.Click += updateAvailable_Click;
+            lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
     }
 
