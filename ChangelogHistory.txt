@@ -1,4 +1,13 @@
-﻿RSL 2.17
+﻿RSL 2.18
+
+- Moving Rookie onto a different Directory than C: will not break Pull App To Desktop anymore
+- Rookie should now tell the user why it couldnt get the Rclone/ADB etc. Files
+- Dialogs will should now no longer hide behind Rookie.
+- ADB was updated to the latest version.
+
+~ Chax & fenopy
+
+RSL 2.17
 
 - Various bugfixes
 

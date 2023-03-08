@@ -1,8 +1,13 @@
-RSL 2.18
+RSL 2.19
 
-- Moving Rookie onto a different Directory than C: will not break Pull App To Desktop anymore
-- Rookie should now tell the user why it couldnt get the Rclone/ADB etc. Files
-- Dialogs will should now no longer hide behind Rookie.
-- ADB was updated to the latest version.
+- Feature: Added streaming Game Trailers (enable in Settings)
+- Feature: Added custom Download Directories
+- Feature: Added custom Backup Directories
+- Feature: Added Game Filtering (click on the Colored-Labels in the Top-Right)
+- Feature: When uninstalling games, Rookie will now ask if you want to back up save data
+- Fix: Comparing OBB sizes will no longer error during "No Device Mode"
+- Fix: Comparing OBB Sizes will no longer state "Input string was not in a correct format", it will now properly tell the user what is wrong
 
-~ Chax & fenopy
+- Thank you to Chax for the new features!
+- Thank you to JP for the Trailers framework!
+~ fenopy
