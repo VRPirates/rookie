@@ -3418,7 +3418,7 @@ Things you can try:
                     {
                         _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
                         _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
-                        enviromentCreated= true;
+                        enviromentCreated = true;
                         webView21.Hide();
                     }
                 }
@@ -3626,6 +3626,7 @@ Things you can try:
         bool updateAvailableClicked = false;
         private async void updateAvailable_Click(object sender, EventArgs e)
         {
+            ChangeTitle("Filtering Game List... This may take a few seconds...  \n\n");
             if (upToDate_Clicked || NeedsDonation_Clicked)
             {
                 upToDate_Clicked = false;
@@ -3742,7 +3743,6 @@ Things you can try:
                 }
             }
             progressBar.Style = ProgressBarStyle.Continuous;
-            ChangeTitle("Populating update list...                               \n\n");
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.Clear();
@@ -3914,10 +3914,11 @@ Things you can try:
         bool upToDate_Clicked = false;
         private async void lblUpToDate_Click(object sender, EventArgs e)
         {
+            ChangeTitle("Filtering Game List... This may take a few seconds...  \n\n");
             if (updateAvailableClicked || NeedsDonation_Clicked)
             {
                 updateAvailableClicked = false;
-                NeedsDonation_Clicked= false;
+                NeedsDonation_Clicked = false;
                 upToDate_Clicked = false;
             }
             if (!upToDate_Clicked)
@@ -4030,7 +4031,6 @@ Things you can try:
                 }
             }
             progressBar.Style = ProgressBarStyle.Continuous;
-            ChangeTitle("Populating update list...                               \n\n");
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.Clear();
@@ -4043,6 +4043,7 @@ Things you can try:
         bool NeedsDonation_Clicked = false;
         private async void lblNeedsDonate_Click(object sender, EventArgs e)
         {
+            ChangeTitle("Filtering Game List... This may take a few seconds...  \n\n");
             if (updateAvailableClicked || upToDate_Clicked)
             {
                 updateAvailableClicked = false;
@@ -4168,7 +4169,6 @@ Things you can try:
                 }
             }
             progressBar.Style = ProgressBarStyle.Continuous;
-            ChangeTitle("Populating update list...                               \n\n");
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.Clear();
