@@ -136,6 +136,7 @@ namespace AndroidSideloader
         public static string DonorApps = "";
         private string oldTitle = "";
         public static bool updatesnotified = false;
+        public static string BackupFolder;
 
         private async void Form1_Load(object sender, EventArgs e)
         {
@@ -197,11 +198,6 @@ namespace AndroidSideloader
             CheckForInternet();
             Sideloader.downloadFiles();
             await Task.Delay(100);
-            if (!Directory.Exists(BackupFolder))
-            {
-                _ = Directory.CreateDirectory(BackupFolder);
-            }
-
             if (Directory.Exists(Sideloader.TempFolder))
 
             {
@@ -837,23 +833,31 @@ namespace AndroidSideloader
             catch { HasInternet = false; }
         }
 
-        public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
-
         public static string taa = "";
         private async void backupbutton_Click(object sender, EventArgs e)
         {
+            if (!Properties.Settings.Default.customBackupDir)
+            {
+                BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
+            {
+                BackupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
+            if (!Directory.Exists(BackupFolder))
+            {
+                _ = Directory.CreateDirectory(BackupFolder);
+            }
             ProcessOutput output = new ProcessOutput("", "");
             Thread t1 = new Thread(() =>
             {
                 ADB.WakeDevice();
-
                 string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(BackupFolder, date_str);
-                _ = FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to Documents\\Rookie Backups\\{date_str} (year.month.date)");
+                _ = FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to {BackupFolder}\\{date_str} (year.month.date)");
                 _ = Directory.CreateDirectory(CurrBackups);
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{CurrBackups}\"");
-
-
+                ChangeTitle("Backing up gamedatas...");
                 try
                 {
                     Directory.Move(ADB.adbFolderPath + "\\data", CurrBackups + "\\data");
@@ -872,8 +876,8 @@ namespace AndroidSideloader
             {
                 await Task.Delay(100);
             }
-
             ShowPrcOutput(output);
+            ChangeTitle("                         \n\n");
         }
 
         private async void restorebutton_Click(object sender, EventArgs e)
@@ -1109,6 +1113,14 @@ namespace AndroidSideloader
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
+            if (!Properties.Settings.Default.customBackupDir)
+            {
+                BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
+            {
+                BackupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
             string packagename;
             ADB.WakeDevice();
             if (m_combo.SelectedIndex == -1)
@@ -1122,7 +1134,7 @@ namespace AndroidSideloader
             {
                 return;
             }
-            DialogResult dialogresult2 = FlexibleMessageBox.Show($"Do you want to attempt to automatically backup any saves to Documents/Rookie Backups/(TodaysDate)", "Attempt Game Backup?", MessageBoxButtons.YesNo);
+            DialogResult dialogresult2 = FlexibleMessageBox.Show($"Do you want to attempt to automatically backup any saves to {BackupFolder}\\(TodaysDate)", "Attempt Game Backup?", MessageBoxButtons.YesNo);
             packagename = !GameName.Contains(".") ? Sideloader.gameNameToPackageName(GameName) : GameName;
             if (dialogresult2 == DialogResult.Yes)
             {
@@ -2303,7 +2315,7 @@ Things you can try:
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
-                if (!Properties.Settings.Default.customDir)
+                if (!Properties.Settings.Default.customDownloadDir)
                 {
                     Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
                 }
@@ -2760,6 +2772,7 @@ Things you can try:
             try
             {
                 ChangeTitle("Comparing obbs...");
+                Logger.Log("Comparing OBBs");
                 ADB.WakeDevice();
                 DirectoryInfo localFolder = new DirectoryInfo($"{Properties.Settings.Default.downloadDir}/{gameName}/{packagename}/");
                 long totalLocalFolderSize = localFolderSize(localFolder) / (1024 * 1024);
@@ -3610,10 +3623,133 @@ Things you can try:
             }
         }
 
-
-        private void updateAvailable_Click(object sender, EventArgs e)
+        bool updateAvailableClicked = false;
+        private async void updateAvailable_Click(object sender, EventArgs e)
         {
-            // do filtering!
+            if (upToDate_Clicked || NeedsDonation_Clicked)
+            {
+                upToDate_Clicked = false;
+                NeedsDonation_Clicked = false;
+                updateAvailableClicked = false;
+            }
+            if (!updateAvailableClicked)
+            {
+                updateAvailableClicked = true;
+            }
+            else
+            {
+                updateAvailableClicked = false;
+                initListView();
+            }
+            rookienamelist = "";
+            loaded = false;
+            string lines = Properties.Settings.Default.InstalledApps;
+            string pattern = "package:";
+            string replacement = "";
+            Regex rgx = new Regex(pattern);
+            string result = rgx.Replace(lines, replacement);
+            char[] delims = new[] { '\r', '\n' };
+            string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+            string[] blacklist = new string[] { };
+            string[] whitelist = new string[] { };
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+            {
+                blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+            }
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            {
+                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+            }
+
+            List<ListViewItem> GameList = new List<ListViewItem>();
+
+            List<string> rookieList = new List<string>();
+            List<string> installedGames = packageList.ToList();
+            List<string> blacklistItems = blacklist.ToList();
+            List<string> whitelistItems = whitelist.ToList();
+            errorOnList = false;
+            //This is for black list, but temporarly will be whitelist
+            //this list has games that we are actually going to upload
+            newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
+            progressBar.Style = ProgressBarStyle.Marquee;
+            if (SideloaderRCLONE.games.Count > 5)
+            {
+                Thread t1 = new Thread(() =>
+                {
+                    foreach (string[] release in SideloaderRCLONE.games)
+                    {
+                        rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
+                        if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
+                        {
+                            rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
+                            rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
+                        }
+
+                        ListViewItem Game = new ListViewItem(release);
+
+                        Color colorFont_installedGame = ColorTranslator.FromHtml("#3c91e6");
+                        lblUpToDate.ForeColor = colorFont_installedGame;
+                        Color colorFont_updateAvailable = ColorTranslator.FromHtml("#4daa57");
+                        lblUpdateAvailable.ForeColor = colorFont_updateAvailable;
+                        Color colorFont_donateGame = ColorTranslator.FromHtml("#cb9cf2");
+                        lblNeedsDonate.ForeColor = colorFont_donateGame;
+                        Color colorFont_error = ColorTranslator.FromHtml("#f52f57");
+
+                        foreach (string packagename in packageList)
+                        {
+                            if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
+                            {
+                                Game.ForeColor = colorFont_installedGame;
+
+                                string InstalledVersionCode;
+                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                try
+                                {
+                                    ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                    ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+
+                                    _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
+                                    if (installedVersionInt < cloudVersionInt)
+                                    {
+                                        Game.ForeColor = colorFont_updateAvailable;
+                                        GameList.Add(Game);
+                                    }
+                                    else
+                                    {
+                                        GameList.Remove(Game);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Game.ForeColor = colorFont_error;
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                }
+                            }
+                        }
+                    }
+                })
+                {
+                    IsBackground = true
+                };
+                t1.Start();
+                while (t1.IsAlive)
+                {
+                    await Task.Delay(100);
+                }
+            }
+            progressBar.Style = ProgressBarStyle.Continuous;
+            ChangeTitle("Populating update list...                               \n\n");
+            ListViewItem[] arr = GameList.ToArray();
+            gamesListView.BeginUpdate();
+            gamesListView.Items.Clear();
+            gamesListView.Items.AddRange(arr);
+            gamesListView.EndUpdate();
+            ChangeTitle("                                                \n\n");
+            loaded = true;
         }
 
         private void EnterInstallBox_CheckedChanged(object sender, EventArgs e)
@@ -3773,6 +3909,273 @@ Things you can try:
                 progressBar.Style = ProgressBarStyle.Continuous;
                 _ = FlexibleMessageBox.Show(Program.form, $"{GameName} pulled to:\n\n{GameName} v{VersionInt} {packageName}.zip\n\nOn your desktop!");
             }
+        }
+
+        bool upToDate_Clicked = false;
+        private async void lblUpToDate_Click(object sender, EventArgs e)
+        {
+            if (updateAvailableClicked || NeedsDonation_Clicked)
+            {
+                updateAvailableClicked = false;
+                NeedsDonation_Clicked= false;
+                upToDate_Clicked = false;
+            }
+            if (!upToDate_Clicked)
+            {
+                upToDate_Clicked = true;
+            }
+            else
+            {
+                upToDate_Clicked = false;
+                initListView();
+            }
+            rookienamelist = "";
+            loaded = false;
+            string lines = Properties.Settings.Default.InstalledApps;
+            string pattern = "package:";
+            string replacement = "";
+            Regex rgx = new Regex(pattern);
+            string result = rgx.Replace(lines, replacement);
+            char[] delims = new[] { '\r', '\n' };
+            string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+            string[] blacklist = new string[] { };
+            string[] whitelist = new string[] { };
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+            {
+                blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+            }
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            {
+                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+            }
+
+            List<ListViewItem> GameList = new List<ListViewItem>();
+
+            List<string> rookieList = new List<string>();
+            List<string> installedGames = packageList.ToList();
+            List<string> blacklistItems = blacklist.ToList();
+            List<string> whitelistItems = whitelist.ToList();
+            errorOnList = false;
+            //This is for black list, but temporarly will be whitelist
+            //this list has games that we are actually going to upload
+            newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
+            progressBar.Style = ProgressBarStyle.Marquee;
+            if (SideloaderRCLONE.games.Count > 5)
+            {
+                Thread t1 = new Thread(() =>
+                {
+                    foreach (string[] release in SideloaderRCLONE.games)
+                    {
+                        rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
+                        if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
+                        {
+                            rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
+                            rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
+                        }
+
+                        ListViewItem Game = new ListViewItem(release);
+
+                        Color colorFont_installedGame = ColorTranslator.FromHtml("#3c91e6");
+                        lblUpToDate.ForeColor = colorFont_installedGame;
+                        Color colorFont_updateAvailable = ColorTranslator.FromHtml("#4daa57");
+                        lblUpdateAvailable.ForeColor = colorFont_updateAvailable;
+                        Color colorFont_donateGame = ColorTranslator.FromHtml("#cb9cf2");
+                        lblNeedsDonate.ForeColor = colorFont_donateGame;
+                        Color colorFont_error = ColorTranslator.FromHtml("#f52f57");
+
+                        foreach (string packagename in packageList)
+                        {
+                            if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
+                            {
+                                Game.ForeColor = colorFont_installedGame;
+
+                                string InstalledVersionCode;
+                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                try
+                                {
+                                    ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                    ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+
+                                    _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
+                                    if (installedVersionInt == cloudVersionInt)
+                                    {
+                                            Game.ForeColor = colorFont_installedGame;
+                                            GameList.Add(Game);
+                                    }
+                                    else
+                                    {
+                                        GameList.Remove(Game);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Game.ForeColor = colorFont_error;
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                }
+                            }
+                        }
+                    }
+                })
+                {
+                    IsBackground = true
+                };
+                t1.Start();
+                while (t1.IsAlive)
+                {
+                    await Task.Delay(100);
+                }
+            }
+            progressBar.Style = ProgressBarStyle.Continuous;
+            ChangeTitle("Populating update list...                               \n\n");
+            ListViewItem[] arr = GameList.ToArray();
+            gamesListView.BeginUpdate();
+            gamesListView.Items.Clear();
+            gamesListView.Items.AddRange(arr);
+            gamesListView.EndUpdate();
+            ChangeTitle("                                                \n\n");
+            loaded = true;
+        }
+
+        bool NeedsDonation_Clicked = false;
+        private async void lblNeedsDonate_Click(object sender, EventArgs e)
+        {
+            if (updateAvailableClicked || upToDate_Clicked)
+            {
+                updateAvailableClicked = false;
+                upToDate_Clicked = false;
+                NeedsDonation_Clicked = false;
+            }
+            if (!NeedsDonation_Clicked)
+            {
+                NeedsDonation_Clicked = true;
+            }
+            else
+            {
+                NeedsDonation_Clicked = false;
+                initListView();
+            }
+            rookienamelist = "";
+            loaded = false;
+            string lines = Properties.Settings.Default.InstalledApps;
+            string pattern = "package:";
+            string replacement = "";
+            Regex rgx = new Regex(pattern);
+            string result = rgx.Replace(lines, replacement);
+            char[] delims = new[] { '\r', '\n' };
+            string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+            string[] blacklist = new string[] { };
+            string[] whitelist = new string[] { };
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+            {
+                blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+            }
+            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            {
+                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+            }
+
+            List<ListViewItem> GameList = new List<ListViewItem>();
+
+            List<string> rookieList = new List<string>();
+            List<string> installedGames = packageList.ToList();
+            List<string> blacklistItems = blacklist.ToList();
+            List<string> whitelistItems = whitelist.ToList();
+            errorOnList = false;
+            //This is for black list, but temporarly will be whitelist
+            //this list has games that we are actually going to upload
+            newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
+            progressBar.Style = ProgressBarStyle.Marquee;
+            if (SideloaderRCLONE.games.Count > 5)
+            {
+                Thread t1 = new Thread(() =>
+                {
+                    foreach (string[] release in SideloaderRCLONE.games)
+                    {
+                        rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
+                        if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
+                        {
+                            rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
+                            rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
+                        }
+
+                        ListViewItem Game = new ListViewItem(release);
+
+                        Color colorFont_installedGame = ColorTranslator.FromHtml("#3c91e6");
+                        lblUpToDate.ForeColor = colorFont_installedGame;
+                        Color colorFont_updateAvailable = ColorTranslator.FromHtml("#4daa57");
+                        lblUpdateAvailable.ForeColor = colorFont_updateAvailable;
+                        Color colorFont_donateGame = ColorTranslator.FromHtml("#cb9cf2");
+                        lblNeedsDonate.ForeColor = colorFont_donateGame;
+                        Color colorFont_error = ColorTranslator.FromHtml("#f52f57");
+
+                        foreach (string packagename in packageList)
+                        {
+                            if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
+                            {
+                                Game.ForeColor = colorFont_installedGame;
+
+                                string InstalledVersionCode;
+                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                try
+                                {
+                                    ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                    ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+
+                                    _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
+                                    if (installedVersionInt > cloudVersionInt)
+                                    {
+                                        bool dontget = false;
+                                        if (blacklist.Contains(packagename))
+                                        {
+                                            dontget = true;
+                                        }
+
+                                        if (!dontget)
+                                        {
+                                            Game.ForeColor = colorFont_donateGame;
+                                            GameList.Add(Game);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        GameList.Remove(Game);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Game.ForeColor = colorFont_error;
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                }
+                            }
+                        }
+                    }
+                })
+                {
+                    IsBackground = true
+                };
+                t1.Start();
+                while (t1.IsAlive)
+                {
+                    await Task.Delay(100);
+                }
+            }
+            progressBar.Style = ProgressBarStyle.Continuous;
+            ChangeTitle("Populating update list...                               \n\n");
+            ListViewItem[] arr = GameList.ToArray();
+            gamesListView.BeginUpdate();
+            gamesListView.Items.Clear();
+            gamesListView.Items.AddRange(arr);
+            gamesListView.EndUpdate();
+            ChangeTitle("                                                \n\n");
+            loaded = true;
         }
     }
 

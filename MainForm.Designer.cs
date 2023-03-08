@@ -1140,6 +1140,7 @@ namespace AndroidSideloader
             this.lblUpToDate.TabIndex = 90;
             this.lblUpToDate.Text = "𝖴𝖯 𝖳𝖮 𝖣𝖠𝖳𝖤";
             this.lblUpToDate.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblUpToDate.Click += new System.EventHandler(this.lblUpToDate_Click);
             // 
             // lblMirror
             // 
@@ -1261,6 +1262,7 @@ namespace AndroidSideloader
             this.lblNeedsDonate.TabIndex = 90;
             this.lblNeedsDonate.Text = "𝖭𝖤𝖶𝖤𝖱 𝖳𝖧𝖠𝖭 𝖫𝖨𝖲𝖳";
             this.lblNeedsDonate.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.lblNeedsDonate.Click += new System.EventHandler(this.lblNeedsDonate_Click);
             // 
             // btnSearch
             // 

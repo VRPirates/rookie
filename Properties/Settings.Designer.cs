@@ -769,12 +769,36 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool customDir {
+        public bool customDownloadDir {
             get {
-                return ((bool)(this["customDir"]));
+                return ((bool)(this["customDownloadDir"]));
             }
             set {
-                this["customDir"] = value;
+                this["customDownloadDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool customBackupDir {
+            get {
+                return ((bool)(this["customBackupDir"]));
+            }
+            set {
+                this["customBackupDir"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string backupDir {
+            get {
+                return ((string)(this["backupDir"]));
+            }
+            set {
+                this["backupDir"] = value;
             }
         }
     }

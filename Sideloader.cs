@@ -138,14 +138,25 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
             return output;
         }
 
-        public static string BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
         public static void BackupGame(string packagename)
         {
+            if (!Properties.Settings.Default.customBackupDir)
+            {
+                MainForm.BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
+            {
+                MainForm.BackupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
             ADB.WakeDevice();
-            Program.form.ChangeTitle("Attempting to backup any savedata to Documents\\Rookie Backups...");
+            if (!Directory.Exists(MainForm.BackupFolder))
+            {
+                _ = Directory.CreateDirectory(MainForm.BackupFolder);
+            }
+            Program.form.ChangeTitle($"Attempting to backup any savedata to {MainForm.BackupFolder}\\Rookie Backups...");
             _ = new ProcessOutput("", "");
             string date_str = DateTime.Today.ToString("yyyy.MM.dd");
-            string CurrBackups = Path.Combine(BackupFolder, date_str);
+            string CurrBackups = Path.Combine(MainForm.BackupFolder, date_str);
             if (!Directory.Exists(CurrBackups))
             {
                 _ = Directory.CreateDirectory(CurrBackups);

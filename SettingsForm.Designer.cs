@@ -40,15 +40,17 @@ namespace AndroidSideloader
             this.nodevicemodeBox = new System.Windows.Forms.CheckBox();
             this.bmbfBox = new System.Windows.Forms.CheckBox();
             this.AutoReinstBox = new System.Windows.Forms.CheckBox();
-            this.applyButton = new AndroidSideloader.RoundButton();
-            this.resetSettingsButton = new AndroidSideloader.RoundButton();
-            this.btnResetDebug = new AndroidSideloader.RoundButton();
-            this.btnUploadDebug = new AndroidSideloader.RoundButton();
-            this.btnOpenDebug = new AndroidSideloader.RoundButton();
             this.lblMibs = new System.Windows.Forms.Label();
             this.trailersOn = new System.Windows.Forms.CheckBox();
-            this.setDownloadDirectory = new AndroidSideloader.RoundButton();
             this.downloadDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
+            this.backupDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
+            this.setBackupDirectory = new AndroidSideloader.RoundButton();
+            this.setDownloadDirectory = new AndroidSideloader.RoundButton();
+            this.btnOpenDebug = new AndroidSideloader.RoundButton();
+            this.btnResetDebug = new AndroidSideloader.RoundButton();
+            this.btnUploadDebug = new AndroidSideloader.RoundButton();
+            this.resetSettingsButton = new AndroidSideloader.RoundButton();
+            this.applyButton = new AndroidSideloader.RoundButton();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -198,50 +200,102 @@ namespace AndroidSideloader
             this.AutoReinstBox.CheckedChanged += new System.EventHandler(this.AutoReinstBox_CheckedChanged);
             this.AutoReinstBox.Click += new System.EventHandler(this.AutoReinstBox_Click);
             // 
-            // applyButton
+            // lblMibs
             // 
-            this.applyButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.applyButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.applyButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
-            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.applyButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.applyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Location = new System.Drawing.Point(29, 335);
-            this.applyButton.Name = "applyButton";
-            this.applyButton.Radius = 5;
-            this.applyButton.Size = new System.Drawing.Size(133, 31);
-            this.applyButton.Stroke = true;
-            this.applyButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.applyButton.TabIndex = 17;
-            this.applyButton.Text = "Apply Settings";
-            this.applyButton.Transparency = false;
-            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
+            this.lblMibs.AutoSize = true;
+            this.lblMibs.BackColor = System.Drawing.Color.Transparent;
+            this.lblMibs.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.lblMibs.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.lblMibs.Location = new System.Drawing.Point(159, 291);
+            this.lblMibs.Name = "lblMibs";
+            this.lblMibs.Size = new System.Drawing.Size(135, 18);
+            this.lblMibs.TabIndex = 22;
+            this.lblMibs.Text = "MiB/s (0 to disable)";
             // 
-            // resetSettingsButton
+            // trailersOn
             // 
-            this.resetSettingsButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.resetSettingsButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.resetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.resetSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
-            this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Location = new System.Drawing.Point(181, 335);
-            this.resetSettingsButton.Name = "resetSettingsButton";
-            this.resetSettingsButton.Radius = 5;
-            this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
-            this.resetSettingsButton.Stroke = true;
-            this.resetSettingsButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.resetSettingsButton.TabIndex = 18;
-            this.resetSettingsButton.Text = "Reset Settings";
-            this.resetSettingsButton.Transparency = false;
-            this.resetSettingsButton.Click += new System.EventHandler(this.resetSettingsButton_Click);
+            this.trailersOn.AutoSize = true;
+            this.trailersOn.BackColor = System.Drawing.Color.Transparent;
+            this.trailersOn.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.trailersOn.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.trailersOn.Location = new System.Drawing.Point(12, 222);
+            this.trailersOn.Name = "trailersOn";
+            this.trailersOn.Size = new System.Drawing.Size(255, 22);
+            this.trailersOn.TabIndex = 23;
+            this.trailersOn.Text = "Use Trailers instead of Thumbnails";
+            this.trailersOn.UseVisualStyleBackColor = false;
+            this.trailersOn.CheckedChanged += new System.EventHandler(this.trailersOn_CheckedChanged);
+            // 
+            // downloadDirectorySetter
+            // 
+            this.downloadDirectorySetter.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            // 
+            // backupDirectorySetter
+            // 
+            this.backupDirectorySetter.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            // 
+            // setBackupDirectory
+            // 
+            this.setBackupDirectory.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.setBackupDirectory.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.setBackupDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.setBackupDirectory.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.setBackupDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.setBackupDirectory.ForeColor = System.Drawing.Color.White;
+            this.setBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.setBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.setBackupDirectory.Location = new System.Drawing.Point(29, 530);
+            this.setBackupDirectory.Name = "setBackupDirectory";
+            this.setBackupDirectory.Radius = 5;
+            this.setBackupDirectory.Size = new System.Drawing.Size(285, 31);
+            this.setBackupDirectory.Stroke = true;
+            this.setBackupDirectory.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.setBackupDirectory.TabIndex = 24;
+            this.setBackupDirectory.Text = "Set Backup Directory";
+            this.setBackupDirectory.Transparency = false;
+            this.setBackupDirectory.Click += new System.EventHandler(this.setBackupDirectory_Click);
+            // 
+            // setDownloadDirectory
+            // 
+            this.setDownloadDirectory.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.setDownloadDirectory.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.setDownloadDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.setDownloadDirectory.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.setDownloadDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.setDownloadDirectory.ForeColor = System.Drawing.Color.White;
+            this.setDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.setDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 493);
+            this.setDownloadDirectory.Name = "setDownloadDirectory";
+            this.setDownloadDirectory.Radius = 5;
+            this.setDownloadDirectory.Size = new System.Drawing.Size(285, 31);
+            this.setDownloadDirectory.Stroke = true;
+            this.setDownloadDirectory.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.setDownloadDirectory.TabIndex = 23;
+            this.setDownloadDirectory.Text = "Set Download Directory";
+            this.setDownloadDirectory.Transparency = false;
+            this.setDownloadDirectory.Click += new System.EventHandler(this.setDownloadDirectory_Click);
+            // 
+            // btnOpenDebug
+            // 
+            this.btnOpenDebug.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnOpenDebug.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.btnOpenDebug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnOpenDebug.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.btnOpenDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
+            this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.btnOpenDebug.Location = new System.Drawing.Point(29, 382);
+            this.btnOpenDebug.Name = "btnOpenDebug";
+            this.btnOpenDebug.Radius = 5;
+            this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
+            this.btnOpenDebug.Stroke = true;
+            this.btnOpenDebug.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.btnOpenDebug.TabIndex = 21;
+            this.btnOpenDebug.Text = "Open Debug Log";
+            this.btnOpenDebug.Transparency = false;
+            this.btnOpenDebug.Click += new System.EventHandler(this.btnOpenDebug_Click);
             // 
             // btnResetDebug
             // 
@@ -285,77 +339,50 @@ namespace AndroidSideloader
             this.btnUploadDebug.Transparency = false;
             this.btnUploadDebug.Click += new System.EventHandler(this.btnUploadDebug_click);
             // 
-            // btnOpenDebug
+            // resetSettingsButton
             // 
-            this.btnOpenDebug.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.btnOpenDebug.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.btnOpenDebug.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnOpenDebug.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
-            this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.Location = new System.Drawing.Point(29, 382);
-            this.btnOpenDebug.Name = "btnOpenDebug";
-            this.btnOpenDebug.Radius = 5;
-            this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
-            this.btnOpenDebug.Stroke = true;
-            this.btnOpenDebug.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.btnOpenDebug.TabIndex = 21;
-            this.btnOpenDebug.Text = "Open Debug Log";
-            this.btnOpenDebug.Transparency = false;
-            this.btnOpenDebug.Click += new System.EventHandler(this.btnOpenDebug_Click);
+            this.resetSettingsButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.resetSettingsButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.resetSettingsButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.resetSettingsButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.resetSettingsButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
+            this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.resetSettingsButton.Location = new System.Drawing.Point(181, 335);
+            this.resetSettingsButton.Name = "resetSettingsButton";
+            this.resetSettingsButton.Radius = 5;
+            this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
+            this.resetSettingsButton.Stroke = true;
+            this.resetSettingsButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.resetSettingsButton.TabIndex = 18;
+            this.resetSettingsButton.Text = "Reset Settings";
+            this.resetSettingsButton.Transparency = false;
+            this.resetSettingsButton.Click += new System.EventHandler(this.resetSettingsButton_Click);
             // 
-            // lblMibs
+            // applyButton
             // 
-            this.lblMibs.AutoSize = true;
-            this.lblMibs.BackColor = System.Drawing.Color.Transparent;
-            this.lblMibs.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.lblMibs.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.lblMibs.Location = new System.Drawing.Point(159, 291);
-            this.lblMibs.Name = "lblMibs";
-            this.lblMibs.Size = new System.Drawing.Size(135, 18);
-            this.lblMibs.TabIndex = 22;
-            this.lblMibs.Text = "MiB/s (0 to disable)";
-            // 
-            // trailersOn
-            // 
-            this.trailersOn.AutoSize = true;
-            this.trailersOn.BackColor = System.Drawing.Color.Transparent;
-            this.trailersOn.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.trailersOn.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.trailersOn.Location = new System.Drawing.Point(12, 222);
-            this.trailersOn.Name = "trailersOn";
-            this.trailersOn.Size = new System.Drawing.Size(255, 22);
-            this.trailersOn.TabIndex = 23;
-            this.trailersOn.Text = "Use Trailers instead of Thumbnails";
-            this.trailersOn.UseVisualStyleBackColor = false;
-            this.trailersOn.CheckedChanged += new System.EventHandler(this.trailersOn_CheckedChanged);
-            // 
-            // setDownloadDirectory
-            // 
-            this.setDownloadDirectory.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.setDownloadDirectory.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.setDownloadDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.setDownloadDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.setDownloadDirectory.ForeColor = System.Drawing.Color.White;
-            this.setDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 493);
-            this.setDownloadDirectory.Name = "setDownloadDirectory";
-            this.setDownloadDirectory.Radius = 5;
-            this.setDownloadDirectory.Size = new System.Drawing.Size(285, 31);
-            this.setDownloadDirectory.Stroke = true;
-            this.setDownloadDirectory.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.setDownloadDirectory.TabIndex = 23;
-            this.setDownloadDirectory.Text = "Set Download Directory";
-            this.setDownloadDirectory.Transparency = false;
-            this.setDownloadDirectory.Click += new System.EventHandler(this.setDownloadDirectory_Click);
-            // 
-            // downloadDirectorySetter
-            // 
-            this.downloadDirectorySetter.RootFolder = System.Environment.SpecialFolder.MyComputer;
+            this.applyButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.applyButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.applyButton.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
+            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.applyButton.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.applyButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.applyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.applyButton.Location = new System.Drawing.Point(29, 335);
+            this.applyButton.Name = "applyButton";
+            this.applyButton.Radius = 5;
+            this.applyButton.Size = new System.Drawing.Size(133, 31);
+            this.applyButton.Stroke = true;
+            this.applyButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.applyButton.TabIndex = 17;
+            this.applyButton.Text = "Apply Settings";
+            this.applyButton.Transparency = false;
+            this.applyButton.Click += new System.EventHandler(this.applyButton_Click);
             // 
             // SettingsForm
             // 
@@ -363,7 +390,8 @@ namespace AndroidSideloader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.ClientSize = new System.Drawing.Size(342, 555);
+            this.ClientSize = new System.Drawing.Size(342, 592);
+            this.Controls.Add(this.setBackupDirectory);
             this.Controls.Add(this.trailersOn);
             this.Controls.Add(this.setDownloadDirectory);
             this.Controls.Add(this.lblMibs);
@@ -421,5 +449,7 @@ namespace AndroidSideloader
         private System.Windows.Forms.CheckBox trailersOn;
         private RoundButton setDownloadDirectory;
         private System.Windows.Forms.FolderBrowserDialog downloadDirectorySetter;
+        private RoundButton setBackupDirectory;
+        private System.Windows.Forms.FolderBrowserDialog backupDirectorySetter;
     }
 }
