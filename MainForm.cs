@@ -2687,31 +2687,34 @@ Things you can try:
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                         {
-                                            Thread obbThread = new Thread(() =>
+                                            if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
                                             {
-
-                                                ChangeTitle($"Copying {packagename} obb to device...");
-                                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
-                                                Program.form.ChangeTitle("");
-                                            })
-                                            {
-                                                IsBackground = true
-                                            };
-                                            obbThread.Start();
-
-                                            while (obbThread.IsAlive)
-                                            {
-                                                await Task.Delay(100);
-                                            }
-                                            if (!nodeviceonstart | DeviceConnected)
-                                            {
-                                                if (!output.Output.Contains("offline"))
+                                                Thread obbThread = new Thread(() =>
                                                 {
-                                                    try
+
+                                                    ChangeTitle($"Copying {packagename} obb to device...");
+                                                    output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                                    Program.form.ChangeTitle("");
+                                                })
+                                                {
+                                                    IsBackground = true
+                                                };
+                                                obbThread.Start();
+
+                                                while (obbThread.IsAlive)
+                                                {
+                                                    await Task.Delay(100);
+                                                }
+                                                if (!nodeviceonstart | DeviceConnected)
+                                                {
+                                                    if (!output.Output.Contains("offline"))
                                                     {
-                                                        obbsMismatch = await compareOBBSizes(packagename, gameName, output);
+                                                        try
+                                                        {
+                                                            obbsMismatch = await compareOBBSizes(packagename, gameName, output);
+                                                        }
+                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}"); }
                                                     }
-                                                    catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}"); }
                                                 }
                                             }
                                         }
