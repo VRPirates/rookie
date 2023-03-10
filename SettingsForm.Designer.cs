@@ -34,13 +34,10 @@ namespace AndroidSideloader
             this.deleteAfterInstallCheckBox = new System.Windows.Forms.CheckBox();
             this.updateConfigCheckBox = new System.Windows.Forms.CheckBox();
             this.userJsonOnGameInstall = new System.Windows.Forms.CheckBox();
-            this.txtBandwidth = new System.Windows.Forms.TextBox();
-            this.lblDownloadSpeedLimiter = new System.Windows.Forms.Label();
             this.crashlogID = new System.Windows.Forms.Label();
             this.nodevicemodeBox = new System.Windows.Forms.CheckBox();
             this.bmbfBox = new System.Windows.Forms.CheckBox();
             this.AutoReinstBox = new System.Windows.Forms.CheckBox();
-            this.lblMibs = new System.Windows.Forms.Label();
             this.trailersOn = new System.Windows.Forms.CheckBox();
             this.downloadDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
             this.backupDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
@@ -59,7 +56,7 @@ namespace AndroidSideloader
             this.checkForUpdatesCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.checkForUpdatesCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkForUpdatesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(12, 12);
+            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(12, 67);
             this.checkForUpdatesCheckBox.Name = "checkForUpdatesCheckBox";
             this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(148, 22);
             this.checkForUpdatesCheckBox.TabIndex = 0;
@@ -73,7 +70,7 @@ namespace AndroidSideloader
             this.enableMessageBoxesCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.enableMessageBoxesCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.enableMessageBoxesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(12, 38);
+            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(11, 123);
             this.enableMessageBoxesCheckBox.Name = "enableMessageBoxesCheckBox";
             this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(309, 22);
             this.enableMessageBoxesCheckBox.TabIndex = 1;
@@ -87,7 +84,7 @@ namespace AndroidSideloader
             this.deleteAfterInstallCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.deleteAfterInstallCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.deleteAfterInstallCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(12, 64);
+            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(12, 40);
             this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
             this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(288, 22);
             this.deleteAfterInstallCheckBox.TabIndex = 3;
@@ -101,7 +98,7 @@ namespace AndroidSideloader
             this.updateConfigCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.updateConfigCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.updateConfigCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.updateConfigCheckBox.Location = new System.Drawing.Point(12, 90);
+            this.updateConfigCheckBox.Location = new System.Drawing.Point(11, 95);
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
             this.updateConfigCheckBox.Size = new System.Drawing.Size(208, 22);
             this.updateConfigCheckBox.TabIndex = 6;
@@ -115,38 +112,13 @@ namespace AndroidSideloader
             this.userJsonOnGameInstall.BackColor = System.Drawing.Color.Transparent;
             this.userJsonOnGameInstall.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.userJsonOnGameInstall.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.userJsonOnGameInstall.Location = new System.Drawing.Point(12, 116);
+            this.userJsonOnGameInstall.Location = new System.Drawing.Point(11, 151);
             this.userJsonOnGameInstall.Name = "userJsonOnGameInstall";
             this.userJsonOnGameInstall.Size = new System.Drawing.Size(243, 22);
             this.userJsonOnGameInstall.TabIndex = 9;
             this.userJsonOnGameInstall.Text = "Push random user.json on install";
             this.userJsonOnGameInstall.UseVisualStyleBackColor = false;
             this.userJsonOnGameInstall.CheckedChanged += new System.EventHandler(this.userJsonOnGameInstall_CheckedChanged);
-            // 
-            // txtBandwidth
-            // 
-            this.txtBandwidth.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
-            this.txtBandwidth.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.txtBandwidth.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.txtBandwidth.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.txtBandwidth.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.txtBandwidth.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.txtBandwidth.Location = new System.Drawing.Point(49, 288);
-            this.txtBandwidth.Name = "txtBandwidth";
-            this.txtBandwidth.Size = new System.Drawing.Size(103, 24);
-            this.txtBandwidth.TabIndex = 11;
-            // 
-            // lblDownloadSpeedLimiter
-            // 
-            this.lblDownloadSpeedLimiter.AutoSize = true;
-            this.lblDownloadSpeedLimiter.BackColor = System.Drawing.Color.Transparent;
-            this.lblDownloadSpeedLimiter.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.lblDownloadSpeedLimiter.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.lblDownloadSpeedLimiter.Location = new System.Drawing.Point(87, 264);
-            this.lblDownloadSpeedLimiter.Name = "lblDownloadSpeedLimiter";
-            this.lblDownloadSpeedLimiter.Size = new System.Drawing.Size(169, 18);
-            this.lblDownloadSpeedLimiter.TabIndex = 12;
-            this.lblDownloadSpeedLimiter.Text = "Download Speed Limiter";
             // 
             // crashlogID
             // 
@@ -163,7 +135,7 @@ namespace AndroidSideloader
             this.nodevicemodeBox.BackColor = System.Drawing.Color.Transparent;
             this.nodevicemodeBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.nodevicemodeBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.nodevicemodeBox.Location = new System.Drawing.Point(12, 168);
+            this.nodevicemodeBox.Location = new System.Drawing.Point(12, 12);
             this.nodevicemodeBox.Name = "nodevicemodeBox";
             this.nodevicemodeBox.Size = new System.Drawing.Size(181, 22);
             this.nodevicemodeBox.TabIndex = 9;
@@ -177,7 +149,7 @@ namespace AndroidSideloader
             this.bmbfBox.BackColor = System.Drawing.Color.Transparent;
             this.bmbfBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.bmbfBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.bmbfBox.Location = new System.Drawing.Point(12, 142);
+            this.bmbfBox.Location = new System.Drawing.Point(11, 179);
             this.bmbfBox.Name = "bmbfBox";
             this.bmbfBox.Size = new System.Drawing.Size(281, 22);
             this.bmbfBox.TabIndex = 9;
@@ -191,7 +163,7 @@ namespace AndroidSideloader
             this.AutoReinstBox.BackColor = System.Drawing.Color.Transparent;
             this.AutoReinstBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.AutoReinstBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.AutoReinstBox.Location = new System.Drawing.Point(12, 194);
+            this.AutoReinstBox.Location = new System.Drawing.Point(11, 207);
             this.AutoReinstBox.Name = "AutoReinstBox";
             this.AutoReinstBox.Size = new System.Drawing.Size(280, 22);
             this.AutoReinstBox.TabIndex = 9;
@@ -200,25 +172,13 @@ namespace AndroidSideloader
             this.AutoReinstBox.CheckedChanged += new System.EventHandler(this.AutoReinstBox_CheckedChanged);
             this.AutoReinstBox.Click += new System.EventHandler(this.AutoReinstBox_Click);
             // 
-            // lblMibs
-            // 
-            this.lblMibs.AutoSize = true;
-            this.lblMibs.BackColor = System.Drawing.Color.Transparent;
-            this.lblMibs.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.lblMibs.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.lblMibs.Location = new System.Drawing.Point(159, 291);
-            this.lblMibs.Name = "lblMibs";
-            this.lblMibs.Size = new System.Drawing.Size(135, 18);
-            this.lblMibs.TabIndex = 22;
-            this.lblMibs.Text = "MiB/s (0 to disable)";
-            // 
             // trailersOn
             // 
             this.trailersOn.AutoSize = true;
             this.trailersOn.BackColor = System.Drawing.Color.Transparent;
             this.trailersOn.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.trailersOn.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.trailersOn.Location = new System.Drawing.Point(12, 222);
+            this.trailersOn.Location = new System.Drawing.Point(11, 235);
             this.trailersOn.Name = "trailersOn";
             this.trailersOn.Size = new System.Drawing.Size(255, 22);
             this.trailersOn.TabIndex = 23;
@@ -244,7 +204,7 @@ namespace AndroidSideloader
             this.setBackupDirectory.ForeColor = System.Drawing.Color.White;
             this.setBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setBackupDirectory.Location = new System.Drawing.Point(29, 530);
+            this.setBackupDirectory.Location = new System.Drawing.Point(29, 463);
             this.setBackupDirectory.Name = "setBackupDirectory";
             this.setBackupDirectory.Radius = 5;
             this.setBackupDirectory.Size = new System.Drawing.Size(285, 31);
@@ -265,7 +225,7 @@ namespace AndroidSideloader
             this.setDownloadDirectory.ForeColor = System.Drawing.Color.White;
             this.setDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 493);
+            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 426);
             this.setDownloadDirectory.Name = "setDownloadDirectory";
             this.setDownloadDirectory.Radius = 5;
             this.setDownloadDirectory.Size = new System.Drawing.Size(285, 31);
@@ -286,7 +246,7 @@ namespace AndroidSideloader
             this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
             this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.Location = new System.Drawing.Point(29, 382);
+            this.btnOpenDebug.Location = new System.Drawing.Point(28, 315);
             this.btnOpenDebug.Name = "btnOpenDebug";
             this.btnOpenDebug.Radius = 5;
             this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
@@ -307,7 +267,7 @@ namespace AndroidSideloader
             this.btnResetDebug.ForeColor = System.Drawing.Color.White;
             this.btnResetDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnResetDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnResetDebug.Location = new System.Drawing.Point(29, 419);
+            this.btnResetDebug.Location = new System.Drawing.Point(28, 352);
             this.btnResetDebug.Name = "btnResetDebug";
             this.btnResetDebug.Radius = 5;
             this.btnResetDebug.Size = new System.Drawing.Size(285, 31);
@@ -328,7 +288,7 @@ namespace AndroidSideloader
             this.btnUploadDebug.ForeColor = System.Drawing.Color.White;
             this.btnUploadDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnUploadDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnUploadDebug.Location = new System.Drawing.Point(29, 456);
+            this.btnUploadDebug.Location = new System.Drawing.Point(28, 389);
             this.btnUploadDebug.Name = "btnUploadDebug";
             this.btnUploadDebug.Radius = 5;
             this.btnUploadDebug.Size = new System.Drawing.Size(285, 31);
@@ -349,7 +309,7 @@ namespace AndroidSideloader
             this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
             this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Location = new System.Drawing.Point(181, 335);
+            this.resetSettingsButton.Location = new System.Drawing.Point(180, 278);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Radius = 5;
             this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
@@ -373,7 +333,7 @@ namespace AndroidSideloader
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Location = new System.Drawing.Point(29, 335);
+            this.applyButton.Location = new System.Drawing.Point(28, 278);
             this.applyButton.Name = "applyButton";
             this.applyButton.Radius = 5;
             this.applyButton.Size = new System.Drawing.Size(133, 31);
@@ -390,19 +350,16 @@ namespace AndroidSideloader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.ClientSize = new System.Drawing.Size(342, 592);
+            this.ClientSize = new System.Drawing.Size(342, 519);
             this.Controls.Add(this.setBackupDirectory);
             this.Controls.Add(this.trailersOn);
             this.Controls.Add(this.setDownloadDirectory);
-            this.Controls.Add(this.lblMibs);
             this.Controls.Add(this.btnOpenDebug);
             this.Controls.Add(this.btnResetDebug);
             this.Controls.Add(this.btnUploadDebug);
             this.Controls.Add(this.resetSettingsButton);
             this.Controls.Add(this.applyButton);
             this.Controls.Add(this.crashlogID);
-            this.Controls.Add(this.lblDownloadSpeedLimiter);
-            this.Controls.Add(this.txtBandwidth);
             this.Controls.Add(this.bmbfBox);
             this.Controls.Add(this.AutoReinstBox);
             this.Controls.Add(this.nodevicemodeBox);
@@ -434,8 +391,6 @@ namespace AndroidSideloader
         private System.Windows.Forms.CheckBox deleteAfterInstallCheckBox;
         private System.Windows.Forms.CheckBox updateConfigCheckBox;
         private System.Windows.Forms.CheckBox userJsonOnGameInstall;
-        private System.Windows.Forms.TextBox txtBandwidth;
-        private System.Windows.Forms.Label lblDownloadSpeedLimiter;
         private System.Windows.Forms.Label crashlogID;
         private System.Windows.Forms.CheckBox nodevicemodeBox;
         private System.Windows.Forms.CheckBox bmbfBox;
@@ -445,7 +400,6 @@ namespace AndroidSideloader
         private RoundButton btnResetDebug;
         private RoundButton btnUploadDebug;
         private RoundButton btnOpenDebug;
-        private System.Windows.Forms.Label lblMibs;
         private System.Windows.Forms.CheckBox trailersOn;
         private RoundButton setDownloadDirectory;
         private System.Windows.Forms.FolderBrowserDialog downloadDirectorySetter;

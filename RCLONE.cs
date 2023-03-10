@@ -37,7 +37,7 @@ namespace AndroidSideloader
         private static readonly Process rclone = new Process();
 
         //Run rclone command
-        public static ProcessOutput runRcloneCommand_DownloadConfig(string command, string BandwidthLimit = "")
+        public static ProcessOutput runRcloneCommand_DownloadConfig(string command)
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -48,12 +48,6 @@ namespace AndroidSideloader
             //Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             string originalCommand = command;
-
-            //set bandwidth limit
-            if (BandwidthLimit.Length > 0)
-            {
-                command += $" --bwlimit={BandwidthLimit}";
-            }
 
             //set configpath if there is any
             if (downloadConfigPath.Length > 0)
@@ -125,7 +119,7 @@ namespace AndroidSideloader
                 {
                     return new ProcessOutput("All mirrors are on quota or down...", "All mirrors are on quota or down...");
                 }
-                prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote), BandwidthLimit);
+                prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote));
             }
             else
             {
@@ -148,7 +142,7 @@ namespace AndroidSideloader
             return prcoutput;
         }
 
-        public static ProcessOutput runRcloneCommand_UploadConfig(string command, string BandwidthLimit = "")
+        public static ProcessOutput runRcloneCommand_UploadConfig(string command)
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -158,12 +152,6 @@ namespace AndroidSideloader
             ProcessOutput prcoutput = new ProcessOutput();
             //Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-
-            //set bandwidth limit
-            if (BandwidthLimit.Length > 0)
-            {
-                command += $" --bwlimit={BandwidthLimit}";
-            }
 
             //set configpath if there is any
             if (uploadConfigPath.Length > 0)
@@ -236,7 +224,7 @@ namespace AndroidSideloader
             return prcoutput;
         }
 
-        public static ProcessOutput runRcloneCommand_PublicConfig(string command, string BandwidthLimit = "")
+        public static ProcessOutput runRcloneCommand_PublicConfig(string command)
         {
             if (!MainForm.HasInternet || MainForm.isOffline)
             {
@@ -246,12 +234,6 @@ namespace AndroidSideloader
             ProcessOutput prcoutput = new ProcessOutput();
             //Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
-
-            //set bandwidth limit
-            if (BandwidthLimit.Length > 0)
-            {
-                command += $" --bwlimit={BandwidthLimit}";
-            }
 
             string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
             if (logcmd.Contains($"\"{Properties.Settings.Default.CurrentLogPath}\""))

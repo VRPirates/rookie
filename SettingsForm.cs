@@ -32,12 +32,11 @@ namespace AndroidSideloader
             bmbfBox.Checked = Properties.Settings.Default.BMBFchecked;
             AutoReinstBox.Checked = Properties.Settings.Default.AutoReinstall;
             trailersOn.Checked = Properties.Settings.Default.TrailersOn;
-
-            if (Properties.Settings.Default.BandwidthLimit.Length > 1)
+            if (nodevicemodeBox.Checked)
             {
-                txtBandwidth.Text = Properties.Settings.Default.BandwidthLimit.Remove(Properties.Settings.Default.BandwidthLimit.Length - 1);
+                deleteAfterInstallCheckBox.Checked = false;
+                deleteAfterInstallCheckBox.Enabled = false;
             }
-
         }
 
         private void intToolTips()
@@ -82,8 +81,6 @@ namespace AndroidSideloader
         //Apply settings
         private void applyButton_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.BandwidthLimit = txtBandwidth.Text.Length > 0 && txtBandwidth.Text != "0" ? $"{txtBandwidth.Text.Replace(" ", "")}M" : "";
-
             Properties.Settings.Default.Save();
             _ = FlexibleMessageBox.Show(this, "Settings applied!");
         }
@@ -156,6 +153,18 @@ namespace AndroidSideloader
         private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.nodevicemode = nodevicemodeBox.Checked;
+            if (!deleteAfterInstallCheckBox.Checked)
+            {
+                deleteAfterInstallCheckBox.Checked = true;
+                Properties.Settings.Default.deleteAllAfterInstall = true;
+                deleteAfterInstallCheckBox.Enabled = true;
+            }
+            else
+            {
+                deleteAfterInstallCheckBox.Checked = false;
+                Properties.Settings.Default.deleteAllAfterInstall = false;
+                deleteAfterInstallCheckBox.Enabled = false;
+            }
             Properties.Settings.Default.Save();
         }
 

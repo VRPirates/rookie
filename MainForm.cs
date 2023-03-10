@@ -2444,7 +2444,7 @@ Things you can try:
                             {
                                 string rclonecommand =
                                     $"copy \":http:/{gameNameHash}/\" \"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\" --progress --rc";
-                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, Properties.Settings.Default.BandwidthLimit);
+                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
                             });
                         }
                         else
@@ -2458,7 +2458,7 @@ Things you can try:
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" --progress --rc", Properties.Settings.Default.BandwidthLimit);
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" --progress --rc");
                         });
                     }
 
