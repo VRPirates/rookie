@@ -785,19 +785,30 @@ namespace AndroidSideloader
         public async void showAvailableSpace()
         {
             string AvailableSpace = string.Empty;
-            ADB.DeviceID = GetDeviceID();
-            Thread t1 = new Thread(() =>
+            if (!Properties.Settings.Default.nodevicemode | !MainForm.nodeviceonstart & DeviceConnected)
             {
-                AvailableSpace = ADB.GetAvailableSpace();
-            });
-            t1.Start();
+                try
+                {
+                    ADB.DeviceID = GetDeviceID();
+                    Thread t1 = new Thread(() =>
+                    {
+                        AvailableSpace = ADB.GetAvailableSpace();
+                    });
+                    t1.Start();
 
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
+                    while (t1.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    diskLabel.Invoke(() => { diskLabel.Text = AvailableSpace; });
+                }
+                catch (Exception ex)
+                {
+                    _ = Logger.Log($"Unable to get available space with the exception: {ex}");
+
+                }
             }
-
-            diskLabel.Invoke(() => { diskLabel.Text = AvailableSpace; });
         }
 
         public string GetDeviceID()
@@ -2838,13 +2849,14 @@ Things you can try:
             catch (Exception ex)
             {
                 string inputstringerror = "Input string";
-                if (ex.Message.Contains(inputstringerror)) 
+                if (ex.Message.Contains(inputstringerror))
                 {
                     _ = FlexibleMessageBox.Show("The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
                     return false;
                 }
                 else
                 {
+                    _ = Logger.Log("Unable to compare obbs with the exception" + ex.Message);
                     _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
                     return false;
                 }
@@ -4022,8 +4034,8 @@ Things you can try:
                                     _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
                                     if (installedVersionInt == cloudVersionInt)
                                     {
-                                            Game.ForeColor = colorFont_installedGame;
-                                            GameList.Add(Game);
+                                        Game.ForeColor = colorFont_installedGame;
+                                        GameList.Add(Game);
                                     }
                                     else
                                     {
