@@ -144,7 +144,7 @@ namespace AndroidSideloader
 
         public static ProcessOutput runRcloneCommand_UploadConfig(string command)
         {
-            if (!MainForm.HasInternet || MainForm.isOffline)
+            if (!MainForm.HasInternet)
             {
                 return new ProcessOutput("", "No internet");
             }

@@ -983,6 +983,12 @@ namespace AndroidSideloader
         {
             ADB.WakeDevice();
 
+            if (!HasInternet)
+            {
+                notify("You are not connected to the Internet!");
+                return;
+            }
+
             if (m_combo.SelectedIndex == -1)
             {
                 notify("Please select an app first");
