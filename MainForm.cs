@@ -195,7 +195,6 @@ namespace AndroidSideloader
             }
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-            CheckForInternet();
             Sideloader.downloadFiles();
             await Task.Delay(100);
             if (Directory.Exists(Sideloader.TempFolder))
@@ -327,7 +326,7 @@ namespace AndroidSideloader
             t1.SetApartmentState(ApartmentState.STA);
             t1.IsBackground = true;
 
-            if (HasInternet)
+            if (!isOffline)
             {
                 t1.Start();
             }
@@ -403,7 +402,7 @@ namespace AndroidSideloader
                 {
                     IsBackground = true
                 };
-                if (HasInternet)
+                if (!isOffline)
                 {
                     t2.Start();
                 }
@@ -442,7 +441,7 @@ namespace AndroidSideloader
                 t3.IsBackground = true;
                 t4.IsBackground = true;
 
-                if (HasInternet)
+                if (!isOffline)
                 {
                     t2.Start();
                 }
@@ -452,7 +451,7 @@ namespace AndroidSideloader
                     await Task.Delay(50);
                 }
 
-                if (HasInternet)
+                if (!isOffline)
                 {
                     t3.Start();
                 }
@@ -462,7 +461,7 @@ namespace AndroidSideloader
                     await Task.Delay(50);
                 }
 
-                if (HasInternet)
+                if (!isOffline)
                 {
                     t4.Start();
                 }
@@ -824,26 +823,6 @@ namespace AndroidSideloader
             return deviceId;
         }
 
-        public static bool HasInternet = false;
-
-        public static void CheckForInternet()
-        {
-            Ping myPing = new Ping();
-            string host = "8.8.8.8"; //google dns
-            byte[] buffer = new byte[32];
-            int timeout = 1000;
-            PingOptions pingOptions = new PingOptions();
-            try
-            {
-                PingReply reply = myPing.Send(host, timeout, buffer, pingOptions);
-                if (reply.Status == IPStatus.Success)
-                {
-                    HasInternet = true;
-                }
-            }
-            catch { HasInternet = false; }
-        }
-
         public static string taa = "";
         private async void backupbutton_Click(object sender, EventArgs e)
         {
@@ -983,7 +962,7 @@ namespace AndroidSideloader
         {
             ADB.WakeDevice();
 
-            if (!HasInternet)
+            if (isOffline)
             {
                 notify("You are not connected to the Internet!");
                 return;
@@ -2223,7 +2202,6 @@ without him none of this would be possible
             isLoading = true;
 
             progressBar.Style = ProgressBarStyle.Marquee;
-            CheckForInternet();
             devicesbutton_Click(sender, e);
 
             Thread t1 = new Thread(() =>
