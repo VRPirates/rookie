@@ -41,6 +41,7 @@ namespace AndroidSideloader
             this.trailersOn = new System.Windows.Forms.CheckBox();
             this.downloadDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
             this.backupDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
+            this.singleThread = new System.Windows.Forms.CheckBox();
             this.setBackupDirectory = new AndroidSideloader.RoundButton();
             this.setDownloadDirectory = new AndroidSideloader.RoundButton();
             this.btnOpenDebug = new AndroidSideloader.RoundButton();
@@ -194,6 +195,20 @@ namespace AndroidSideloader
             // 
             this.backupDirectorySetter.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
+            // singleThread
+            // 
+            this.singleThread.AutoSize = true;
+            this.singleThread.BackColor = System.Drawing.Color.Transparent;
+            this.singleThread.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.singleThread.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.singleThread.Location = new System.Drawing.Point(11, 263);
+            this.singleThread.Name = "singleThread";
+            this.singleThread.Size = new System.Drawing.Size(186, 22);
+            this.singleThread.TabIndex = 25;
+            this.singleThread.Text = "Enable Single-Threading";
+            this.singleThread.UseVisualStyleBackColor = false;
+            this.singleThread.CheckedChanged += new System.EventHandler(this.singleThread_CheckedChanged);
+            // 
             // setBackupDirectory
             // 
             this.setBackupDirectory.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
@@ -204,7 +219,7 @@ namespace AndroidSideloader
             this.setBackupDirectory.ForeColor = System.Drawing.Color.White;
             this.setBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setBackupDirectory.Location = new System.Drawing.Point(29, 463);
+            this.setBackupDirectory.Location = new System.Drawing.Point(29, 495);
             this.setBackupDirectory.Name = "setBackupDirectory";
             this.setBackupDirectory.Radius = 5;
             this.setBackupDirectory.Size = new System.Drawing.Size(285, 31);
@@ -225,7 +240,7 @@ namespace AndroidSideloader
             this.setDownloadDirectory.ForeColor = System.Drawing.Color.White;
             this.setDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 426);
+            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 458);
             this.setDownloadDirectory.Name = "setDownloadDirectory";
             this.setDownloadDirectory.Radius = 5;
             this.setDownloadDirectory.Size = new System.Drawing.Size(285, 31);
@@ -246,7 +261,7 @@ namespace AndroidSideloader
             this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
             this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.Location = new System.Drawing.Point(28, 315);
+            this.btnOpenDebug.Location = new System.Drawing.Point(28, 347);
             this.btnOpenDebug.Name = "btnOpenDebug";
             this.btnOpenDebug.Radius = 5;
             this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
@@ -267,7 +282,7 @@ namespace AndroidSideloader
             this.btnResetDebug.ForeColor = System.Drawing.Color.White;
             this.btnResetDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnResetDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnResetDebug.Location = new System.Drawing.Point(28, 352);
+            this.btnResetDebug.Location = new System.Drawing.Point(28, 384);
             this.btnResetDebug.Name = "btnResetDebug";
             this.btnResetDebug.Radius = 5;
             this.btnResetDebug.Size = new System.Drawing.Size(285, 31);
@@ -288,7 +303,7 @@ namespace AndroidSideloader
             this.btnUploadDebug.ForeColor = System.Drawing.Color.White;
             this.btnUploadDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnUploadDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnUploadDebug.Location = new System.Drawing.Point(28, 389);
+            this.btnUploadDebug.Location = new System.Drawing.Point(28, 421);
             this.btnUploadDebug.Name = "btnUploadDebug";
             this.btnUploadDebug.Radius = 5;
             this.btnUploadDebug.Size = new System.Drawing.Size(285, 31);
@@ -309,7 +324,7 @@ namespace AndroidSideloader
             this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
             this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Location = new System.Drawing.Point(180, 278);
+            this.resetSettingsButton.Location = new System.Drawing.Point(180, 310);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Radius = 5;
             this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
@@ -333,7 +348,7 @@ namespace AndroidSideloader
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Location = new System.Drawing.Point(28, 278);
+            this.applyButton.Location = new System.Drawing.Point(28, 310);
             this.applyButton.Name = "applyButton";
             this.applyButton.Radius = 5;
             this.applyButton.Size = new System.Drawing.Size(133, 31);
@@ -350,7 +365,8 @@ namespace AndroidSideloader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.ClientSize = new System.Drawing.Size(342, 519);
+            this.ClientSize = new System.Drawing.Size(342, 579);
+            this.Controls.Add(this.singleThread);
             this.Controls.Add(this.setBackupDirectory);
             this.Controls.Add(this.trailersOn);
             this.Controls.Add(this.setDownloadDirectory);
@@ -405,5 +421,6 @@ namespace AndroidSideloader
         private System.Windows.Forms.FolderBrowserDialog downloadDirectorySetter;
         private RoundButton setBackupDirectory;
         private System.Windows.Forms.FolderBrowserDialog backupDirectorySetter;
+        private System.Windows.Forms.CheckBox singleThread;
     }
 }

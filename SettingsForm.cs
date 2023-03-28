@@ -32,6 +32,7 @@ namespace AndroidSideloader
             bmbfBox.Checked = Properties.Settings.Default.BMBFchecked;
             AutoReinstBox.Checked = Properties.Settings.Default.AutoReinstall;
             trailersOn.Checked = Properties.Settings.Default.TrailersOn;
+            singleThread.Checked = Properties.Settings.Default.singleThreadMode;
             if (nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = false;
@@ -230,6 +231,12 @@ namespace AndroidSideloader
                 MainForm.BackupFolder = Properties.Settings.Default.backupDir;
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private void singleThread_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.singleThreadMode = singleThread.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

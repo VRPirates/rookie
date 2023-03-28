@@ -22,7 +22,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
@@ -2433,6 +2432,11 @@ Things you can try:
                     _ = Logger.Log($"Starting Game Download");
 
                     Thread t1;
+                    string extraArgs = string.Empty;
+                    if (Properties.Settings.Default.singleThreadMode)
+                    {
+                        extraArgs = "--transfers 1 --multi-thread-streams 0";
+                    }
                     if (hasPublicConfig)
                     {
                         bool doDownload = true;
@@ -2459,8 +2463,8 @@ Things you can try:
                             _ = Logger.Log($"rclone copy \"Public:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                             t1 = new Thread(() =>
                             {
-                                string rclonecommand =
-                                    $"copy \":http:/{gameNameHash}/\" \"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\" --progress --rc";
+                                string rclonecommand = 
+                                $"copy \":http:/{gameNameHash}/\" \"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\" {extraArgs} --progress --rc";
                                 gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
                             });
                         }
@@ -2475,7 +2479,7 @@ Things you can try:
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" --progress --rc");
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc");
                         });
                     }
 
@@ -3094,10 +3098,15 @@ Things you can try:
             ADB.WakeDevice();
             showAvailableSpace();
         }
+
         private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
-            remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
+            if (remotesList.SelectedItem != null)
+            {
+                remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
+            }
         }
+
         private void QuestOptionsButton_Click(object sender, EventArgs e)
         {
             QuestForm Form = new QuestForm();
