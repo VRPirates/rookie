@@ -784,7 +784,7 @@ namespace AndroidSideloader
         public async void showAvailableSpace()
         {
             string AvailableSpace = string.Empty;
-            if (!Properties.Settings.Default.nodevicemode | !MainForm.nodeviceonstart & DeviceConnected)
+            if (!Properties.Settings.Default.nodevicemode | DeviceConnected)
             {
                 try
                 {
