@@ -2728,9 +2728,9 @@ Things you can try:
                                         {
                                             if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
                                             {
+                                                deleteOBB(packagename);
                                                 Thread obbThread = new Thread(() =>
                                                 {
-
                                                     ChangeTitle($"Copying {packagename} obb to device...");
                                                     output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                     Program.form.ChangeTitle("");
@@ -2803,6 +2803,15 @@ Things you can try:
                     ChangeTitle(" \n\n");
                 }
             }
+        }
+
+        private void deleteOBB(string packagename)
+        {
+            ADB.WakeDevice();
+            ChangeTitle("Deleting old OBB Folder...");
+            Logger.Log("Attempting to delete old OBB Folder");
+            ADB.WakeDevice();
+            ADB.RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{packagename}");
         }
 
         private async Task<bool> compareOBBSizes(string packagename, string gameName, ProcessOutput output)
