@@ -2345,7 +2345,7 @@ Things you can try:
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
         }
 
-        public async void removeQueueItem()
+        public async void cleanupActiveDownloadStatus()
         {
             speedLabel.Text = "";
             etaLabel.Text = "";
@@ -2575,7 +2575,7 @@ Things you can try:
                         ChangeTitle("Deleting game files", false);
                         try
                         {
-                            removeQueueItem();
+                            cleanupActiveDownloadStatus();
                             if (hasPublicConfig)
                             {
                                 if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
@@ -2615,14 +2615,14 @@ Things you can try:
 
                                 SwitchMirrors();
 
-                                removeQueueItem();
+                                cleanupActiveDownloadStatus();
                             }
-                            else if (!gameDownloadOutput.Error.Contains("Serving remote control on http://127.0.0.1:5572/"))
+                            else if (!gameDownloadOutput.Error.Contains("localhost"))
                             {
                                 otherError = true;
 
                                 //Remove current game
-                                removeQueueItem();
+                                cleanupActiveDownloadStatus();
 
                                 _ = FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
                                 output += new ProcessOutput("", "Download Failed");
@@ -2776,7 +2776,7 @@ Things you can try:
                             }
 
                             //Remove current game
-                            removeQueueItem();
+                            cleanupActiveDownloadStatus();
                         }
                     }
                 }
