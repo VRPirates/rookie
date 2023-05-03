@@ -2344,6 +2344,16 @@ Things you can try:
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
         }
 
+        public async void removeQueueItem()
+        {
+            if (gamesQueueList.Any())
+            {
+                gamesQueueList.RemoveAt(0);
+                gamesQueListBox.DataSource = null;
+                gamesQueListBox.DataSource = gamesQueueList;
+            }
+        }
+
         public bool isinstalling = false;
         public static bool removedownloading = false;
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
@@ -2608,18 +2618,14 @@ Things you can try:
 
                                 SwitchMirrors();
 
-                                gamesQueueList.RemoveAt(0);
-                                gamesQueListBox.DataSource = null;
-                                gamesQueListBox.DataSource = gamesQueueList;
+                                removeQueueItem();
                             }
                             else if (!gameDownloadOutput.Error.Contains("localhost"))
                             {
                                 otherError = true;
 
                                 //Remove current game
-                                gamesQueueList.RemoveAt(0);
-                                gamesQueListBox.DataSource = null;
-                                gamesQueListBox.DataSource = gamesQueueList;
+                                removeQueueItem();
 
                                 _ = FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
                                 output += new ProcessOutput("", "Download Failed");
@@ -2773,9 +2779,7 @@ Things you can try:
                             }
 
                             //Remove current game
-                            gamesQueueList.RemoveAt(0);
-                            gamesQueListBox.DataSource = null;
-                            gamesQueListBox.DataSource = gamesQueueList;
+                            removeQueueItem();
                         }
                     }
                 }
