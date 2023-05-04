@@ -2678,21 +2678,28 @@ Things you can try:
                                 string extension = Path.GetExtension(file);
                                 if (extension == ".txt")
                                 {
-                                    string fullname = Path.GetFileName(file);
-                                    if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
                                     {
-                                        Thread installtxtThread = new Thread(() =>
+                                        string fullname = Path.GetFileName(file);
+                                        if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
                                         {
-                                            output += Sideloader.RunADBCommandsFromFile(file);
+                                            Thread installtxtThread = new Thread(() =>
+                                            {
+                                                output += Sideloader.RunADBCommandsFromFile(file);
 
-                                            ChangeTitle(" \n\n");
-                                        });
+                                                ChangeTitle(" \n\n");
+                                            });
 
-                                        installtxtThread.Start();
-                                        while (installtxtThread.IsAlive)
-                                        {
-                                            await Task.Delay(100);
+                                            installtxtThread.Start();
+                                            while (installtxtThread.IsAlive)
+                                            {
+                                                await Task.Delay(100);
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        output.Output += "All tasks finished. ";
                                     }
                                 }
                                 if (!isinstalltxt)
@@ -2764,7 +2771,7 @@ Things you can try:
                                     }
                                     else
                                     {
-                                        output.Output += "All tasks finished.";
+                                        output.Output += "All tasks finished. ";
                                     }
                                 }
                                 ChangeTitle($"Installation of {gameName} completed.");
