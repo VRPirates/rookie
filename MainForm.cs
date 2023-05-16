@@ -59,6 +59,7 @@ namespace AndroidSideloader
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
+        private bool manualIP;
         public MainForm()
         {
             // check for offline mode
@@ -2168,45 +2169,62 @@ without him none of this would be possible
 
         private async void ADBWirelessEnable_Click(object sender, EventArgs e)
         {
-
-            ADB.WakeDevice();
-            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
-            if (dialogResult == DialogResult.Cancel)
+            bool Manual;
+            DialogResult res = FlexibleMessageBox.Show("Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
+            Manual = res == DialogResult.No;
+            if (Manual)
             {
-                return;
-            }
-
-            _ = ADB.RunAdbCommandToString("devices");
-            _ = ADB.RunAdbCommandToString("tcpip 5555");
-
-            _ = FlexibleMessageBox.Show(Program.form, "Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
-            Thread.Sleep(1000);
-            string input = ADB.RunAdbCommandToString("shell ip route").Output;
-
-            Properties.Settings.Default.WirelessADB = true;
-            Properties.Settings.Default.Save();
-            _ = new string[] { "" };
-            string[] strArrayOne = input.Split(' ');
-            if (strArrayOne[0].Length > 7)
-            {
-                string IPaddr = strArrayOne[8];
-                string IPcmnd = "connect " + IPaddr + ":5555";
-                _ = FlexibleMessageBox.Show(Program.form, $"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
-                Thread.Sleep(2000);
-                _ = ADB.RunAdbCommandToString(IPcmnd);
-                _ = await Program.form.CheckForDevice();
-                Program.form.ChangeTitlebarToDevice();
-                Program.form.showAvailableSpace();
-                Properties.Settings.Default.IPAddress = IPcmnd;
-                Properties.Settings.Default.Save();
-                File.WriteAllText($"C:\\RSL\\platform-tools\\StoredIP.txt", IPcmnd);
-                ADB.wirelessadbON = true;
-                _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
-                _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+                ADBcommandbox.Visible = true;
+                ADBcommandbox.Clear();
+                lblAdbCommand.Visible = true;
+                lblAdbCommand.Text = "Enter your Quests\r\nIP Address";
+                lblAdbCommand.Location = new System.Drawing.Point(531, 213);
+                label2.Visible = true;
+                manualIP = true;
+                _ = ADBcommandbox.Focus();
+                Program.form.ChangeTitle("Attempting manual connection...", false);
             }
             else
             {
-                _ = FlexibleMessageBox.Show(Program.form, "No device connected! Connect quest via USB and start again!");
+                ADB.WakeDevice();
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
+                if (dialogResult == DialogResult.Cancel)
+                {
+                    return;
+                }
+
+                _ = ADB.RunAdbCommandToString("devices");
+                _ = ADB.RunAdbCommandToString("tcpip 5555");
+
+                _ = FlexibleMessageBox.Show(Program.form, "Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
+                Thread.Sleep(1000);
+                string input = ADB.RunAdbCommandToString("shell ip route").Output;
+
+                Properties.Settings.Default.WirelessADB = true;
+                Properties.Settings.Default.Save();
+                _ = new string[] { "" };
+                string[] strArrayOne = input.Split(' ');
+                if (strArrayOne[0].Length > 7)
+                {
+                    string IPaddr = strArrayOne[8];
+                    string IPcmnd = "connect " + IPaddr + ":5555";
+                    _ = FlexibleMessageBox.Show(Program.form, $"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                    Thread.Sleep(2000);
+                    _ = ADB.RunAdbCommandToString(IPcmnd);
+                    _ = await Program.form.CheckForDevice();
+                    Program.form.ChangeTitlebarToDevice();
+                    Program.form.showAvailableSpace();
+                    Properties.Settings.Default.IPAddress = IPcmnd;
+                    Properties.Settings.Default.Save();
+                    File.WriteAllText($"C:\\RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                    ADB.wirelessadbON = true;
+                    _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                    _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+                }
+                else
+                {
+                    _ = FlexibleMessageBox.Show(Program.form, "No device connected! Connect quest via USB and start again!");
+                }
             }
         }
 
@@ -2710,9 +2728,9 @@ Things you can try:
                                         {
                                             if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
                                             {
+                                                deleteOBB(packagename);
                                                 Thread obbThread = new Thread(() =>
                                                 {
-
                                                     ChangeTitle($"Copying {packagename} obb to device...");
                                                     output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                     Program.form.ChangeTitle("");
@@ -2785,6 +2803,15 @@ Things you can try:
                     ChangeTitle(" \n\n");
                 }
             }
+        }
+
+        private void deleteOBB(string packagename)
+        {
+            ADB.WakeDevice();
+            ChangeTitle("Deleting old OBB Folder...");
+            Logger.Log("Attempting to delete old OBB Folder");
+            ADB.WakeDevice();
+            ADB.RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{packagename}");
         }
 
         private async Task<bool> compareOBBSizes(string packagename, string gameName, ProcessOutput output)
@@ -3802,22 +3829,66 @@ Things you can try:
             Properties.Settings.Default.Save();
         }
 
-        private void ADBcommandbox_KeyPress(object sender, KeyPressEventArgs e)
+        private async void ADBcommandbox_KeyPress(object sender, KeyPressEventArgs e)
         {
             searchTextBox.KeyPress += new
             System.Windows.Forms.KeyPressEventHandler(CheckEnter);
             if (e.KeyChar == (char)Keys.Enter)
-
             {
-                Program.form.ChangeTitle($"Running adb command: ADB {ADBcommandbox.Text}");
-                string output = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
-                _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
-                ADBcommandbox.Visible = false;
-                lblAdbCommand.Visible = false;
-                lblShortcutCtrlR.Visible = false;
-                label2.Visible = false;
-                _ = gamesListView.Focus();
-                Program.form.ChangeTitle("");
+                if (manualIP)
+                {
+                    string IPaddr;
+                    IPaddr = ADBcommandbox.Text;
+                    string IPcmnd = "connect " + IPaddr + ":5555";
+                    Thread.Sleep(1000);
+                    string errorChecker = ADB.RunAdbCommandToString(IPcmnd).Output;
+                    if (errorChecker.Contains("cannot resolve host") | errorChecker.Contains("cannot connect to")) 
+                    {
+                    ChangeTitle("");
+                    _ = FlexibleMessageBox.Show("Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK); 
+                    manualIP = false;
+                    ADBcommandbox.Visible = false;
+                    lblAdbCommand.Visible = false;
+                    lblShortcutCtrlR.Visible = false;
+                    label2.Visible = false;
+                    lblAdbCommand.Text = "Type command without\r\n\"adb\" prefix.\r\n\r\n\r\n";
+                    lblAdbCommand.Location = new System.Drawing.Point(514, 206);
+                    _ = gamesListView.Focus();
+                    }
+                    else
+                    {
+                        _ = await Program.form.CheckForDevice();
+                        Program.form.showAvailableSpace();
+                        Properties.Settings.Default.IPAddress = IPcmnd;
+                        Properties.Settings.Default.Save();
+                        File.WriteAllText($"C:\\RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                        ADB.wirelessadbON = true;
+                        _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
+                        _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
+                        manualIP = false;
+                        ADBcommandbox.Visible = false;
+                        lblAdbCommand.Visible = false;
+                        lblShortcutCtrlR.Visible = false;
+                        label2.Visible = false;
+                        lblAdbCommand.Text = "Type command without\r\n\"adb\" prefix.\r\n\r\n\r\n";
+                        lblAdbCommand.Location = new System.Drawing.Point(514, 206);
+                        ChangeTitle("");
+                        Program.form.ChangeTitlebarToDevice();
+                        _ = gamesListView.Focus();
+                    }
+                }
+                else
+                {
+                    Program.form.ChangeTitle($"Running adb command: ADB {ADBcommandbox.Text}");
+                    string output = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
+                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
+                    ADBcommandbox.Visible = false;
+                    lblAdbCommand.Visible = false;
+                    lblShortcutCtrlR.Visible = false;
+                    label2.Visible = false;
+                    _ = gamesListView.Focus();
+                    Program.form.ChangeTitle("");
+                }
             }
             if (e.KeyChar == (char)Keys.Escape)
             {
@@ -3831,7 +3902,6 @@ Things you can try:
 
         private void ADBcommandbox_Leave(object sender, EventArgs e)
         {
-
             label2.Visible = false;
             ADBcommandbox.Visible = false;
             lblAdbCommand.Visible = false;
