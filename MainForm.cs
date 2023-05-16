@@ -77,6 +77,7 @@ namespace AndroidSideloader
             }
 
             InitializeComponent();
+            gamesQueListBox.DataSource = gamesQueueList;
             //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
             TimeSpan newDayReference = new TimeSpan(96, 0, 0);
             //Time between asking for updates after uploading. 72,0,0 DEFAULT
@@ -2250,7 +2251,7 @@ without him none of this would be possible
         public static bool updatedConfig = false;
         public static int steps = 0;
         public static bool gamesAreDownloading = false;
-        private readonly List<string> gamesQueueList = new List<string>();
+        private readonly BindingList<string> gamesQueueList = new BindingList<string>();
         public static int quotaTries = 0;
         public static bool timerticked = false;
         public static bool skiponceafterremove = false;
@@ -2322,6 +2323,14 @@ Things you can try:
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
         }
 
+        public async void cleanupActiveDownloadStatus()
+        {
+            speedLabel.Text = "";
+            etaLabel.Text = "";
+            progressBar.Value = 0;
+            gamesQueueList.RemoveAt(0);
+        }
+
         public bool isinstalling = false;
         public static bool removedownloading = false;
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
@@ -2375,9 +2384,6 @@ Things you can try:
                 {
                     gamesQueueList.Add(gamesToDownload[i]);
                 }
-
-                gamesQueListBox.DataSource = null;
-                gamesQueListBox.DataSource = gamesQueueList;
 
                 if (gamesAreDownloading)
                 {
@@ -2547,6 +2553,7 @@ Things you can try:
                         ChangeTitle("Deleting game files", false);
                         try
                         {
+                            cleanupActiveDownloadStatus();
                             if (hasPublicConfig)
                             {
                                 if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
@@ -2586,18 +2593,14 @@ Things you can try:
 
                                 SwitchMirrors();
 
-                                gamesQueueList.RemoveAt(0);
-                                gamesQueListBox.DataSource = null;
-                                gamesQueListBox.DataSource = gamesQueueList;
+                                cleanupActiveDownloadStatus();
                             }
                             else if (!gameDownloadOutput.Error.Contains("Serving remote control on http://127.0.0.1:5572/"))
                             {
                                 otherError = true;
 
                                 //Remove current game
-                                gamesQueueList.RemoveAt(0);
-                                gamesQueListBox.DataSource = null;
-                                gamesQueListBox.DataSource = gamesQueueList;
+                                cleanupActiveDownloadStatus();
 
                                 _ = FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
                                 output += new ProcessOutput("", "Download Failed");
@@ -2653,21 +2656,28 @@ Things you can try:
                                 string extension = Path.GetExtension(file);
                                 if (extension == ".txt")
                                 {
-                                    string fullname = Path.GetFileName(file);
-                                    if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
                                     {
-                                        Thread installtxtThread = new Thread(() =>
+                                        string fullname = Path.GetFileName(file);
+                                        if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
                                         {
-                                            output += Sideloader.RunADBCommandsFromFile(file);
+                                            Thread installtxtThread = new Thread(() =>
+                                            {
+                                                output += Sideloader.RunADBCommandsFromFile(file);
 
-                                            ChangeTitle(" \n\n");
-                                        });
+                                                ChangeTitle(" \n\n");
+                                            });
 
-                                        installtxtThread.Start();
-                                        while (installtxtThread.IsAlive)
-                                        {
-                                            await Task.Delay(100);
+                                            installtxtThread.Start();
+                                            while (installtxtThread.IsAlive)
+                                            {
+                                                await Task.Delay(100);
+                                            }
                                         }
+                                    }
+                                    else
+                                    {
+                                        output.Output += "All tasks finished. ";
                                     }
                                 }
                                 if (!isinstalltxt)
@@ -2739,7 +2749,7 @@ Things you can try:
                                     }
                                     else
                                     {
-                                        output.Output += "All tasks finished.";
+                                        output.Output += "All tasks finished. ";
                                     }
                                 }
                                 ChangeTitle($"Installation of {gameName} completed.");
@@ -2751,9 +2761,7 @@ Things you can try:
                             }
 
                             //Remove current game
-                            gamesQueueList.RemoveAt(0);
-                            gamesQueListBox.DataSource = null;
-                            gamesQueListBox.DataSource = gamesQueueList;
+                            cleanupActiveDownloadStatus();
                         }
                     }
                 }
@@ -3079,21 +3087,14 @@ Things you can try:
         }
         private void gamesQueListBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (gamesQueListBox.SelectedIndex == 0 && gamesQueueList.Count == 1)
+            if (gamesQueListBox.SelectedIndex == 0)
             {
-                speedLabel.Text = "";
-                etaLabel.Text = "";
                 removedownloading = true;
                 RCLONE.killRclone();
-                _ = gamesQueueList.Remove(gamesQueListBox.SelectedItem.ToString());
-                gamesQueListBox.DataSource = null;
-                gamesQueListBox.DataSource = gamesQueueList;
             }
             if (gamesQueListBox.SelectedIndex != -1 && gamesQueListBox.SelectedIndex != 0)
             {
                 _ = gamesQueueList.Remove(gamesQueListBox.SelectedItem.ToString());
-                gamesQueListBox.DataSource = null;
-                gamesQueListBox.DataSource = gamesQueueList;
             }
 
         }
