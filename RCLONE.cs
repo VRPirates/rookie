@@ -39,7 +39,7 @@ namespace AndroidSideloader
         //Run rclone command
         public static ProcessOutput runRcloneCommand_DownloadConfig(string command)
         {
-            if (!MainForm.HasInternet || MainForm.isOffline)
+            if (MainForm.isOffline)
             {
                 return new ProcessOutput("", "No internet");
             }
@@ -144,11 +144,6 @@ namespace AndroidSideloader
 
         public static ProcessOutput runRcloneCommand_UploadConfig(string command)
         {
-            if (!MainForm.HasInternet)
-            {
-                return new ProcessOutput("", "No internet");
-            }
-
             ProcessOutput prcoutput = new ProcessOutput();
             //Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
@@ -226,7 +221,7 @@ namespace AndroidSideloader
 
         public static ProcessOutput runRcloneCommand_PublicConfig(string command)
         {
-            if (!MainForm.HasInternet || MainForm.isOffline)
+            if (MainForm.isOffline)
             {
                 return new ProcessOutput("", "No internet");
             }
