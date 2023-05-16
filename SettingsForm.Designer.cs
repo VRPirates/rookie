@@ -219,7 +219,7 @@ namespace AndroidSideloader
             this.setBackupDirectory.ForeColor = System.Drawing.Color.White;
             this.setBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setBackupDirectory.Location = new System.Drawing.Point(29, 495);
+            this.setBackupDirectory.Location = new System.Drawing.Point(27, 514);
             this.setBackupDirectory.Name = "setBackupDirectory";
             this.setBackupDirectory.Radius = 5;
             this.setBackupDirectory.Size = new System.Drawing.Size(285, 31);
@@ -240,7 +240,7 @@ namespace AndroidSideloader
             this.setDownloadDirectory.ForeColor = System.Drawing.Color.White;
             this.setDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.Location = new System.Drawing.Point(29, 458);
+            this.setDownloadDirectory.Location = new System.Drawing.Point(27, 477);
             this.setDownloadDirectory.Name = "setDownloadDirectory";
             this.setDownloadDirectory.Radius = 5;
             this.setDownloadDirectory.Size = new System.Drawing.Size(285, 31);
@@ -261,7 +261,7 @@ namespace AndroidSideloader
             this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
             this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.Location = new System.Drawing.Point(28, 347);
+            this.btnOpenDebug.Location = new System.Drawing.Point(26, 350);
             this.btnOpenDebug.Name = "btnOpenDebug";
             this.btnOpenDebug.Radius = 5;
             this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
@@ -282,7 +282,7 @@ namespace AndroidSideloader
             this.btnResetDebug.ForeColor = System.Drawing.Color.White;
             this.btnResetDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnResetDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnResetDebug.Location = new System.Drawing.Point(28, 384);
+            this.btnResetDebug.Location = new System.Drawing.Point(26, 387);
             this.btnResetDebug.Name = "btnResetDebug";
             this.btnResetDebug.Radius = 5;
             this.btnResetDebug.Size = new System.Drawing.Size(285, 31);
@@ -303,7 +303,7 @@ namespace AndroidSideloader
             this.btnUploadDebug.ForeColor = System.Drawing.Color.White;
             this.btnUploadDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnUploadDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnUploadDebug.Location = new System.Drawing.Point(28, 421);
+            this.btnUploadDebug.Location = new System.Drawing.Point(26, 424);
             this.btnUploadDebug.Name = "btnUploadDebug";
             this.btnUploadDebug.Radius = 5;
             this.btnUploadDebug.Size = new System.Drawing.Size(285, 31);
@@ -324,7 +324,7 @@ namespace AndroidSideloader
             this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
             this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Location = new System.Drawing.Point(180, 310);
+            this.resetSettingsButton.Location = new System.Drawing.Point(179, 297);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Radius = 5;
             this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
@@ -348,7 +348,7 @@ namespace AndroidSideloader
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Location = new System.Drawing.Point(28, 310);
+            this.applyButton.Location = new System.Drawing.Point(27, 297);
             this.applyButton.Name = "applyButton";
             this.applyButton.Radius = 5;
             this.applyButton.Size = new System.Drawing.Size(133, 31);
@@ -365,7 +365,7 @@ namespace AndroidSideloader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.ClientSize = new System.Drawing.Size(342, 579);
+            this.ClientSize = new System.Drawing.Size(339, 561);
             this.Controls.Add(this.singleThread);
             this.Controls.Add(this.setBackupDirectory);
             this.Controls.Add(this.trailersOn);
