@@ -2590,7 +2590,7 @@ Things you can try:
                                 gamesQueListBox.DataSource = null;
                                 gamesQueListBox.DataSource = gamesQueueList;
                             }
-                            else if (!gameDownloadOutput.Error.Contains("localhost"))
+                            else if (!gameDownloadOutput.Error.Contains("Serving remote control on http://127.0.0.1:5572/"))
                             {
                                 otherError = true;
 
