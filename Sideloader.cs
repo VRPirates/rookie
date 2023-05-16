@@ -328,8 +328,8 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                 {
                     currentAccessedWebsite = "rclone";
                     string url = Environment.Is64BitOperatingSystem
-                        ? "https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-windows-amd64.zip"
-                        : "https://downloads.rclone.org/v1.55.1/rclone-v1.55.1-windows-386.zip";
+                        ? "https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-amd64.zip"
+                        : "https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-386.zip";
                     //Since sideloader is build for x86, it should work on both x86 and x64 so we download the according rclone version
 
                     client.DownloadFile(url, "rclone.zip");
