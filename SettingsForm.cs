@@ -154,7 +154,7 @@ namespace AndroidSideloader
         private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.nodevicemode = nodevicemodeBox.Checked;
-            if (!deleteAfterInstallCheckBox.Checked)
+            if (!nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = true;
                 Properties.Settings.Default.deleteAllAfterInstall = true;
