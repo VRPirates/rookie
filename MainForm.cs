@@ -3087,7 +3087,7 @@ Things you can try:
         }
         private void gamesQueListBox_MouseClick(object sender, MouseEventArgs e)
         {
-            if (gamesQueListBox.SelectedIndex == 0)
+            if (gamesQueListBox.SelectedIndex == 0 && gamesQueueList.Count == 1)
             {
                 removedownloading = true;
                 RCLONE.killRclone();
