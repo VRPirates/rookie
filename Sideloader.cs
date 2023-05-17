@@ -1,5 +1,6 @@
 ﻿using JR.Utils.GUI.Forms;
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Text.RegularExpressions;
@@ -107,7 +108,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     RecursiveSideload(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
         }
 
         //Recursive copy any obb folder
@@ -125,7 +126,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     RecursiveCopyOBB(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
         }
 
         //uninstalls an app
@@ -348,6 +349,31 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         }
                     }
                 }
+                else
+                {
+                    string pathToRclone = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
+                    if (File.Exists(pathToRclone))
+                    {
+                        var versionInfo = FileVersionInfo.GetVersionInfo(pathToRclone);
+                        string version = versionInfo.ProductVersion;
+                        Logger.Log($"Current RCLONE Version {version}");
+                        if (version != "1.62.2")
+                        {
+                            Logger.Log("RCLONE Version not matching! Downloading required version.", "WARNING");
+                            File.Delete(pathToRclone);
+                            currentAccessedWebsite = "rclone";
+                            string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
+                            string url = $"https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-{architecture}.zip";
+                            client.DownloadFile(url, "rclone.zip");
+                            Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
+                            File.Delete("rclone.zip");
+                            string rcloneDirectory = Path.Combine(Environment.CurrentDirectory, $"rclone-v1.62.2-windows-{architecture}");
+                            File.Move(Path.Combine(rcloneDirectory, "rclone.exe"), pathToRclone);
+                            Directory.Delete(rcloneDirectory, true);
+                        }
+                    }
+                }
+
 
             }
             catch (Exception ex)

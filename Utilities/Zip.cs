@@ -60,7 +60,7 @@ namespace AndroidSideloader.Utilities
                         MessageBoxIcon.Error);
                 }
                 _ = Logger.Log(x.StandardOutput.ReadToEnd());
-                _ = Logger.Log(error);
+                _ = Logger.Log(error, "ERROR");
                 throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
             }
         }

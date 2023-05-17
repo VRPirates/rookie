@@ -91,7 +91,7 @@ namespace AndroidSideloader
                 _ = Logger.Log(output);
             }
 
-            _ = Logger.Log(error);
+            _ = Logger.Log(error, "ERROR");
             return new ProcessOutput(output, error);
         }
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
@@ -166,7 +166,7 @@ namespace AndroidSideloader
                 }
             }
             _ = Logger.Log(output);
-            _ = Logger.Log(error);
+            _ = Logger.Log(error, "ERROR");
             return new ProcessOutput(output, error);
         }
         public static ProcessOutput RunCommandToString(string result, string path = "")
@@ -229,7 +229,7 @@ namespace AndroidSideloader
                 }
             }
             _ = Logger.Log(output);
-            _ = Logger.Log(error);
+            _ = Logger.Log(error, "ERROR");
             return new ProcessOutput(output, error);
         }
 
@@ -254,7 +254,7 @@ namespace AndroidSideloader
 
             foreach (string currLine in output)
             {
-                if (currLine.StartsWith("/data/media"))
+                if (currLine.StartsWith("/dev/fuse") | currLine.StartsWith("/data/media"))
                 {
                     string[] foo = currLine.Split(' ');
                     int i = 0;
