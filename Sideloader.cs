@@ -108,7 +108,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     RecursiveSideload(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
         }
 
         //Recursive copy any obb folder
@@ -126,7 +126,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     RecursiveCopyOBB(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
         }
 
         //uninstalls an app

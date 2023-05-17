@@ -646,7 +646,7 @@ namespace AndroidSideloader
                 {
                     Devices.Add(currLine.Split('	')[0]);
                     _ = devicesComboBox.Items.Add(currLine.Split('	')[0]);
-                    _ = Logger.Log(currLine.Split('	')[0] + "\n", false);
+                    _ = Logger.Log(currLine.Split('	')[0] + "\n", "INFO", false);
                 }
                 Debug.WriteLine(currLine);
                 i++;
@@ -805,7 +805,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    _ = Logger.Log($"Unable to get available space with the exception: {ex}");
+                    _ = Logger.Log($"Unable to get available space with the exception: {ex}", "ERROR");
 
                 }
             }
@@ -855,7 +855,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    _ = Logger.Log($"Exception on backup: {ex}");
+                    _ = Logger.Log($"Exception on backup: {ex}", "ERROR");
                 }
             })
             {
@@ -1690,9 +1690,9 @@ namespace AndroidSideloader
                                 catch (Exception ex)
                                 {
                                     Game.ForeColor = colorFont_error;
-                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
                                     _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
                                 }
                             }
                         }
@@ -2879,7 +2879,7 @@ Things you can try:
                 }
                 else
                 {
-                    _ = Logger.Log("Unable to compare obbs with the exception" + ex.Message);
+                    _ = Logger.Log("Unable to compare obbs with the exception" + ex.Message, "ERROR");
                     _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
                     return false;
                 }
@@ -3772,9 +3772,9 @@ Things you can try:
                                 catch (Exception ex)
                                 {
                                     Game.ForeColor = colorFont_error;
-                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
                                     _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
                                 }
                             }
                         }
@@ -4109,9 +4109,9 @@ Things you can try:
                                 catch (Exception ex)
                                 {
                                     Game.ForeColor = colorFont_error;
-                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
                                     _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
                                 }
                             }
                         }
@@ -4253,9 +4253,9 @@ Things you can try:
                                 catch (Exception ex)
                                 {
                                     Game.ForeColor = colorFont_error;
-                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView");
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
                                     _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
                                 }
                             }
                         }

@@ -255,7 +255,7 @@ namespace AndroidSideloader
                 {
                     string resultString = responseReader.ReadToEnd();
 
-                    _ = Logger.Log($"Retrived updated config from: {configUrl}");
+                    _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
                     File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.upload.config", resultString);
 
@@ -264,7 +264,7 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Upload config: {e.Message}");
+                _ = Logger.Log($"Failed to update Upload config: {e.Message}", "ERROR");
             }
         }
 
@@ -284,7 +284,7 @@ namespace AndroidSideloader
                 {
                     string resultString = responseReader.ReadToEnd();
 
-                    _ = Logger.Log($"Retrived updated config from: {configUrl}");
+                    _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
                     File.WriteAllText(Environment.CurrentDirectory + "\\vrp-public.json", resultString);
 
@@ -293,7 +293,7 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Public config: {e.Message}");
+                _ = Logger.Log($"Failed to update Public config: {e.Message}", "ERROR");
             }
         }
 
