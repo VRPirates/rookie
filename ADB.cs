@@ -254,7 +254,7 @@ namespace AndroidSideloader
 
             foreach (string currLine in output)
             {
-                if (currLine.StartsWith("/dev/fuse") | currLine.StartsWith("/data/media"))
+                if (currLine.StartsWith("/dev/fuse") || currLine.StartsWith("/data/media"))
                 {
                     string[] foo = currLine.Split(' ');
                     int i = 0;
