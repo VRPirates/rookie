@@ -24,7 +24,6 @@ namespace AndroidSideloader
             }
             if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP"))
             {
-
                 string logcmd = command;
 
                 if (logcmd.Contains(Environment.CurrentDirectory))
@@ -37,15 +36,11 @@ namespace AndroidSideloader
             adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
-            adb.StartInfo.RedirectStandardInput = true;
             adb.StartInfo.RedirectStandardOutput = true;
             adb.StartInfo.CreateNoWindow = true;
             adb.StartInfo.UseShellExecute = false;
             adb.StartInfo.WorkingDirectory = adbFolderPath;
             _ = adb.Start();
-            adb.StandardInput.WriteLine(command);
-            adb.StandardInput.Flush();
-            adb.StandardInput.Close();
 
             string output = "";
             string error = "";
@@ -56,9 +51,10 @@ namespace AndroidSideloader
                 error = adb.StandardError.ReadToEnd();
             }
             catch { }
+
             if (command.Contains("connect"))
             {
-                bool graceful = adb.WaitForExit(3000);  //Wait 3 secs.
+                bool graceful = adb.WaitForExit(3000);  // Wait 3 secs.
                 if (!graceful)
                 {
                     adb.Kill();
@@ -94,6 +90,7 @@ namespace AndroidSideloader
             _ = Logger.Log(error, "ERROR");
             return new ProcessOutput(output, error);
         }
+
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
             string command = result;
