@@ -2777,7 +2777,10 @@ Things you can try:
                     ChangeTitle("Refreshing games list, please wait...         \n");
                     showAvailableSpace();
                     listappsbtn();
-                    initListView();
+                    if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked)
+                    {
+                        initListView();
+                    }
                     ShowPrcOutput(output);
                     progressBar.Style = ProgressBarStyle.Continuous;
                     etaLabel.Text = "ETA: Finished Queue";
