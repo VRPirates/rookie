@@ -325,12 +325,20 @@ namespace AndroidSideloader
                     ADB.WakeDevice();
                     if (!Properties.Settings.Default.AutoReinstall)
                     {
-                        DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed. Rookie can attempt to backup your save data and\nreinstall the game automatically, however " +
-                            "some games do not store their saves\nin an accessible location(less than 5%). Continue with reinstall?", "In place upgrade failed.", MessageBoxButtons.OKCancel);
-                        if (dialogResult1 == DialogResult.Cancel)
+                        bool cancelClicked = false;
+
+                        if (!Properties.Settings.Default.AutoReinstall)
                         {
-                            return ret;
+                            Program.form.Invoke((MethodInvoker)(() =>
+                            {
+                                DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed. Rookie can attempt to backup your save data and reinstall the game automatically, however some games do not store their saves in an accessible location (less than 5%). Continue with reinstall?", "In place upgrade failed.", MessageBoxButtons.OKCancel);
+                                if (dialogResult1 == DialogResult.Cancel)
+                                    cancelClicked = true;
+                            }));
                         }
+
+                        if (cancelClicked)
+                            return ret;
                     }
 
                     Program.form.ChangeTitle("Performing reinstall, please wait...");
