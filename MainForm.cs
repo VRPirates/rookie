@@ -2484,39 +2484,31 @@ Things you can try:
                         try
                         {
                             HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
-
                             string foo = await response.Content.ReadAsStringAsync();
-
                             Debug.WriteLine("RESP CONTENT " + foo);
                             dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
 
-                            float downloadSpeed = results.speed.ToObject<float>();
-
-                            long allSize = 0;
-
-                            long downloaded = 0;
-
-                            dynamic check = results.transferring;
-
                             if (results["transferring"] != null)
                             {
+                                long allSize = 0;
+                                long downloaded = 0;
+
                                 foreach (dynamic obj in results.transferring)
                                 {
                                     allSize += obj["size"].ToObject<long>();
                                     downloaded += obj["bytes"].ToObject<long>();
                                 }
+
+                                float downloadSpeed = results.speed.ToObject<float>() / 1000000;
                                 allSize /= 1000000;
                                 downloaded /= 1000000;
+
                                 Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (downloaded / (double)allSize * 100));
-                                try
-                                {
-                                    progressBar.Style = ProgressBarStyle.Continuous;
-                                    progressBar.Value = Convert.ToInt32(downloaded / (double)allSize * 100);
-                                }
-                                catch { }
+
+                                progressBar.Style = ProgressBarStyle.Continuous;
+                                progressBar.Value = Convert.ToInt32(downloaded / (double)allSize * 100);
 
                                 i++;
-                                downloadSpeed /= 1000000;
                                 if (i == 4)
                                 {
                                     i = 0;
@@ -2531,7 +2523,6 @@ Things you can try:
                         catch { }
 
                         await Task.Delay(100);
-
 
                     }
 
