@@ -2094,27 +2094,14 @@ namespace AndroidSideloader
         private void sideloadContainer_Click(object sender, EventArgs e)
         {
             ShowSubMenu(sideloadContainer);
-            if (sideloadDrop.Text == "▼ SIDELOAD ▼")
-            {
-                sideloadDrop.Text = "▶ SIDELOAD ◀";
-            }
-            else if (sideloadDrop.Text == "▶ SIDELOAD ◀")
-            {
-                sideloadDrop.Text = "▼ SIDELOAD ▼";
-            }
+            sideloadDrop.Text = (sideloadDrop.Text == "▼ SIDELOAD ▼") ? "▶ SIDELOAD ◀" : "▼ SIDELOAD ▼";
         }
+
 
         private void backupDrop_Click(object sender, EventArgs e)
         {
             ShowSubMenu(backupContainer);
-            if (backupDrop.Text == "▼ BACKUP / RESTORE ▼")
-            {
-                backupDrop.Text = "▶ BACKUP / RESTORE ◀";
-            }
-            else if (backupDrop.Text == "▶ BACKUP / RESTORE ◀")
-            {
-                backupDrop.Text = "▼ BACKUP / RESTORE ▼";
-            }
+            backupDrop.Text = (backupDrop.Text == "▼ BACKUP / RESTORE ▼") ? "▶ BACKUP / RESTORE ◀" : "▼ BACKUP / RESTORE ▼";
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
@@ -3079,15 +3066,9 @@ Things you can try:
         private void otherDrop_Click(object sender, EventArgs e)
         {
             ShowSubMenu(otherContainer);
-            if (otherDrop.Text == "▼ OTHER ▼")
-            {
-                otherDrop.Text = "▶ OTHER ◀";
-            }
-            else if (otherDrop.Text == "▶ OTHER ◀")
-            {
-                otherDrop.Text = "▼ OTHER ▼";
-            }
+            otherDrop.Text = (otherDrop.Text == "▼ OTHER ▼") ? "▶ OTHER ◀" : "▼ OTHER ▼";
         }
+
         private void gamesQueListBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (gamesQueListBox.SelectedIndex == 0 && gamesQueueList.Count == 1)
