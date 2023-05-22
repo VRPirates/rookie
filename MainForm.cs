@@ -3169,6 +3169,7 @@ Things you can try:
                 label2.Visible = false;
             }
         }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.F))
@@ -3347,17 +3348,14 @@ Things you can try:
 
         static string ExtractVideoUrl(string html)
         {
-            // Use the regular expression to find the first video URL in the search results page HTML
-            string pattern = @"url""\:\""/watch\?v\=(.*?(?=""))";
-            Match match = Regex.Match(html, pattern);
+            Match match = Regex.Match(html, @"url""\:\""/watch\?v\=(.*?(?=""))");
             if (!match.Success)
             {
                 return "";
             }
-            // Extract the video URL from the match
+
             string url = match.Groups[1].Value;
-            // Create the embed URL
-            return "https://www.youtube.com/embed/" + url + "?autoplay=1&mute=1&enablejsapi=1&modestbranding=1";
+            return $"https://www.youtube.com/embed/{url}?autoplay=1&mute=1&enablejsapi=1&modestbranding=1";
         }
 
         private async Task CreateEnviroment()
@@ -3456,20 +3454,15 @@ Things you can try:
                     enviromentCreated = true;
                 }
                 webView21.Show();
-                string query = CurrentGameName + " VR trailer";
-                // Encode the search query for use in a URL
+                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
                 string encodedQuery = WebUtility.UrlEncode(query);
-                // Construct the YouTube search URL
-                string url = "https://www.youtube.com/results?search_query=" + encodedQuery;
+                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                // Download the search results page HTML
-                string html;
-                using (var client = new WebClient())
+                string videoUrl; 
+                using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
                 {
-                    html = client.DownloadString(url);
+                    videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
                 }
-                // Extract the first video URL from the HTML
-                string videoUrl = ExtractVideoUrl(html);
                 if (videoUrl == "")
                 {
                     MessageBox.Show("No video URL found in search results.");
