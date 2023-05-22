@@ -3398,14 +3398,17 @@ Things you can try:
                     keyheld = true;
                 }
 
+                string[] imageExtensions = { ".jpg", ".png" };
                 string ImagePath = "";
-                if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg"))
+
+                foreach (string extension in imageExtensions)
                 {
-                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
-                }
-                else if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png"))
-                {
-                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png";
+                    string path = Path.Combine(SideloaderRCLONE.ThumbnailsFolder, $"{CurrentPackageName}{extension}");
+                    if (File.Exists(path))
+                    {
+                        ImagePath = path;
+                        break;
+                    }
                 }
 
                 if (gamesPictureBox.BackgroundImage != null)
