@@ -2333,9 +2333,7 @@ Things you can try:
                     _ = await CheckForDevice();
                     ChangeTitlebarToDevice();
                     showAvailableSpace();
-                    ChangeTitle("Device now detected... refreshing update list.");
                     listappsbtn();
-                    initListView();
                 }
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (gamesListView.SelectedItems.Count == 0)
@@ -2769,7 +2767,7 @@ Things you can try:
                     ChangeTitle("Refreshing games list, please wait...         \n");
                     showAvailableSpace();
                     listappsbtn();
-                    if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked)
+                    if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !Properties.Settings.Default.nodevicemode && !gamesQueueList.Any())
                     {
                         initListView();
                     }
@@ -2846,7 +2844,10 @@ Things you can try:
                         ChangeTitle("Refreshing games list, please wait...         \n");
                         showAvailableSpace();
                         listappsbtn();
-                        initListView();
+                        if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !Properties.Settings.Default.nodevicemode && !gamesQueueList.Any())
+                        {
+                            initListView();
+                        }
                         ShowPrcOutput(output);
                         progressBar.Style = ProgressBarStyle.Continuous;
                         etaLabel.Text = "ETA: Finished Queue";
