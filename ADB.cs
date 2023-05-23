@@ -24,7 +24,6 @@ namespace AndroidSideloader
             }
             if (!command.Contains("dumpsys") && !command.Contains("shell pm list packages") && !command.Contains("KEYCODE_WAKEUP"))
             {
-
                 string logcmd = command;
 
                 if (logcmd.Contains(Environment.CurrentDirectory))
@@ -37,15 +36,11 @@ namespace AndroidSideloader
             adb.StartInfo.FileName = adbFilePath;
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
-            adb.StartInfo.RedirectStandardInput = true;
             adb.StartInfo.RedirectStandardOutput = true;
             adb.StartInfo.CreateNoWindow = true;
             adb.StartInfo.UseShellExecute = false;
             adb.StartInfo.WorkingDirectory = adbFolderPath;
             _ = adb.Start();
-            adb.StandardInput.WriteLine(command);
-            adb.StandardInput.Flush();
-            adb.StandardInput.Close();
 
             string output = "";
             string error = "";
@@ -56,9 +51,10 @@ namespace AndroidSideloader
                 error = adb.StandardError.ReadToEnd();
             }
             catch { }
+
             if (command.Contains("connect"))
             {
-                bool graceful = adb.WaitForExit(3000);  //Wait 3 secs.
+                bool graceful = adb.WaitForExit(3000);  // Wait 3 secs.
                 if (!graceful)
                 {
                     adb.Kill();
@@ -94,6 +90,7 @@ namespace AndroidSideloader
             _ = Logger.Log(error, "ERROR");
             return new ProcessOutput(output, error);
         }
+
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
         {
             string command = result;
@@ -325,12 +322,20 @@ namespace AndroidSideloader
                     ADB.WakeDevice();
                     if (!Properties.Settings.Default.AutoReinstall)
                     {
-                        DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed. Rookie can attempt to backup your save data and\nreinstall the game automatically, however " +
-                            "some games do not store their saves\nin an accessible location(less than 5%). Continue with reinstall?", "In place upgrade failed.", MessageBoxButtons.OKCancel);
-                        if (dialogResult1 == DialogResult.Cancel)
+                        bool cancelClicked = false;
+
+                        if (!Properties.Settings.Default.AutoReinstall)
                         {
-                            return ret;
+                            Program.form.Invoke((MethodInvoker)(() =>
+                            {
+                                DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed. Rookie can attempt to backup your save data and reinstall the game automatically, however some games do not store their saves in an accessible location (less than 5%). Continue with reinstall?", "In place upgrade failed.", MessageBoxButtons.OKCancel);
+                                if (dialogResult1 == DialogResult.Cancel)
+                                    cancelClicked = true;
+                            }));
                         }
+
+                        if (cancelClicked)
+                            return ret;
                     }
 
                     Program.form.ChangeTitle("Performing reinstall, please wait...");

@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,9 +13,28 @@ namespace AndroidSideloader
         //Kill all rclone, using a static rclone variable doesn't work for some reason #tofix
         public static void killRclone()
         {
-            foreach (var process in Process.GetProcessesByName("rclone"))
+            var parentProcessId = Process.GetCurrentProcess().Id;
+            var processes = Process.GetProcessesByName("rclone");
+
+            foreach (var process in processes)
             {
-                process.Kill();
+                try
+                {
+                    using (ManagementObject obj = new ManagementObject($"win32_process.handle='{process.Id}'"))
+                    {
+                        obj.Get();
+                        var ppid = Convert.ToInt32(obj["ParentProcessId"]);
+
+                        if (ppid == parentProcessId)
+                        {
+                            process.Kill();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception if the process no longer exists
+                }
             }
         }
 

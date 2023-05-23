@@ -2094,27 +2094,14 @@ namespace AndroidSideloader
         private void sideloadContainer_Click(object sender, EventArgs e)
         {
             ShowSubMenu(sideloadContainer);
-            if (sideloadDrop.Text == "▼ SIDELOAD ▼")
-            {
-                sideloadDrop.Text = "▶ SIDELOAD ◀";
-            }
-            else if (sideloadDrop.Text == "▶ SIDELOAD ◀")
-            {
-                sideloadDrop.Text = "▼ SIDELOAD ▼";
-            }
+            sideloadDrop.Text = (sideloadDrop.Text == "▼ SIDELOAD ▼") ? "▶ SIDELOAD ◀" : "▼ SIDELOAD ▼";
         }
+
 
         private void backupDrop_Click(object sender, EventArgs e)
         {
             ShowSubMenu(backupContainer);
-            if (backupDrop.Text == "▼ BACKUP / RESTORE ▼")
-            {
-                backupDrop.Text = "▶ BACKUP / RESTORE ◀";
-            }
-            else if (backupDrop.Text == "▶ BACKUP / RESTORE ◀")
-            {
-                backupDrop.Text = "▼ BACKUP / RESTORE ▼";
-            }
+            backupDrop.Text = (backupDrop.Text == "▼ BACKUP / RESTORE ▼") ? "▶ BACKUP / RESTORE ◀" : "▼ BACKUP / RESTORE ▼";
         }
 
         private void settingsButton_Click(object sender, EventArgs e)
@@ -2497,39 +2484,31 @@ Things you can try:
                         try
                         {
                             HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
-
                             string foo = await response.Content.ReadAsStringAsync();
-
                             Debug.WriteLine("RESP CONTENT " + foo);
                             dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
 
-                            float downloadSpeed = results.speed.ToObject<float>();
-
-                            long allSize = 0;
-
-                            long downloaded = 0;
-
-                            dynamic check = results.transferring;
-
                             if (results["transferring"] != null)
                             {
+                                long allSize = 0;
+                                long downloaded = 0;
+
                                 foreach (dynamic obj in results.transferring)
                                 {
                                     allSize += obj["size"].ToObject<long>();
                                     downloaded += obj["bytes"].ToObject<long>();
                                 }
+
+                                float downloadSpeed = results.speed.ToObject<float>() / 1000000;
                                 allSize /= 1000000;
                                 downloaded /= 1000000;
+
                                 Debug.WriteLine("Allsize: " + allSize + "\nDownloaded: " + downloaded + "\nValue: " + (downloaded / (double)allSize * 100));
-                                try
-                                {
-                                    progressBar.Style = ProgressBarStyle.Continuous;
-                                    progressBar.Value = Convert.ToInt32(downloaded / (double)allSize * 100);
-                                }
-                                catch { }
+
+                                progressBar.Style = ProgressBarStyle.Continuous;
+                                progressBar.Value = Convert.ToInt32(downloaded / (double)allSize * 100);
 
                                 i++;
-                                downloadSpeed /= 1000000;
                                 if (i == 4)
                                 {
                                     i = 0;
@@ -2544,7 +2523,6 @@ Things you can try:
                         catch { }
 
                         await Task.Delay(100);
-
 
                     }
 
@@ -2611,8 +2589,22 @@ Things you can try:
                         {
                             try
                             {
-                                ChangeTitle("Extracting " + gameName, false);
-                                Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                Thread extractionThread = new Thread(() =>
+                                {
+                                    ChangeTitle("Extracting " + gameName, false);
+                                    Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                    Program.form.ChangeTitle("");
+                                })
+                                {
+                                    IsBackground = true
+                                };
+                                extractionThread.Start();
+
+                                while (extractionThread.IsAlive)
+                                {
+                                    await Task.Delay(100);
+                                }
+
                                 if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
                                 {
                                     Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
@@ -2677,7 +2669,7 @@ Things you can try:
                                     }
                                     else
                                     {
-                                        output.Output += "All tasks finished. ";
+                                        output.Output += "All tasks finished. \n";
                                     }
                                 }
                                 if (!isinstalltxt)
@@ -2749,7 +2741,7 @@ Things you can try:
                                     }
                                     else
                                     {
-                                        output.Output += "All tasks finished. ";
+                                        output.Output += "All tasks finished. \n";
                                     }
                                 }
                                 ChangeTitle($"Installation of {gameName} completed.");
@@ -2777,7 +2769,10 @@ Things you can try:
                     ChangeTitle("Refreshing games list, please wait...         \n");
                     showAvailableSpace();
                     listappsbtn();
-                    initListView();
+                    if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked)
+                    {
+                        initListView();
+                    }
                     ShowPrcOutput(output);
                     progressBar.Style = ProgressBarStyle.Continuous;
                     etaLabel.Text = "ETA: Finished Queue";
@@ -3076,15 +3071,9 @@ Things you can try:
         private void otherDrop_Click(object sender, EventArgs e)
         {
             ShowSubMenu(otherContainer);
-            if (otherDrop.Text == "▼ OTHER ▼")
-            {
-                otherDrop.Text = "▶ OTHER ◀";
-            }
-            else if (otherDrop.Text == "▶ OTHER ◀")
-            {
-                otherDrop.Text = "▼ OTHER ▼";
-            }
+            otherDrop.Text = (otherDrop.Text == "▼ OTHER ▼") ? "▶ OTHER ◀" : "▼ OTHER ▼";
         }
+
         private void gamesQueListBox_MouseClick(object sender, MouseEventArgs e)
         {
             if (gamesQueListBox.SelectedIndex == 0 && gamesQueueList.Count == 1)
@@ -3185,6 +3174,7 @@ Things you can try:
                 label2.Visible = false;
             }
         }
+
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             if (keyData == (Keys.Control | Keys.F))
@@ -3363,17 +3353,14 @@ Things you can try:
 
         static string ExtractVideoUrl(string html)
         {
-            // Use the regular expression to find the first video URL in the search results page HTML
-            string pattern = @"url""\:\""/watch\?v\=(.*?(?=""))";
-            Match match = Regex.Match(html, pattern);
+            Match match = Regex.Match(html, @"url""\:\""/watch\?v\=(.*?(?=""))");
             if (!match.Success)
             {
                 return "";
             }
-            // Extract the video URL from the match
+
             string url = match.Groups[1].Value;
-            // Create the embed URL
-            return "https://www.youtube.com/embed/" + url + "?autoplay=1&mute=1&enablejsapi=1&modestbranding=1";
+            return $"https://www.youtube.com/embed/{url}?autoplay=1&mute=1&enablejsapi=1&modestbranding=1";
         }
 
         private async Task CreateEnviroment()
@@ -3425,14 +3412,17 @@ Things you can try:
                     keyheld = true;
                 }
 
+                string[] imageExtensions = { ".jpg", ".png" };
                 string ImagePath = "";
-                if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg"))
+
+                foreach (string extension in imageExtensions)
                 {
-                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.jpg";
-                }
-                else if (File.Exists($"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png"))
-                {
-                    ImagePath = $"{SideloaderRCLONE.ThumbnailsFolder}\\{CurrentPackageName}.png";
+                    string path = Path.Combine(SideloaderRCLONE.ThumbnailsFolder, $"{CurrentPackageName}{extension}");
+                    if (File.Exists(path))
+                    {
+                        ImagePath = path;
+                        break;
+                    }
                 }
 
                 if (gamesPictureBox.BackgroundImage != null)
@@ -3472,20 +3462,15 @@ Things you can try:
                     enviromentCreated = true;
                 }
                 webView21.Show();
-                string query = CurrentGameName + " VR trailer";
-                // Encode the search query for use in a URL
+                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
                 string encodedQuery = WebUtility.UrlEncode(query);
-                // Construct the YouTube search URL
-                string url = "https://www.youtube.com/results?search_query=" + encodedQuery;
+                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                // Download the search results page HTML
-                string html;
-                using (var client = new WebClient())
+                string videoUrl; 
+                using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
                 {
-                    html = client.DownloadString(url);
+                    videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
                 }
-                // Extract the first video URL from the HTML
-                string videoUrl = ExtractVideoUrl(html);
                 if (videoUrl == "")
                 {
                     MessageBox.Show("No video URL found in search results.");
