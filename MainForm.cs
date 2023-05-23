@@ -2589,8 +2589,22 @@ Things you can try:
                         {
                             try
                             {
-                                ChangeTitle("Extracting " + gameName, false);
-                                Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                Thread extractionThread = new Thread(() =>
+                                {
+                                    ChangeTitle("Extracting " + gameName, false);
+                                    Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                    Program.form.ChangeTitle("");
+                                })
+                                {
+                                    IsBackground = true
+                                };
+                                extractionThread.Start();
+
+                                while (extractionThread.IsAlive)
+                                {
+                                    await Task.Delay(100);
+                                }
+
                                 if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
                                 {
                                     Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
