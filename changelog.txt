@@ -3,14 +3,14 @@ RSL 2.20
 - Feature: Added manual IP on Wireless ADB
 - Feature: Rookie will now delete old OBB Folders before pushing new obb folders
 - Feature: Add Single-Thread mode in settings (For users with download issues using multiple threads)
-- Feature: Add a setting to disable reloading the game list whenever a game gets added into the download queue
-- Fix: Device Storage and battery display
+- Fix: Device Storage display
 - Fix: Games that come with install.txt will now check for a device to avoid freezes
 - Fix: "No Device Mode" checkbox can't have "Delete after Download and Install" enabled at the same time anymore
 - Fix: Removing Queue Items should no longer ever crash Rookie
 - Fix: Rookie will no longer reload the gamelist if you have filtered it
 - Fix: Check if the rclone we are killing is ours
 - Fix: Put zip extraction into a thread to avoid freezing the UI
+- Fix: Filters should no longer cause crashes.
 - Chore: Update RCLONE to 1.62.2
 - Chore: Cleaning up the code for the Trailers, progress bar, dropdown categories, redundant internet checks, and other code cleanup
 - Chore: Other UI and message box display cleanup
