@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Management;
 using System.Text;
 using System.Windows.Forms;
 
@@ -12,9 +13,28 @@ namespace AndroidSideloader
         //Kill all rclone, using a static rclone variable doesn't work for some reason #tofix
         public static void killRclone()
         {
-            foreach (var process in Process.GetProcessesByName("rclone"))
+            var parentProcessId = Process.GetCurrentProcess().Id;
+            var processes = Process.GetProcessesByName("rclone");
+
+            foreach (var process in processes)
             {
-                process.Kill();
+                try
+                {
+                    using (ManagementObject obj = new ManagementObject($"win32_process.handle='{process.Id}'"))
+                    {
+                        obj.Get();
+                        var ppid = Convert.ToInt32(obj["ParentProcessId"]);
+
+                        if (ppid == parentProcessId)
+                        {
+                            process.Kill();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception if the process no longer exists
+                }
             }
         }
 
@@ -39,7 +59,7 @@ namespace AndroidSideloader
         //Run rclone command
         public static ProcessOutput runRcloneCommand_DownloadConfig(string command)
         {
-            if (!MainForm.HasInternet || MainForm.isOffline)
+            if (MainForm.isOffline)
             {
                 return new ProcessOutput("", "No internet");
             }
@@ -131,7 +151,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n");
+                    _ = Logger.Log($"Rclone error: {error}\n", "ERROR");
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))
@@ -144,11 +164,6 @@ namespace AndroidSideloader
 
         public static ProcessOutput runRcloneCommand_UploadConfig(string command)
         {
-            if (!MainForm.HasInternet)
-            {
-                return new ProcessOutput("", "No internet");
-            }
-
             ProcessOutput prcoutput = new ProcessOutput();
             //Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
@@ -200,7 +215,7 @@ namespace AndroidSideloader
             //if there is one of these errors, we switch the mirrors
             if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
-                _ = Logger.Log(error);
+                _ = Logger.Log(error, "ERROR");
                 return new ProcessOutput("Upload Failed.", "Upload failed.");
             }
             else
@@ -213,7 +228,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n");
+                    _ = Logger.Log($"Rclone error: {error}\n", "ERROR");
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))
@@ -226,7 +241,7 @@ namespace AndroidSideloader
 
         public static ProcessOutput runRcloneCommand_PublicConfig(string command)
         {
-            if (!MainForm.HasInternet || MainForm.isOffline)
+            if (MainForm.isOffline)
             {
                 return new ProcessOutput("", "No internet");
             }
@@ -292,7 +307,7 @@ namespace AndroidSideloader
                 || error.Contains("directory not found")
                 || error.Contains("Failed to"))
             {
-                _ = Logger.Log(error);
+                _ = Logger.Log(error, "ERROR");
                 return new ProcessOutput("Failed to fetch from public mirror.", "Failed to fetch from public mirror.");
             }
             else
@@ -305,7 +320,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n");
+                    _ = Logger.Log($"Rclone error: {error}\n", "ERROR");
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))

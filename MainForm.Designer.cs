@@ -125,9 +125,9 @@ namespace AndroidSideloader
             this.etaLabel_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.EnterInstallBox_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
+            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.downloadInstallGameButton = new AndroidSideloader.RoundButton();
             this.MountButton = new AndroidSideloader.RoundButton();
-            this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.ULGif)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.imgBattery)).BeginInit();
@@ -1059,6 +1059,7 @@ namespace AndroidSideloader
             // label2
             // 
             this.label2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.label2.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.label2.Location = new System.Drawing.Point(464, 196);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(271, 120);
@@ -1306,6 +1307,17 @@ namespace AndroidSideloader
             this.panel2.Size = new System.Drawing.Size(798, 34);
             this.panel2.TabIndex = 96;
             // 
+            // webView21
+            // 
+            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.webView21.CreationProperties = null;
+            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.webView21.Location = new System.Drawing.Point(224, 475);
+            this.webView21.Name = "webView21";
+            this.webView21.Size = new System.Drawing.Size(374, 214);
+            this.webView21.TabIndex = 97;
+            this.webView21.ZoomFactor = 1D;
+            // 
             // downloadInstallGameButton
             // 
             this.downloadInstallGameButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
@@ -1360,17 +1372,6 @@ namespace AndroidSideloader
             this.MountButton.Transparency = false;
             this.MountButton.Click += new System.EventHandler(this.MountButton_Click);
             this.MountButton.DragDrop += new System.Windows.Forms.DragEventHandler(this.Form1_DragDrop);
-            // 
-            // webView21
-            // 
-            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.webView21.CreationProperties = null;
-            this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.webView21.Location = new System.Drawing.Point(224, 475);
-            this.webView21.Name = "webView21";
-            this.webView21.Size = new System.Drawing.Size(374, 214);
-            this.webView21.TabIndex = 97;
-            this.webView21.ZoomFactor = 1D;
             // 
             // MainForm
             // 

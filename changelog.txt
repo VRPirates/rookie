@@ -1,19 +1,21 @@
-RSL 2.19
+RSL 2.20
 
-- Feature: Added streaming Game Trailers (enable in Settings)
-- Feature: Added custom Download Directories
-- Feature: Added custom Backup Directories
-- Feature: Added Game Filtering (click on the Colored-Labels in the Top-Right)
-- Feature: When uninstalling games, Rookie will now ask if you want to back up save data
-- Feature: "No Device Mode" now automatically disables "Delete after Download and Install"
-- Feature:  Offline Mode now has the ability to donate new games/updates
-- Fix:  OBBs will no longer be attempted to push in "No Device Mode"
-- Fix:  Comparing OBB sizes will no longer error during "No Device Mode"
-- Fix:  Comparing OBB Sizes will no longer state "Input string was not in a correct format", it will now properly tell the user what is wrong
-- Fix:  The GitHub Error when starting up will now show the actual URL it tries to access
-- Fix:  Added a check to make Rookie not attempt to get available space when no devices are connected
-- Removed Bandwidth Limit settings
+- Feature: Added manual IP on Wireless ADB
+- Feature: Rookie will now delete old OBB Folders before pushing new obb folders
+- Feature: Add Single-Thread mode in settings (For users with download issues using multiple threads)
+- Feature: Add a setting to disable reloading the game list whenever a game gets added into the download queue
+- Fix: Device Storage and battery display
+- Fix: Games that come with install.txt will now check for a device to avoid freezes
+- Fix: "No Device Mode" checkbox can't have "Delete after Download and Install" enabled at the same time anymore
+- Fix: Removing Queue Items should no longer ever crash Rookie
+- Fix: Rookie will no longer reload the gamelist if you have filtered it
+- Fix: Check if the rclone we are killing is ours
+- Fix: Put zip extraction into a thread to avoid freezing the UI
+- Chore: Update RCLONE to 1.62.2
+- Chore: Cleaning up the code for the Trailers, progress bar, dropdown categories, redundant internet checks, and other code cleanup
+- Chore: Other UI and message box display cleanup
+- Chore: Optimize the code for getting the thumbnail paths
+- Chore: Log Levels added to Debuglog
 
-- Thank you to Chax for the new features!
-- Thank you to JP for the Trailers framework!
+- Thank you to Chax for the new features and fixes!
 ~ fenopy
