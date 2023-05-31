@@ -33,7 +33,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception if the process no longer exists
+                    _ = Logger.Log("Exception occured while attempting to shut down RCLONE", "ERROR");
                 }
             }
         }
