@@ -16,7 +16,7 @@ namespace AndroidSideloader
         {
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -26,7 +26,7 @@ namespace AndroidSideloader
         }
         public static MainForm form;
 
-        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {
             Exception e = (Exception)args.ExceptionObject;
             string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
