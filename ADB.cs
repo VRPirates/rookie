@@ -78,7 +78,7 @@ namespace AndroidSideloader
                     _ = Logger.Log(output);
                 }
 
-                _ = Logger.Log(error, "ERROR");
+                _ = Logger.Log(error, LogLevel.ERROR);
                 return new ProcessOutput(output, error);
             }
         }
@@ -139,7 +139,7 @@ namespace AndroidSideloader
                 ADBDebugWarning();
             }
             _ = Logger.Log(output);
-            _ = Logger.Log(error, "ERROR");
+            _ = Logger.Log(error, LogLevel.ERROR);
             return new ProcessOutput(output, error);
         }
         public static ProcessOutput RunCommandToString(string result, string path = "")
@@ -190,7 +190,7 @@ namespace AndroidSideloader
                 ADBDebugWarning();
             }
             _ = Logger.Log(output);
-            _ = Logger.Log(error, "ERROR");
+            _ = Logger.Log(error, LogLevel.ERROR);
             return new ProcessOutput(output, error);
         }
 

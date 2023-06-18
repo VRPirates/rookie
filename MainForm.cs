@@ -650,7 +650,7 @@ namespace AndroidSideloader
                 {
                     Devices.Add(currLine.Split('	')[0]);
                     _ = devicesComboBox.Items.Add(currLine.Split('	')[0]);
-                    _ = Logger.Log(currLine.Split('	')[0] + "\n", "INFO", false);
+                    _ = Logger.Log(currLine.Split('	')[0] + "\n", LogLevel.INFO, false);
                 }
                 Debug.WriteLine(currLine);
                 i++;
@@ -809,7 +809,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    _ = Logger.Log($"Unable to get available space with the exception: {ex}", "ERROR");
+                    _ = Logger.Log($"Unable to get available space with the exception: {ex}", LogLevel.ERROR);
 
                 }
             }
@@ -859,7 +859,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    _ = Logger.Log($"Exception on backup: {ex}", "ERROR");
+                    _ = Logger.Log($"Exception on backup: {ex}", LogLevel.ERROR);
                 }
             })
             {
@@ -1694,9 +1694,9 @@ namespace AndroidSideloader
                                 catch (Exception ex)
                                 {
                                     Game.ForeColor = colorFont_error;
-                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
+                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", LogLevel.ERROR);
                                     _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
+                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", LogLevel.ERROR);
                                 }
                             }
                         }
@@ -2841,13 +2841,13 @@ Things you can try:
             catch (FormatException ex)
             {
                 _ = FlexibleMessageBox.Show("The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
-                Logger.Log($"Unable to compare obbs with the exception: {ex.Message}", "ERROR");
+                Logger.Log($"Unable to compare obbs with the exception: {ex.Message}", LogLevel.ERROR);
                 FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
                 return false;
             }
             catch (Exception ex)
             {
-                Logger.Log($"Unexpected error occurred while comparing OBBs: {ex.Message}", "ERROR");
+                Logger.Log($"Unexpected error occurred while comparing OBBs: {ex.Message}", LogLevel.ERROR);
                 FlexibleMessageBox.Show($"Unexpected error comparing OBB sizes: {ex.Message}");
                 return false;
             }
@@ -3755,9 +3755,9 @@ Things you can try:
                                     catch (Exception ex)
                                     {
                                         Game.ForeColor = colorFont_error;
-                                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
+                                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", LogLevel.ERROR);
                                         _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
+                                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", LogLevel.ERROR);
                                     }
                                 }
                             }
@@ -4092,9 +4092,9 @@ Things you can try:
                                     catch (Exception ex)
                                     {
                                         Game.ForeColor = colorFont_error;
-                                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
+                                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", LogLevel.ERROR);
                                         _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
+                                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", LogLevel.ERROR);
                                     }
                                 }
                             }
@@ -4236,9 +4236,9 @@ Things you can try:
                                     catch (Exception ex)
                                     {
                                         Game.ForeColor = colorFont_error;
-                                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", "ERROR");
+                                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", LogLevel.ERROR);
                                         _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", "ERROR");
+                                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", LogLevel.ERROR);
                                     }
                                 }
                             }

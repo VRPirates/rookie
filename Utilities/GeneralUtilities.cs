@@ -93,7 +93,7 @@ namespace AndroidSideloader.Utilities
             string error = cmd.StandardError.ReadToEnd();
             string output = cmd.StandardOutput.ReadToEnd();
             _ = Logger.Log($"Output: {output}");
-            _ = Logger.Log($"Error: {error}", "ERROR");
+            _ = Logger.Log($"Error: {error}", LogLevel.ERROR);
             return new ProcessOutput(output, error);
         }
 

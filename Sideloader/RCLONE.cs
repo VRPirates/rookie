@@ -264,7 +264,7 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Upload config: {e.Message}", "ERROR");
+                _ = Logger.Log($"Failed to update Upload config: {e.Message}", LogLevel.ERROR);
             }
         }
 
@@ -293,7 +293,7 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Public config: {e.Message}", "ERROR");
+                _ = Logger.Log($"Failed to update Public config: {e.Message}", LogLevel.ERROR);
             }
         }
 

@@ -106,7 +106,7 @@ namespace AndroidSideloader
                     RecursiveSideload(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, LogLevel.ERROR); }
         }
 
         //Recursive copy any obb folder
@@ -124,7 +124,7 @@ namespace AndroidSideloader
                     RecursiveCopyOBB(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, LogLevel.ERROR); }
         }
 
         //uninstalls an app
@@ -340,7 +340,7 @@ namespace AndroidSideloader
                         {
                             if (version != "1.62.2")
                             {
-                                Logger.Log("RCLONE Version not matching! Downloading required version.", "WARNING");
+                                Logger.Log("RCLONE Version not matching! Downloading required version.", LogLevel.WARNING);
                                 File.Delete(pathToRclone);
                                 currentAccessedWebsite = "rclone";
                                 string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
