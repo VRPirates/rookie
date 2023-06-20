@@ -18,8 +18,7 @@ namespace AndroidSideloader
     {
         private static readonly object lockObject = new object();
         private static string logFilePath = Properties.Settings.Default.CurrentLogPath;
-        private static bool enableContextualLogging = true;
-
+        
         public static bool Log(string text, LogLevel logLevel = LogLevel.INFO, bool ret = true)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Length <= 5)
@@ -43,17 +42,7 @@ namespace AndroidSideloader
 
             return ret;
         }
-
-        public static void SetLogFilePath(string path)
-        {
-            logFilePath = path;
-        }
-
-        public static void EnableContextualLogging(bool enable)
-        {
-            enableContextualLogging = enable;
-        }
-
+        
         private static string GetCallerInfo()
         {
             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace(true);
