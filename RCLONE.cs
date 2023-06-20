@@ -33,7 +33,7 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    _ = Logger.Log("Exception occured while attempting to shut down RCLONE", LogLevel.ERROR);
+                    _ = Logger.Log($"Exception occured while attempting to shut down RCLONE with exception message: {ex.Message}", LogLevel.ERROR);
                 }
             }
         }
@@ -296,7 +296,7 @@ namespace AndroidSideloader
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
-                return new ProcessOutput("Download failed.", "");
+                return new ProcessOutput("Download failed.", string.Empty);
             }
 
             if (error.Contains("Only one usage of each socket address (protocol/network address/port) is normally permitted")) {
