@@ -28,9 +28,11 @@ namespace AndroidSideloader
 
         private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {
+            // Capture unhandled exceptions and write to file. 
             Exception e = (Exception)args.ExceptionObject;
             string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
             File.WriteAllText(Sideloader.CrashLogPath, $"Date/Time of crash: {date_time}\nMessage: {e.Message}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}\nStack Trace: \n{e.StackTrace}\n\n\nDebuglog: \n\n\n");
+            // If a debuglog exists we append it to the crashlog.
             if (File.Exists(Properties.Settings.Default.CurrentLogPath))
             {
                 File.AppendAllText(Sideloader.CrashLogPath, File.ReadAllText($"{Properties.Settings.Default.CurrentLogPath}"));
