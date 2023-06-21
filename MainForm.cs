@@ -210,13 +210,17 @@ namespace AndroidSideloader
                 _ = Directory.CreateDirectory(Sideloader.TempFolder);
             }
 
-            //Delete the Debug file if it is more than 5MB
-            if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
+            // Delete the Debug file if it is more than 5MB
+            string logFilePath = Properties.Settings.Default.CurrentLogPath;
+            if (File.Exists(logFilePath))
             {
-                long length = new System.IO.FileInfo(Properties.Settings.Default.CurrentLogPath).Length;
-                if (length > 5000000)
+                FileInfo fileInfo = new FileInfo(logFilePath);
+                long fileSizeInBytes = fileInfo.Length;
+                long maxSizeInBytes = 5 * 1024 * 1024; // 5MB in bytes
+
+                if (fileSizeInBytes > maxSizeInBytes)
                 {
-                    File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
+                    File.Delete(logFilePath);
                 }
             }
             if (!isOffline)
