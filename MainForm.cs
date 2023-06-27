@@ -323,6 +323,7 @@ namespace AndroidSideloader
             new Thread(() =>
             {
                 Thread.Sleep(10000);
+                webView21.Invoke(() => { webView21.Enabled = true; });
                 freeDisclaimer.Invoke(() => { freeDisclaimer.Dispose(); });
             }).Start();
 
