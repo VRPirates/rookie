@@ -26,7 +26,6 @@ namespace AndroidSideloader
 {
     public partial class MainForm : Form
     {
-
         private readonly ListViewColumnSorter lvwColumnSorter;
 
 #if DEBUG
@@ -3399,7 +3398,7 @@ Things you can try:
         }
 
         private async Task RunSearch()
-            {
+        {
             _debounceTimer.Stop();
 
             // Cancel any ongoing searches
@@ -3407,7 +3406,7 @@ Things you can try:
 
             _allItems = gamesListView.Items.Cast<ListViewItem>().ToList();
 
-                string searchTerm = searchTextBox.Text;
+            string searchTerm = searchTextBox.Text;
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 _cts = new CancellationTokenSource();
@@ -3415,14 +3414,14 @@ Things you can try:
                 {
                     var matches = await Task.Run(() =>
                         _allItems
-                    .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                            .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
                             .ToList(),
                         _cts.Token);
 
                     // Update UI on UI thread
                     Invoke(new Action(() =>
-                {
-                    gamesListView.Items.Clear();
+                    {
+                        gamesListView.Items.Clear();
                         foreach (var match in matches)
                         {
                             gamesListView.Items.Add(match);
@@ -3433,12 +3432,11 @@ Things you can try:
                 {
                     // A new search was initiated before the current search completed.
                 }
-                }
-                else
-                {
-                    // No matching items found, restore the original list
-                    initListView();
-                }
+            }
+            else
+            {
+                // No matching items found, restore the original list
+                initListView();
             }
         }
 
@@ -4400,6 +4398,18 @@ Things you can try:
                 PCVRMode = false;
             }
             downloadModeButton.Text = (downloadModeButton.Text == "QUEST DOWNLOADS") ? "PCVR DOWNLOADS" : "QUEST DOWNLOADS";
+            ShowSubMenu(sideloadContainer);
+            sideloadDrop.Text = (sideloadDrop.Text == "▼ SIDELOAD ▼") ? "▶ SIDELOAD ◀" : "▼ SIDELOAD ▼";
+            ShowSubMenu(backupContainer);
+            backupDrop.Text = (backupDrop.Text == "▼ BACKUP / RESTORE ▼") ? "▶ BACKUP / RESTORE ◀" : "▼ BACKUP / RESTORE ▼";
+            ShowSubMenu(otherContainer);
+            otherDrop.Text = (otherDrop.Text == "▼ OTHER ▼") ? "▶ OTHER ◀" : "▼ OTHER ▼";
+            lblNeedsDonate.Visible = false;
+            lblUpToDate.Visible = false;
+            lblUpdateAvailable.Visible = false;
+            sideloadDrop.Click -= sideloadContainer_Click;
+            backupDrop.Click -= backupDrop_Click;
+            otherDrop.Click -= otherDrop_Click;
             if (hasPublicPCVRConfig)
             {
                 webView21.Hide();
@@ -4447,6 +4457,12 @@ Things you can try:
                 gamesListView.Columns.Add("Version", 75, HorizontalAlignment.Left);
                 gamesListView.Columns.Add("Last Updated", 145, HorizontalAlignment.Left);
                 gamesListView.Columns.Add("Size (MB)", 66, HorizontalAlignment.Right);
+                lblNeedsDonate.Visible = true;
+                lblUpToDate.Visible = true;
+                lblUpdateAvailable.Visible = true;
+                sideloadDrop.Click += sideloadContainer_Click;
+                backupDrop.Click += backupDrop_Click;
+                otherDrop.Click += otherDrop_Click;
                 if (hasPublicConfig)
                 {
                     Thread t2 = new Thread(() =>
