@@ -360,7 +360,7 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Public config: {e.Message}", "ERROR");
+                _ = Logger.Log($"Failed to update Public config: {e.Message}", LogLevel.ERROR);
             }
         }
 

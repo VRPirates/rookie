@@ -55,6 +55,7 @@ namespace AndroidSideloader
 
         private bool isLoading = true;
         public static bool isOffline = false;
+        public static bool noRcloneUpdating;
         public static bool hasPublicConfig = false;
         public static bool hasPublicPCVRConfig = false;
         public static bool enviromentCreated = false;
@@ -1666,13 +1667,13 @@ namespace AndroidSideloader
                 SwitchMirrors();
                 initListPCVRView();
             }
-            ChangeTitle("Populating game list...                               \n\n");
+            changeTitle("Populating game list...                               \n\n");
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.Clear();
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
-            ChangeTitle("                                                \n\n");
+            changeTitle("                                                \n\n");
             loaded = true;
         }
 
@@ -2422,7 +2423,7 @@ Things you can try:
                     Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
                 }
                 bool obbsMismatch = false;
-                if (nodeviceonstart && !updatesNotified)
+                if (nodeviceonstart && !updatesNotified && !PCVRMode)
                 {
                     _ = await CheckForDevice();
                     changeTitlebarToDevice();
@@ -2720,7 +2721,7 @@ Things you can try:
                                 quotaTries = 0;
                                 progressBar.Value = 0;
                                 progressBar.Style = ProgressBarStyle.Continuous;
-                                ChangeTitle("Installing game apk " + gameName, false);
+                                changeTitle("Installing game apk " + gameName, false);
                                 etaLabel.Text = "ETA: Wait for install...";
                                 speedLabel.Text = "DLS: Finished";
                                 if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\install.txt"))
@@ -2752,7 +2753,7 @@ Things you can try:
                                                 {
                                                     output += Sideloader.RunADBCommandsFromFile(file);
 
-                                                    ChangeTitle(" \n\n");
+                                                    changeTitle(" \n\n");
                                                 });
 
                                                 installtxtThread.Start();
@@ -2783,7 +2784,7 @@ Things you can try:
                                                 t.Start();
                                                 Thread apkThread = new Thread(() =>
                                                 {
-                                                    Program.form.ChangeTitle($"Sideloading apk...");
+                                                    Program.form.changeTitle($"Sideloading apk...");
                                                     output += ADB.Sideload(file, packagename);
                                                 })
                                                 {
@@ -2806,9 +2807,9 @@ Things you can try:
                                                     deleteOBB(packagename);
                                                     Thread obbThread = new Thread(() =>
                                                     {
-                                                        ChangeTitle($"Copying {packagename} obb to device...");
+                                                        changeTitle($"Copying {packagename} obb to device...");
                                                         output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
-                                                        Program.form.ChangeTitle("");
+                                                        Program.form.changeTitle("");
                                                     })
                                                     {
                                                         IsBackground = true
@@ -2839,11 +2840,11 @@ Things you can try:
                                             output.Output += "All tasks finished. \n";
                                         }
                                     }
-                                    ChangeTitle($"Installation of {gameName} completed.");
+                                    changeTitle($"Installation of {gameName} completed.");
                                 }
                                 if (Properties.Settings.Default.deleteAllAfterInstall)
                                 {
-                                    ChangeTitle("Deleting game files", false);
+                                    changeTitle("Deleting game files", false);
                                     try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
                                 }
                             }           
@@ -2863,9 +2864,9 @@ Things you can try:
                 {
                     if (!PCVRMode)
                     {
-                        ChangeTitle("Refreshing games list, please wait...         \n");
+                        changeTitle("Refreshing games list, please wait...         \n");
                         showAvailableSpace();
-                        listappsbtn();
+                        listAppsBtn();
                         if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !Properties.Settings.Default.nodevicemode && !gamesQueueList.Any())
                         {
                             initListView();
@@ -2880,7 +2881,7 @@ Things you can try:
                     ProgressText.Text = String.Empty;
                     gamesAreDownloading = false;
                     isinstalling = false;
-                    ChangeTitle(" \n\n");
+                    changeTitle(" \n\n");
                 }
             }
         }
@@ -3468,20 +3469,23 @@ Things you can try:
 
         private async Task WebView_CoreWebView2ReadyAsync(string videoUrl)
         {
-            try
+            if (!PCVRMode)
             {
-                // Load the video URL in the web browser control
-                webView21.CoreWebView2.Navigate(videoUrl);
-                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+            try
                 {
-                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
-                };
-            }
+                    // Load the video URL in the web browser control
+                    webView21.CoreWebView2.Navigate(videoUrl);
+                    webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+                    {
+                        this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+                    };
+                }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.ToString());
-            }
+                    Console.WriteLine(ex.ToString());
+                }
 
+            }
         }
 
         public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
@@ -3495,7 +3499,7 @@ Things you can try:
             string CurrentGameName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.GameNameIndex].Text;
             Console.WriteLine(CurrentGameName);
 
-            if (!Properties.Settings.Default.TrailersOn)
+            if (!Properties.Settings.Default.TrailersOn && !PCVRMode)
             {
                 webView21.Enabled = false;
                 webView21.Hide();
@@ -3549,15 +3553,17 @@ Things you can try:
                     {
                         _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
                         _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
-                        environmentCreated = true;
+                        enviromentCreated = true;
                         webView21.Hide();
                     }
                 }
-                if (!environmentCreated)
+                if (!enviromentCreated)
                 {
                     await CreateEnvironment();
-                    environmentCreated = true;
+                    enviromentCreated = true;
                 }
+                if (!PCVRMode)
+                {
                     webView21.Show();
                     string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
                     string encodedQuery = WebUtility.UrlEncode(query);
@@ -3575,6 +3581,7 @@ Things you can try:
                     }
 
                     await WebView_CoreWebView2ReadyAsync(videoUrl);
+                }
             }
         }
 
@@ -4366,20 +4373,21 @@ Things you can try:
             {
                 PCVRMode = false;
             }
-            downloadModeButton.Text = (downloadModeButton.Text == "Quest") ? "PCVR" : "Quest";
+            downloadModeButton.Text = (downloadModeButton.Text == "QUEST DOWNLOADS") ? "PCVR DOWNLOADS" : "QUEST DOWNLOADS";
             if (hasPublicPCVRConfig)
             {
+                webView21.Hide();
                 gamesListView.Columns.Clear();
                 gamesListView.Items.Clear();
-                gamesListView.Columns.Add("Release Name", 244, HorizontalAlignment.Left);
+                gamesListView.Columns.Add("Release Name", 450, HorizontalAlignment.Left);
                 gamesListView.Columns.Add("Last Updated", 145, HorizontalAlignment.Left);
                 gamesListView.Columns.Add("Size (MB)", 66, HorizontalAlignment.Right);
                 Thread t2 = new Thread(() =>
                 {
-                    ChangeTitle("Updating Metadata...");
+                    changeTitle("Updating Metadata...");
                     SideloaderRCLONE.UpdateMetadataFromPublic();
 
-                    ChangeTitle("Processing Metadata...");
+                    changeTitle("Processing Metadata...");
                     SideloaderRCLONE.ProcessMetadataFromPublic();
                 })
                 {
@@ -4394,14 +4402,16 @@ Things you can try:
                 {
                     await Task.Delay(50);
                 }
-                ChangeTitle("Populating Game List, Almost There!");
-                listappsbtn();
+                changeTitle("Populating Game List, Almost There!");
                 downloadInstallGameButton.Enabled = true;
                 isLoading = false;
                 initListPCVRView();
+                progressBar.Style = ProgressBarStyle.Continuous;
+                progressBar.Value = 0;
             }
             if (!PCVRMode)
             {
+                webView21.Show();
                 gamesListView.Clear();
                 gamesListView.Items.Clear();
                 gamesListView.Columns.Clear();
@@ -4415,10 +4425,10 @@ Things you can try:
                 {
                     Thread t2 = new Thread(() =>
                     {
-                        ChangeTitle("Updating Metadata...");
+                        changeTitle("Updating Metadata...");
                         SideloaderRCLONE.UpdateMetadataFromPublic();
 
-                        ChangeTitle("Processing Metadata...");
+                        changeTitle("Processing Metadata...");
                         SideloaderRCLONE.ProcessMetadataFromPublic();
                     })
                     {
@@ -4435,8 +4445,8 @@ Things you can try:
                     }
                 }
 
-                ChangeTitle("Populating Update List, Almost There!");
-                listappsbtn();
+                changeTitle("Populating Game List, Almost There!");
+                listAppsBtn();
                 downloadInstallGameButton.Enabled = true;
                 isLoading = false;
                 initListView();
