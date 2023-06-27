@@ -261,8 +261,15 @@ namespace AndroidSideloader
 
             _ = Logger.Log($"Running Rclone command: {logcmd}");
 
-            // set http source & args
-            command += $" --http-url {MainForm.PublicConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
+            //set http source & args
+            if (!MainForm.PCVRMode)
+            {
+                command += $" --http-url {MainForm.PublicConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
+            }
+            else
+            {
+                command += $" --http-url {MainForm.PublicPCVRConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
+            }
 
             rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
             rclone.StartInfo.Arguments = command;

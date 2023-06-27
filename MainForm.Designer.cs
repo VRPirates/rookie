@@ -126,6 +126,7 @@ namespace AndroidSideloader
             this.EnterInstallBox_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this.downloadModeButton = new AndroidSideloader.RoundButton();
             this.downloadInstallGameButton = new AndroidSideloader.RoundButton();
             this.MountButton = new AndroidSideloader.RoundButton();
             this.panel1.SuspendLayout();
@@ -910,7 +911,7 @@ namespace AndroidSideloader
             // GameNameIndex
             // 
             this.GameNameIndex.Text = "Game Name";
-            this.GameNameIndex.Width = 159;
+            this.GameNameIndex.Width = 158;
             // 
             // ReleaseNameIndex
             // 
@@ -1298,6 +1299,7 @@ namespace AndroidSideloader
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panel2.BackColor = System.Drawing.Color.Transparent;
+            this.panel2.Controls.Add(this.downloadModeButton);
             this.panel2.Controls.Add(this.downloadInstallGameButton);
             this.panel2.Controls.Add(this.progressBar);
             this.panel2.Controls.Add(this.etaLabel);
@@ -1307,6 +1309,27 @@ namespace AndroidSideloader
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(798, 34);
             this.panel2.TabIndex = 96;
+            // 
+            // downloadModeButton
+            // 
+            this.downloadModeButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.downloadModeButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.downloadModeButton.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.downloadModeButton.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.downloadModeButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.downloadModeButton.ForeColor = System.Drawing.Color.White;
+            this.downloadModeButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.downloadModeButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.downloadModeButton.Location = new System.Drawing.Point(728, 0);
+            this.downloadModeButton.Name = "downloadModeButton";
+            this.downloadModeButton.Radius = 5;
+            this.downloadModeButton.Size = new System.Drawing.Size(70, 34);
+            this.downloadModeButton.Stroke = true;
+            this.downloadModeButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.downloadModeButton.TabIndex = 95;
+            this.downloadModeButton.Text = "Quest";
+            this.downloadModeButton.Transparency = false;
+            this.downloadModeButton.Click += new System.EventHandler(this.downloadModeButton_Click);
             // 
             // webView21
             // 
@@ -1334,11 +1357,11 @@ namespace AndroidSideloader
             this.downloadInstallGameButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.downloadInstallGameButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.downloadInstallGameButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.downloadInstallGameButton.Location = new System.Drawing.Point(433, 0);
+            this.downloadInstallGameButton.Location = new System.Drawing.Point(434, 0);
             this.downloadInstallGameButton.Margin = new System.Windows.Forms.Padding(0);
             this.downloadInstallGameButton.Name = "downloadInstallGameButton";
             this.downloadInstallGameButton.Radius = 5;
-            this.downloadInstallGameButton.Size = new System.Drawing.Size(364, 34);
+            this.downloadInstallGameButton.Size = new System.Drawing.Size(291, 34);
             this.downloadInstallGameButton.Stroke = true;
             this.downloadInstallGameButton.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
             this.downloadInstallGameButton.TabIndex = 94;
@@ -1543,5 +1566,6 @@ namespace AndroidSideloader
         private ToolTip EnterInstallBox_Tooltip;
         private Panel panel2;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
+        private RoundButton downloadModeButton;
     }
 }
