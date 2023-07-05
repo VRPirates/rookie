@@ -9,7 +9,7 @@ namespace AndroidSideloader
     internal class ADB
     {
         private static readonly Process adb = new Process();
-        public static string adbFolderPath = "C:\\RSL\\platform-tools";
+        public static string adbFolderPath = $"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
         public static string package = "";
@@ -152,7 +152,7 @@ namespace AndroidSideloader
             }
 
             _ = Logger.Log($"Running command: {logcmd}");
-            adb.StartInfo.FileName = @"C:\Windows\System32\cmd.exe";
+            adb.StartInfo.FileName = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\Windows\System32\cmd.exe";
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
