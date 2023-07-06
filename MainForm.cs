@@ -3559,32 +3559,32 @@ Things you can try:
             }
             else
             {
-                if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
-                {
-                    WebClient client = new WebClient();
-                    ServicePointManager.Expect100Continue = true;
-                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                    try
-                    {
-                        client.DownloadFile("https://wiki.vrpirates.club/downloads/runtimes.7z", "runtimes.7z");
-                        Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
-                        File.Delete("runtimes.7z");
-                    }
-                    catch (Exception ex)
-                    {
-                        _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
-                        _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
-                        enviromentCreated = true;
-                        webView21.Hide();
-                    }
-                }
-                if (!enviromentCreated)
-                {
-                    await CreateEnvironment();
-                    enviromentCreated = true;
-                }
                 if (!PCVRMode)
                 {
+                    if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
+                    {
+                        WebClient client = new WebClient();
+                        ServicePointManager.Expect100Continue = true;
+                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                        try
+                        {
+                            client.DownloadFile("https://wiki.vrpirates.club/downloads/runtimes.7z", "runtimes.7z");
+                            Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
+                            File.Delete("runtimes.7z");
+                        }
+                        catch (Exception ex)
+                        {
+                            _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
+                            _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
+                            enviromentCreated = true;
+                            webView21.Hide();
+                        }
+                    }
+                    if (!enviromentCreated)
+                    {
+                        await CreateEnvironment();
+                        enviromentCreated = true;
+                    }
                     webView21.Show();
                     string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
                     string encodedQuery = WebUtility.UrlEncode(query);
