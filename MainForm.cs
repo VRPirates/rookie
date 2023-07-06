@@ -76,7 +76,7 @@ namespace AndroidSideloader
                 {
                     isOffline = true;
                 }
-                if ( arg =="--no-rclone-update")
+                if (arg == "--no-rclone-update")
                 {
                     noRcloneUpdating = true;
                 }
@@ -1637,7 +1637,7 @@ namespace AndroidSideloader
             rookienamelist = "";
             loaded = false;
             char[] delims = new[] { '\r', '\n' };
-         
+
             List<ListViewItem> GameList = new List<ListViewItem>();
             GameList.Clear();
             List<string> rookieList = new List<string>();
@@ -2218,20 +2218,16 @@ namespace AndroidSideloader
             string about = $@"Version: {Updater.LocalVersion}
 
  - Software orignally coded by rookie.wtf
- - Thanks to pmow for all of his work, including rclone, wonka and other projects, and for scripting the backend
-without him none of this would be possible
- - Thanks to HarryEffinPotter for all his Rookie improvements
- - Thanks to the VRP Mod Staff, data team, and anyone else I missed!
- - Thanks to VRP members of the past and present: Roma/Rookie, Flow, Ivan, Kaladin, John, Sam Hoque
+ - Thanks to the VRP Mod Staff, data team, and anyone else we missed!
+ - Thanks to VRP staff of the present and past: fenopy, Chax, pmow, SytheZN,
+        Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
  
  - Additional Thanks and Credits:
  - -- rclone https://rclone.org/
  - -- 7zip https://www.7-zip.org/
- - -- badcoder5000: for help with the UI Redesign
- - -- Verb8em: for drawning the New Icon
- - -- ErikE: Folder Browser Dialog Code (https://stackoverflow.com/users/57611/erike)
- - -- Serge Weinstock: for developing SergeUtils, which is used to search the combobox
- - -- Mike Gold: for the scrollable message box (https://www.c-sharpcorner.com/members/mike-gold2)
+ - -- ErikE: https://stackoverflow.com/users/57611/erike
+ - -- Serge Weinstock (SergeUtils)
+ - -- Mike Gold https://www.c-sharpcorner.com/members/mike-gold2
  ";
 
             _ = FlexibleMessageBox.Show(Program.form, about);
@@ -2856,7 +2852,7 @@ Things you can try:
                                     changeTitle("Deleting game files", false);
                                     try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
                                 }
-                            }           
+                            }
                             //Remove current game
                             cleanupActiveDownloadStatus();
                         }
@@ -3496,7 +3492,7 @@ Things you can try:
         {
             if (!PCVRMode)
             {
-            try
+                try
                 {
                     // Load the video URL in the web browser control
                     webView21.CoreWebView2.Navigate(videoUrl);
@@ -3505,8 +3501,8 @@ Things you can try:
                         this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
                     };
                 }
-            catch (Exception ex)
-            {
+                catch (Exception ex)
+                {
                     Console.WriteLine(ex.ToString());
                 }
 
@@ -4240,7 +4236,7 @@ Things you can try:
             {
                 upToDate_Clicked = false;
                 initListView();
-            }   
+            }
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
@@ -4382,7 +4378,7 @@ Things you can try:
             {
                 NeedsDonation_Clicked = false;
                 initListView();
-            }  
+            }
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
