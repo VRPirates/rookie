@@ -13,7 +13,7 @@ namespace AndroidSideloader
         private static readonly string RawGitHubUrl = "https://raw.githubusercontent.com/nerdunit/androidsideloader";
         private static readonly string GitHubUrl = "https://github.com/nerdunit/androidsideloader";
 
-        public static readonly string LocalVersion = "2.20";
+        public static readonly string LocalVersion = "2.21";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
