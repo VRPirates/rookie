@@ -33,6 +33,7 @@ namespace AndroidSideloader
             AutoReinstBox.Checked = Properties.Settings.Default.AutoReinstall;
             trailersOn.Checked = Properties.Settings.Default.TrailersOn;
             singleThread.Checked = Properties.Settings.Default.singleThreadMode;
+            virtualFilesystemCompatibilityCheckbox.Checked = Properties.Settings.Default.virtualFilesystemCompatibility;
             if (nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = false;
@@ -101,7 +102,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.Reset();
             Properties.Settings.Default.customDownloadDir = false;
             Properties.Settings.Default.customBackupDir = false;
-            MainForm.BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
             intSettings();
         }
@@ -193,7 +194,7 @@ namespace AndroidSideloader
             {
                 DialogResult dialogResult = FlexibleMessageBox.Show(this, "WARNING: This box enables automatic reinstall when installs fail,\ndue to some games not allowing " +
                     "access to their save data (less than 5%) this\noption can lead to losing your progress." +
-                    " However with this option\nchecked when installs fail you won't have to agree to a prompt to preform\nthe reinstall. " +
+                    " However with this option\nchecked when installs fail you won't have to agree to a prompt to perform\nthe reinstall. " +
                     "(ideal when installing from a queue).\n\nNOTE: If your usb/wireless adb connection is extremely slow this option can\ncause larger" +
                     "apk file installations to fail. Enable anyway?", "WARNING", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
@@ -228,7 +229,7 @@ namespace AndroidSideloader
             {
                 Properties.Settings.Default.customBackupDir = true;
                 Properties.Settings.Default.backupDir = backupDirectorySetter.SelectedPath;
-                MainForm.BackupFolder = Properties.Settings.Default.backupDir;
+                MainForm.backupFolder = Properties.Settings.Default.backupDir;
                 Properties.Settings.Default.Save();
             }
         }
@@ -236,6 +237,12 @@ namespace AndroidSideloader
         private void singleThread_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.singleThreadMode = singleThread.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void virtualFilesystemCompatibilityCheckbox_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.virtualFilesystemCompatibility = virtualFilesystemCompatibilityCheckbox.Checked;
             Properties.Settings.Default.Save();
         }
     }

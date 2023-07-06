@@ -16,7 +16,7 @@ namespace AndroidSideloader
         {
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(MyHandler);
+            currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
@@ -26,11 +26,16 @@ namespace AndroidSideloader
         }
         public static MainForm form;
 
-        private static void MyHandler(object sender, UnhandledExceptionEventArgs args)
+        private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {
+            // Capture unhandled exceptions and write to file. 
             Exception e = (Exception)args.ExceptionObject;
+            string innerExceptionMessage = (e.InnerException != null) 
+                ? e.InnerException.Message
+                : "None";
             string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");
-            File.WriteAllText(Sideloader.CrashLogPath, $"Date/Time of crash: {date_time}\nMessage: {e.Message}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}\n\n\nDebuglog: \n\n\n");
+            File.WriteAllText(Sideloader.CrashLogPath, $"Date/Time of crash: {date_time}\nMessage: {e.Message}\nInner Message: {innerExceptionMessage}\nData: {e.Data}\nSource: {e.Source}\nTargetSite: {e.TargetSite}\nStack Trace: \n{e.StackTrace}\n\n\nDebuglog: \n\n\n");
+            // If a debuglog exists we append it to the crashlog.
             if (File.Exists(Properties.Settings.Default.CurrentLogPath))
             {
                 File.AppendAllText(Sideloader.CrashLogPath, File.ReadAllText($"{Properties.Settings.Default.CurrentLogPath}"));

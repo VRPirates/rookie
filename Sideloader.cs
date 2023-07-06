@@ -13,12 +13,6 @@ namespace AndroidSideloader
         public static string TempFolder = Path.Combine(Environment.CurrentDirectory, "temp");
         public static string CrashLogPath = "crashlog.txt";
 
-        public static string SpooferWarning = @"Please make sure you have installed:
-- APKTool
-- Java JDK
-- aapt
-And all of them added to PATH, without ANY of them, the spoofer won't work!";
-
         //push user.json to device (required for some devices like oculus quest)
         public static void PushUserJsons()
         {
@@ -36,6 +30,10 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         public static ProcessOutput RemoveFolder(string path)
         {
             ADB.WakeDevice();
+            if (path == "/sdcard/Android/obb/" || path == "sdcard/Android/data/")
+            {
+                return null;
+            }
             return ADB.RunAdbCommandToString($"shell rm -r {path}");
         }
         public static ProcessOutput RemoveFile(string path)
@@ -67,7 +65,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         : $"{Properties.Settings.Default.ADBPath}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
-                    Program.form.ChangeTitle($"Running {result}");
+                    Program.form.changeTitle($"Running {result}");
                     _ = Logger.Log($"Logging command: {result} from file: {path}");
                     output += ADB.RunAdbCommandToStringWOADB(result, path);
                     if (output.Error.Contains("mkdir"))
@@ -108,7 +106,7 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     RecursiveSideload(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, LogLevel.ERROR); }
         }
 
         //Recursive copy any obb folder
@@ -126,14 +124,14 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     RecursiveCopyOBB(d);
                 }
             }
-            catch (Exception ex) { _ = Logger.Log(ex.Message, "ERROR"); }
+            catch (Exception ex) { _ = Logger.Log(ex.Message, LogLevel.ERROR); }
         }
 
-        //uninstalls an app
+        // Removes the game package and its OBB + Data Folders.
         public static ProcessOutput UninstallGame(string packagename)
         {
             ProcessOutput output = ADB.UninstallPackage(packagename);
-            Program.form.ChangeTitle("");
+            Program.form.changeTitle("");
             _ = Sideloader.RemoveFolder("/sdcard/Android/obb/" + packagename);
             _ = Sideloader.RemoveFolder("/sdcard/Android/data/" + packagename);
             return output;
@@ -143,21 +141,21 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             if (!Properties.Settings.Default.customBackupDir)
             {
-                MainForm.BackupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+                MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             }
             else
             {
-                MainForm.BackupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+                MainForm.backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
             }
             ADB.WakeDevice();
-            if (!Directory.Exists(MainForm.BackupFolder))
+            if (!Directory.Exists(MainForm.backupFolder))
             {
-                _ = Directory.CreateDirectory(MainForm.BackupFolder);
+                _ = Directory.CreateDirectory(MainForm.backupFolder);
             }
-            Program.form.ChangeTitle($"Attempting to backup any savedata to {MainForm.BackupFolder}\\Rookie Backups...");
+            Program.form.changeTitle($"Attempting to backup any savedata to {MainForm.backupFolder}\\Rookie Backups...");
             _ = new ProcessOutput("", "");
             string date_str = DateTime.Today.ToString("yyyy.MM.dd");
-            string CurrBackups = Path.Combine(MainForm.BackupFolder, date_str);
+            string CurrBackups = Path.Combine(MainForm.backupFolder, date_str);
             if (!Directory.Exists(CurrBackups))
             {
                 _ = Directory.CreateDirectory(CurrBackups);
@@ -226,62 +224,43 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
-                {
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
-                }
-
-                if (gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
-                {
-                    return game[SideloaderRCLONE.PackageNameIndex];
-                }
             }
             return gameName;
         }
 
-        public static string PackageNametoGameName(string gameName)
+        public static string PackageNametoGameName(string packageName)
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Equals(game[SideloaderRCLONE.PackageNameIndex]))
-                {
+                if (packageName.Equals(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.ReleaseNameIndex];
-                }
             }
-            return gameName;
+            return packageName;
         }
 
         public static string gameNameToSimpleName(string gameName)
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]))
-                {
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.GameNameIndex];
-                }
-
-                if (gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
-                {
-                    return game[SideloaderRCLONE.GameNameIndex];
-                }
             }
             return gameName;
         }
 
-        public static string PackageNameToSimpleName(string gameName)
+        public static string PackageNameToSimpleName(string packageName)
         {
             foreach (string[] game in SideloaderRCLONE.games)
             {
-                if (gameName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
-                {
+                if (packageName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.GameNameIndex];
-                }
             }
-            return gameName;
+            return packageName;
         }
 
-
-        //Downloads the required files
+        // Download required dependencies.
         public static void downloadFiles()
         {
             WebClient client = new WebClient();
@@ -302,11 +281,11 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Rookie%20Offline.cmd", "Rookie Offline.cmd");
                 }
 
-                if (!File.Exists("C:\\RSL\\platform-tools\\aug2021.txt") || !File.Exists("C:\\RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
+                if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools\\aug2021.txt") || !File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
                 {
-                    if (Directory.Exists($"C:\\RSL\\2.8.2"))
+                    if (Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\2.8.2"))
                     {
-                        Directory.Delete("C:\\RSL\\2.8.2", true);
+                        Directory.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\2.8.2", true);
                     }
 
                     if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\adb"))
@@ -314,14 +293,14 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         Directory.Delete($"{Properties.Settings.Default.MainDir}\\adb", true);
                     }
 
-                    if (!Directory.Exists("C:\\RSL\\platform-tools"))
+                    if (!Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools"))
                     {
-                        _ = Directory.CreateDirectory("C:\\RSL\\platform-tools");
+                        _ = Directory.CreateDirectory($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools");
                     }
 
                     currentAccessedWebsite = "github";
                     client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb2.zip", "Ad.7z");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\Ad.7z", "C:\\RSL\\platform-tools");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\Ad.7z", $"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools");
                     File.Delete("Ad.7z");
                 }
 
@@ -357,24 +336,25 @@ And all of them added to PATH, without ANY of them, the spoofer won't work!";
                         var versionInfo = FileVersionInfo.GetVersionInfo(pathToRclone);
                         string version = versionInfo.ProductVersion;
                         Logger.Log($"Current RCLONE Version {version}");
-                        if (version != "1.62.2")
+                        if (!MainForm.noRcloneUpdating)
                         {
-                            Logger.Log("RCLONE Version not matching! Downloading required version.", "WARNING");
-                            File.Delete(pathToRclone);
-                            currentAccessedWebsite = "rclone";
-                            string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
-                            string url = $"https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-{architecture}.zip";
-                            client.DownloadFile(url, "rclone.zip");
-                            Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
-                            File.Delete("rclone.zip");
-                            string rcloneDirectory = Path.Combine(Environment.CurrentDirectory, $"rclone-v1.62.2-windows-{architecture}");
-                            File.Move(Path.Combine(rcloneDirectory, "rclone.exe"), pathToRclone);
-                            Directory.Delete(rcloneDirectory, true);
+                            if (version != "1.62.2")
+                            {
+                                Logger.Log("RCLONE Version not matching! Downloading required version.", LogLevel.WARNING);
+                                File.Delete(pathToRclone);
+                                currentAccessedWebsite = "rclone";
+                                string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
+                                string url = $"https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-{architecture}.zip";
+                                client.DownloadFile(url, "rclone.zip");
+                                Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
+                                File.Delete("rclone.zip");
+                                string rcloneDirectory = Path.Combine(Environment.CurrentDirectory, $"rclone-v1.62.2-windows-{architecture}");
+                                File.Move(Path.Combine(rcloneDirectory, "rclone.exe"), pathToRclone);
+                                Directory.Delete(rcloneDirectory, true);
+                            }
                         }
                     }
                 }
-
-
             }
             catch (Exception ex)
             {

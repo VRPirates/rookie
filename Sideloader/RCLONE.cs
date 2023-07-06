@@ -20,17 +20,17 @@ namespace AndroidSideloader
     {
         public static List<string> RemotesList = new List<string>();
 
-        public static string RcloneGamesFolder = "Quest Games";
+        public static string RcloneGamesFolder = string.Empty;
 
         //This shit sucks but i'll switch to programatically adding indexes from the gamelist txt sometimes maybe
 
-        public static int GameNameIndex = 0;
-        public static int ReleaseNameIndex = 1;
-        public static int PackageNameIndex = 2;
-        public static int VersionCodeIndex = 3;
-        public static int ReleaseAPKPathIndex = 4;
-        public static int VersionNameIndex = 5;
-
+        public static int GameNameIndex;
+        public static int ReleaseNameIndex;
+        public static int PackageNameIndex;
+        public static int VersionCodeIndex;
+        public static int ReleaseAPKPathIndex;
+        public static int VersionNameIndex;
+            
         public static List<string> gameProperties = new List<string>();
         /* Game Name
          * Release Name
@@ -75,9 +75,66 @@ namespace AndroidSideloader
         {
             try
             {
-                _ = Logger.Log($"Extracting Metadata");
-                Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
-                    MainForm.PublicConfigFile.Password);
+                if (MainForm.PCVRMode == true)
+                {
+                    _ = Logger.Log($"Extracting Metadata");
+                    Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
+                        MainForm.PublicPCVRConfigFile.Password);
+
+                    _ = Logger.Log($"Initializing Games List");
+                    string gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
+                    games.Clear();
+                    string[] splitList = gameList.Split('\n');
+                    splitList = splitList.Skip(1).ToArray();
+                    foreach (string game in splitList)
+                    {
+                        if (game.Length > 1)
+                        {
+                            string[] splitGame = game.Split(';');
+                            games.Add(splitGame);
+                        }
+                    }
+
+                    Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
+                    RcloneGamesFolder = "PCVR Games";
+                    ReleaseNameIndex = 0;
+                    ReleaseAPKPathIndex = 1;
+                    VersionNameIndex = 2;
+                }
+                else
+                {
+                    _ = Logger.Log($"Extracting Metadata");
+                    Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
+                        MainForm.PublicConfigFile.Password);
+
+                    Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\nouns", Nouns);
+                    Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\thumbnails", ThumbnailsFolder);
+                    Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\notes", NotesFolder);
+
+                    _ = Logger.Log($"Initializing Games List");
+                    string gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
+                    games.Clear();
+                    string[] splitList = gameList.Split('\n');
+                    splitList = splitList.Skip(1).ToArray();
+                    foreach (string game in splitList)
+                    {
+                        if (game.Length > 1)
+                        {
+                            string[] splitGame = game.Split(';');
+                            games.Add(splitGame);
+                        }
+                    }
+
+                    Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
+
+                    RcloneGamesFolder = "Quest Games";
+                    GameNameIndex = 0;
+                    ReleaseNameIndex = 1;
+                    PackageNameIndex = 2;
+                    VersionCodeIndex = 3;
+                    ReleaseAPKPathIndex = 4;
+                    VersionNameIndex = 5;
+                }
 
                 _ = Logger.Log($"Updating Metadata");
 
@@ -96,25 +153,6 @@ namespace AndroidSideloader
                     Directory.Delete(NotesFolder, true);
                 }
 
-                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\nouns", Nouns);
-                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\thumbnails", ThumbnailsFolder);
-                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\notes", NotesFolder);
-
-                _ = Logger.Log($"Initializing Games List");
-                string gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
-
-                string[] splitList = gameList.Split('\n');
-                splitList = splitList.Skip(1).ToArray();
-                foreach (string game in splitList)
-                {
-                    if (game.Length > 1)
-                    {
-                        string[] splitGame = game.Split(';');
-                        games.Add(splitGame);
-                    }
-                }
-
-                Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
             }
             catch (Exception e)
             {
@@ -186,7 +224,7 @@ namespace AndroidSideloader
                 {
                     string resultString = responseReader.ReadToEnd();
 
-                    _ = Logger.Log($"Retrived updated config from: {configUrl}");
+                    _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
                     if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new"))
                     {
@@ -264,7 +302,7 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Upload config: {e.Message}", "ERROR");
+                _ = Logger.Log($"Failed to update Upload config: {e.Message}", LogLevel.ERROR);
             }
         }
 
@@ -293,7 +331,36 @@ namespace AndroidSideloader
             }
             catch (Exception e)
             {
-                _ = Logger.Log($"Failed to update Public config: {e.Message}", "ERROR");
+                _ = Logger.Log($"Failed to update Public config: {e.Message}", LogLevel.ERROR);
+            }
+        }
+
+        public static void updatePublicPCVRConfig()
+        {
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
+                                                 | SecurityProtocolType.Tls11
+                                                 | SecurityProtocolType.Tls12
+                                                 | SecurityProtocolType.Ssl3;
+            _ = Logger.Log($"Attempting to Update Public Config");
+            try
+            {
+                string configUrl = "https://wiki.vrpirates.club/downloads/vrp-public-pcvr.json";
+
+                HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
+                using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
+                {
+                    string resultString = responseReader.ReadToEnd();
+
+                    _ = Logger.Log($"Retrieved updated config from: {configUrl}");
+
+                    File.WriteAllText(Environment.CurrentDirectory + "\\vrp-public-pcvr.json", resultString);
+
+                    _ = Logger.Log("Public config updated successfully.");
+                }
+            }
+            catch (Exception e)
+            {
+                _ = Logger.Log($"Failed to update Public config: {e.Message}", LogLevel.ERROR);
             }
         }
 
