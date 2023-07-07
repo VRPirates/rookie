@@ -437,7 +437,7 @@ namespace AndroidSideloader
                     SideloaderRCLONE.UpdateMetadataFromPublic();
 
                     changeTitle("Processing Metadata...");
-                    SideloaderRCLONE.ProcessMetadataFromPublic();
+                    SideloaderRCLONE.ProcessMetadataFromPublicInitial();
                 })
                 {
                     IsBackground = true
@@ -2427,6 +2427,7 @@ Things you can try:
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
+                downloadModeButton.Click -= downloadModeButton_Click;
                 if (!Properties.Settings.Default.customDownloadDir)
                 {
                     Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
@@ -2859,6 +2860,7 @@ Things you can try:
                             }           
                             //Remove current game
                             cleanupActiveDownloadStatus();
+                            downloadModeButton.Click += downloadModeButton_Click;
                         }
                     }
                 }
@@ -4390,6 +4392,7 @@ Things you can try:
 
         private async void downloadModeButton_Click(object sender, EventArgs e)
         {
+            downloadModeButton.Click -= downloadModeButton_Click;
             if (!PCVRMode)
             {
                 PCVRMode = true;
@@ -4411,9 +4414,10 @@ Things you can try:
             sideloadDrop.Click -= sideloadContainer_Click;
             backupDrop.Click -= backupDrop_Click;
             otherDrop.Click -= otherDrop_Click;
-            if (hasPublicPCVRConfig)
+            if (hasPublicPCVRConfig && PCVRMode)
             {
                 webView21.Hide();
+                gamesListView.Clear();
                 gamesListView.Columns.Clear();
                 gamesListView.Items.Clear();
                 gamesListView.Columns.Add("Release Name", 450, HorizontalAlignment.Left);
@@ -4439,6 +4443,7 @@ Things you can try:
                 {
                     await Task.Delay(50);
                 }
+
                 changeTitle("Populating Game List, Almost There!");
                 downloadInstallGameButton.Enabled = true;
                 isLoading = false;
@@ -4446,8 +4451,9 @@ Things you can try:
                 progressBar.Style = ProgressBarStyle.Continuous;
                 progressBar.Value = 0;
             }
-            if (!PCVRMode)
+            if (hasPublicConfig && !PCVRMode)
             {
+                downloadModeButton.Click -= downloadModeButton_Click;
                 webView21.Show();
                 gamesListView.Clear();
                 gamesListView.Items.Clear();
@@ -4464,9 +4470,7 @@ Things you can try:
                 sideloadDrop.Click += sideloadContainer_Click;
                 backupDrop.Click += backupDrop_Click;
                 otherDrop.Click += otherDrop_Click;
-                if (hasPublicConfig)
-                {
-                    Thread t2 = new Thread(() =>
+                Thread t2 = new Thread(() =>
                     {
                         changeTitle("Updating Metadata...");
                         SideloaderRCLONE.UpdateMetadataFromPublic();
@@ -4487,16 +4491,15 @@ Things you can try:
                         await Task.Delay(50);
                     }
                 }
-
                 changeTitle("Populating Game List, Almost There!");
                 listAppsBtn();
                 downloadInstallGameButton.Enabled = true;
                 isLoading = false;
                 initListView();
+                downloadModeButton.Click += downloadModeButton_Click;
             }
         }
-    }
-
+    
     public static class ControlExtensions
     {
         public static void Invoke(this Control control, Action action)

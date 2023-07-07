@@ -65,10 +65,72 @@ namespace AndroidSideloader
 
         public static void UpdateMetadataFromPublic()
         {
+            if (File.Exists($"{Environment.CurrentDirectory}\\meta.7z"))
+            {
+                File.Delete($"{Environment.CurrentDirectory}\\meta.7z");
+            }
             _ = Logger.Log($"Downloading Metadata");
             string rclonecommand =
                 $"sync \":http:/meta.7z\" \"{Environment.CurrentDirectory}\"";
             _ = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
+        }
+
+        public static void ProcessMetadataFromPublicInitial()
+        {
+            try
+            {
+                if (Directory.Exists(Nouns))
+                {
+                    Directory.Delete(Nouns, true);
+                }
+
+                if (Directory.Exists(ThumbnailsFolder))
+                {
+                    Directory.Delete(ThumbnailsFolder, true);
+                }
+
+                if (Directory.Exists(NotesFolder))
+                {
+                    Directory.Delete(NotesFolder, true);
+                }
+                
+                _ = Logger.Log($"Extracting Metadata");
+                Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
+                    MainForm.PublicConfigFile.Password);
+
+                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\nouns", Nouns);
+                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\thumbnails", ThumbnailsFolder);
+                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\notes", NotesFolder);
+
+                _ = Logger.Log($"Initializing Games List");
+                string gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
+                games.Clear();
+                string[] splitList = gameList.Split('\n');
+                splitList = splitList.Skip(1).ToArray();
+                foreach (string game in splitList)
+                {
+                    if (game.Length > 1)
+                    {
+                        string[] splitGame = game.Split(';');
+                        games.Add(splitGame);
+                    }
+                }
+
+                Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
+
+                RcloneGamesFolder = "Quest Games";
+                GameNameIndex = 0;
+                ReleaseNameIndex = 1;
+                PackageNameIndex = 2;
+                VersionCodeIndex = 3;
+                ReleaseAPKPathIndex = 4;
+                VersionNameIndex = 5;
+            }
+            catch (Exception e)
+            {
+                _ = Logger.Log(e.Message);
+                _ = Logger.Log(e.StackTrace);
+            }
         }
 
         public static void ProcessMetadataFromPublic()
@@ -94,8 +156,9 @@ namespace AndroidSideloader
                             games.Add(splitGame);
                         }
                     }
-
+                    
                     Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
+                    
                     RcloneGamesFolder = "PCVR Games";
                     ReleaseNameIndex = 0;
                     ReleaseAPKPathIndex = 1;
@@ -106,11 +169,7 @@ namespace AndroidSideloader
                     _ = Logger.Log($"Extracting Metadata");
                     Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
                         MainForm.PublicConfigFile.Password);
-
-                    Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\nouns", Nouns);
-                    Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\thumbnails", ThumbnailsFolder);
-                    Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\notes", NotesFolder);
-
+                    
                     _ = Logger.Log($"Initializing Games List");
                     string gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
                     games.Clear();
@@ -137,22 +196,6 @@ namespace AndroidSideloader
                 }
 
                 _ = Logger.Log($"Updating Metadata");
-
-                if (Directory.Exists(Nouns))
-                {
-                    Directory.Delete(Nouns, true);
-                }
-
-                if (Directory.Exists(ThumbnailsFolder))
-                {
-                    Directory.Delete(ThumbnailsFolder, true);
-                }
-
-                if (Directory.Exists(NotesFolder))
-                {
-                    Directory.Delete(NotesFolder, true);
-                }
-
             }
             catch (Exception e)
             {
