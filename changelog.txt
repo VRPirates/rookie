@@ -5,7 +5,6 @@ RSL 2.21
 - Feature: Add --no-rclone-updating launch flag
 - Feature: Add lime-green color to various after download jobs
 - Feature: Update Sideloader Launcher to check for Rookie
-- Feature: Add PCVR
 - Feature: Add the ability to download into virtual filesystems (Settings)
 - Feature: Add stacktrace & innerexception to crashlog
 - Feature: Add CallerInfo to debuglog
