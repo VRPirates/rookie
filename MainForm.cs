@@ -2102,10 +2102,10 @@ namespace AndroidSideloader
                 //  });
 
                 remotesList.Invoke(() =>
-            {
-                remotesList.SelectedIndex = 0; // Set mirror to first item in array.
-                currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
-            });
+                {
+                    remotesList.SelectedIndex = 0; // Set mirror to first item in array.
+                    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
+                });
 
 
             };
@@ -2141,20 +2141,16 @@ namespace AndroidSideloader
             string about = $@"Version: {Updater.LocalVersion}
 
  - Software orignally coded by rookie.wtf
- - Thanks to pmow for all of his work, including rclone, wonka and other projects, and for scripting the backend
-without him none of this would be possible
- - Thanks to HarryEffinPotter for all his Rookie improvements
- - Thanks to the VRP Mod Staff, data team, and anyone else I missed!
- - Thanks to VRP members of the past and present: Roma/Rookie, Flow, Ivan, Kaladin, John, Sam Hoque
+ - Thanks to the VRP Mod Staff, data team, and anyone else we missed!
+ - Thanks to VRP staff of the present and past: fenopy, Chax, pmow, SytheZN,
+        Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
  
  - Additional Thanks and Credits:
  - -- rclone https://rclone.org/
  - -- 7zip https://www.7-zip.org/
- - -- badcoder5000: for help with the UI Redesign
- - -- Verb8em: for drawning the New Icon
- - -- ErikE: Folder Browser Dialog Code (https://stackoverflow.com/users/57611/erike)
- - -- Serge Weinstock: for developing SergeUtils, which is used to search the combobox
- - -- Mike Gold: for the scrollable message box (https://www.c-sharpcorner.com/members/mike-gold2)
+ - -- ErikE: https://stackoverflow.com/users/57611/erike
+ - -- Serge Weinstock (SergeUtils)
+ - -- Mike Gold https://www.c-sharpcorner.com/members/mike-gold2
  ";
 
             _ = FlexibleMessageBox.Show(Program.form, about);
@@ -3411,16 +3407,16 @@ Things you can try:
         {
             try
             {
-                    // Load the video URL in the web browser control
-                    webView21.CoreWebView2.Navigate(videoUrl);
-                    webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
-                    {
-                        this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
-                    };
+                // Load the video URL in the web browser control
+                webView21.CoreWebView2.Navigate(videoUrl);
+                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+                {
+                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+                };
             }
             catch (Exception ex)
             {
-                    Console.WriteLine(ex.ToString());
+                Console.WriteLine(ex.ToString());
             }
         }
 
@@ -3474,47 +3470,47 @@ Things you can try:
             }
             else
             {
-                    if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
+                if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
+                {
+                    WebClient client = new WebClient();
+                    ServicePointManager.Expect100Continue = true;
+                    ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+                    try
                     {
-                        WebClient client = new WebClient();
-                        ServicePointManager.Expect100Continue = true;
-                        ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                        try
-                        {
-                            client.DownloadFile("https://wiki.vrpirates.club/downloads/runtimes.7z", "runtimes.7z");
-                            Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
-                            File.Delete("runtimes.7z");
-                        }
-                        catch (Exception ex)
-                        {
-                            _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
-                            _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
-                            enviromentCreated = true;
-                            webView21.Hide();
-                        }
+                        client.DownloadFile("https://wiki.vrpirates.club/downloads/runtimes.7z", "runtimes.7z");
+                        Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
+                        File.Delete("runtimes.7z");
                     }
-                    if (!enviromentCreated)
+                    catch (Exception ex)
                     {
-                        await CreateEnvironment();
+                        _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
+                        _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
                         enviromentCreated = true;
+                        webView21.Hide();
                     }
-                    webView21.Show();
-                    string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
-                    string encodedQuery = WebUtility.UrlEncode(query);
-                    string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+                }
+                if (!enviromentCreated)
+                {
+                    await CreateEnvironment();
+                    enviromentCreated = true;
+                }
+                webView21.Show();
+                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
+                string encodedQuery = WebUtility.UrlEncode(query);
+                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                    string videoUrl;
-                    using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
-                    {
-                        videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
-                    }
-                    if (videoUrl == "")
-                    {
-                        MessageBox.Show("No video URL found in search results.");
-                        return;
-                    }
+                string videoUrl;
+                using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
+                {
+                    videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
+                }
+                if (videoUrl == "")
+                {
+                    MessageBox.Show("No video URL found in search results.");
+                    return;
+                }
 
-                    await WebView_CoreWebView2ReadyAsync(videoUrl);
+                await WebView_CoreWebView2ReadyAsync(videoUrl);
             }
         }
 
@@ -4148,7 +4144,7 @@ Things you can try:
             {
                 upToDate_Clicked = false;
                 initListView();
-            }   
+            }
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
@@ -4294,9 +4290,9 @@ Things you can try:
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
-        }  
+        }
     }
-    
+
     public static class ControlExtensions
     {
         public static void Invoke(this Control control, Action action)
