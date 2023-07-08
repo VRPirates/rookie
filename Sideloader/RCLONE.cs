@@ -24,13 +24,13 @@ namespace AndroidSideloader
 
         //This shit sucks but i'll switch to programatically adding indexes from the gamelist txt sometimes maybe
 
-        public static int GameNameIndex;
-        public static int ReleaseNameIndex;
-        public static int PackageNameIndex;
-        public static int VersionCodeIndex;
-        public static int ReleaseAPKPathIndex;
-        public static int VersionNameIndex;
-            
+        public static int GameNameIndex = 0;
+        public static int ReleaseNameIndex = 1;
+        public static int PackageNameIndex = 2;
+        public static int VersionCodeIndex = 3;
+        public static int ReleaseAPKPathIndex = 4;
+        public static int VersionNameIndex = 5;
+
         public static List<string> gameProperties = new List<string>();
         /* Game Name
          * Release Name
