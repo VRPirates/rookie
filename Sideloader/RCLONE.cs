@@ -65,10 +65,6 @@ namespace AndroidSideloader
 
         public static void UpdateMetadataFromPublic()
         {
-            if (File.Exists($"{Environment.CurrentDirectory}\\meta.7z"))
-            {
-                File.Delete($"{Environment.CurrentDirectory}\\meta.7z");
-            }
             _ = Logger.Log($"Downloading Metadata");
             string rclonecommand =
                 $"sync \":http:/meta.7z\" \"{Environment.CurrentDirectory}\"";
