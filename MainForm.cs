@@ -2776,7 +2776,6 @@ Things you can try:
                                 changeTitle("Deleting game files", false);
                                 try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
                             }
-
                             //Remove current game
                             cleanupActiveDownloadStatus();
                         }
@@ -3411,7 +3410,7 @@ Things you can try:
         private async Task WebView_CoreWebView2ReadyAsync(string videoUrl)
         {
             try
-                {
+            {
                     // Load the video URL in the web browser control
                     webView21.CoreWebView2.Navigate(videoUrl);
                     webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
@@ -3423,7 +3422,6 @@ Things you can try:
             {
                     Console.WriteLine(ex.ToString());
             }
-
         }
 
         public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
