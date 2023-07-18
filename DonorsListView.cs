@@ -28,14 +28,14 @@ namespace AndroidSideloader
             DonorsListView.EndUpdate();
         }
 
-        public static string DonorsLocal = MainForm.DonorApps;
+        public static string DonorsLocal = MainForm.donorApps;
         public static bool ifuploads = false;
         public static string newAppsForList = "";
 
 
         private void DonorsListViewForm_Load(object sender, EventArgs e)
         {
-            MainForm.updatesnotified = true;
+            MainForm.updatesNotified = true;
             if (MainForm.updates && MainForm.newapps)
             {
                 bothdet.Visible = true;
@@ -106,25 +106,16 @@ namespace AndroidSideloader
 
             if (ifuploads)
             {
-                MainForm.DoUpload();
+                MainForm.doUpload();
             }
             Close();
         }
 
         private void DonorsListView_ItemChecked(object sender, ItemCheckedEventArgs e)
         {
-            if (DonorsListView.CheckedItems.Count == 0)
-            {
-                SkipButton.Enabled = true;
-                DonateButton.Enabled = false;
-            }
-            else
-            {
-                DonateButton.Enabled = true;
-                SkipButton.Enabled = false;
-            }
+            SkipButton.Enabled = DonorsListView.CheckedItems.Count == 0;
+            DonateButton.Enabled = !SkipButton.Enabled;
         }
-
 
         private void SkipButton_Click(object sender, EventArgs e)
         {

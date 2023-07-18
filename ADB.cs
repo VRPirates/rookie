@@ -9,7 +9,7 @@ namespace AndroidSideloader
     internal class ADB
     {
         private static readonly Process adb = new Process();
-        public static string adbFolderPath = "C:\\RSL\\platform-tools";
+        public static string adbFolderPath = $"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools";
         public static string adbFilePath = adbFolderPath + "\\adb.exe";
         public static string DeviceID = "";
         public static string package = "";
@@ -33,62 +33,54 @@ namespace AndroidSideloader
 
                 _ = Logger.Log($"Running command: {logcmd}");
             }
-            adb.StartInfo.FileName = adbFilePath;
-            adb.StartInfo.Arguments = command;
-            adb.StartInfo.RedirectStandardError = true;
-            adb.StartInfo.RedirectStandardOutput = true;
-            adb.StartInfo.CreateNoWindow = true;
-            adb.StartInfo.UseShellExecute = false;
-            adb.StartInfo.WorkingDirectory = adbFolderPath;
-            _ = adb.Start();
 
-            string output = "";
-            string error = "";
-
-            try
+            using (Process adb = new Process())
             {
-                output = adb.StandardOutput.ReadToEnd();
-                error = adb.StandardError.ReadToEnd();
-            }
-            catch { }
+                adb.StartInfo.FileName = adbFilePath;
+                adb.StartInfo.Arguments = command;
+                adb.StartInfo.RedirectStandardError = true;
+                adb.StartInfo.RedirectStandardOutput = true;
+                adb.StartInfo.CreateNoWindow = true;
+                adb.StartInfo.UseShellExecute = false;
+                adb.StartInfo.WorkingDirectory = adbFolderPath;
+                _ = adb.Start();
 
-            if (command.Contains("connect"))
-            {
-                bool graceful = adb.WaitForExit(3000);  // Wait 3 secs.
-                if (!graceful)
+                string output = "";
+                string error = "";
+
+                try
                 {
-                    adb.Kill();
+                    output = adb.StandardOutput.ReadToEnd();
+                    error = adb.StandardError.ReadToEnd();
                 }
-            }
-            else
-            {
-                adb.WaitForExit();
-            }
+                catch { }
 
-            if (error.Contains("ADB_VENDOR_KEYS") && !Properties.Settings.Default.adbdebugwarned)
-            {
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
-                if (dialogResult == DialogResult.Cancel)
+                if (command.Contains("connect"))
                 {
-                    Properties.Settings.Default.adbdebugwarned = true;
-                    Properties.Settings.Default.Save();
+                    bool graceful = adb.WaitForExit(3000);
+                    if (!graceful)
+                    {
+                        adb.Kill();
+                        adb.WaitForExit();
+                    }
                 }
-                else
-                {
-                    ADB.WakeDevice();
-                }
-            }
-            if (error.Contains("not enough storage space"))
-            {
-                _ = FlexibleMessageBox.Show(Program.form, "There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
-            }
-            if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null))
-            {
-                _ = Logger.Log(output);
-            }
 
-            _ = Logger.Log(error, "ERROR");
-            return new ProcessOutput(output, error);
+                if (error.Contains("ADB_VENDOR_KEYS") && !Properties.Settings.Default.adbdebugwarned)
+                {
+                    ADBDebugWarning();
+                }
+                if (error.Contains("not enough storage space"))
+                {
+                    _ = FlexibleMessageBox.Show(Program.form, "There is not enough room on your device to install this package. Please clear AT LEAST 2x the amount of the app you are trying to install.");
+                }
+                if (!output.Contains("version") && !output.Contains("KEYCODE_WAKEUP") && !output.Contains("Filesystem") && !output.Contains("package:") && !output.Equals(null))
+                {
+                    _ = Logger.Log(output);
+                }
+
+                _ = Logger.Log(error, LogLevel.ERROR);
+                return new ProcessOutput(output, error);
+            }
         }
 
         public static ProcessOutput RunAdbCommandToStringWOADB(string result, string path)
@@ -130,40 +122,24 @@ namespace AndroidSideloader
                 if (!graceful)
                 {
                     adb.Kill();
-                }
-                else
-                {
-                    adb.WaitForExit();
+                    adb.WaitForExit(); 
                 }
             }
-            else if (command.Contains("install"))
+            else if (command.Contains("connect"))
             {
-                bool graceful = adb.WaitForExit(120000);
+                bool graceful = adb.WaitForExit(3000); 
                 if (!graceful)
                 {
-                    adb.Kill();
-                }
-                else
-                {
+                    adb.Kill(); 
                     adb.WaitForExit();
                 }
             }
-
             if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
-                if (dialogResult == DialogResult.Cancel)
-                {
-                    Properties.Settings.Default.adbdebugwarned = true;
-                    Properties.Settings.Default.Save();
-                }
-                else
-                {
-                    ADB.WakeDevice();
-                }
+                ADBDebugWarning();
             }
             _ = Logger.Log(output);
-            _ = Logger.Log(error, "ERROR");
+            _ = Logger.Log(error, LogLevel.ERROR);
             return new ProcessOutput(output, error);
         }
         public static ProcessOutput RunCommandToString(string result, string path = "")
@@ -176,7 +152,7 @@ namespace AndroidSideloader
             }
 
             _ = Logger.Log($"Running command: {logcmd}");
-            adb.StartInfo.FileName = @"C:\Windows\System32\cmd.exe";
+            adb.StartInfo.FileName = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\Windows\System32\cmd.exe";
             adb.StartInfo.Arguments = command;
             adb.StartInfo.RedirectStandardError = true;
             adb.StartInfo.RedirectStandardInput = true;
@@ -205,31 +181,32 @@ namespace AndroidSideloader
                 if (!graceful)
                 {
                     adb.Kill();
+                    adb.WaitForExit();
                 }
-            }
-            else
-            {
-                adb.WaitForExit();
             }
 
             if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
-                if (dialogResult == DialogResult.Cancel)
-                {
-                    Properties.Settings.Default.adbdebugwarned = true;
-                    Properties.Settings.Default.Save();
-                }
-                else
-                {
-                    ADB.WakeDevice();
-                }
+                ADBDebugWarning();
             }
             _ = Logger.Log(output);
-            _ = Logger.Log(error, "ERROR");
+            _ = Logger.Log(error, LogLevel.ERROR);
             return new ProcessOutput(output, error);
         }
 
+        public static void ADBDebugWarning()
+        {
+            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+            if (dialogResult == DialogResult.Cancel)
+            {
+                Properties.Settings.Default.adbdebugwarned = true;
+                Properties.Settings.Default.Save();
+            }
+            else
+            {
+                ADB.WakeDevice();
+            }
+        }
 
         public static ProcessOutput UninstallPackage(string package)
         {
@@ -242,10 +219,9 @@ namespace AndroidSideloader
         public static string GetAvailableSpace()
         {
             long totalSize = 0;
-
             long usedSize = 0;
-
             long freeSize = 0;
+
             WakeDevice();
             string[] output = RunAdbCommandToString("shell df").Output.Split('\n');
 
@@ -253,30 +229,13 @@ namespace AndroidSideloader
             {
                 if (currLine.StartsWith("/dev/fuse") || currLine.StartsWith("/data/media"))
                 {
-                    string[] foo = currLine.Split(' ');
-                    int i = 0;
-                    foreach (string curr in foo)
+                    string[] foo = currLine.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                    if (foo.Length >= 4)
                     {
-                        if (curr.Length > 1)
-                        {
-                            switch (i)
-                            {
-                                case 0:
-                                    break;
-                                case 1:
-                                    totalSize = long.Parse(curr) / 1000;
-                                    break;
-                                case 2:
-                                    usedSize = long.Parse(curr) / 1000;
-                                    break;
-                                case 3:
-                                    freeSize = long.Parse(curr) / 1000;
-                                    break;
-                                default:
-                                    break;
-                            }
-                            i++;
-                        }
+                        totalSize = long.Parse(foo[1]) / 1000;
+                        usedSize = long.Parse(foo[2]) / 1000;
+                        freeSize = long.Parse(foo[3]) / 1000;
+                        break; // Assuming we only need the first matching line
                     }
                 }
             }
@@ -338,13 +297,13 @@ namespace AndroidSideloader
                             return ret;
                     }
 
-                    Program.form.ChangeTitle("Performing reinstall, please wait...");
+                    Program.form.changeTitle("Performing reinstall, please wait...");
                     _ = ADB.RunAdbCommandToString("kill-server");
                     _ = ADB.RunAdbCommandToString("devices");
                     _ = ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{MainForm.CurrPCKG} \"{Environment.CurrentDirectory}\"");
-                    Program.form.ChangeTitle("Uninstalling game...");
+                    Program.form.changeTitle("Uninstalling game...");
                     _ = Sideloader.UninstallGame(MainForm.CurrPCKG);
-                    Program.form.ChangeTitle("Reinstalling Game");
+                    Program.form.changeTitle("Reinstalling Game");
                     ret += ADB.RunAdbCommandToString($"install -g \"{path}\"");
                     _ = ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}\" /sdcard/Android/data/");
                     if (Directory.Exists($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}"))
@@ -352,7 +311,7 @@ namespace AndroidSideloader
                         Directory.Delete($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}", true);
                     }
 
-                    Program.form.ChangeTitle(" \n\n");
+                    Program.form.changeTitle(" \n\n");
                     return ret;
                 }
             }
@@ -364,7 +323,7 @@ namespace AndroidSideloader
                     string gameName = packagename;
                     packagename = Sideloader.gameNameToPackageName(gameName);
 
-                    Program.form.ChangeTitle("Pushing Custom QU S3 Config.JSON.");
+                    Program.form.changeTitle("Pushing Custom QU S3 Config.JSON.");
                     if (!Directory.Exists($"/sdcard/android/data/{packagename}"))
                     {
                         _ = RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
@@ -398,7 +357,7 @@ namespace AndroidSideloader
             }
 
 
-            Program.form.ChangeTitle("");
+            Program.form.changeTitle(string.Empty);
             return ret;
         }
 

@@ -10,7 +10,7 @@ namespace AndroidSideloader
 {
     internal class RCLONE
     {
-        //Kill all rclone, using a static rclone variable doesn't work for some reason #tofix
+        // Kill RCLONE Processes that were started from Rookie by looking for child processes.
         public static void killRclone()
         {
             var parentProcessId = Process.GetCurrentProcess().Id;
@@ -33,12 +33,12 @@ namespace AndroidSideloader
                 }
                 catch (Exception ex)
                 {
-                    // Handle exception if the process no longer exists
+                    _ = Logger.Log($"Exception occured while attempting to shut down RCLONE with exception message: {ex.Message}", LogLevel.ERROR);
                 }
             }
         }
 
-        //For custom configs that use a password
+        // For custom configs that use a password
         public static void Init()
         {
             string PwTxtPath = Path.Combine(Environment.CurrentDirectory, "rclone\\pw.txt");
@@ -48,7 +48,7 @@ namespace AndroidSideloader
             }
         }
 
-        //Change if you want to use a config
+        // Change if you want to use a config
         public static string downloadConfigPath = "vrp.download.config";
         public static string uploadConfigPath = "vrp.upload.config";
         public static string rclonepw = "";
@@ -56,7 +56,7 @@ namespace AndroidSideloader
 
         private static readonly Process rclone = new Process();
 
-        //Run rclone command
+        // Run an RCLONE Command that accesses the Download Config.
         public static ProcessOutput runRcloneCommand_DownloadConfig(string command)
         {
             if (MainForm.isOffline)
@@ -65,17 +65,17 @@ namespace AndroidSideloader
             }
 
             ProcessOutput prcoutput = new ProcessOutput();
-            //Rclone output is unicode, else it will show garbage instead of unicode characters
+            // Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
             string originalCommand = command;
 
-            //set configpath if there is any
+            // set configpath if there is any
             if (downloadConfigPath.Length > 0)
             {
                 command += $" --config {downloadConfigPath}";
             }
 
-            //set rclonepw
+            // set rclonepw
             if (rclonepw.Length > 0)
             {
                 command += " --ask-password=false";
@@ -101,12 +101,11 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
             rclone.StartInfo.CreateNoWindow = true;
-            //On debug we want to see when rclone is open
-            if (MainForm.debugMode == true)
+            // Display RCLONE Window if the binary is being run in Debug Mode.
+            if (MainForm.debugMode)
             {
                 rclone.StartInfo.CreateNoWindow = false;
             }
-
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -126,7 +125,7 @@ namespace AndroidSideloader
                 return new ProcessOutput("Download failed.", "");
             }
 
-            //if there is one of these errors, we switch the mirrors
+            // Switch mirror upon matching error output.
             if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
                 string oldRemote = MainForm.currentRemote;
@@ -151,7 +150,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n", "ERROR");
+                    _ = Logger.Log($"Rclone error: {error}\n", LogLevel.ERROR);    
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))
@@ -165,10 +164,10 @@ namespace AndroidSideloader
         public static ProcessOutput runRcloneCommand_UploadConfig(string command)
         {
             ProcessOutput prcoutput = new ProcessOutput();
-            //Rclone output is unicode, else it will show garbage instead of unicode characters
+            // Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
-            //set configpath if there is any
+            // set configpath if there is any
             if (uploadConfigPath.Length > 0)
             {
                 command += $" --config {uploadConfigPath}";
@@ -196,12 +195,11 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
             rclone.StartInfo.CreateNoWindow = true;
-            //On debug we want to see when rclone is open
-            if (MainForm.debugMode == true)
+            // Display RCLONE Window if the binary is being run in Debug Mode.
+            if (MainForm.debugMode)
             {
                 rclone.StartInfo.CreateNoWindow = false;
             }
-
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -212,10 +210,10 @@ namespace AndroidSideloader
             string error = rclone.StandardError.ReadToEnd();
             rclone.WaitForExit();
 
-            //if there is one of these errors, we switch the mirrors
+            // if there is one of these errors, we switch the mirrors
             if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
-                _ = Logger.Log(error, "ERROR");
+                _ = Logger.Log(error, LogLevel.ERROR);
                 return new ProcessOutput("Upload Failed.", "Upload failed.");
             }
             else
@@ -228,7 +226,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n", "ERROR");
+                    _ = Logger.Log($"Rclone error: {error}\n", LogLevel.ERROR);
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))
@@ -247,7 +245,7 @@ namespace AndroidSideloader
             }
 
             ProcessOutput prcoutput = new ProcessOutput();
-            //Rclone output is unicode, else it will show garbage instead of unicode characters
+            // Rclone output is unicode, else it will show garbage instead of unicode characters
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
             string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
@@ -265,7 +263,7 @@ namespace AndroidSideloader
 
             //set http source & args
             command += $" --http-url {MainForm.PublicConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
-
+          
             rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
@@ -273,13 +271,11 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
             rclone.StartInfo.CreateNoWindow = true;
-
-            //On debug we want to see when rclone is open
-            if (MainForm.debugMode == true)
+            // Display RCLONE Window if the binary is being run in Debug Mode.
+            if (MainForm.debugMode)
             {
                 rclone.StartInfo.CreateNoWindow = false;
             }
-
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -296,10 +292,15 @@ namespace AndroidSideloader
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
-                return new ProcessOutput("Download failed.", "");
+                return new ProcessOutput("Download failed.", string.Empty);
             }
 
-            if (error.Contains("400 Bad Request")
+            if (error.Contains("Only one usage of each socket address (protocol/network address/port) is normally permitted")) {
+                _ = Logger.Log(error, LogLevel.ERROR);
+                return new ProcessOutput("Failed to fetch from public mirror.", "Failed to fetch from public mirror.\nYou may have a running RCLONE Task!\nCheck your Task Manager, Sort by Network Usage, and kill the process Rsync for Cloud Storage/Rclone");
+            }
+
+            else if (error.Contains("400 Bad Request")
                 || error.Contains("cannot fetch token")
                 || error.Contains("authError")
                 || error.Contains("quota")
@@ -307,7 +308,7 @@ namespace AndroidSideloader
                 || error.Contains("directory not found")
                 || error.Contains("Failed to"))
             {
-                _ = Logger.Log(error, "ERROR");
+                _ = Logger.Log(error, LogLevel.ERROR);
                 return new ProcessOutput("Failed to fetch from public mirror.", "Failed to fetch from public mirror.");
             }
             else
@@ -320,7 +321,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n", "ERROR");
+                    _ = Logger.Log($"Rclone error: {error}\n", LogLevel.ERROR);
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))

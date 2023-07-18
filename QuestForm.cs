@@ -270,7 +270,7 @@ namespace AndroidSideloader
 
             _ = MessageBox.Show("Please wait until you get the message that the transfer has finished.");
             ADB.WakeDevice();
-            Program.form.ChangeTitle("Pulling files...");
+            Program.form.changeTitle("Pulling files...");
             _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Oculus/Screenshots\" \"{path}\\Quest ScreenShots\"");
             if (delsh)
             {
@@ -282,7 +282,7 @@ namespace AndroidSideloader
                 }
             }
             _ = MessageBox.Show("Transfer finished! ScreenShots can be found in a folder named Quest Screenshots on your desktop!");
-            Program.form.ChangeTitle("Done!");
+            Program.form.changeTitle("Done!");
         }
         private void questVids_Click(object sender, EventArgs e)
         {
@@ -294,7 +294,7 @@ namespace AndroidSideloader
 
             _ = MessageBox.Show("Please wait until you get the message that the transfer has finished.");
             ADB.WakeDevice();
-            Program.form.ChangeTitle("Pulling files...");
+            Program.form.changeTitle("Pulling files...");
             _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Oculus/Videoshots\" \"{path}\\Quest VideoShots\"");
             if (delsh)
             {
@@ -306,7 +306,7 @@ namespace AndroidSideloader
                 }
             }
             _ = MessageBox.Show("Transfer finished! VideoShots can be found in a folder named Quest VideoShots on your desktop!");
-            Program.form.ChangeTitle("Done!");
+            Program.form.changeTitle("Done!");
         }
         private void button3_Click(object sender, EventArgs e)
         {
@@ -351,21 +351,6 @@ namespace AndroidSideloader
             button3.Enabled = GlobalUsername.TextLength > 0;
             Properties.Settings.Default.GlobalUsername = GlobalUsername.Text;
             Properties.Settings.Default.Save();
-        }
-
-        private void RefreshRateComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void CPUComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void GPUComboBox_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

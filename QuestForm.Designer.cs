@@ -32,6 +32,7 @@ namespace AndroidSideloader
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(QuestForm));
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -274,7 +275,6 @@ namespace AndroidSideloader
             this.CPUComboBox.Size = new System.Drawing.Size(346, 26);
             this.CPUComboBox.TabIndex = 2;
             this.CPUComboBox.Text = "Select CPU level (0 for default)";
-            this.CPUComboBox.SelectedIndexChanged += new System.EventHandler(this.CPUComboBox_SelectedIndexChanged);
             // 
             // GPUComboBox
             // 
@@ -296,7 +296,6 @@ namespace AndroidSideloader
             this.GPUComboBox.Size = new System.Drawing.Size(346, 26);
             this.GPUComboBox.TabIndex = 1;
             this.GPUComboBox.Text = "Select GPU level (0 for default)";
-            this.GPUComboBox.SelectedIndexChanged += new System.EventHandler(this.GPUComboBox_SelectedIndexChanged);
             // 
             // label7
             // 
@@ -526,7 +525,6 @@ namespace AndroidSideloader
             this.RefreshRateComboBox.Size = new System.Drawing.Size(346, 26);
             this.RefreshRateComboBox.TabIndex = 0;
             this.RefreshRateComboBox.Text = "Select refresh rate";
-            this.RefreshRateComboBox.SelectedIndexChanged += new System.EventHandler(this.RefreshRateComboBox_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -742,6 +740,7 @@ namespace AndroidSideloader
             this.Controls.Add(this.QURfrRt);
             this.Controls.Add(this.RefreshRateComboBox);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximumSize = new System.Drawing.Size(386, 776);
             this.MinimumSize = new System.Drawing.Size(386, 776);
             this.Name = "QuestForm";
