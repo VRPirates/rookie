@@ -2608,13 +2608,25 @@ Things you can try:
 
                         if (hasPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
                         {
-                            try
-                            {
+
                                 Thread extractionThread = new Thread(() =>
                                 {
-                                    changeTitle("Extracting " + gameName, false);
-                                    Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
-                                    Program.form.changeTitle("");
+                                    try
+                                    {
+                                        changeTitle("Extracting " + gameName, false);
+                                        Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                        Program.form.changeTitle("");
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        Invoke(new Action(() =>
+                                        {
+                                            cleanupActiveDownloadStatus();
+                                        }));
+                                        otherError = true;
+                                        _ = FlexibleMessageBox.Show($"7zip error: {ex.Message}");
+                                        output += new ProcessOutput("", "Extract Failed");
+                                    }
                                 })
                                 {
                                     IsBackground = true
@@ -2630,13 +2642,6 @@ Things you can try:
                                 {
                                     Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
                                 }
-                            }
-                            catch (Exception ex)
-                            {
-                                otherError = true;
-                                _ = FlexibleMessageBox.Show($"7zip error: {ex.Message}");
-                                output += new ProcessOutput("", "Extract Failed");
-                            }
                         }
 
                         if (quotaError == false && otherError == false)
