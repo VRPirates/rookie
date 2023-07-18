@@ -1,6 +1,5 @@
 RSL 2.21
 
-
 - Feature: Search now shows all results found
 - Feature: Add --no-rclone-updating launch flag
 - Feature: Add lime-green color to various after download jobs
@@ -17,6 +16,7 @@ RSL 2.21
 - Fix: Do not delete game files on an OBB Mismatch anymore
 - Fix: Change all hardcoded C:/ paths to dynamically grab the system drive for further compatability
 - Fix: Rookie should now function on 32 Bit again
+- Fix: Fix crash on failed extraction
 - Chore: Update quota message to be up to date
 - Chore: Code rewrites for logging system, obb comparison, updater
 - Chore: Several redundant code removals
