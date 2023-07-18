@@ -272,13 +272,13 @@ namespace AndroidSideloader
                 if (!File.Exists("Sideloader Launcher.exe"))
                 {
                     currentAccessedWebsite = "github";
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
                 }
 
                 if (!File.Exists("Rookie Offline.cmd"))
                 {
                     currentAccessedWebsite = "github";
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/Rookie%20Offline.cmd", "Rookie Offline.cmd");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Rookie%20Offline.cmd", "Rookie Offline.cmd");
                 }
 
                 if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools\\aug2021.txt") || !File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
@@ -299,7 +299,7 @@ namespace AndroidSideloader
                     }
 
                     currentAccessedWebsite = "github";
-                    client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/adb2.zip", "Ad.7z");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/adb2.zip", "Ad.7z");
                     Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\Ad.7z", $"{Path.GetPathRoot(Environment.SystemDirectory)}\\RSL\\platform-tools");
                     File.Delete("Ad.7z");
                 }

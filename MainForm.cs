@@ -310,7 +310,7 @@ namespace AndroidSideloader
                 if (!debugMode && Properties.Settings.Default.checkForUpdates)
                 {
                     Updater.AppName = "AndroidSideloader";
-                    Updater.Repository = "nerdunit/androidsideloader";
+                    Updater.Repository = "VRPirates/rookie";
                     Updater.Update();
                 }
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
@@ -3556,7 +3556,7 @@ Things you can try:
 
         private void freeDisclaimer_Click(object sender, EventArgs e)
         {
-            _ = Process.Start("https://github.com/nerdunit/androidsideloader");
+            _ = Process.Start("https://github.com/VRPirates/rookie");
         }
 
         private async void removeQUSetting_Click(object sender, EventArgs e)
