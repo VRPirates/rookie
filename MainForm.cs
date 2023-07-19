@@ -300,8 +300,12 @@ namespace AndroidSideloader
             new Thread(() =>
             {
                 Thread.Sleep(10000);
-                webView21.Invoke(() => { webView21.Enabled = true; });
-                freeDisclaimer.Invoke(() => { freeDisclaimer.Dispose(); });
+                freeDisclaimer.Invoke(() => {
+                    freeDisclaimer.Dispose();
+                });
+                freeDisclaimer.Invoke(() => {
+                    freeDisclaimer.Enabled = false;
+                });
             }).Start();
 
             progressBar.Style = ProgressBarStyle.Marquee;
@@ -3475,6 +3479,7 @@ Things you can try:
             }
             else
             {
+                webView21.Enabled = true;
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
                 {
                     WebClient client = new WebClient();
