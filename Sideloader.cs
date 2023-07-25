@@ -27,13 +27,14 @@ namespace AndroidSideloader
         //List of all installed package names from connected device
         //public static List<string> InstalledPackageNames = new List<string>();        //Remove folder from device
         public static ProcessOutput RemoveFolder(string path)
-        {;
+        {
             if (path == "/sdcard/Android/obb/" || path == "sdcard/Android/data/")
             {
                 return null;
             }
             return ADB.RunAdbCommandToString($"shell rm -r {path}");
         }
+
         public static ProcessOutput RemoveFile(string path)
         {
             return ADB.RunAdbCommandToString($"shell rm -f {path}");
