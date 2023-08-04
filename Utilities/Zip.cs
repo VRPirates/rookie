@@ -28,8 +28,8 @@ namespace AndroidSideloader.Utilities
             {
                 _ = Logger.Log("Begin download 7-zip");
                 WebClient client = new WebClient();
-                client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.exe", "7z.exe");
-                client.DownloadFile("https://github.com/nerdunit/androidsideloader/raw/master/7z.dll", "7z.dll");
+                client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/7z.exe", "7z.exe");
+                client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/7z.dll", "7z.dll");
                 _ = Logger.Log("Complete download 7-zip");
             }
             ProcessStartInfo pro = new ProcessStartInfo
