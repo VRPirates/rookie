@@ -204,6 +204,7 @@ namespace AndroidSideloader
             // 
             // freeDisclaimer
             // 
+            this.freeDisclaimer.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.freeDisclaimer.AutoSize = true;
             this.freeDisclaimer.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.freeDisclaimer.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -1259,6 +1260,7 @@ namespace AndroidSideloader
             // 
             // ULGif
             // 
+            this.ULGif.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ULGif.Enabled = false;
             this.ULGif.Location = new System.Drawing.Point(178, 699);
             this.ULGif.Name = "ULGif";
@@ -1269,6 +1271,7 @@ namespace AndroidSideloader
             // 
             // ULLabel
             // 
+            this.ULLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.ULLabel.AutoSize = true;
             this.ULLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.ULLabel.ForeColor = System.Drawing.Color.Snow;
@@ -1281,6 +1284,7 @@ namespace AndroidSideloader
             // 
             // verLabel
             // 
+            this.verLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.verLabel.AutoSize = true;
             this.verLabel.BackColor = System.Drawing.Color.Transparent;
             this.verLabel.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold);
@@ -1414,7 +1418,6 @@ namespace AndroidSideloader
             this.Controls.Add(this.pictureBox7);
             this.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "BackColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.DoubleBuffered = true;
-            this.MaximizeBox = false;
             this.MinimumSize = new System.Drawing.Size(1048, 760);
             this.Name = "MainForm";
             this.ShowIcon = false;
