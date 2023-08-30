@@ -1655,7 +1655,20 @@ namespace AndroidSideloader
                                 try
                                 {
                                     ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                                    ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+                                    ulong cloudVersionInt = 0;
+                                    foreach (string[] releaseGame in SideloaderRCLONE.games)
+                                    {
+                                        if(string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
+                                        {
+                                            ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
+                                            if (releaseGameVersionCode > cloudVersionInt)
+                                            {
+                                                Console.WriteLine($"Updated cloudVersionInt for {packagename} from {cloudVersionInt} to {releaseGameVersionCode}");
+                                                cloudVersionInt = releaseGameVersionCode;
+                                            }
+                                        }
+                                    }
+                                    //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
 
                                     _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
                                     if (installedVersionInt < cloudVersionInt)
