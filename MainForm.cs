@@ -2724,7 +2724,11 @@ Things you can try:
                                                 Thread obbThread = new Thread(() =>
                                                 {
                                                     changeTitle($"Copying {packagename} obb to device...");
-                                                    output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                                    string outputCheck = ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"").ToString();
+                                                    if (outputCheck.Contains("remote write failed"))
+                                                    {
+                                                        output.Output += "OBB Push failed!";
+                                                    }
                                                     Program.form.changeTitle("");
                                                 })
                                                 {
