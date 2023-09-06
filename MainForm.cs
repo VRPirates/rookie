@@ -1655,7 +1655,20 @@ namespace AndroidSideloader
                                 try
                                 {
                                     ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                                    ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+                                    ulong cloudVersionInt = 0;
+                                    foreach (string[] releaseGame in SideloaderRCLONE.games)
+                                    {
+                                        if(string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
+                                        {
+                                            ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
+                                            if (releaseGameVersionCode > cloudVersionInt)
+                                            {
+                                                Console.WriteLine($"Updated cloudVersionInt for {packagename} from {cloudVersionInt} to {releaseGameVersionCode}");
+                                                cloudVersionInt = releaseGameVersionCode;
+                                            }
+                                        }
+                                    }
+                                    //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
 
                                     _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
                                     if (installedVersionInt < cloudVersionInt)
@@ -1924,7 +1937,10 @@ namespace AndroidSideloader
                     string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
                     Program.form.changeTitle("Zipping extracted application...");
                     _ = ADB.RunCommandToString(cmd, path);
-                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                    if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}"))
+                    {
+                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                    }
                     Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
 
                     // Get size of pending zip upload and write to text file
@@ -1942,8 +1958,14 @@ namespace AndroidSideloader
                     }
 
                     // Delete files once uploaded.
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                    {
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                    }
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}")) 
+                    {
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                    }
 
                 })
                 {
