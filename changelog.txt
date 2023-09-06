@@ -1,7 +1,5 @@
-RSL 2.22
+RSL 2.23
 
-- Fix: Crash on failed extractions.
-- Fix: Trailers controls not functioning properly.
-- Fix: No Device Mode having the wrong output message.
-- Chore: Remove ADB.WakeDevice() due to being non-functional.
-- Chore: Make changeTitlebarToDevice less prone to crashes and more robust.
+- Fix: Rookie should now only prompt for newer versions of all games
+- Fix: Crash when attempting to delete invalid directories or files
+- Feature: Enable Maximize Button

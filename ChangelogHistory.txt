@@ -1,4 +1,12 @@
-﻿RSL 2.21
+﻿RSL 2.22
+
+- Fix: Crash on failed extractions.
+- Fix: Trailers controls not functioning properly.
+- Fix: No Device Mode having the wrong output message.
+- Chore: Remove ADB.WakeDevice() due to being non-functional.
+- Chore: Make changeTitlebarToDevice less prone to crashes and more robust.
+
+RSL 2.21
 
 - Feature: Search now shows all results found
 - Feature: Add --no-rclone-updating launch flag
