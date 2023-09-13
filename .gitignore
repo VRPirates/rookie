@@ -6,3 +6,5 @@ AndroidSideloader.csproj.user
 .vs/
 bin/
 packages/
+/MigrationBackup
+/obj
