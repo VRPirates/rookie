@@ -3319,9 +3319,6 @@ Things you can try:
                         .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
                         .ToList();
 
-                    // Sort the matching items to the top
-                    matches.Sort((a, b) => gamesListView.Items.IndexOf(a) - gamesListView.Items.IndexOf(b));
-
                     gamesListView.BeginUpdate(); // Improve UI performance
                     gamesListView.Items.Clear();
 
