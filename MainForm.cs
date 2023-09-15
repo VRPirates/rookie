@@ -1584,6 +1584,8 @@ namespace AndroidSideloader
         public static int updint = 0;
         public static bool nodeviceonstart = false;
         public static bool either = false;
+        private bool _allItemsInitialized = false;
+
 
         private async void initListView()
         {
@@ -1902,6 +1904,11 @@ namespace AndroidSideloader
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
             changeTitle("                                                \n\n");
+            if (!_allItemsInitialized)
+            {
+                _allItems = gamesListView.Items.Cast<ListViewItem>().ToList();
+                _allItemsInitialized = true; // Set the flag to true after initialization
+            }
             loaded = true;
         }
 
@@ -3288,7 +3295,7 @@ Things you can try:
 
 
 
-        private void searchTextBox_TextChanged(object sender, EventArgs e)
+        private async void searchTextBox_TextChanged(object sender, EventArgs e)
         {
             _debounceTimer.Stop();
             _debounceTimer.Start();
@@ -3301,29 +3308,29 @@ Things you can try:
             // Cancel any ongoing searches
             _cts?.Cancel();
 
-            _allItems = gamesListView.Items.Cast<ListViewItem>().ToList();
-
             string searchTerm = searchTextBox.Text;
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 _cts = new CancellationTokenSource();
+
                 try
                 {
-                    var matches = await Task.Run(() =>
-                        _allItems
-                            .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                            .ToList(),
-                        _cts.Token);
+                    var matches = _allItems
+                        .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        .ToList();
 
-                    // Update UI on UI thread
-                    Invoke(new Action(() =>
+                    // Sort the matching items to the top
+                    matches.Sort((a, b) => gamesListView.Items.IndexOf(a) - gamesListView.Items.IndexOf(b));
+
+                    gamesListView.BeginUpdate(); // Improve UI performance
+                    gamesListView.Items.Clear();
+
+                    foreach (var match in matches)
                     {
-                        gamesListView.Items.Clear();
-                        foreach (var match in matches)
-                        {
-                            gamesListView.Items.Add(match);
-                        }
-                    }));
+                        gamesListView.Items.Add(match);
+                    }
+
+                    gamesListView.EndUpdate(); // End the update to refresh the UI
                 }
                 catch (OperationCanceledException)
                 {
@@ -3332,7 +3339,6 @@ Things you can try:
             }
             else
             {
-                // No matching items found, restore the original list
                 initListView();
             }
         }
@@ -3624,21 +3630,10 @@ Things you can try:
             initListView();
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            searchTextBox.Clear();
-            searchTextBox.Visible = true;
-            label2.Visible = true;
-            lblSearchHelp.Visible = true;
-            lblShortcutsF2.Visible = true;
-            _ = searchTextBox.Focus();
-        }
-
         private void searchTextBox_Leave(object sender, EventArgs e)
         {
             if (searchTextBox.Visible)
             {
-                searchTextBox.Visible = false;
                 label2.Visible = false;
                 lblSearchHelp.Visible = false;
                 lblShortcutsF2.Visible = false;
@@ -4269,6 +4264,12 @@ Things you can try:
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
+        }
+
+        private void searchTextBox_Click(object sender, EventArgs e)
+        {
+            searchTextBox.Clear();
+            _ = searchTextBox.Focus();
         }
     }
 
