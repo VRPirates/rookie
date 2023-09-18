@@ -65,7 +65,45 @@ namespace AndroidSideloader
         private List<ListViewItem> _allItems;
         public MainForm()
         {
+            InitializeComponent();
+
             // Check for Offline Mode or No RCLONE Updating
+            CheckCommandLineArguments();
+
+            // Initialize debounce timer for search
+            _debounceTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 1000, // 1 second delay
+                Enabled = false
+            };
+            _debounceTimer.Tick += async (sender, e) => await RunSearch();
+
+            // Set data source for games queue list
+            gamesQueListBox.DataSource = gamesQueueList;
+
+            InitializeTimeReferences();
+
+            // Log program launch time
+            InitializeLogger();
+
+            // Set current log path if not already set
+            SetCurrentLogPath();
+
+            StartTimers();
+
+            // Setup list view column sorting
+            lvwColumnSorter = new ListViewColumnSorter();
+            gamesListView.ListViewItemSorter = lvwColumnSorter;
+
+            // Focus on search text box if visible
+            if (searchTextBox.Visible)
+            {
+                _ = searchTextBox.Focus();
+            }
+        }
+
+        private void CheckCommandLineArguments()
+        {
             string[] args = Environment.GetCommandLineArgs();
             foreach (string arg in args)
             {
@@ -82,69 +120,79 @@ namespace AndroidSideloader
             {
                 _ = FlexibleMessageBox.Show(Program.form, "Offline mode activated. You can't download games in this mode, only do local stuff.");
             }
+        }
 
-            InitializeComponent();
-            _debounceTimer = new System.Windows.Forms.Timer
-            {
-                Interval = 1000, // 1 second delay
-                Enabled = false
-            };
-            _debounceTimer.Tick += async (sender, e) => await RunSearch();
-            gamesQueListBox.DataSource = gamesQueueList;
-            //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
-            TimeSpan newDayReference = new TimeSpan(96, 0, 0);
-            //Time between asking for updates after uploading. 72,0,0 DEFAULT
-            TimeSpan newDayReference2 = new TimeSpan(72, 0, 0);
-            TimeSpan comparison;
-            TimeSpan comparison2;
+        private void InitializeTimeReferences()
+        {
+            // Initialize time references
+            TimeSpan newDayReference = new TimeSpan(96, 0, 0); // Time between asking for new apps if user clicks No. (DEFAULT: 96 hours)
+            TimeSpan newDayReference2 = new TimeSpan(72, 0, 0); // Time between asking for updates after uploading. (DEFAULT: 72 hours)
 
-            //These two variables set to show difference.
+            // Calculate time differences
             DateTime A = Properties.Settings.Default.LastLaunch;
             DateTime B = DateTime.Now;
             DateTime C = Properties.Settings.Default.LastLaunch2;
-            comparison = B - A;
-            comparison2 = B - C;
-            // If enough time has passed reset property containing packagenames
+            TimeSpan comparison = B - A;
+            TimeSpan comparison2 = B - C;
+
+            // Reset properties if enough time has passed
             if (comparison > newDayReference)
             {
-                Properties.Settings.Default.ListUpped = false;
-                Properties.Settings.Default.NonAppPackages = String.Empty;
-                Properties.Settings.Default.AppPackages = String.Empty;
-                Properties.Settings.Default.LastLaunch = DateTime.Now;
-                Properties.Settings.Default.Save();
+                ResetPropertiesAfterTimePassed();
             }
             if (comparison2 > newDayReference2)
             {
-                Properties.Settings.Default.LastLaunch2 = DateTime.Now;
-                Properties.Settings.Default.SubmittedUpdates = String.Empty;
-                Properties.Settings.Default.Save();
+                ResetProperties2AfterTimePassed();
             }
-            // Launch time used within debuglog.
+        }
+
+        private void ResetPropertiesAfterTimePassed()
+        {
+            Properties.Settings.Default.ListUpped = false;
+            Properties.Settings.Default.NonAppPackages = String.Empty;
+            Properties.Settings.Default.AppPackages = String.Empty;
+            Properties.Settings.Default.LastLaunch = DateTime.Now;
+            Properties.Settings.Default.Save();
+        }
+
+        private void ResetProperties2AfterTimePassed()
+        {
+            Properties.Settings.Default.LastLaunch2 = DateTime.Now;
+            Properties.Settings.Default.SubmittedUpdates = String.Empty;
+            Properties.Settings.Default.Save();
+        }
+
+        private void InitializeLogger()
+        {
+            // Log program launch time
             string launchtime = DateTime.Now.ToString("hh:mmtt(UTC)");
             _ = Logger.Log($"\n------\n------\nProgram Launched at: {launchtime}\n------\n------");
+        }
+
+        private void SetCurrentLogPath()
+        {
             if (string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
                 Properties.Settings.Default.CurrentLogPath = $"{Environment.CurrentDirectory}\\debuglog.txt";
             }
+        }
+
+        private void StartTimers()
+        {
+            // Start timers
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
             {
                 Interval = 840000 // 14 mins between wakeup commands
             };
             t.Tick += new EventHandler(timer_Tick);
             t.Start();
+
             System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer
             {
                 Interval = 300 // 30ms
             };
             t2.Tick += new EventHandler(timer_Tick2);
             t2.Start();
-
-            lvwColumnSorter = new ListViewColumnSorter();
-            gamesListView.ListViewItemSorter = lvwColumnSorter;
-            if (searchTextBox.Visible)
-            {
-                _ = searchTextBox.Focus();
-            }
         }
 
         public static string donorApps = String.Empty;
