@@ -202,6 +202,8 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            _ = Logger.Log("Starting AndroidSideloader Application");
+
             Splash splash = new Splash();
             splash.Show();
 
@@ -249,14 +251,12 @@ namespace AndroidSideloader
                 }
             }
 
-            if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
-            {
-                _ = ADB.RunAdbCommandToString("kill-server");
-                _ = ADB.RunAdbCommandToString("start-server");
-            }
+            // download dependencies
+            Sideloader.downloadFiles();
+
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-            Sideloader.downloadFiles();
+            
             await Task.Delay(100);
             if (Directory.Exists(Sideloader.TempFolder))
 
@@ -336,6 +336,13 @@ namespace AndroidSideloader
             {
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = Size.Empty;
+            }
+
+            _ = Logger.Log("Attempting to Initalize ADB Server");
+            if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
+            {
+                _ = ADB.RunAdbCommandToString("kill-server");
+                _ = ADB.RunAdbCommandToString("start-server");
             }
 
             splash.Close();
