@@ -84,7 +84,7 @@ namespace AndroidSideloader
         private void applyButton_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.Save();
-            _ = FlexibleMessageBox.Show(this, "Settings applied!");
+            this.Close();
         }
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
