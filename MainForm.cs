@@ -2799,7 +2799,7 @@ Things you can try:
                                                 Thread obbThread = new Thread(() =>
                                                 {
                                                     changeTitle($"Copying {packagename} obb to device...");
-                                                    string outputCheck = ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"").ToString();
+                                                ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
                                                 output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                     Program.form.changeTitle("");
                                                 })
