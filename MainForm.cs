@@ -809,41 +809,54 @@ namespace AndroidSideloader
 
         public void changeTitlebarToDevice()
         {
-            if (Devices == null || Devices.Count == 0)
+            if (!Devices.Contains("unauthorized"))
             {
-                this.Invoke(() =>
+                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
                 {
                     DeviceConnected = false;
-                    Text = "No Device Connected";
-                    if (!Properties.Settings.Default.nodevicemode)
+                    this.Invoke(() =>
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        Text = "Device Not Authorized";
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
+                            ;
                         }
-                    }
-                });
+                        else
+                        {
                 return; 
             }
 
-            if (Devices[0].Contains("unauthorized"))
+                    });
+                }
+                else if (Devices[0].Length > 1)
             {
-                DeviceConnected = false;
+                    this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
+                    DeviceConnected = true;
+                }
+                else
+                {
                 this.Invoke(() =>
                 {
-                    Text = "Device Not Authorized";
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                        DeviceConnected = false;
+                        Text = "No Device Connected";
+                        if (!Properties.Settings.Default.nodevicemode)
+                        {
+                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
                     }
-                });
-            }
             else
             {
-                this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
-                DeviceConnected = true;
+                                return;
+            }
+        }
+
+
+                    });
+                }
             }
         }
 
