@@ -1728,7 +1728,7 @@ namespace AndroidSideloader
                                     ulong cloudVersionInt = 0;
                                     foreach (string[] releaseGame in SideloaderRCLONE.games)
                                     {
-                                        if(string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
+                                        if (string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
                                         {
                                             ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
                                             if (releaseGameVersionCode > cloudVersionInt)
@@ -2651,6 +2651,7 @@ Things you can try:
                     {
                         //Quota Errors
                         bool isinstalltxt = false;
+                        string installTxtPath = null;
                         bool quotaError = false;
                         bool otherError = false;
                         if (gameDownloadOutput.Error.Length > 0 && !isOffline)
@@ -2724,57 +2725,51 @@ Things you can try:
                             changeTitle("Installing game apk " + gameName, false);
                             etaLabel.Text = "ETA: Wait for install...";
                             speedLabel.Text = "DLS: Finished";
-                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\install.txt"))
+                            if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt")))
                             {
                                 isinstalltxt = true;
+                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt");
                             }
-
-                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\Install.txt"))
+                            else if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt")))
                             {
                                 isinstalltxt = true;
+                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt");
                             }
 
                             string[] files = Directory.GetFiles(Properties.Settings.Default.downloadDir + "\\" + gameName);
 
                             Debug.WriteLine("Game Folder is: " + Properties.Settings.Default.downloadDir + "\\" + gameName);
                             Debug.WriteLine("FILES IN GAME FOLDER: ");
-                            foreach (string file in files)
+                            if (isinstalltxt)
                             {
-                                Debug.WriteLine(file);
-                                string extension = Path.GetExtension(file);
-                                if (extension == ".txt")
-                                {
-                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
-                                    {
-                                        string fullname = Path.GetFileName(file);
-                                        if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
                                         {
                                             Thread installtxtThread = new Thread(() =>
                                             {
-                                                output += Sideloader.RunADBCommandsFromFile(file);
-
+                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
                                                 changeTitle(" \n\n");
                                             });
-
                                             installtxtThread.Start();
                                             while (installtxtThread.IsAlive)
                                             {
                                                 await Task.Delay(100);
                                             }
                                         }
-                                    }
                                     else
                                     {
                                         output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
                                     }
                                 }
-                                if (!isinstalltxt)
+                            else
                                 {
-                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
+                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
                                     {
-                                        if (extension == ".apk")
+                                    // Find the APK file to install
+                                    string apkFile = files.FirstOrDefault(file => Path.GetExtension(file) == ".apk");
+
+                                    if (apkFile != null)
                                         {
-                                            CurrAPK = file;
+                                        CurrAPK = apkFile;
                                             CurrPCKG = packagename;
                                             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
                                             {
@@ -2785,7 +2780,7 @@ Things you can try:
                                             Thread apkThread = new Thread(() =>
                                             {
                                                 Program.form.changeTitle($"Sideloading apk...");
-                                                output += ADB.Sideload(file, packagename);
+                                            output += ADB.Sideload(apkFile, packagename);
                                             })
                                             {
                                                 IsBackground = true
@@ -2795,31 +2790,23 @@ Things you can try:
                                             {
                                                 await Task.Delay(100);
                                             }
-
                                             t.Stop();
-                                        }
 
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                         {
-                                            if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
-                                            {
                                                 deleteOBB(packagename);
                                                 Thread obbThread = new Thread(() =>
                                                 {
                                                     changeTitle($"Copying {packagename} obb to device...");
                                                     string outputCheck = ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"").ToString();
-                                                    if (outputCheck.Contains("remote write failed"))
-                                                    {
-                                                        output.Output += "OBB Push failed!";
-                                                    }
+                                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                     Program.form.changeTitle("");
                                                 })
                                                 {
                                                     IsBackground = true
                                                 };
                                                 obbThread.Start();
-
                                                 while (obbThread.IsAlive)
                                                 {
                                                     await Task.Delay(100);
@@ -2836,8 +2823,6 @@ Things you can try:
                                                     }
                                                 }
                                             }
-                                        }
-
                                     }
                                     else
                                     {
