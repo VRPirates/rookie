@@ -809,41 +809,54 @@ namespace AndroidSideloader
 
         public void changeTitlebarToDevice()
         {
-            if (Devices == null || Devices.Count == 0)
+            if (!Devices.Contains("unauthorized"))
             {
-                this.Invoke(() =>
+                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
                 {
                     DeviceConnected = false;
-                    Text = "No Device Connected";
-                    if (!Properties.Settings.Default.nodevicemode)
+                    this.Invoke(() =>
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        Text = "Device Not Authorized";
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
+                            ;
                         }
-                    }
-                });
+                        else
+                        {
                 return; 
             }
 
-            if (Devices[0].Contains("unauthorized"))
+                    });
+                }
+                else if (Devices[0].Length > 1)
             {
-                DeviceConnected = false;
+                    this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
+                    DeviceConnected = true;
+                }
+                else
+                {
                 this.Invoke(() =>
                 {
-                    Text = "Device Not Authorized";
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                        DeviceConnected = false;
+                        Text = "No Device Connected";
+                        if (!Properties.Settings.Default.nodevicemode)
+                        {
+                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
                     }
-                });
-            }
             else
             {
-                this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
-                DeviceConnected = true;
+                                return;
+            }
+        }
+
+
+                    });
+                }
             }
         }
 
@@ -1718,7 +1731,7 @@ namespace AndroidSideloader
                                     ulong cloudVersionInt = 0;
                                     foreach (string[] releaseGame in SideloaderRCLONE.games)
                                     {
-                                        if(string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
+                                        if (string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
                                         {
                                             ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
                                             if (releaseGameVersionCode > cloudVersionInt)
@@ -2641,6 +2654,7 @@ Things you can try:
                     {
                         //Quota Errors
                         bool isinstalltxt = false;
+                        string installTxtPath = null;
                         bool quotaError = false;
                         bool otherError = false;
                         if (gameDownloadOutput.Error.Length > 0 && !isOffline)
@@ -2714,57 +2728,51 @@ Things you can try:
                             changeTitle("Installing game apk " + gameName, false);
                             etaLabel.Text = "ETA: Wait for install...";
                             speedLabel.Text = "DLS: Finished";
-                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\install.txt"))
+                            if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt")))
                             {
                                 isinstalltxt = true;
+                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt");
                             }
-
-                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\Install.txt"))
+                            else if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt")))
                             {
                                 isinstalltxt = true;
+                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt");
                             }
 
                             string[] files = Directory.GetFiles(Properties.Settings.Default.downloadDir + "\\" + gameName);
 
                             Debug.WriteLine("Game Folder is: " + Properties.Settings.Default.downloadDir + "\\" + gameName);
                             Debug.WriteLine("FILES IN GAME FOLDER: ");
-                            foreach (string file in files)
+                            if (isinstalltxt)
                             {
-                                Debug.WriteLine(file);
-                                string extension = Path.GetExtension(file);
-                                if (extension == ".txt")
-                                {
-                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
-                                    {
-                                        string fullname = Path.GetFileName(file);
-                                        if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
                                         {
                                             Thread installtxtThread = new Thread(() =>
                                             {
-                                                output += Sideloader.RunADBCommandsFromFile(file);
-
+                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
                                                 changeTitle(" \n\n");
                                             });
-
                                             installtxtThread.Start();
                                             while (installtxtThread.IsAlive)
                                             {
                                                 await Task.Delay(100);
                                             }
                                         }
-                                    }
                                     else
                                     {
                                         output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
                                     }
                                 }
-                                if (!isinstalltxt)
+                            else
                                 {
-                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
+                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
                                     {
-                                        if (extension == ".apk")
+                                    // Find the APK file to install
+                                    string apkFile = files.FirstOrDefault(file => Path.GetExtension(file) == ".apk");
+
+                                    if (apkFile != null)
                                         {
-                                            CurrAPK = file;
+                                        CurrAPK = apkFile;
                                             CurrPCKG = packagename;
                                             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
                                             {
@@ -2775,7 +2783,7 @@ Things you can try:
                                             Thread apkThread = new Thread(() =>
                                             {
                                                 Program.form.changeTitle($"Sideloading apk...");
-                                                output += ADB.Sideload(file, packagename);
+                                            output += ADB.Sideload(apkFile, packagename);
                                             })
                                             {
                                                 IsBackground = true
@@ -2785,31 +2793,23 @@ Things you can try:
                                             {
                                                 await Task.Delay(100);
                                             }
-
                                             t.Stop();
-                                        }
 
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                         {
-                                            if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
-                                            {
                                                 deleteOBB(packagename);
                                                 Thread obbThread = new Thread(() =>
                                                 {
                                                     changeTitle($"Copying {packagename} obb to device...");
-                                                    string outputCheck = ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"").ToString();
-                                                    if (outputCheck.Contains("remote write failed"))
-                                                    {
-                                                        output.Output += "OBB Push failed!";
-                                                    }
+                                                ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
+                                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                     Program.form.changeTitle("");
                                                 })
                                                 {
                                                     IsBackground = true
                                                 };
                                                 obbThread.Start();
-
                                                 while (obbThread.IsAlive)
                                                 {
                                                     await Task.Delay(100);
@@ -2826,8 +2826,6 @@ Things you can try:
                                                     }
                                                 }
                                             }
-                                        }
-
                                     }
                                     else
                                     {
