@@ -265,48 +265,48 @@ namespace AndroidSideloader
                 if (!File.Exists("Sideloader Launcher.exe"))
                 {
                     currentAccessedWebsite = "github";
+                    _ = Logger.Log($"Missing 'Sideloader Launcher.exe'. Attempting to download from {currentAccessedWebsite}");
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
+                    _ = Logger.Log($"'Sideloader Launcher.exe' download successful");
                 }
 
                 if (!File.Exists("Rookie Offline.cmd"))
                 {
                     currentAccessedWebsite = "github";
+                    _ = Logger.Log($"Missing 'Rookie Offline.cmd'. Attempting to download from {currentAccessedWebsite}");
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Rookie%20Offline.cmd", "Rookie Offline.cmd");
+                    _ = Logger.Log($"'Rookie Offline.cmd' download successful");
                 }
 
-                if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aug2021.txt") || !File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
+                if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
                 {
-                    if (Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\2.8.2"))
-                    {
-                        Directory.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\2.8.2", true);
-                    }
-
-                    if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\adb"))
-                    {
-                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\adb", true);
-                    }
-
                     if (!Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools"))
                     {
                         _ = Directory.CreateDirectory($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
                     }
 
                     currentAccessedWebsite = "github";
-                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/adb2.zip", "Ad.7z");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\Ad.7z", $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
-                    File.Delete("Ad.7z");
+                    _ = Logger.Log($"Missing adb within {Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools. Attempting to download from {currentAccessedWebsite}");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/adb2.zip", "_adb.7z");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\_adb.7z", $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
+                    File.Delete("_adb.7z");
+                    _ = Logger.Log($"adb download successful");
                 }
 
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
                 {
                     currentAccessedWebsite = "rclone";
+                    _ = Logger.Log($"Missing rclone. Attempting to download from {currentAccessedWebsite}.org");
                     string url = Environment.Is64BitOperatingSystem
                         ? "https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-amd64.zip"
                         : "https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-386.zip";
                     //Since sideloader is build for x86, it should work on both x86 and x64 so we download the according rclone version
 
+                    _ = Logger.Log("Begin download rclone");
                     client.DownloadFile(url, "rclone.zip");
+                    _ = Logger.Log("Complete download rclone");
 
+                    _ = Logger.Log($"Extract {Environment.CurrentDirectory}\\rclone.zip");
                     Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\rclone.zip", Environment.CurrentDirectory);
 
                     File.Delete("rclone.zip");
@@ -320,9 +320,11 @@ namespace AndroidSideloader
                             break; //only 1 rclone folder
                         }
                     }
+                    _ = Logger.Log($"rclone download successful");
                 }
                 else
                 {
+                    _ = Logger.Log($"Checking for Local rclone...");
                     string pathToRclone = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
                     if (File.Exists(pathToRclone))
                     {
@@ -333,7 +335,7 @@ namespace AndroidSideloader
                         {
                             if (version != "1.62.2")
                             {
-                                Logger.Log("RCLONE Version not matching! Downloading required version.", LogLevel.WARNING);
+                                Logger.Log($"RCLONE Version does not match ({version})! Downloading required version (1.62.2)", LogLevel.WARNING);
                                 File.Delete(pathToRclone);
                                 currentAccessedWebsite = "rclone";
                                 string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";

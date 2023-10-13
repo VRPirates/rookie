@@ -65,7 +65,45 @@ namespace AndroidSideloader
         private List<ListViewItem> _allItems;
         public MainForm()
         {
+            InitializeComponent();
+
             // Check for Offline Mode or No RCLONE Updating
+            CheckCommandLineArguments();
+
+            // Initialize debounce timer for search
+            _debounceTimer = new System.Windows.Forms.Timer
+            {
+                Interval = 1000, // 1 second delay
+                Enabled = false
+            };
+            _debounceTimer.Tick += async (sender, e) => await RunSearch();
+
+            // Set data source for games queue list
+            gamesQueListBox.DataSource = gamesQueueList;
+
+            InitializeTimeReferences();
+
+            // Log program launch time
+            InitializeLogger();
+
+            // Set current log path if not already set
+            SetCurrentLogPath();
+
+            StartTimers();
+
+            // Setup list view column sorting
+            lvwColumnSorter = new ListViewColumnSorter();
+            gamesListView.ListViewItemSorter = lvwColumnSorter;
+
+            // Focus on search text box if visible
+            if (searchTextBox.Visible)
+            {
+                _ = searchTextBox.Focus();
+            }
+        }
+
+        private void CheckCommandLineArguments()
+        {
             string[] args = Environment.GetCommandLineArgs();
             foreach (string arg in args)
             {
@@ -82,69 +120,79 @@ namespace AndroidSideloader
             {
                 _ = FlexibleMessageBox.Show(Program.form, "Offline mode activated. You can't download games in this mode, only do local stuff.");
             }
+        }
 
-            InitializeComponent();
-            _debounceTimer = new System.Windows.Forms.Timer
-            {
-                Interval = 1000, // 1 second delay
-                Enabled = false
-            };
-            _debounceTimer.Tick += async (sender, e) => await RunSearch();
-            gamesQueListBox.DataSource = gamesQueueList;
-            //Time between asking for new apps if user clicks No. 96,0,0 DEFAULT
-            TimeSpan newDayReference = new TimeSpan(96, 0, 0);
-            //Time between asking for updates after uploading. 72,0,0 DEFAULT
-            TimeSpan newDayReference2 = new TimeSpan(72, 0, 0);
-            TimeSpan comparison;
-            TimeSpan comparison2;
+        private void InitializeTimeReferences()
+        {
+            // Initialize time references
+            TimeSpan newDayReference = new TimeSpan(96, 0, 0); // Time between asking for new apps if user clicks No. (DEFAULT: 96 hours)
+            TimeSpan newDayReference2 = new TimeSpan(72, 0, 0); // Time between asking for updates after uploading. (DEFAULT: 72 hours)
 
-            //These two variables set to show difference.
+            // Calculate time differences
             DateTime A = Properties.Settings.Default.LastLaunch;
             DateTime B = DateTime.Now;
             DateTime C = Properties.Settings.Default.LastLaunch2;
-            comparison = B - A;
-            comparison2 = B - C;
-            // If enough time has passed reset property containing packagenames
+            TimeSpan comparison = B - A;
+            TimeSpan comparison2 = B - C;
+
+            // Reset properties if enough time has passed
             if (comparison > newDayReference)
             {
-                Properties.Settings.Default.ListUpped = false;
-                Properties.Settings.Default.NonAppPackages = String.Empty;
-                Properties.Settings.Default.AppPackages = String.Empty;
-                Properties.Settings.Default.LastLaunch = DateTime.Now;
-                Properties.Settings.Default.Save();
+                ResetPropertiesAfterTimePassed();
             }
             if (comparison2 > newDayReference2)
             {
-                Properties.Settings.Default.LastLaunch2 = DateTime.Now;
-                Properties.Settings.Default.SubmittedUpdates = String.Empty;
-                Properties.Settings.Default.Save();
+                ResetProperties2AfterTimePassed();
             }
-            // Launch time used within debuglog.
+        }
+
+        private void ResetPropertiesAfterTimePassed()
+        {
+            Properties.Settings.Default.ListUpped = false;
+            Properties.Settings.Default.NonAppPackages = String.Empty;
+            Properties.Settings.Default.AppPackages = String.Empty;
+            Properties.Settings.Default.LastLaunch = DateTime.Now;
+            Properties.Settings.Default.Save();
+        }
+
+        private void ResetProperties2AfterTimePassed()
+        {
+            Properties.Settings.Default.LastLaunch2 = DateTime.Now;
+            Properties.Settings.Default.SubmittedUpdates = String.Empty;
+            Properties.Settings.Default.Save();
+        }
+
+        private void InitializeLogger()
+        {
+            // Log program launch time
             string launchtime = DateTime.Now.ToString("hh:mmtt(UTC)");
             _ = Logger.Log($"\n------\n------\nProgram Launched at: {launchtime}\n------\n------");
+        }
+
+        private void SetCurrentLogPath()
+        {
             if (string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
                 Properties.Settings.Default.CurrentLogPath = $"{Environment.CurrentDirectory}\\debuglog.txt";
             }
+        }
+
+        private void StartTimers()
+        {
+            // Start timers
             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
             {
                 Interval = 840000 // 14 mins between wakeup commands
             };
             t.Tick += new EventHandler(timer_Tick);
             t.Start();
+
             System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer
             {
                 Interval = 300 // 30ms
             };
             t2.Tick += new EventHandler(timer_Tick2);
             t2.Start();
-
-            lvwColumnSorter = new ListViewColumnSorter();
-            gamesListView.ListViewItemSorter = lvwColumnSorter;
-            if (searchTextBox.Visible)
-            {
-                _ = searchTextBox.Focus();
-            }
         }
 
         public static string donorApps = String.Empty;
@@ -154,6 +202,8 @@ namespace AndroidSideloader
 
         private async void Form1_Load(object sender, EventArgs e)
         {
+            _ = Logger.Log("Starting AndroidSideloader Application");
+
             Splash splash = new Splash();
             splash.Show();
 
@@ -201,14 +251,12 @@ namespace AndroidSideloader
                 }
             }
 
-            if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
-            {
-                _ = ADB.RunAdbCommandToString("kill-server");
-                _ = ADB.RunAdbCommandToString("start-server");
-            }
+            // download dependencies
+            Sideloader.downloadFiles();
+
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-            Sideloader.downloadFiles();
+            
             await Task.Delay(100);
             if (Directory.Exists(Sideloader.TempFolder))
 
@@ -288,6 +336,13 @@ namespace AndroidSideloader
             {
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = Size.Empty;
+            }
+
+            _ = Logger.Log("Attempting to Initalize ADB Server");
+            if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
+            {
+                _ = ADB.RunAdbCommandToString("kill-server");
+                _ = ADB.RunAdbCommandToString("start-server");
             }
 
             splash.Close();
@@ -754,41 +809,54 @@ namespace AndroidSideloader
 
         public void changeTitlebarToDevice()
         {
-            if (Devices == null || Devices.Count == 0)
+            if (!Devices.Contains("unauthorized"))
             {
-                this.Invoke(() =>
+                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
                 {
                     DeviceConnected = false;
-                    Text = "No Device Connected";
-                    if (!Properties.Settings.Default.nodevicemode)
+                    this.Invoke(() =>
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        Text = "Device Not Authorized";
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
+                            ;
                         }
-                    }
-                });
+                        else
+                        {
                 return; 
             }
 
-            if (Devices[0].Contains("unauthorized"))
+                    });
+                }
+                else if (Devices[0].Length > 1)
             {
-                DeviceConnected = false;
+                    this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
+                    DeviceConnected = true;
+                }
+                else
+                {
                 this.Invoke(() =>
                 {
-                    Text = "Device Not Authorized";
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                        DeviceConnected = false;
+                        Text = "No Device Connected";
+                        if (!Properties.Settings.Default.nodevicemode)
+                        {
+                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
                     }
-                });
-            }
             else
             {
-                this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
-                DeviceConnected = true;
+                                return;
+            }
+        }
+
+
+                    });
+                }
             }
         }
 
@@ -854,7 +922,10 @@ namespace AndroidSideloader
             {
                 string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(backupFolder, date_str);
-                _ = FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to {backupFolder}\\{date_str} (year.month.date)");
+                Program.form.Invoke(new Action(() =>
+                {
+                    FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to {backupFolder}\\{date_str} (year.month.date)");
+                }));
                 _ = Directory.CreateDirectory(CurrBackups);
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{CurrBackups}\"");
                 changeTitle("Backing up gamedatas...");
@@ -1584,6 +1655,8 @@ namespace AndroidSideloader
         public static int updint = 0;
         public static bool nodeviceonstart = false;
         public static bool either = false;
+        private bool _allItemsInitialized = false;
+
 
         private async void initListView()
         {
@@ -1658,7 +1731,7 @@ namespace AndroidSideloader
                                     ulong cloudVersionInt = 0;
                                     foreach (string[] releaseGame in SideloaderRCLONE.games)
                                     {
-                                        if(string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
+                                        if (string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
                                         {
                                             ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
                                             if (releaseGameVersionCode > cloudVersionInt)
@@ -1902,6 +1975,11 @@ namespace AndroidSideloader
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
             changeTitle("                                                \n\n");
+            if (!_allItemsInitialized)
+            {
+                _allItems = gamesListView.Items.Cast<ListViewItem>().ToList();
+                _allItemsInitialized = true; // Set the flag to true after initialization
+            }
             loaded = true;
         }
 
@@ -2576,6 +2654,7 @@ Things you can try:
                     {
                         //Quota Errors
                         bool isinstalltxt = false;
+                        string installTxtPath = null;
                         bool quotaError = false;
                         bool otherError = false;
                         if (gameDownloadOutput.Error.Length > 0 && !isOffline)
@@ -2649,57 +2728,51 @@ Things you can try:
                             changeTitle("Installing game apk " + gameName, false);
                             etaLabel.Text = "ETA: Wait for install...";
                             speedLabel.Text = "DLS: Finished";
-                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\install.txt"))
+                            if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt")))
                             {
                                 isinstalltxt = true;
+                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt");
                             }
-
-                            if (File.Exists(Properties.Settings.Default.downloadDir + "\\" + gameName + "\\Install.txt"))
+                            else if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt")))
                             {
                                 isinstalltxt = true;
+                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt");
                             }
 
                             string[] files = Directory.GetFiles(Properties.Settings.Default.downloadDir + "\\" + gameName);
 
                             Debug.WriteLine("Game Folder is: " + Properties.Settings.Default.downloadDir + "\\" + gameName);
                             Debug.WriteLine("FILES IN GAME FOLDER: ");
-                            foreach (string file in files)
+                            if (isinstalltxt)
                             {
-                                Debug.WriteLine(file);
-                                string extension = Path.GetExtension(file);
-                                if (extension == ".txt")
-                                {
-                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
-                                    {
-                                        string fullname = Path.GetFileName(file);
-                                        if (fullname.Equals("install.txt") || fullname.Equals("Install.txt"))
+                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
                                         {
                                             Thread installtxtThread = new Thread(() =>
                                             {
-                                                output += Sideloader.RunADBCommandsFromFile(file);
-
+                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
                                                 changeTitle(" \n\n");
                                             });
-
                                             installtxtThread.Start();
                                             while (installtxtThread.IsAlive)
                                             {
                                                 await Task.Delay(100);
                                             }
                                         }
-                                    }
                                     else
                                     {
                                         output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
                                     }
                                 }
-                                if (!isinstalltxt)
+                            else
                                 {
-                                    if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
+                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
                                     {
-                                        if (extension == ".apk")
+                                    // Find the APK file to install
+                                    string apkFile = files.FirstOrDefault(file => Path.GetExtension(file) == ".apk");
+
+                                    if (apkFile != null)
                                         {
-                                            CurrAPK = file;
+                                        CurrAPK = apkFile;
                                             CurrPCKG = packagename;
                                             System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
                                             {
@@ -2710,7 +2783,7 @@ Things you can try:
                                             Thread apkThread = new Thread(() =>
                                             {
                                                 Program.form.changeTitle($"Sideloading apk...");
-                                                output += ADB.Sideload(file, packagename);
+                                            output += ADB.Sideload(apkFile, packagename);
                                             })
                                             {
                                                 IsBackground = true
@@ -2720,27 +2793,23 @@ Things you can try:
                                             {
                                                 await Task.Delay(100);
                                             }
-
                                             t.Stop();
-                                        }
 
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                         {
-                                            if (!Properties.Settings.Default.nodevicemode | !nodeviceonstart & DeviceConnected)
-                                            {
                                                 deleteOBB(packagename);
                                                 Thread obbThread = new Thread(() =>
                                                 {
                                                     changeTitle($"Copying {packagename} obb to device...");
-                                                    output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                                ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
+                                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                     Program.form.changeTitle("");
                                                 })
                                                 {
                                                     IsBackground = true
                                                 };
                                                 obbThread.Start();
-
                                                 while (obbThread.IsAlive)
                                                 {
                                                     await Task.Delay(100);
@@ -2757,8 +2826,6 @@ Things you can try:
                                                     }
                                                 }
                                             }
-                                        }
-
                                     }
                                     else
                                     {
@@ -3297,7 +3364,7 @@ Things you can try:
 
 
 
-        private void searchTextBox_TextChanged(object sender, EventArgs e)
+        private async void searchTextBox_TextChanged(object sender, EventArgs e)
         {
             _debounceTimer.Stop();
             _debounceTimer.Start();
@@ -3310,29 +3377,26 @@ Things you can try:
             // Cancel any ongoing searches
             _cts?.Cancel();
 
-            _allItems = gamesListView.Items.Cast<ListViewItem>().ToList();
-
             string searchTerm = searchTextBox.Text;
             if (!string.IsNullOrEmpty(searchTerm))
             {
                 _cts = new CancellationTokenSource();
+
                 try
                 {
-                    var matches = await Task.Run(() =>
-                        _allItems
-                            .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
-                            .ToList(),
-                        _cts.Token);
+                    var matches = _allItems
+                        .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        .ToList();
 
-                    // Update UI on UI thread
-                    Invoke(new Action(() =>
+                    gamesListView.BeginUpdate(); // Improve UI performance
+                    gamesListView.Items.Clear();
+
+                    foreach (var match in matches)
                     {
-                        gamesListView.Items.Clear();
-                        foreach (var match in matches)
-                        {
-                            gamesListView.Items.Add(match);
-                        }
-                    }));
+                        gamesListView.Items.Add(match);
+                    }
+
+                    gamesListView.EndUpdate(); // End the update to refresh the UI
                 }
                 catch (OperationCanceledException)
                 {
@@ -3341,7 +3405,6 @@ Things you can try:
             }
             else
             {
-                // No matching items found, restore the original list
                 initListView();
             }
         }
@@ -3633,21 +3696,10 @@ Things you can try:
             initListView();
         }
 
-        private void pictureBox2_Click(object sender, EventArgs e)
-        {
-            searchTextBox.Clear();
-            searchTextBox.Visible = true;
-            label2.Visible = true;
-            lblSearchHelp.Visible = true;
-            lblShortcutsF2.Visible = true;
-            _ = searchTextBox.Focus();
-        }
-
         private void searchTextBox_Leave(object sender, EventArgs e)
         {
             if (searchTextBox.Visible)
             {
-                searchTextBox.Visible = false;
                 label2.Visible = false;
                 lblSearchHelp.Visible = false;
                 lblShortcutsF2.Visible = false;
@@ -4278,6 +4330,12 @@ Things you can try:
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
+        }
+
+        private void searchTextBox_Click(object sender, EventArgs e)
+        {
+            searchTextBox.Clear();
+            _ = searchTextBox.Focus();
         }
     }
 

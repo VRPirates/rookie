@@ -51,6 +51,8 @@ namespace AndroidSideloader
             this.resetSettingsButton = new AndroidSideloader.RoundButton();
             this.applyButton = new AndroidSideloader.RoundButton();
             this.virtualFilesystemCompatibilityCheckbox = new System.Windows.Forms.CheckBox();
+            this.openBackupDirectory = new AndroidSideloader.RoundButton();
+            this.openDownloadDirectory = new AndroidSideloader.RoundButton();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -375,13 +377,57 @@ namespace AndroidSideloader
             this.virtualFilesystemCompatibilityCheckbox.UseVisualStyleBackColor = true;
             this.virtualFilesystemCompatibilityCheckbox.CheckedChanged += new System.EventHandler(this.virtualFilesystemCompatibilityCheckbox_CheckedChanged);
             // 
+            // openBackupDirectory
+            // 
+            this.openBackupDirectory.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.openBackupDirectory.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.openBackupDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.openBackupDirectory.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.openBackupDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.openBackupDirectory.ForeColor = System.Drawing.Color.White;
+            this.openBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.openBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.openBackupDirectory.Location = new System.Drawing.Point(27, 616);
+            this.openBackupDirectory.Name = "openBackupDirectory";
+            this.openBackupDirectory.Radius = 5;
+            this.openBackupDirectory.Size = new System.Drawing.Size(285, 31);
+            this.openBackupDirectory.Stroke = true;
+            this.openBackupDirectory.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.openBackupDirectory.TabIndex = 28;
+            this.openBackupDirectory.Text = "Open Backup Directory";
+            this.openBackupDirectory.Transparency = false;
+            this.openBackupDirectory.Click += new System.EventHandler(this.openBackupDirectory_Click);
+            // 
+            // openDownloadDirectory
+            // 
+            this.openDownloadDirectory.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.openDownloadDirectory.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.openDownloadDirectory.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.openDownloadDirectory.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.openDownloadDirectory.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.openDownloadDirectory.ForeColor = System.Drawing.Color.White;
+            this.openDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.openDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.openDownloadDirectory.Location = new System.Drawing.Point(27, 579);
+            this.openDownloadDirectory.Name = "openDownloadDirectory";
+            this.openDownloadDirectory.Radius = 5;
+            this.openDownloadDirectory.Size = new System.Drawing.Size(285, 31);
+            this.openDownloadDirectory.Stroke = true;
+            this.openDownloadDirectory.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.openDownloadDirectory.TabIndex = 27;
+            this.openDownloadDirectory.Text = "Open Download Directory";
+            this.openDownloadDirectory.Transparency = false;
+            this.openDownloadDirectory.Click += new System.EventHandler(this.openDownloadDirectory_Click);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
-            this.ClientSize = new System.Drawing.Size(339, 586);
+            this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
+            this.ClientSize = new System.Drawing.Size(339, 665);
+            this.Controls.Add(this.openBackupDirectory);
+            this.Controls.Add(this.openDownloadDirectory);
             this.Controls.Add(this.virtualFilesystemCompatibilityCheckbox);
             this.Controls.Add(this.singleThread);
             this.Controls.Add(this.setBackupDirectory);
@@ -441,5 +487,7 @@ namespace AndroidSideloader
         private System.Windows.Forms.FolderBrowserDialog backupDirectorySetter;
         private System.Windows.Forms.CheckBox singleThread;
         private System.Windows.Forms.CheckBox virtualFilesystemCompatibilityCheckbox;
+        private RoundButton openBackupDirectory;
+        private RoundButton openDownloadDirectory;
     }
 }
