@@ -747,9 +747,6 @@ namespace AndroidSideloader
             battery = Utilities.StringUtilities.KeepOnlyNumbers(battery);
             BatteryLbl.Text = battery + "%";
             return devicesComboBox.SelectedIndex;
-
-
-
         }
 
         public async void devicesbutton_Click(object sender, EventArgs e)
@@ -811,52 +808,47 @@ namespace AndroidSideloader
         {
             if (!Devices.Contains("unauthorized"))
             {
-                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
-                {
-                    DeviceConnected = false;
-                    this.Invoke(() =>
-                    {
-                        Text = "Device Not Authorized";
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
-                        if (dialogResult == DialogResult.Retry)
-                        {
-                            devicesbutton.PerformClick();
-                            ;
-                        }
-                        else
-                        {
-                return; 
-            }
-
-                    });
-                }
-                else if (Devices[0].Length > 1)
-            {
-                    this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
-                    DeviceConnected = true;
-                }
-                else
-                {
+                DeviceConnected = false;
                 this.Invoke(() =>
                 {
-                        DeviceConnected = false;
-                        Text = "No Device Connected";
-                        if (!Properties.Settings.Default.nodevicemode)
-                        {
-                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                    Text = "Device Not Authorized";
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
                     }
+                    else
+                    {
+                        return;
+                    }
+                });
+            }
+            else if (Devices[0].Length > 1)
+            {
+                this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
+                DeviceConnected = true;
+            }
             else
             {
-                                return;
-            }
-        }
+                this.Invoke(() =>
+                {
+                    DeviceConnected = false;
+                    Text = "No Device Connected";
+                    if (!Properties.Settings.Default.nodevicemode)
+                    {
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            devicesbutton.PerformClick();
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
 
 
-                    });
-                }
+                });
             }
         }
 
