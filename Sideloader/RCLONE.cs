@@ -179,7 +179,7 @@ namespace AndroidSideloader
             _ = Logger.Log($"Attempting to Update Download Config");
             try
             {
-                string configUrl = "https://wiki.vrpirates.club/downloads/vrp.download.config";
+                string configUrl = "https://vrpirates.wiki/downloads/vrp.download.config";
 
                 HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
@@ -248,7 +248,7 @@ namespace AndroidSideloader
             _ = Logger.Log($"Attempting to Update Upload Config");
             try
             {
-                string configUrl = "https://wiki.vrpirates.club/downloads/vrp.upload.config";
+                string configUrl = "https://vrpirates.wiki/downloads/vrp.upload.config";
 
                 HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
@@ -277,7 +277,7 @@ namespace AndroidSideloader
             _ = Logger.Log($"Attempting to Update Public Config");
             try
             {
-                string configUrl = "https://wiki.vrpirates.club/downloads/vrp-public.json";
+                string configUrl = "https://vrpirates.wiki/downloads/vrp-public.json";
 
                 HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))

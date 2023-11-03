@@ -1,4 +1,13 @@
-﻿RSL 2.23
+﻿RSL 2.24
+
+- Feature: Added "Open Download" and "Open Backup" Directory buttons to Settings Menu
+- Fix: OBB Pushes for Quest 3 Devices
+- Fix: Crash when attempting to backup
+- Fix: Searchbar Anchoring when resizing
+- Fix: Remove instances where OBBs are pushed multiple times
+- Fix: Additional Logging and Startup Optimizations
+
+RSL 2.23
 
 - Fix: Rookie should now only prompt for newer versions of all games
 - Fix: Crash when attempting to delete invalid directories or files

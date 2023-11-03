@@ -241,7 +241,7 @@ namespace AndroidSideloader
                     }
                     if (!hasPublicConfig)
                     {
-                        _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://wiki.vrpirates.club/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                        _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
 
                     if (Directory.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\EBWebView"))
@@ -747,9 +747,6 @@ namespace AndroidSideloader
             battery = Utilities.StringUtilities.KeepOnlyNumbers(battery);
             BatteryLbl.Text = battery + "%";
             return devicesComboBox.SelectedIndex;
-
-
-
         }
 
         public async void devicesbutton_Click(object sender, EventArgs e)
@@ -811,52 +808,47 @@ namespace AndroidSideloader
         {
             if (!Devices.Contains("unauthorized"))
             {
-                if (Devices[0].Length > 1 && Devices[0].Contains("unauthorized"))
-                {
-                    DeviceConnected = false;
-                    this.Invoke(() =>
-                    {
-                        Text = "Device Not Authorized";
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
-                        if (dialogResult == DialogResult.Retry)
-                        {
-                            devicesbutton.PerformClick();
-                            ;
-                        }
-                        else
-                        {
-                return; 
-            }
-
-                    });
-                }
-                else if (Devices[0].Length > 1)
-            {
-                    this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
-                    DeviceConnected = true;
-                }
-                else
-                {
+                DeviceConnected = false;
                 this.Invoke(() =>
                 {
-                        DeviceConnected = false;
-                        Text = "No Device Connected";
-                        if (!Properties.Settings.Default.nodevicemode)
-                        {
-                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                    Text = "Device Not Authorized";
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
                     }
+                    else
+                    {
+                        return;
+                    }
+                });
+            }
+            else if (Devices[0].Length > 1)
+            {
+                this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
+                DeviceConnected = true;
+            }
             else
             {
-                                return;
-            }
-        }
+                this.Invoke(() =>
+                {
+                    DeviceConnected = false;
+                    Text = "No Device Connected";
+                    if (!Properties.Settings.Default.nodevicemode)
+                    {
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        if (dialogResult == DialogResult.Retry)
+                        {
+                            devicesbutton.PerformClick();
+                        }
+                        else
+                        {
+                            return;
+                        }
+                    }
 
 
-                    });
-                }
+                });
             }
         }
 
@@ -2401,7 +2393,7 @@ Things you can try:
 1) Move the Rookie directory (Folder containing AndroidSideloader.exe) into {Path.GetPathRoot(Environment.SystemDirectory)}RSL
 2) Try changing your systems DNS to either Cloudflare/Google/OpenDNS
 3) Try using a systemwide VPN like ProtonVPN
-4) Sponsor a private server (https://wiki.vrpirates.club/en/Howto/sponsored-mirrors)
+4) Sponsor a private server (https://vrpirates.wiki/en/Howto/sponsored-mirrors)
 ";
 
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
@@ -3535,7 +3527,7 @@ Things you can try:
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
                     try
                     {
-                        client.DownloadFile("https://wiki.vrpirates.club/downloads/runtimes.7z", "runtimes.7z");
+                        client.DownloadFile("https://vrpirates.wiki/downloads/runtimes.7z", "runtimes.7z");
                         Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
                         File.Delete("runtimes.7z");
                     }
