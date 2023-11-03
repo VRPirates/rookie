@@ -1,8 +1,4 @@
-RSL 2.24
+RSL 2.25
 
-- Feature: Added "Open Download" and "Open Backup" Directory buttons to Settings Menu
-- Fix: OBB Pushes for Quest 3 Devices
-- Fix: Crash when attempting to backup
-- Fix: Searchbar Anchoring when resizing
-- Fix: Remove instances where OBBs are pushed multiple times
-- Fix: Additional Logging and Startup Optimizations
+- Fix: Fix to unauthorized device bug
+- Chore: Update Wiki URL
