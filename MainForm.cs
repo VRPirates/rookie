@@ -806,13 +806,13 @@ namespace AndroidSideloader
 
         public void changeTitlebarToDevice()
         {
-            if (!Devices.Contains("unauthorized"))
+            if (Devices.Contains("unauthorized"))
             {
                 DeviceConnected = false;
                 this.Invoke(() =>
                 {
                     Text = "Device Not Authorized";
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Device not authorized, be sure to authorize computer on device.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt/notification, check the box \"Always allow from this computer.\" and hit OK.", "Not Authorized", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
@@ -846,8 +846,6 @@ namespace AndroidSideloader
                             return;
                         }
                     }
-
-
                 });
             }
         }

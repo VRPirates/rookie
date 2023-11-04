@@ -1,4 +1,10 @@
-﻿RSL 2.24
+﻿RSL 2.25
+
+- Fix: Fix to unauthorized device bug
+- Chore: Update Wiki URL
+
+
+RSL 2.24
 
 - Feature: Added "Open Download" and "Open Backup" Directory buttons to Settings Menu
 - Fix: OBB Pushes for Quest 3 Devices
