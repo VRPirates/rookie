@@ -806,7 +806,7 @@ namespace AndroidSideloader
 
         public void changeTitlebarToDevice()
         {
-            if (!Devices.Contains("unauthorized"))
+            if (Devices.Contains("unauthorized"))
             {
                 DeviceConnected = false;
                 this.Invoke(() =>
@@ -846,8 +846,6 @@ namespace AndroidSideloader
                             return;
                         }
                     }
-
-
                 });
             }
         }
