@@ -10,6 +10,6 @@ androidsideloader uses the GPL license, any forks of it must have their source c
 
 This app may be buggy and have problems.
 
-### This app might get detected as malware, however both the sideloader and the sideloader launcher are open source.  And obviously, it isn't.
-See:
-https://www.virustotal.com/gui/file/46b6e24a03a6670dfbbde6e6f06caac05f2f9486115ef7bd77e0b568df7e5342/detection
+### This app might get detected as malware, however both the sideloader and the sideloader launcher are open source.
+Rookie 1.25.1 VirusTotal Scan (1/72)-
+https://www.virustotal.com/gui/file/dc3ed59057d508646a06a978c44ae72d473fd678129483ab186202046cbc713f
