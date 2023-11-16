@@ -3081,6 +3081,7 @@ Things you can try:
                 }
                 else
                 {
+                    if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
                     RCLONE.killRclone();
                 }
             }
@@ -3095,12 +3096,14 @@ Things you can try:
                 }
                 else
                 {
+                    if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
                     RCLONE.killRclone();
                     _ = ADB.RunAdbCommandToString("kill-server");
                 }
             }
             else
             {
+                if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
                 RCLONE.killRclone();
                 _ = ADB.RunAdbCommandToString("kill-server");
             }
