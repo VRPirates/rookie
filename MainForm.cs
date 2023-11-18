@@ -2225,7 +2225,7 @@ namespace AndroidSideloader
         private async void ADBWirelessEnable_Click(object sender, EventArgs e)
         {
             bool Manual;
-            DialogResult res = FlexibleMessageBox.Show("Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
+            DialogResult res = FlexibleMessageBox.Show(Program.form, "Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
             Manual = res == DialogResult.No;
             if (Manual)
             {
@@ -2516,7 +2516,7 @@ Things you can try:
                         bool doDownload = true;
                         if (Directory.Exists(gameDirectory))
                         {
-                            DialogResult res = FlexibleMessageBox.Show(
+                            DialogResult res = FlexibleMessageBox.Show(Program.form,
                                 $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
                                 "Download again?", MessageBoxButtons.YesNo);
 
@@ -2636,7 +2636,7 @@ Things you can try:
                         }
                         catch (Exception ex)
                         {
-                            _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}");
+                            _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}");
                         }
                         changeTitle("");
                         break;
@@ -2666,7 +2666,7 @@ Things you can try:
                                 //Remove current game
                                 cleanupActiveDownloadStatus();
 
-                                _ = FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
+                                _ = FlexibleMessageBox.Show(Program.form, $"Rclone error: {gameDownloadOutput.Error}");
                                 output += new ProcessOutput("", "Download Failed");
                             }
                         }
@@ -2689,7 +2689,7 @@ Things you can try:
                                             cleanupActiveDownloadStatus();
                                         }));
                                         otherError = true;
-                                        _ = FlexibleMessageBox.Show($"7zip error: {ex.Message}");
+                                        this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
                                         output += new ProcessOutput("", "Extract Failed");
                                     }
                                 })
@@ -2812,7 +2812,7 @@ Things you can try:
                                                         {
                                                             obbsMismatch = await compareOBBSizes(packagename, gameName, output);
                                                         }
-                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}"); }
+                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
                                                     }
                                                 }
                                             }
@@ -2827,7 +2827,7 @@ Things you can try:
                             if (Properties.Settings.Default.deleteAllAfterInstall)
                             {
                                 changeTitle("Deleting game files", false);
-                                try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
+                                try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}"); }
                             }
                             //Remove current game
                             cleanupActiveDownloadStatus();
@@ -2907,7 +2907,7 @@ Things you can try:
             }
             catch (FormatException ex)
             {
-                _ = FlexibleMessageBox.Show("The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
+                _ = FlexibleMessageBox.Show(Program.form, "The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
                 Logger.Log($"Unable to compare obbs with the exception: {ex.Message}", LogLevel.ERROR);
                 FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
                 return false;
@@ -2915,7 +2915,7 @@ Things you can try:
             catch (Exception ex)
             {
                 Logger.Log($"Unexpected error occurred while comparing OBBs: {ex.Message}", LogLevel.ERROR);
-                FlexibleMessageBox.Show($"Unexpected error comparing OBB sizes: {ex.Message}");
+                FlexibleMessageBox.Show(Program.form, $"Unexpected error comparing OBB sizes: {ex.Message}");
                 return false;
             }
         }
@@ -2929,7 +2929,7 @@ Things you can try:
         // Logic to handle mismatches after comparison.
         private async Task<bool> handleObbSizeMismatchAsync(string packageName, string gameName, ProcessOutput output)
         {
-            var dialogResult = MessageBox.Show("Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(Program.form, "Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
 
             if (dialogResult != DialogResult.Yes)
             {
@@ -3531,8 +3531,8 @@ Things you can try:
                     }
                     catch (Exception ex)
                     {
-                        _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
-                        _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
+                        _ = FlexibleMessageBox.Show(Program.form, $"You are unable to access the wiki page with the Exception: {ex.Message}\n");
+                        _ = FlexibleMessageBox.Show(Program.form, "Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
                         enviromentCreated = true;
                         webView21.Hide();
                     }
@@ -3869,7 +3869,7 @@ Things you can try:
                     if (errorChecker.Contains("cannot resolve host") | errorChecker.Contains("cannot connect to"))
                     {
                         changeTitle(String.Empty);
-                        _ = FlexibleMessageBox.Show("Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
+                        _ = FlexibleMessageBox.Show(Program.form, "Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
                         manualIP = false;
                         ADBcommandbox.Visible = false;
                         lblAdbCommand.Visible = false;
