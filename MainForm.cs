@@ -441,7 +441,8 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
                         Properties.Settings.Default.IPAddress = "";
                         Properties.Settings.Default.Save();
-                        File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt");
+                        try { File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt"); }
+                        catch (Exception ex) { Logger.Log($"Unable to delete StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     }
                     else
                     {
@@ -2270,7 +2271,11 @@ namespace AndroidSideloader
                     Program.form.showAvailableSpace();
                     Properties.Settings.Default.IPAddress = IPcmnd;
                     Properties.Settings.Default.Save();
-                    File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                    try
+                    {
+                        File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                    }
+                    catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     ADB.wirelessadbON = true;
                     _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                     _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
@@ -3888,7 +3893,8 @@ Things you can try:
                         Program.form.showAvailableSpace();
                         Properties.Settings.Default.IPAddress = IPcmnd;
                         Properties.Settings.Default.Save();
-                        File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                        try { File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd); }
+                        catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                         ADB.wirelessadbON = true;
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
