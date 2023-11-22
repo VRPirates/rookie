@@ -54,7 +54,7 @@ namespace AndroidSideloader.Utilities
 
                 if (error.Contains("There is not enough space on the disk"))
                 {
-                    _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nCheck free space in {Environment.CurrentDirectory} and try again.",
+                    _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(Properties.Settings.Default.downloadDir)} drive has at least double the space of the game, then try again.",
                         "NOT ENOUGH SPACE",
                         MessageBoxButtons.OK,
                         MessageBoxIcon.Error);
