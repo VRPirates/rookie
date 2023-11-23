@@ -343,9 +343,10 @@ namespace AndroidSideloader
         public static ProcessOutput CopyOBB(string path)
         {
             string folder = Path.GetFileName(path);
-            return !folder.Contains("+") && !folder.Contains("_") && folder.Contains(".")
-                ? RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"")
-                : new ProcessOutput();
+            string lastFolder = Path.GetFileName(path);
+            return folder.Contains(".")
+                ? RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{lastFolder} && mkdir /sdcard/Android/obb/{lastFolder}") + RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"")
+                : new ProcessOutput("No OBB Folder found");
         }
     }
 }
