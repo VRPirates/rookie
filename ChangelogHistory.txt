@@ -1,4 +1,8 @@
-﻿RSL 2.25
+﻿RSL 2.25.1
+
+- Fix: Device not authorized prompt showing up after authorization.
+
+RSL 2.25
 
 - Fix: Fix to unauthorized device bug
 - Chore: Update Wiki URL

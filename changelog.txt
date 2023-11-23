@@ -1,3 +1,7 @@
-RSL 2.25.1
+RSL 2.26
 
-- Fix: Device not authorized prompt showing up after authorization.
+- Fix: Rookie will no never crash when failing to write to the StoredIP.txt
+- Fix: Drag and drop + Copy OBB for Quest 3 users
+- Fix: Rookie will now properly kill off WebView2 instances
+- Fix: Added parents to dialogs
+- Chore: Make missing space message more user-friendly. 
