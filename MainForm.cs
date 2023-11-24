@@ -1651,6 +1651,9 @@ namespace AndroidSideloader
 
         private async void initListView()
         {
+            int upToDateCount = 0;
+            int updateAvailableCount = 0;
+            int newerThanListCount = 0;
             rookienamelist = String.Empty;
             loaded = false;
             string lines = Properties.Settings.Default.InstalledApps;
@@ -1711,7 +1714,7 @@ namespace AndroidSideloader
                             if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                             {
                                 Game.ForeColor = colorFont_installedGame;
-
+                                upToDateCount++;
                                 string InstalledVersionCode;
                                 InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
                                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
@@ -1738,10 +1741,12 @@ namespace AndroidSideloader
                                     if (installedVersionInt < cloudVersionInt)
                                     {
                                         Game.ForeColor = colorFont_updateAvailable;
+                                        updateAvailableCount++;
                                     }
 
                                     if (installedVersionInt > cloudVersionInt)
                                     {
+                                        newerThanListCount++;
                                         bool dontget = false;
                                         if (blacklist.Contains(packagename))
                                         {
@@ -1960,6 +1965,9 @@ namespace AndroidSideloader
                 _ = Focus();
             }
             changeTitle("Populating update list...                               \n\n");
+            lblUpToDate.Text = $"[{upToDateCount}] UP TO DATE";
+            lblUpdateAvailable.Text = $"[{updateAvailableCount}] UPDATE AVAILABLE";
+            lblNeedsDonate.Text = $"[{newerThanListCount}] NEWER THAN LIST";
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.Clear();
