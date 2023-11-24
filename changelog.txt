@@ -1,7 +1,8 @@
 RSL 2.26
 
-- Fix: Rookie will no never crash when failing to write to the StoredIP.txt
+- Feature: Top right update labels will now show the amount of games per state
+- Fix: Crash when failing to write to the StoredIP.txt
 - Fix: Drag and drop + Copy OBB for Quest 3 users
-- Fix: Rookie will now properly kill off WebView2 instances
+- Fix: Properly kill off WebView2 instances
 - Fix: Added parents to dialogs
 - Chore: Make missing space message more user-friendly. 
