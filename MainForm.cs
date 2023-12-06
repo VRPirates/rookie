@@ -349,7 +349,6 @@ namespace AndroidSideloader
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            EnterInstallBox.Checked = Properties.Settings.Default.EnterKeyInstall;
             new Thread(() =>
             {
                 Thread.Sleep(10000);
@@ -3217,12 +3216,9 @@ Things you can try:
             {
                 if (searchTextBox.Visible)
                 {
-                    if (Properties.Settings.Default.EnterKeyInstall)
+                    if (gamesListView.SelectedItems.Count > 0)
                     {
-                        if (gamesListView.SelectedItems.Count > 0)
-                        {
-                            downloadInstallGameButton_Click(sender, e);
-                        }
+                        downloadInstallGameButton_Click(sender, e);
                     }
                 }
                 searchTextBox.Visible = false;
@@ -3720,12 +3716,9 @@ Things you can try:
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (Properties.Settings.Default.EnterKeyInstall)
+                if (gamesListView.SelectedItems.Count > 0)
                 {
-                    if (gamesListView.SelectedItems.Count > 0)
-                    {
-                        downloadInstallGameButton_Click(sender, e);
-                    }
+                    downloadInstallGameButton_Click(sender, e);
                 }
             }
         }
@@ -3861,12 +3854,6 @@ Things you can try:
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
             lblNeedsDonate.Click += lblNeedsDonate_Click;
-        }
-
-        private void EnterInstallBox_CheckedChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.EnterKeyInstall = EnterInstallBox.Checked;
-            Properties.Settings.Default.Save();
         }
 
         private async void ADBcommandbox_KeyPress(object sender, KeyPressEventArgs e)

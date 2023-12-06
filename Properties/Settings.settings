@@ -95,9 +95,6 @@
     <Setting Name="PackageNameToCB" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="EnterKeyInstall" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)">False</Value>
-    </Setting>
     <Setting Name="DownUpHeld" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>

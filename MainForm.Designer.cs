@@ -1,4 +1,4 @@
-﻿
+
 using AndroidSideloader.Properties;
 using System.Drawing;
 using System.Windows.Forms;
@@ -62,7 +62,6 @@ namespace AndroidSideloader
             this.lblUpdateAvailable = new System.Windows.Forms.Label();
             this.lblUpToDate = new System.Windows.Forms.Label();
             this.lblMirror = new System.Windows.Forms.Label();
-            this.EnterInstallBox = new System.Windows.Forms.CheckBox();
             this.ADBcommandbox = new System.Windows.Forms.TextBox();
             this.lblShortcutCtrlR = new System.Windows.Forms.Label();
             this.lblAdbCommand = new System.Windows.Forms.Label();
@@ -107,7 +106,6 @@ namespace AndroidSideloader
             this.listApkButton = new System.Windows.Forms.Button();
             this.speedLabel_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.etaLabel_Tooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.EnterInstallBox_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.panel2 = new System.Windows.Forms.Panel();
             this.downloadInstallGameButton = new AndroidSideloader.RoundButton();
             this.diskLabel = new System.Windows.Forms.Label();
@@ -535,25 +533,6 @@ namespace AndroidSideloader
             this.lblMirror.TabIndex = 90;
             this.lblMirror.Text = "Mirror #";
             this.lblMirror.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // EnterInstallBox
-            // 
-            this.EnterInstallBox.AutoSize = true;
-            this.EnterInstallBox.BackColor = System.Drawing.Color.Transparent;
-            this.EnterInstallBox.CheckAlign = System.Drawing.ContentAlignment.BottomCenter;
-            this.EnterInstallBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.EnterInstallBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.EnterInstallBox.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.EnterInstallBox.Location = new System.Drawing.Point(625, 10);
-            this.EnterInstallBox.Name = "EnterInstallBox";
-            this.EnterInstallBox.Size = new System.Drawing.Size(102, 54);
-            this.EnterInstallBox.TabIndex = 93;
-            this.EnterInstallBox.Text = "Download w/ \r\n Enter Key";
-            this.EnterInstallBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.EnterInstallBox_Tooltip.SetToolTip(this.EnterInstallBox, "Use the ENTER key on your keyboard to start installation of games from the Game L" +
-        "ist");
-            this.EnterInstallBox.UseVisualStyleBackColor = true;
-            this.EnterInstallBox.CheckedChanged += new System.EventHandler(this.EnterInstallBox_CheckedChanged);
             // 
             // ADBcommandbox
             // 
@@ -1381,7 +1360,6 @@ namespace AndroidSideloader
             this.Controls.Add(this.panel2);
             this.Controls.Add(this.MountButton);
             this.Controls.Add(this.lblShortcutsF2);
-            this.Controls.Add(this.EnterInstallBox);
             this.Controls.Add(this.ProgressText);
             this.Controls.Add(this.lblMirror);
             this.Controls.Add(this.lblShortcutCtrlR);
@@ -1460,7 +1438,6 @@ namespace AndroidSideloader
         private System.Windows.Forms.Label lblUpdateAvailable;
         private System.Windows.Forms.Label lblUpToDate;
         private System.Windows.Forms.Label lblMirror;
-        private System.Windows.Forms.CheckBox EnterInstallBox;
         private System.Windows.Forms.TextBox ADBcommandbox;
         private System.Windows.Forms.Label lblShortcutCtrlR;
         private System.Windows.Forms.Label lblAdbCommand;
@@ -1495,7 +1472,6 @@ namespace AndroidSideloader
         private ToolTip listApkButton_Tooltip;
         private ToolTip speedLabel_Tooltip;
         private ToolTip etaLabel_Tooltip;
-        private ToolTip EnterInstallBox_Tooltip;
         private Panel panel2;
         private Microsoft.Web.WebView2.WinForms.WebView2 webView21;
         private Label diskLabel;

@@ -398,18 +398,6 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool EnterKeyInstall {
-            get {
-                return ((bool)(this["EnterKeyInstall"]));
-            }
-            set {
-                this["EnterKeyInstall"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DownUpHeld {
             get {
                 return ((bool)(this["DownUpHeld"]));
