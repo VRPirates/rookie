@@ -249,29 +249,13 @@ namespace AndroidSideloader
         private void openDownloadDirectory_Click(object sender, EventArgs e)
         {
             string pathToOpen = Properties.Settings.Default.customDownloadDir ? $"{Properties.Settings.Default.downloadDir}" : $"{Environment.CurrentDirectory}";
-            if (Directory.Exists(pathToOpen))
-            {
-                ProcessStartInfo p = new ProcessStartInfo
-                {
-                    Arguments = pathToOpen,
-                    FileName = "explorer.exe"
-                };
-                Process.Start(p);
-            }
+            MainForm.OpenDirectory(pathToOpen);
         }
 
         private void openBackupDirectory_Click(object sender, EventArgs e)
         {
             string pathToOpen = Properties.Settings.Default.customBackupDir ? $"{Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups")}" : $"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups")}";
-            if (Directory.Exists(pathToOpen))
-            {
-                ProcessStartInfo p = new ProcessStartInfo
-                {
-                    Arguments = pathToOpen,
-                    FileName = "explorer.exe"
-                };
-                Process.Start(p);
-            }
+            MainForm.OpenDirectory(pathToOpen);
         }
     }
 }

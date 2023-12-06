@@ -4326,11 +4326,40 @@ Things you can try:
             lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
+        public static void OpenDirectory(string directoryPath) {
+            if (Directory.Exists(directoryPath))
+            {
+                ProcessStartInfo p = new ProcessStartInfo
+                {
+                    Arguments = directoryPath,
+                    FileName = "explorer.exe"
+                };
+                Process.Start(p);
+            }
+        }
+
         private void searchTextBox_Click(object sender, EventArgs e)
         {
             searchTextBox.Clear();
             _ = searchTextBox.Focus();
         }
+
+        private async void btnRunAdbCmd_Click(object sender, EventArgs e)
+        {
+            ADBcommandbox.Visible = true;
+            ADBcommandbox.Clear();
+            lblAdbCommand.Visible = true;
+            lblShortcutCtrlR.Visible = true;
+            label2.Visible = true;
+            _ = ADBcommandbox.Focus();
+        }
+
+        private void btnOpenDownloads_Click(object sender, EventArgs e)
+        {
+            string pathToOpen = Properties.Settings.Default.customDownloadDir ? $"{Properties.Settings.Default.downloadDir}" : $"{Environment.CurrentDirectory}";
+            OpenDirectory(pathToOpen);
+        }
+
     }
 
     public static class ControlExtensions
