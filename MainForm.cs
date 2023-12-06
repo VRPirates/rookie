@@ -2697,9 +2697,13 @@ Things you can try:
 
                                 Thread extractionThread = new Thread(() =>
                                 {
-                                    progressBar.Style = ProgressBarStyle.Continuous;
-                                    progressBar.Value = 0;
-                                    isInDownloadExtract = true;
+                                    Invoke(new Action(() =>
+                                    {
+                                        speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
+                                        progressBar.Style = ProgressBarStyle.Continuous;
+                                        progressBar.Value = 0;
+                                        isInDownloadExtract = true;
+                                    }));
                                     try
                                     {
                                         changeTitle("Extracting " + gameName, false);
