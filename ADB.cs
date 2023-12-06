@@ -295,46 +295,6 @@ namespace AndroidSideloader
                     return ret;
                 }
             }
-            string gamenameforQU = Sideloader.PackageNametoGameName(packagename);
-            if (Properties.Settings.Default.QUturnedon)
-            {
-                if (gamenameforQU.Contains("-QU") || path.Contains("-QU"))
-                {
-                    string gameName = packagename;
-                    packagename = Sideloader.gameNameToPackageName(gameName);
-
-                    Program.form.changeTitle("Pushing Custom QU S3 Config.JSON.");
-                    if (!Directory.Exists($"/sdcard/android/data/{packagename}"))
-                    {
-                        _ = RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}");
-                    }
-
-                    if (!Directory.Exists($"/sdcard/android/data/{packagename}/private"))
-                    {
-                        _ = RunAdbCommandToString($"shell mkdir /sdcard/android/data/{packagename}/private");
-                    }
-
-                    Random r = new Random();
-                    int x = r.Next(999999999);
-                    int y = r.Next(9999999);
-
-                    long sum = (y * (long)1000000000) + x;
-
-                    int x2 = r.Next(999999999);
-                    int y2 = r.Next(9999999);
-
-                    long sum2 = (y2 * (long)1000000000) + x2;
-                    Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
-                    Properties.Settings.Default.Save();
-                    string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\config.json", boff);
-                    string blank = "";
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\delete_settings", blank);
-                    ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\delete_settings\" /sdcard/android/data/{packagename}/private/delete_settings");
-                    ret += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\config.json\" /sdcard/android/data/{packagename}/private/config.json");
-                }
-            }
-
 
             Program.form.changeTitle(string.Empty);
             return ret;

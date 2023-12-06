@@ -90,8 +90,6 @@ namespace AndroidSideloader
             this.aboutBtn = new System.Windows.Forms.Button();
             this.settingsButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.settingsButton = new System.Windows.Forms.Button();
-            this.InstallQUset_Tooltip = new System.Windows.Forms.ToolTip(this.components);
-            this.removeQUSetting_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.QuestOptionsButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.QuestOptionsButton = new System.Windows.Forms.Button();
             this.ADBWirelessDisable_Tooltip = new System.Windows.Forms.ToolTip(this.components);
@@ -1489,8 +1487,6 @@ namespace AndroidSideloader
         private ToolTip copyBulkObbButton_Tooltip;
         private ToolTip aboutBtn_Tooltip;
         private ToolTip settingsButton_Tooltip;
-        private ToolTip InstallQUset_Tooltip;
-        private ToolTip removeQUSetting_Tooltip;
         private ToolTip QuestOptionsButton_Tooltip;
         private ToolTip ADBWirelessDisable_Tooltip;
         private ToolTip ADBWirelessEnable_Tooltip;
