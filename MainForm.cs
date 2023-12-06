@@ -335,6 +335,9 @@ namespace AndroidSideloader
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = Size.Empty;
             }
+            if (Properties.Settings.Default.nodevicemode) {
+                btnNoDevice.Text = "Enable Sideloading";
+            }
 
             _ = Logger.Log("Attempting to Initalize ADB Server");
             if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
@@ -4360,6 +4363,26 @@ Things you can try:
             OpenDirectory(pathToOpen);
         }
 
+        private void btnNoDevice_Click(object sender, EventArgs e)
+        {
+            bool currentStatus = Properties.Settings.Default.nodevicemode || false;
+
+            if (currentStatus) {
+                // No Device Mode is currently On. Toggle it Off
+                Properties.Settings.Default.nodevicemode = false;
+                btnNoDevice.Text = "Disable Sideloading";
+
+                changeTitle($"Sideloading has been Enabled");
+            } else {
+                Properties.Settings.Default.nodevicemode = true;
+                Properties.Settings.Default.deleteAllAfterInstall = false;
+                btnNoDevice.Text = "Enable Sideloading";
+
+                changeTitle($"Sideloading Disabled. Games will only Download.");
+            }
+
+            Properties.Settings.Default.Save();
+        }
     }
 
     public static class ControlExtensions
