@@ -11,4 +11,4 @@ RSL 2.26
 - Fix: GUI freezing on launch
 - Fix: No Device Mode output
 - Chore: Make missing space message more user-friendly
-- Chore: remove qu settings
+- Chore: Remove QU Settings
