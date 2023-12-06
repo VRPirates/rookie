@@ -257,9 +257,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
             
-            await Task.Delay(100);
             if (Directory.Exists(Sideloader.TempFolder))
-
             {
                 Directory.Delete(Sideloader.TempFolder, true);
                 _ = Directory.CreateDirectory(Sideloader.TempFolder);
