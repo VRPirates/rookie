@@ -1712,7 +1712,6 @@ namespace AndroidSideloader
                             if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                             {
                                 Game.ForeColor = colorFont_installedGame;
-                                upToDateCount++;
                                 string InstalledVersionCode;
                                 InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
                                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
@@ -1732,6 +1731,9 @@ namespace AndroidSideloader
                                                 cloudVersionInt = releaseGameVersionCode;
                                             }
                                         }
+                                    }
+                                    if (installedVersionInt == cloudVersionInt) {
+                                        upToDateCount++;
                                     }
                                     //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
 
