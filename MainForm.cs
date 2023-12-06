@@ -2832,10 +2832,10 @@ Things you can try:
                                                 }
                                             }
                                     }
-                                    else
-                                    {
-                                        output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
-                                    }
+                                }
+                                else
+                                {
+                                    output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
                                 }
                                 changeTitle($"Installation of {gameName} completed.");
                             }
