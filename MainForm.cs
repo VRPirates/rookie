@@ -2420,7 +2420,13 @@ Things you can try:
             gamesQueueList.RemoveAt(0);
         }
 
+        public void SetProgress(int progress)
+        {
+            progressBar.Value = progress;
+        }
+
         public bool isinstalling = false;
+        public static bool isInDownloadExtract = false;
         public static bool removedownloading = false;
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
@@ -2691,6 +2697,9 @@ Things you can try:
 
                                 Thread extractionThread = new Thread(() =>
                                 {
+                                    progressBar.Style = ProgressBarStyle.Continuous;
+                                    progressBar.Value = 0;
+                                    isInDownloadExtract = true;
                                     try
                                     {
                                         changeTitle("Extracting " + gameName, false);
