@@ -92,6 +92,8 @@ namespace AndroidSideloader
             this.settingsButton = new System.Windows.Forms.Button();
             this.QuestOptionsButton_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.QuestOptionsButton = new System.Windows.Forms.Button();
+            this.btnOpenDownloads_Tooltip = new System.Windows.Forms.ToolTip(this.components);
+            this.btnRunAdbCmd_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.ADBWirelessDisable_Tooltip = new System.Windows.Forms.ToolTip(this.components);
             this.ADBWirelessDisable = new System.Windows.Forms.Button();
             this.btnOpenDownloads = new System.Windows.Forms.Button();
@@ -930,7 +932,7 @@ namespace AndroidSideloader
             this.btnOpenDownloads.TabIndex = 7;
             this.btnOpenDownloads.Text = "Open Downloads Folder";
             this.btnOpenDownloads.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ADBWirelessDisable_Tooltip.SetToolTip(this.btnOpenDownloads, "Removes Wireless ADB settings and disconnects any Wireless devices");
+            this.btnOpenDownloads_Tooltip.SetToolTip(this.btnOpenDownloads, "Opens your set Rookie Download Folder");
             this.btnOpenDownloads.UseVisualStyleBackColor = false;
             this.btnOpenDownloads.Click += new System.EventHandler(this.btnOpenDownloads_Click);
             // 
@@ -972,7 +974,7 @@ namespace AndroidSideloader
             this.btnRunAdbCmd.TabIndex = 6;
             this.btnRunAdbCmd.Text = "Run ADB Command";
             this.btnRunAdbCmd.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.ADBWirelessEnable_Tooltip.SetToolTip(this.btnRunAdbCmd, "Enables Wireless sideloading. Requires a connected device to activate!");
+            this.btnRunAdbCmd_Tooltip.SetToolTip(this.btnRunAdbCmd, "Opens the Run ADB Command Prompt");
             this.btnRunAdbCmd.UseVisualStyleBackColor = false;
             this.btnRunAdbCmd.Click += new System.EventHandler(this.btnRunAdbCmd_Click);
             // 
@@ -1488,6 +1490,8 @@ namespace AndroidSideloader
         private ToolTip aboutBtn_Tooltip;
         private ToolTip settingsButton_Tooltip;
         private ToolTip QuestOptionsButton_Tooltip;
+        private ToolTip btnOpenDownloads_Tooltip;
+        private ToolTip btnRunAdbCmd_Tooltip;
         private ToolTip ADBWirelessDisable_Tooltip;
         private ToolTip ADBWirelessEnable_Tooltip;
         private ToolTip UpdateGamesButton_Tooltip;
