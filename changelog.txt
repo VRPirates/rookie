@@ -3,9 +3,11 @@ RSL 2.26
 - Feature: Top right update labels will now show the amount of games per state
 - Feature: Open Download Dir and Run ADB Commands added to left sidebar
 - Feature: Toggle sideloading button
+- Feature: Show progress of extraction
 - Fix: Crash when failing to write to the StoredIP.txt
 - Fix: Drag and drop + Copy OBB for Quest 3 users
 - Fix: Properly kill off WebView2 instances
 - Fix: Added parents to dialogs
 - Fix: GUI freezing on launch
+- Fix: No Device Mode output
 - Chore: Make missing space message more user-friendly
