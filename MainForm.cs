@@ -257,9 +257,7 @@ namespace AndroidSideloader
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
             
-            await Task.Delay(100);
             if (Directory.Exists(Sideloader.TempFolder))
-
             {
                 Directory.Delete(Sideloader.TempFolder, true);
                 _ = Directory.CreateDirectory(Sideloader.TempFolder);
@@ -337,6 +335,9 @@ namespace AndroidSideloader
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = Size.Empty;
             }
+            if (Properties.Settings.Default.nodevicemode) {
+                btnNoDevice.Text = "Enable Sideloading";
+            }
 
             _ = Logger.Log("Attempting to Initalize ADB Server");
             if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
@@ -351,7 +352,6 @@ namespace AndroidSideloader
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
-            EnterInstallBox.Checked = Properties.Settings.Default.EnterKeyInstall;
             new Thread(() =>
             {
                 Thread.Sleep(10000);
@@ -441,7 +441,8 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
                         Properties.Settings.Default.IPAddress = "";
                         Properties.Settings.Default.Save();
-                        File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt");
+                        try { File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt"); }
+                        catch (Exception ex) { Logger.Log($"Unable to delete StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     }
                     else
                     {
@@ -1650,6 +1651,9 @@ namespace AndroidSideloader
 
         private async void initListView()
         {
+            int upToDateCount = 0;
+            int updateAvailableCount = 0;
+            int newerThanListCount = 0;
             rookienamelist = String.Empty;
             loaded = false;
             string lines = Properties.Settings.Default.InstalledApps;
@@ -1710,7 +1714,6 @@ namespace AndroidSideloader
                             if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
                             {
                                 Game.ForeColor = colorFont_installedGame;
-
                                 string InstalledVersionCode;
                                 InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
                                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
@@ -1731,16 +1734,21 @@ namespace AndroidSideloader
                                             }
                                         }
                                     }
+                                    if (installedVersionInt == cloudVersionInt) {
+                                        upToDateCount++;
+                                    }
                                     //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
 
                                     _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
                                     if (installedVersionInt < cloudVersionInt)
                                     {
                                         Game.ForeColor = colorFont_updateAvailable;
+                                        updateAvailableCount++;
                                     }
 
                                     if (installedVersionInt > cloudVersionInt)
                                     {
+                                        newerThanListCount++;
                                         bool dontget = false;
                                         if (blacklist.Contains(packagename))
                                         {
@@ -1959,6 +1967,9 @@ namespace AndroidSideloader
                 _ = Focus();
             }
             changeTitle("Populating update list...                               \n\n");
+            lblUpToDate.Text = $"[{upToDateCount}] UP TO DATE";
+            lblUpdateAvailable.Text = $"[{updateAvailableCount}] UPDATE AVAILABLE";
+            lblNeedsDonate.Text = $"[{newerThanListCount}] NEWER THAN LIST";
             ListViewItem[] arr = GameList.ToArray();
             gamesListView.BeginUpdate();
             gamesListView.Items.Clear();
@@ -2225,7 +2236,7 @@ namespace AndroidSideloader
         private async void ADBWirelessEnable_Click(object sender, EventArgs e)
         {
             bool Manual;
-            DialogResult res = FlexibleMessageBox.Show("Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
+            DialogResult res = FlexibleMessageBox.Show(Program.form, "Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
             Manual = res == DialogResult.No;
             if (Manual)
             {
@@ -2270,7 +2281,11 @@ namespace AndroidSideloader
                     Program.form.showAvailableSpace();
                     Properties.Settings.Default.IPAddress = IPcmnd;
                     Properties.Settings.Default.Save();
-                    File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                    try
+                    {
+                        File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                    }
+                    catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     ADB.wirelessadbON = true;
                     _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                     _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
@@ -2405,7 +2420,13 @@ Things you can try:
             gamesQueueList.RemoveAt(0);
         }
 
+        public void SetProgress(int progress)
+        {
+            progressBar.Value = progress;
+        }
+
         public bool isinstalling = false;
+        public static bool isInDownloadExtract = false;
         public static bool removedownloading = false;
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
@@ -2516,7 +2537,7 @@ Things you can try:
                         bool doDownload = true;
                         if (Directory.Exists(gameDirectory))
                         {
-                            DialogResult res = FlexibleMessageBox.Show(
+                            DialogResult res = FlexibleMessageBox.Show(Program.form,
                                 $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
                                 "Download again?", MessageBoxButtons.YesNo);
 
@@ -2636,7 +2657,7 @@ Things you can try:
                         }
                         catch (Exception ex)
                         {
-                            _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}");
+                            _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}");
                         }
                         changeTitle("");
                         break;
@@ -2666,7 +2687,7 @@ Things you can try:
                                 //Remove current game
                                 cleanupActiveDownloadStatus();
 
-                                _ = FlexibleMessageBox.Show($"Rclone error: {gameDownloadOutput.Error}");
+                                _ = FlexibleMessageBox.Show(Program.form, $"Rclone error: {gameDownloadOutput.Error}");
                                 output += new ProcessOutput("", "Download Failed");
                             }
                         }
@@ -2676,6 +2697,13 @@ Things you can try:
 
                                 Thread extractionThread = new Thread(() =>
                                 {
+                                    Invoke(new Action(() =>
+                                    {
+                                        speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
+                                        progressBar.Style = ProgressBarStyle.Continuous;
+                                        progressBar.Value = 0;
+                                        isInDownloadExtract = true;
+                                    }));
                                     try
                                     {
                                         changeTitle("Extracting " + gameName, false);
@@ -2689,7 +2717,7 @@ Things you can try:
                                             cleanupActiveDownloadStatus();
                                         }));
                                         otherError = true;
-                                        _ = FlexibleMessageBox.Show($"7zip error: {ex.Message}");
+                                        this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
                                         output += new ProcessOutput("", "Extract Failed");
                                     }
                                 })
@@ -2812,22 +2840,22 @@ Things you can try:
                                                         {
                                                             obbsMismatch = await compareOBBSizes(packagename, gameName, output);
                                                         }
-                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}"); }
+                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
                                                     }
                                                 }
                                             }
                                     }
-                                    else
-                                    {
-                                        output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
-                                    }
+                                }
+                                else
+                                {
+                                    output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
                                 }
                                 changeTitle($"Installation of {gameName} completed.");
                             }
                             if (Properties.Settings.Default.deleteAllAfterInstall)
                             {
                                 changeTitle("Deleting game files", false);
-                                try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show($"Error deleting game files: {ex.Message}"); }
+                                try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}"); }
                             }
                             //Remove current game
                             cleanupActiveDownloadStatus();
@@ -2907,7 +2935,7 @@ Things you can try:
             }
             catch (FormatException ex)
             {
-                _ = FlexibleMessageBox.Show("The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
+                _ = FlexibleMessageBox.Show(Program.form, "The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
                 Logger.Log($"Unable to compare obbs with the exception: {ex.Message}", LogLevel.ERROR);
                 FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
                 return false;
@@ -2915,7 +2943,7 @@ Things you can try:
             catch (Exception ex)
             {
                 Logger.Log($"Unexpected error occurred while comparing OBBs: {ex.Message}", LogLevel.ERROR);
-                FlexibleMessageBox.Show($"Unexpected error comparing OBB sizes: {ex.Message}");
+                FlexibleMessageBox.Show(Program.form, $"Unexpected error comparing OBB sizes: {ex.Message}");
                 return false;
             }
         }
@@ -2929,7 +2957,7 @@ Things you can try:
         // Logic to handle mismatches after comparison.
         private async Task<bool> handleObbSizeMismatchAsync(string packageName, string gameName, ProcessOutput output)
         {
-            var dialogResult = MessageBox.Show("Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(Program.form, "Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
 
             if (dialogResult != DialogResult.Yes)
             {
@@ -3081,6 +3109,7 @@ Things you can try:
                 }
                 else
                 {
+                    if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
                     RCLONE.killRclone();
                 }
             }
@@ -3095,12 +3124,14 @@ Things you can try:
                 }
                 else
                 {
+                    if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
                     RCLONE.killRclone();
                     _ = ADB.RunAdbCommandToString("kill-server");
                 }
             }
             else
             {
+                if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
                 RCLONE.killRclone();
                 _ = ADB.RunAdbCommandToString("kill-server");
             }
@@ -3201,12 +3232,9 @@ Things you can try:
             {
                 if (searchTextBox.Visible)
                 {
-                    if (Properties.Settings.Default.EnterKeyInstall)
+                    if (gamesListView.SelectedItems.Count > 0)
                     {
-                        if (gamesListView.SelectedItems.Count > 0)
-                        {
-                            downloadInstallGameButton_Click(sender, e);
-                        }
+                        downloadInstallGameButton_Click(sender, e);
                     }
                 }
                 searchTextBox.Visible = false;
@@ -3531,8 +3559,8 @@ Things you can try:
                     }
                     catch (Exception ex)
                     {
-                        _ = FlexibleMessageBox.Show($"You are unable to access the wiki page with the Exception: {ex.Message}\n");
-                        _ = FlexibleMessageBox.Show("Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
+                        _ = FlexibleMessageBox.Show(Program.form, $"You are unable to access the wiki page with the Exception: {ex.Message}\n");
+                        _ = FlexibleMessageBox.Show(Program.form, "Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
                         enviromentCreated = true;
                         webView21.Hide();
                     }
@@ -3598,94 +3626,6 @@ Things you can try:
         {
             _ = Process.Start("https://github.com/VRPirates/rookie");
         }
-
-        private async void removeQUSetting_Click(object sender, EventArgs e)
-        {
-
-            if (m_combo.SelectedIndex == -1)
-            {
-                _ = FlexibleMessageBox.Show(Program.form, "Please select an app first");
-                return;
-            }
-            ProcessOutput output = new ProcessOutput(String.Empty, String.Empty);
-            progressBar.Style = ProgressBarStyle.Marquee;
-
-            string GameName = m_combo.SelectedItem.ToString();
-
-            Thread t1 = new Thread(() =>
-            {
-                output += Sideloader.DeleteFile(GameName);
-            });
-            t1.Start();
-
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
-
-            showAvailableSpace();
-
-            progressBar.Style = ProgressBarStyle.Continuous;
-            m_combo.Items.RemoveAt(m_combo.SelectedIndex);
-            ShowPrcOutput(output);
-            listAppsBtn();
-            initListView();
-        }
-
-        private async void InstallQUset_Click(object sender, EventArgs e)
-        {
-
-            if (m_combo.SelectedIndex == -1)
-            {
-                _ = FlexibleMessageBox.Show(Program.form, "Please select an app first");
-                return;
-            }
-            ProcessOutput output = new ProcessOutput(String.Empty, String.Empty);
-            progressBar.Style = ProgressBarStyle.Marquee;
-
-            string GameName = m_combo.SelectedItem.ToString();
-            string pckg = Sideloader.gameNameToPackageName(GameName);
-            Thread t1 = new Thread(() =>
-            {
-                _ = ADB.RunAdbCommandToString($"shell mkdir sdcard/android/data/{pckg}");
-                _ = ADB.RunAdbCommandToString($"shell mkdir sdcard/android/data/{pckg}/private");
-                Random r = new Random();
-
-                int x = r.Next(999999999);
-                int y = r.Next(9999999);
-
-                long sum = (y * (long)1000000000) + x;
-
-                int x2 = r.Next(999999999);
-                int y2 = r.Next(9999999);
-
-                long sum2 = (y2 * (long)1000000000) + x2;
-
-                Properties.Settings.Default.QUStringF = $"{{\"user_id\":{sum},\"app_id\":\"{sum2}\",";
-                Properties.Settings.Default.Save();
-                File.WriteAllText("delete_settings", String.Empty);
-                string boff = Properties.Settings.Default.QUStringF + Properties.Settings.Default.QUString;
-                File.WriteAllText("config.json", boff);
-                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.MainDir}\\delete_settings\" /sdcard/android/data/{pckg}/private/delete_settings");
-                output += ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\config.json\" /sdcard/android/data/{pckg}/private/");
-
-            });
-            t1.Start();
-
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
-
-            showAvailableSpace();
-
-            progressBar.Style = ProgressBarStyle.Continuous;
-            m_combo.Items.RemoveAt(m_combo.SelectedIndex);
-            ShowPrcOutput(output);
-            listAppsBtn();
-            initListView();
-        }
-
         private void searchTextBox_Leave(object sender, EventArgs e)
         {
             if (searchTextBox.Visible)
@@ -3704,12 +3644,9 @@ Things you can try:
         {
             if (e.KeyChar == (char)Keys.Enter)
             {
-                if (Properties.Settings.Default.EnterKeyInstall)
+                if (gamesListView.SelectedItems.Count > 0)
                 {
-                    if (gamesListView.SelectedItems.Count > 0)
-                    {
-                        downloadInstallGameButton_Click(sender, e);
-                    }
+                    downloadInstallGameButton_Click(sender, e);
                 }
             }
         }
@@ -3847,12 +3784,6 @@ Things you can try:
             lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
-        private void EnterInstallBox_CheckedChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.EnterKeyInstall = EnterInstallBox.Checked;
-            Properties.Settings.Default.Save();
-        }
-
         private async void ADBcommandbox_KeyPress(object sender, KeyPressEventArgs e)
         {
             searchTextBox.KeyPress += new
@@ -3869,7 +3800,7 @@ Things you can try:
                     if (errorChecker.Contains("cannot resolve host") | errorChecker.Contains("cannot connect to"))
                     {
                         changeTitle(String.Empty);
-                        _ = FlexibleMessageBox.Show("Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
+                        _ = FlexibleMessageBox.Show(Program.form, "Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
                         manualIP = false;
                         ADBcommandbox.Visible = false;
                         lblAdbCommand.Visible = false;
@@ -3885,7 +3816,8 @@ Things you can try:
                         Program.form.showAvailableSpace();
                         Properties.Settings.Default.IPAddress = IPcmnd;
                         Properties.Settings.Default.Save();
-                        File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                        try { File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd); }
+                        catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                         ADB.wirelessadbON = true;
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
@@ -4322,10 +4254,59 @@ Things you can try:
             lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
+        public static void OpenDirectory(string directoryPath) {
+            if (Directory.Exists(directoryPath))
+            {
+                ProcessStartInfo p = new ProcessStartInfo
+                {
+                    Arguments = directoryPath,
+                    FileName = "explorer.exe"
+                };
+                Process.Start(p);
+            }
+        }
+
         private void searchTextBox_Click(object sender, EventArgs e)
         {
             searchTextBox.Clear();
             _ = searchTextBox.Focus();
+        }
+
+        private async void btnRunAdbCmd_Click(object sender, EventArgs e)
+        {
+            ADBcommandbox.Visible = true;
+            ADBcommandbox.Clear();
+            lblAdbCommand.Visible = true;
+            lblShortcutCtrlR.Visible = true;
+            label2.Visible = true;
+            _ = ADBcommandbox.Focus();
+        }
+
+        private void btnOpenDownloads_Click(object sender, EventArgs e)
+        {
+            string pathToOpen = Properties.Settings.Default.customDownloadDir ? $"{Properties.Settings.Default.downloadDir}" : $"{Environment.CurrentDirectory}";
+            OpenDirectory(pathToOpen);
+        }
+
+        private void btnNoDevice_Click(object sender, EventArgs e)
+        {
+            bool currentStatus = Properties.Settings.Default.nodevicemode || false;
+
+            if (currentStatus) {
+                // No Device Mode is currently On. Toggle it Off
+                Properties.Settings.Default.nodevicemode = false;
+                btnNoDevice.Text = "Disable Sideloading";
+
+                changeTitle($"Sideloading has been Enabled");
+            } else {
+                Properties.Settings.Default.nodevicemode = true;
+                Properties.Settings.Default.deleteAllAfterInstall = false;
+                btnNoDevice.Text = "Enable Sideloading";
+
+                changeTitle($"Sideloading Disabled. Games will only Download.");
+            }
+
+            Properties.Settings.Default.Save();
         }
     }
 

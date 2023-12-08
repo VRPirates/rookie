@@ -203,101 +203,7 @@ namespace AndroidSideloader.Properties {
             }
         }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool QUsett {
-            get {
-                return ((bool)(this["QUsett"]));
-            }
-            set {
-                this["QUsett"] = value;
-            }
-        }
         
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string QuChecked {
-            get {
-                return ((string)(this["QuChecked"]));
-            }
-            set {
-                this["QuChecked"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string QUhz {
-            get {
-                return ((string)(this["QUhz"]));
-            }
-            set {
-                this["QUhz"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string QUres {
-            get {
-                return ((string)(this["QUres"]));
-            }
-            set {
-                this["QUres"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string QUy {
-            get {
-                return ((string)(this["QUy"]));
-            }
-            set {
-                this["QUy"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0")]
-        public string QUx {
-            get {
-                return ((string)(this["QUx"]));
-            }
-            set {
-                this["QUx"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Change Me")]
-        public string QUname {
-            get {
-                return ((string)(this["QUname"]));
-            }
-            set {
-                this["QUname"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string QUString {
-            get {
-                return ((string)(this["QUString"]));
-            }
-            set {
-                this["QUString"] = value;
-            }
-        }
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -310,18 +216,7 @@ namespace AndroidSideloader.Properties {
                 this["MainDir"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string QUStringF {
-            get {
-                return ((string)(this["QUStringF"]));
-            }
-            set {
-                this["QUStringF"] = value;
-            }
-        }
+
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
@@ -398,18 +293,6 @@ namespace AndroidSideloader.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool EnterKeyInstall {
-            get {
-                return ((bool)(this["EnterKeyInstall"]));
-            }
-            set {
-                this["EnterKeyInstall"] = value;
-            }
-        }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DownUpHeld {
             get {
                 return ((bool)(this["DownUpHeld"]));
@@ -466,19 +349,7 @@ namespace AndroidSideloader.Properties {
                 this["CurrentCrashName"] = value;
             }
         }
-        
-        [global::System.Configuration.UserScopedSettingAttribute()]
-        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("False")]
-        public bool QUturnedon {
-            get {
-                return ((bool)(this["QUturnedon"]));
-            }
-            set {
-                this["QUturnedon"] = value;
-            }
-        }
-        
+
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("False")]
