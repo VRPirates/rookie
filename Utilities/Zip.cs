@@ -73,28 +73,32 @@ namespace AndroidSideloader.Utilities
                         }
                     };
                 }
-                x.ErrorDataReceived += (sender, e) => Console.WriteLine(e.Data);
+
+                x.ErrorDataReceived += (sender, e) =>
+                {
+                    if (e.Data != null)
+                    {
+                        var error = e.Data;
+                        if (error.Contains("There is not enough space on the disk"))
+                        {
+                            Program.form.Invoke(new Action(() =>
+                            {
+                                _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(Properties.Settings.Default.downloadDir)} drive has at least double the space of the game, then try again.",
+                                   "NOT ENOUGH SPACE",
+                                   MessageBoxButtons.OK,
+                                   MessageBoxIcon.Error);
+                            }));
+                        }
+                        _ = Logger.Log(error, LogLevel.ERROR);
+                        throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
+                    }
+                };
 
                 x.Start();
 
                 x.BeginOutputReadLine();
                 x.BeginErrorReadLine();
                 x.WaitForExit();
-                if (x.ExitCode != 0)
-                {
-                    string error = x.StandardError.ReadToEnd();
-
-                    if (error.Contains("There is not enough space on the disk"))
-                    {
-                        _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(Properties.Settings.Default.downloadDir)} drive has at least double the space of the game, then try again.",
-                            "NOT ENOUGH SPACE",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
-                    _ = Logger.Log(x.StandardOutput.ReadToEnd());
-                    _ = Logger.Log(error, LogLevel.ERROR);
-                    throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
-                }
             }
         }
     }
