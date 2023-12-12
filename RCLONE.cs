@@ -118,10 +118,13 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Environment.CurrentDirectory} and try again.",
-                                        "NOT ENOUGH SPACE",
-                                        MessageBoxButtons.OK,
-                                        MessageBoxIcon.Error);
+                Program.form.Invoke(() =>
+                {
+                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Properties.Settings.Default.downloadDir} and try again.",
+                                    "NOT ENOUGH SPACE",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                });
                 return new ProcessOutput("Download failed.", "");
             }
 
@@ -288,10 +291,13 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Environment.CurrentDirectory} and try again.",
+                Program.form.Invoke(() =>
+                {
+                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Properties.Settings.Default.downloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
+                });
                 return new ProcessOutput("Download failed.", string.Empty);
             }
 
