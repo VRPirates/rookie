@@ -1047,132 +1047,142 @@ namespace AndroidSideloader
                 return;
             }
 
-            if (!isworking)
+            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
+            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
+            bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+
+            if (codenameExists)
             {
-                isworking = true;
-                progressBar.Style = ProgressBarStyle.Marquee;
-                string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output;
-                string HWID = SideloaderUtilities.UUID();
-                string GameName = m_combo.SelectedItem.ToString();
-                string packageName = Sideloader.gameNameToPackageName(GameName);
-                string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
-                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                ulong VersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                if (!isworking)
+                {
+                    isworking = true;
+                    progressBar.Style = ProgressBarStyle.Marquee;
+                    string HWID = SideloaderUtilities.UUID();
+                    string GameName = m_combo.SelectedItem.ToString();
+                    string packageName = Sideloader.gameNameToPackageName(GameName);
+                    string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
+                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                    ulong VersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
 
-                string gameName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0, 1)} {deviceCodeName}";
-                string gameZipName = $"{gameName}.zip";
+                    string gameName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0, 1)} {deviceCodeName}";
+                    string gameZipName = $"{gameName}.zip";
 
-                // Delete both zip & txt if the files exist, most likely due to a failed upload.
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
-                {
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
-                }
+                    // Delete both zip & txt if the files exist, most likely due to a failed upload.
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                    {
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                    }
 
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
-                {
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                }
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                    {
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                    }
 
-                ProcessOutput output = new ProcessOutput("", "");
-                changeTitle("Extracting APK....");
+                    ProcessOutput output = new ProcessOutput("", "");
+                    changeTitle("Extracting APK....");
 
-                _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
+                    _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
 
-                Thread t1 = new Thread(() =>
-                {
-                    output = Sideloader.getApk(GameName);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
+                    Thread t1 = new Thread(() =>
+                    {
+                        output = Sideloader.getApk(GameName);
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t1.Start();
 
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    while (t1.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
 
-                changeTitle("Extracting obb if it exists....");
-                Thread t2 = new Thread(() =>
-                {
-                    output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
-                })
-                {
-                    IsBackground = true
-                };
-                t2.Start();
+                    changeTitle("Extracting obb if it exists....");
+                    Thread t2 = new Thread(() =>
+                    {
+                        output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t2.Start();
 
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    while (t2.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
 
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
-                changeTitle("Zipping extracted application...");
-                string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
-                string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                progressBar.Style = ProgressBarStyle.Continuous;
-                Thread t4 = new Thread(() =>
-                {
-                    _ = ADB.RunCommandToString(cmd, path);
-                })
-                {
-                    IsBackground = true
-                };
-                t4.Start();
-                while (t4.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
+                    changeTitle("Zipping extracted application...");
+                    string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
+                    string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                    progressBar.Style = ProgressBarStyle.Continuous;
+                    Thread t4 = new Thread(() =>
+                    {
+                        _ = ADB.RunCommandToString(cmd, path);
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t4.Start();
+                    while (t4.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
 
-                changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
-                ULGif.Visible = true;
-                ULLabel.Visible = true;
-                ULGif.Enabled = true;
-                isworking = false;
-                isuploading = true;
-                Thread t3 = new Thread(() =>
-                {
-                    string currentlyUploading = GameName;
                     changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
+                    ULGif.Visible = true;
+                    ULLabel.Visible = true;
+                    ULGif.Enabled = true;
+                    isworking = false;
+                    isuploading = true;
+                    Thread t3 = new Thread(() =>
+                    {
+                        string currentlyUploading = GameName;
+                        changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
 
-                    // Get size of pending zip upload and write to text file
-                    long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
-                    // Upload size file.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
-                    // Upload zip.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+                        // Get size of pending zip upload and write to text file
+                        long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
+                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
+                        // Upload size file.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
+                        // Upload zip.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
 
-                    // Delete files once uploaded.
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        // Delete files once uploaded.
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
 
-                    this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
-                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
-                })
-                {
-                    IsBackground = true
-                };
-                t3.Start();
-                isuploading = true;
+                        this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
+                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t3.Start();
+                    isuploading = true;
 
-                while (t3.IsAlive)
-                {
-                    await Task.Delay(100);
+                    while (t3.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    changeTitle("                         \n\n");
+                    isuploading = false;
+                    ULGif.Visible = false;
+                    ULLabel.Visible = false;
+                    ULGif.Enabled = false;
                 }
-
-                changeTitle("                         \n\n");
-                isuploading = false;
-                ULGif.Visible = false;
-                ULLabel.Visible = false;
-                ULGif.Enabled = false;
+                else
+                {
+                    _ = MessageBox.Show("You must wait until each app is finished uploading to start another.");
+                }
             }
             else
             {
-                _ = MessageBox.Show("You must wait until each app is finished uploading to start another.");
+                FlexibleMessageBox.Show(Program.form, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
             }
         }
 
@@ -1985,6 +1995,7 @@ namespace AndroidSideloader
             loaded = true;
         }
 
+        private static readonly HttpClient HttpClient = new HttpClient();
         public static async void doUpload()
         {
             Program.form.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
@@ -1992,80 +2003,90 @@ namespace AndroidSideloader
             Program.form.ULLabel.Visible = true;
             Program.form.ULGif.Enabled = true;
             isworking = true;
+            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
+            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
+            bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
 
-            foreach (UploadGame game in Program.form.gamesToUpload)
+            if (codenameExists)
             {
-
-                Thread t3 = new Thread(() =>
+                foreach (UploadGame game in Program.form.gamesToUpload)
                 {
-                    string packagename = game.Pckgcommand;
-                    string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output;
-                    string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)} {deviceCodeName}";
-                    string gameZipName = $"{gameName}.zip";
 
-                    // Delete both zip & txt if the files exist, most likely due to a failed upload.
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                    Thread t3 = new Thread(() =>
                     {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
-                    }
+                        string packagename = game.Pckgcommand;
+                        string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)} {deviceCodeName}";
+                        string gameZipName = $"{gameName}.zip";
 
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        // Delete both zip & txt if the files exist, most likely due to a failed upload.
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        }
+
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        }
+
+                        string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                        string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
+                        Program.form.changeTitle("Zipping extracted application...");
+                        _ = ADB.RunCommandToString(cmd, path);
+                        if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}"))
+                        {
+                            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                        }
+                        Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
+
+                        // Get size of pending zip upload and write to text file
+                        long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
+                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
+                        // Upload size file.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
+                        // Upload zip.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+
+                        if (game.isUpdate)
+                        {
+                            Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + "\n";
+                            Properties.Settings.Default.Save();
+                        }
+
+                        // Delete files once uploaded.
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        }
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        }
+
+                    })
                     {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    }
-
-                    string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                    string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
-                    Program.form.changeTitle("Zipping extracted application...");
-                    _ = ADB.RunCommandToString(cmd, path);
-                    if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}"))
+                        IsBackground = true
+                    };
+                    t3.Start();
+                    while (t3.IsAlive)
                     {
-                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                        isuploading = true;
+                        await Task.Delay(100);
                     }
-                    Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
-
-                    // Get size of pending zip upload and write to text file
-                    long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
-                    // Upload size file.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
-                    // Upload zip.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
-
-                    if (game.isUpdate)
-                    {
-                        Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + "\n";
-                        Properties.Settings.Default.Save();
-                    }
-
-                    // Delete files once uploaded.
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
-                    {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    }
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}")) 
-                    {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
-                    }
-
-                })
-                {
-                    IsBackground = true
-                };
-                t3.Start();
-                while (t3.IsAlive)
-                {
-                    isuploading = true;
-                    await Task.Delay(100);
                 }
+
+                Program.form.gamesToUpload.Clear();
+                isworking = false;
+                isuploading = false;
+                Program.form.ULGif.Visible = false;
+                Program.form.ULLabel.Visible = false;
+                Program.form.ULGif.Enabled = false;
+                Program.form.changeTitle(" \n\n");
             }
-            Program.form.gamesToUpload.Clear();
-            isworking = false;
-            isuploading = false;
-            Program.form.ULGif.Visible = false;
-            Program.form.ULLabel.Visible = false;
-            Program.form.ULGif.Enabled = false;
-            Program.form.changeTitle(" \n\n");
+            else
+            {
+                FlexibleMessageBox.Show(Program.form, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
+            }
         }
 
         public static async void newPackageUpload()
