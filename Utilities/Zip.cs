@@ -31,8 +31,9 @@ namespace AndroidSideloader.Utilities
             {
                 _ = Logger.Log("Begin download 7-zip");
                 WebClient client = new WebClient();
-                client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/7z.exe", "7z.exe");
-                client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/7z.dll", "7z.dll");
+                string architecture = Environment.Is64BitOperatingSystem ? "64" : "";
+                client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.exe", $"7z.exe");
+                client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.dll", $"7z.dll");
                 _ = Logger.Log("Complete download 7-zip");
             }
 
