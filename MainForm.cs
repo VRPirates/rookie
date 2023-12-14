@@ -1051,6 +1051,7 @@ namespace AndroidSideloader
             {
                 isworking = true;
                 progressBar.Style = ProgressBarStyle.Marquee;
+                string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output;
                 string HWID = SideloaderUtilities.UUID();
                 string GameName = m_combo.SelectedItem.ToString();
                 string packageName = Sideloader.gameNameToPackageName(GameName);
@@ -1059,7 +1060,7 @@ namespace AndroidSideloader
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                 ulong VersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
 
-                string gameName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0, 1)}";
+                string gameName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0, 1)} {deviceCodeName}";
                 string gameZipName = $"{gameName}.zip";
 
                 // Delete both zip & txt if the files exist, most likely due to a failed upload.
@@ -1998,7 +1999,8 @@ namespace AndroidSideloader
                 Thread t3 = new Thread(() =>
                 {
                     string packagename = game.Pckgcommand;
-                    string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)}";
+                    string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output;
+                    string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)} {deviceCodeName}";
                     string gameZipName = $"{gameName}.zip";
 
                     // Delete both zip & txt if the files exist, most likely due to a failed upload.
