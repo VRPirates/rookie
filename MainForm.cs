@@ -1047,9 +1047,12 @@ namespace AndroidSideloader
                 return;
             }
 
-            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
+            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
             string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
             bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+
+            _ = Logger.Log($"Found Device Code Name: {deviceCodeName}");
+            _ = Logger.Log($"Identified as Meta Device: {codenameExists}");
 
             if (codenameExists)
             {
