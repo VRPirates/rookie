@@ -1049,7 +1049,13 @@ namespace AndroidSideloader
 
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
             string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
-            bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+            bool codenameExists = false;
+            try {
+                codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+            } catch {
+                _ = Logger.Log("Unable to download Codenames file.");
+                FlexibleMessageBox.Show(Program.form, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
+            }
 
             _ = Logger.Log($"Found Device Code Name: {deviceCodeName}");
             _ = Logger.Log($"Identified as Meta Device: {codenameExists}");
