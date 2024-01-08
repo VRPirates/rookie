@@ -11,6 +11,11 @@ using System.Windows.Forms;
 
 namespace AndroidSideloader.Utilities
 {
+    public class ExtractionException : Exception
+    {
+        public ExtractionException(string message) : base(message) { }
+    }
+
     internal class Zip
     {
         public static void ExtractFile(string sourceArchive, string destination)
@@ -25,6 +30,8 @@ namespace AndroidSideloader.Utilities
             DoExtract(args);
         }
 
+        private static string extractionError = null;
+        private static bool errorMessageShown = false;
         private static void DoExtract(string args)
         {
             if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe") || !File.Exists(Environment.CurrentDirectory + "\\7z.dll"))
@@ -80,26 +87,37 @@ namespace AndroidSideloader.Utilities
                     if (e.Data != null)
                     {
                         var error = e.Data;
-                        if (error.Contains("There is not enough space on the disk"))
+                        if (error.Contains("There is not enough space on the disk") && !errorMessageShown)
                         {
+                            errorMessageShown = true;
                             Program.form.Invoke(new Action(() =>
                             {
                                 _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(Properties.Settings.Default.downloadDir)} drive has at least double the space of the game, then try again.",
                                    "NOT ENOUGH SPACE",
                                    MessageBoxButtons.OK,
                                    MessageBoxIcon.Error);
+                                return;
                             }));
                         }
                         _ = Logger.Log(error, LogLevel.ERROR);
-                        throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
+                        extractionError = $"Extracting failed, status code {x.ExitCode}";
+                        return;
                     }
                 };
 
                 x.Start();
-
                 x.BeginOutputReadLine();
                 x.BeginErrorReadLine();
                 x.WaitForExit();
+                errorMessageShown = false;
+
+                if (!string.IsNullOrEmpty(extractionError))
+                {
+                    string errorMessage = extractionError;
+                    extractionError = null; // Reset the error message
+                    throw new ExtractionException(errorMessage);
+                }
+
             }
         }
     }
