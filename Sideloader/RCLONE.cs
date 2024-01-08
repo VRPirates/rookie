@@ -42,9 +42,9 @@ namespace AndroidSideloader
          */
         public static List<string[]> games = new List<string[]>();
 
-        public static string Nouns = Environment.CurrentDirectory + "\\nouns";
-        public static string ThumbnailsFolder = Environment.CurrentDirectory + "\\thumbnails";
-        public static string NotesFolder = Environment.CurrentDirectory + "\\notes";
+        public static string Nouns = Path.Combine(Environment.CurrentDirectory, "nouns");
+        public static string ThumbnailsFolder = Path.Combine(Environment.CurrentDirectory, "thumbnails");
+        public static string NotesFolder = Path.Combine(Environment.CurrentDirectory, "notes");
 
         public static void UpdateNouns(string remote)
         {
@@ -77,7 +77,7 @@ namespace AndroidSideloader
             try
             {
                 _ = Logger.Log($"Extracting Metadata");
-                Zip.ExtractFile($"{Environment.CurrentDirectory}\\meta.7z", $"{Environment.CurrentDirectory}\\meta",
+                Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "meta.7z"), Path.Combine(Environment.CurrentDirectory, "meta"),
                     MainForm.PublicConfigFile.Password);
 
                 _ = Logger.Log($"Updating Metadata");
@@ -97,12 +97,12 @@ namespace AndroidSideloader
                     Directory.Delete(NotesFolder, true);
                 }
 
-                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\nouns", Nouns);
-                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\thumbnails", ThumbnailsFolder);
-                Directory.Move($"{Environment.CurrentDirectory}\\meta\\.meta\\notes", NotesFolder);
+                Directory.Move(Path.Combine(Environment.CurrentDirectory, "meta", ".meta", "nouns"), Nouns);
+                Directory.Move(Path.Combine(Environment.CurrentDirectory, "meta", ".meta", "thumbnails"), ThumbnailsFolder);
+                Directory.Move(Path.Combine(Environment.CurrentDirectory, "meta", ".meta", "notes"), NotesFolder);
 
                 _ = Logger.Log($"Initializing Games List");
-                string gameList = File.ReadAllText($"{Environment.CurrentDirectory}\\meta\\VRP-GameList.txt");
+                string gameList = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "meta", "VRP-GameList.txt"));
 
                 string[] splitList = gameList.Split('\n');
                 splitList = splitList.Skip(1).ToArray();
@@ -114,8 +114,8 @@ namespace AndroidSideloader
                         games.Add(splitGame);
                     }
                 }
-
-                Directory.Delete($"{Environment.CurrentDirectory}\\meta", true);
+                
+                Directory.Delete(Path.Combine(Environment.CurrentDirectory, "meta"), true);
             }
             catch (Exception e)
             {
@@ -189,23 +189,23 @@ namespace AndroidSideloader
 
                     _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
-                    if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new"))
+                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new")))
                     {
-                        File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new");
+                        File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new"));
                     }
 
-                    File.Create(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new").Close();
-                    File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new", resultString);
+                    File.Create(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new")).Close();
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new"), resultString);
 
-                    if (!File.Exists(Environment.CurrentDirectory + "\\rclone\\hash.txt"))
+                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone","hash.txt")))
                     {
-                        File.Create(Environment.CurrentDirectory + "\\rclone\\hash.txt").Close();
+                        File.Create(Path.Combine(Environment.CurrentDirectory, "rclone","hash.txt")).Close();
                     }
 
-                    string newConfig = CalculateMD5(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new");
-                    string oldConfig = File.ReadAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt");
+                    string newConfig = CalculateMD5(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
+                    string oldConfig = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"));
 
-                    if (!File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
+                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config")))
                     {
                         oldConfig = "Config Doesnt Exist!";
                     }
@@ -216,23 +216,23 @@ namespace AndroidSideloader
                     {
                         _ = Logger.Log($"Updated Config Hash is different than the current Config. Updating Configuration File.");
 
-                        if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config"))
+                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config")))
                         {
-                            File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config");
+                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config"));
                         }
 
-                        File.Move(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new", Environment.CurrentDirectory + "\\rclone\\vrp.download.config");
+                        File.Move(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"), Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config"));
 
-                        File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", string.Empty);
-                        File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\hash.txt", newConfig);
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), string.Empty);
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), newConfig);
                     }
                     else
                     {
                         _ = Logger.Log($"Updated Config Hash matches last download. Not updating.");
 
-                        if (File.Exists(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new"))
+                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new")))
                         {
-                            File.Delete(Environment.CurrentDirectory + "\\rclone\\vrp.download.config_new");
+                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
                         }
                     }
                 }
@@ -258,7 +258,7 @@ namespace AndroidSideloader
 
                     _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
-                    File.WriteAllText(Environment.CurrentDirectory + "\\rclone\\vrp.upload.config", resultString);
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.upload.config"), resultString);
 
                     _ = Logger.Log("Upload config updated successfully.");
                 }

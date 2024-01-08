@@ -316,12 +316,12 @@ namespace AndroidSideloader
                     currentAccessedWebsite = "github";
                     _ = Logger.Log($"Missing adb within {Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools. Attempting to download from {currentAccessedWebsite}");
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/adb2.zip", "_adb.7z");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\_adb.7z", $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
+                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "_adb.7z"), $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
                     File.Delete("_adb.7z");
                     _ = Logger.Log($"adb download successful");
                 }
 
-                if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
+                if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "rclone")))
                 {
                     currentAccessedWebsite = "rclone";
                     _ = Logger.Log($"Missing rclone. Attempting to download from {currentAccessedWebsite}.org");
@@ -335,7 +335,7 @@ namespace AndroidSideloader
                     _ = Logger.Log("Complete download rclone");
 
                     _ = Logger.Log($"Extract {Environment.CurrentDirectory}\\rclone.zip");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\rclone.zip", Environment.CurrentDirectory);
+                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
 
                     File.Delete("rclone.zip");
 

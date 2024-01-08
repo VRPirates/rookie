@@ -94,12 +94,12 @@ namespace AndroidSideloader
 
             _ = Logger.Log($"Running Rclone command: {logcmd}");
 
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone","rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
             rclone.StartInfo.RedirectStandardError = true;
             rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
@@ -191,12 +191,12 @@ namespace AndroidSideloader
 
             command += " --checkers 0 --no-check-dest --retries 1";
 
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
             rclone.StartInfo.RedirectStandardError = true;
             rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
@@ -267,12 +267,12 @@ namespace AndroidSideloader
             //set http source & args
             command += $" --http-url {MainForm.PublicConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
           
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone","rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
             rclone.StartInfo.RedirectStandardError = true;
             rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)

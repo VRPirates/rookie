@@ -173,7 +173,7 @@ namespace AndroidSideloader
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
-                Properties.Settings.Default.CurrentLogPath = $"{Environment.CurrentDirectory}\\debuglog.txt";
+                Properties.Settings.Default.CurrentLogPath = Path.Combine(Environment.CurrentDirectory,"debuglog.txt");
             }
         }
 
@@ -209,7 +209,7 @@ namespace AndroidSideloader
 
             if (!isOffline)
             {
-                if (File.Exists($"{Environment.CurrentDirectory}\\vrp-public.json"))
+                if (File.Exists(Path.Combine(Environment.CurrentDirectory, "vrp-public.json")))
                 {
                     Thread worker = new Thread(() =>
                     {
@@ -224,7 +224,7 @@ namespace AndroidSideloader
                     try
                     {
                         string configFileData =
-                            File.ReadAllText($"{Environment.CurrentDirectory}\\vrp-public.json");
+                            File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "vrp-public.json"));
                         PublicConfig config = JsonConvert.DeserializeObject<PublicConfig>(configFileData);
 
                         if (config != null
@@ -244,9 +244,9 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
 
-                    if (Directory.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\EBWebView"))
+                    if (Directory.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView")))
                     {
-                        Directory.Delete($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\EBWebView", true);
+                        Directory.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView"), true);
                     }
                 }
             }
@@ -305,11 +305,11 @@ namespace AndroidSideloader
                 DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.OK)
                 {
-                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt"))
+                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "crashlog.txt")))
                     {
                         string UUID = SideloaderUtilities.UUID();
-                        System.IO.File.Move("crashlog.txt", $"{Environment.CurrentDirectory}\\{UUID}.log");
-                        Properties.Settings.Default.CurrentCrashPath = $"{Environment.CurrentDirectory}\\{UUID}.log";
+                        System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, "{UUID}.log"));
+                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, "{UUID}.log");
                         Properties.Settings.Default.CurrentCrashName = UUID;
                         Properties.Settings.Default.Save();
 
@@ -321,7 +321,7 @@ namespace AndroidSideloader
                 }
                 else
                 {
-                    File.Delete($"{Environment.CurrentDirectory}\\crashlog.txt");
+                    File.Delete(Path.Combine(Environment.CurrentDirectory, "crashlog.txt"));
                 }
             }
 
@@ -340,7 +340,7 @@ namespace AndroidSideloader
             }
 
             _ = Logger.Log("Attempting to Initalize ADB Server");
-            if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
+            if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe")))
             {
                 _ = ADB.RunAdbCommandToString("kill-server");
                 _ = ADB.RunAdbCommandToString("start-server");
@@ -416,7 +416,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
                 {
-                    string path = $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe";
+                    string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
                     ProcessOutput wakeywakey = ADB.RunCommandToString($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
                     if (wakeywakey.Output.Contains("more than one"))
                     {
@@ -430,9 +430,9 @@ namespace AndroidSideloader
                     }
                 }
 
-                if (File.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\platform-tools\StoredIP.txt") && !Properties.Settings.Default.Wired)
+                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")) && !Properties.Settings.Default.Wired)
                 {
-                    string IPcmndfromtxt = File.ReadAllText($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\platform-tools\StoredIP.txt");
+                    string IPcmndfromtxt = File.ReadAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
                     Properties.Settings.Default.IPAddress = IPcmndfromtxt;
                     Properties.Settings.Default.Save();
                     ProcessOutput IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
@@ -441,7 +441,7 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
                         Properties.Settings.Default.IPAddress = "";
                         Properties.Settings.Default.Save();
-                        try { File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt"); }
+                        try { File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")); }
                         catch (Exception ex) { Logger.Log($"Unable to delete StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     }
                     else
@@ -450,7 +450,7 @@ namespace AndroidSideloader
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                     }
                 }
-                else if (!File.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\platform-tools\StoredIP.txt"))
+                else if (!File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
                 {
                     Properties.Settings.Default.IPAddress = "";
                     Properties.Settings.Default.Save();
@@ -1544,9 +1544,9 @@ namespace AndroidSideloader
                         string foldername = filename.Substring(filename.IndexOf('.') + 1);
                         foldername = foldername.Substring(foldername.IndexOf('.') + 1);
                         foldername = foldername.Replace(".obb", "");
-                        foldername = Environment.CurrentDirectory + "\\" + foldername;
+                        foldername = Path.Combine(Environment.CurrentDirectory, foldername);
                         _ = Directory.CreateDirectory(foldername);
-                        File.Copy(data, foldername + "\\" + filename);
+                        File.Copy(data, Path.Combine(foldername, filename));
                         path = foldername;
 
                         Thread t1 = new Thread(() =>
@@ -1937,19 +1937,19 @@ namespace AndroidSideloader
                                 string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
                                 apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
                                 apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                                if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk"))
+                                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
                                 {
-                                    File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk");
+                                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
                                 }
 
                                 _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
                                 string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                                string workingpath = $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe";
+                                string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
                                 string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
                                 ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
                                 ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
                                 ReleaseName = ReleaseName.Replace("'", "");
-                                File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk");
+                                File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
                                 if (ReleaseName.Contains("Microsoft Windows"))
                                 {
                                     ReleaseName = RlsName;
@@ -2315,7 +2315,7 @@ namespace AndroidSideloader
                     Properties.Settings.Default.Save();
                     try
                     {
-                        File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                        File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd);
                     }
                     catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     ADB.wirelessadbON = true;
@@ -2537,7 +2537,7 @@ Things you can try:
                     gameName = gamesQueueList.ToArray()[0];
                     string packagename = Sideloader.gameNameToPackageName(gameName);
                     string dir = Path.GetDirectoryName(gameName);
-                    string gameDirectory = Properties.Settings.Default.downloadDir + "\\" + gameName;
+                    string gameDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
                     string path = gameDirectory;
 
                     string gameNameHash = string.Empty;
@@ -3100,9 +3100,9 @@ Things you can try:
                     _ = ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{CurrPCKG}\" /sdcard/Android/data/");
 
                     timerticked = false;
-                    if (Directory.Exists($"{Environment.CurrentDirectory}\\{CurrPCKG}"))
+                    if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, CurrPCKG)))
                     {
-                        Directory.Delete($"{Environment.CurrentDirectory}\\{CurrPCKG}", true);
+                        Directory.Delete(Path.Combine(Environment.CurrentDirectory, CurrPCKG), true);
                     }
 
                     changeTitle(" \n\n");
@@ -3195,9 +3195,9 @@ Things you can try:
                 _ = Program.form.GetDeviceID();
                 Program.form.changeTitlebarToDevice();
                 _ = FlexibleMessageBox.Show(Program.form, "Relaunch Rookie to complete the process and switch back to USB adb.");
-                if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt"))
+                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
                 {
-                    File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt");
+                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
                 }
             }
         }
@@ -3506,7 +3506,7 @@ Things you can try:
 
         private async Task CreateEnvironment()
         {
-            string appDataLocation = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\";
+            string appDataLocation = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL");
             var webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: appDataLocation);
             await webView21.EnsureCoreWebView2Async(webView2Environment);
         }
@@ -3579,7 +3579,7 @@ Things you can try:
             else
             {
                 webView21.Enabled = true;
-                if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
+                if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "runtimes")))
                 {
                     WebClient client = new WebClient();
                     ServicePointManager.Expect100Continue = true;
@@ -3587,7 +3587,7 @@ Things you can try:
                     try
                     {
                         client.DownloadFile("https://vrpirates.wiki/downloads/runtimes.7z", "runtimes.7z");
-                        Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
+                        Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "runtimes.7z"), Environment.CurrentDirectory);
                         File.Delete("runtimes.7z");
                     }
                     catch (Exception ex)
@@ -3849,7 +3849,7 @@ Things you can try:
                         Program.form.showAvailableSpace();
                         Properties.Settings.Default.IPAddress = IPcmnd;
                         Properties.Settings.Default.Save();
-                        try { File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd); }
+                        try { File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd); }
                         catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                         ADB.wirelessadbON = true;
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");

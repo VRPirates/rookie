@@ -34,7 +34,7 @@ namespace AndroidSideloader.Utilities
         private static bool errorMessageShown = false;
         private static void DoExtract(string args)
         {
-            if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe") || !File.Exists(Environment.CurrentDirectory + "\\7z.dll"))
+            if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "7z.exe")) || !File.Exists(Path.Combine(Environment.CurrentDirectory, "7z.dll")))
             {
                 _ = Logger.Log("Begin download 7-zip");
                 WebClient client = new WebClient();
