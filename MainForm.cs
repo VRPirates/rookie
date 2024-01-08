@@ -2736,7 +2736,7 @@ Things you can try:
                                         Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
                                         Program.form.changeTitle("");
                                     }
-                                    catch (Exception ex)
+                                    catch (ExtractionException ex)
                                     {
                                         Invoke(new Action(() =>
                                         {
