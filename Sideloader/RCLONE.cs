@@ -114,7 +114,7 @@ namespace AndroidSideloader
                         games.Add(splitGame);
                     }
                 }
-                
+
                 Directory.Delete(Path.Combine(Environment.CurrentDirectory, "meta"), true);
             }
             catch (Exception e)
@@ -189,17 +189,17 @@ namespace AndroidSideloader
 
                     _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
-                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new")))
+                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new")))
                     {
-                        File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new"));
+                        File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
                     }
 
-                    File.Create(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new")).Close();
-                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone","vrp.download.config_new"), resultString);
+                    File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new")).Close();
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"), resultString);
 
-                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone","hash.txt")))
+                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")))
                     {
-                        File.Create(Path.Combine(Environment.CurrentDirectory, "rclone","hash.txt")).Close();
+                        File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")).Close();
                     }
 
                     string newConfig = CalculateMD5(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
@@ -315,7 +315,7 @@ namespace AndroidSideloader
                 }
             }
         }
-        
+
         private static string CalculateMD5(string filename)
         {
             using (MD5 md5 = MD5.Create())

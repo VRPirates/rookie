@@ -173,7 +173,7 @@ namespace AndroidSideloader
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
-                Properties.Settings.Default.CurrentLogPath = Path.Combine(Environment.CurrentDirectory,"debuglog.txt");
+                Properties.Settings.Default.CurrentLogPath = Path.Combine(Environment.CurrentDirectory, "debuglog.txt");
             }
         }
 
@@ -256,7 +256,7 @@ namespace AndroidSideloader
 
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-            
+
             if (Directory.Exists(Sideloader.TempFolder))
             {
                 Directory.Delete(Sideloader.TempFolder, true);
@@ -335,7 +335,8 @@ namespace AndroidSideloader
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = Size.Empty;
             }
-            if (Properties.Settings.Default.nodevicemode) {
+            if (Properties.Settings.Default.nodevicemode)
+            {
                 btnNoDevice.Text = "Enable Sideloading";
             }
 
@@ -355,10 +356,12 @@ namespace AndroidSideloader
             new Thread(() =>
             {
                 Thread.Sleep(10000);
-                freeDisclaimer.Invoke(() => {
+                freeDisclaimer.Invoke(() =>
+                {
                     freeDisclaimer.Dispose();
                 });
-                freeDisclaimer.Invoke(() => {
+                freeDisclaimer.Invoke(() =>
+                {
                     freeDisclaimer.Enabled = false;
                 });
             }).Start();
@@ -1050,9 +1053,12 @@ namespace AndroidSideloader
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
             string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
             bool codenameExists = false;
-            try {
+            try
+            {
                 codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
-            } catch {
+            }
+            catch
+            {
                 _ = Logger.Log("Unable to download Codenames file.");
                 FlexibleMessageBox.Show(Program.form, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
             }
@@ -1754,7 +1760,8 @@ namespace AndroidSideloader
                                             }
                                         }
                                     }
-                                    if (installedVersionInt == cloudVersionInt) {
+                                    if (installedVersionInt == cloudVersionInt)
+                                    {
                                         upToDateCount++;
                                     }
                                     //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
@@ -2727,46 +2734,46 @@ Things you can try:
                         if (hasPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
                         {
 
-                                Thread extractionThread = new Thread(() =>
+                            Thread extractionThread = new Thread(() =>
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
+                                    progressBar.Style = ProgressBarStyle.Continuous;
+                                    progressBar.Value = 0;
+                                    isInDownloadExtract = true;
+                                }));
+                                try
+                                {
+                                    changeTitle("Extracting " + gameName, false);
+                                    Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                    Program.form.changeTitle("");
+                                }
+                                catch (ExtractionException ex)
                                 {
                                     Invoke(new Action(() =>
                                     {
-                                        speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
-                                        progressBar.Style = ProgressBarStyle.Continuous;
-                                        progressBar.Value = 0;
-                                        isInDownloadExtract = true;
+                                        cleanupActiveDownloadStatus();
                                     }));
-                                    try
-                                    {
-                                        changeTitle("Extracting " + gameName, false);
-                                        Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
-                                        Program.form.changeTitle("");
-                                    }
-                                    catch (ExtractionException ex)
-                                    {
-                                        Invoke(new Action(() =>
-                                        {
-                                            cleanupActiveDownloadStatus();
-                                        }));
-                                        otherError = true;
-                                        this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
-                                        output += new ProcessOutput("", "Extract Failed");
-                                    }
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                extractionThread.Start();
-
-                                while (extractionThread.IsAlive)
-                                {
-                                    await Task.Delay(100);
+                                    otherError = true;
+                                    this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
+                                    output += new ProcessOutput("", "Extract Failed");
                                 }
+                            })
+                            {
+                                IsBackground = true
+                            };
+                            extractionThread.Start();
 
-                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
-                                {
-                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
-                                }
+                            while (extractionThread.IsAlive)
+                            {
+                                await Task.Delay(100);
+                            }
+
+                            if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
+                            {
+                                Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
+                            }
                         }
 
                         if (quotaError == false && otherError == false)
@@ -2796,86 +2803,86 @@ Things you can try:
                             if (isinstalltxt)
                             {
                                 if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
-                                        {
-                                            Thread installtxtThread = new Thread(() =>
-                                            {
-                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
-                                                changeTitle(" \n\n");
-                                            });
-                                            installtxtThread.Start();
-                                            while (installtxtThread.IsAlive)
-                                            {
-                                                await Task.Delay(100);
-                                            }
-                                        }
-                                    else
+                                {
+                                    Thread installtxtThread = new Thread(() =>
                                     {
-                                        output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
+                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
+                                        changeTitle(" \n\n");
+                                    });
+                                    installtxtThread.Start();
+                                    while (installtxtThread.IsAlive)
+                                    {
+                                        await Task.Delay(100);
                                     }
                                 }
-                            else
+                                else
                                 {
+                                    output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
+                                }
+                            }
+                            else
+                            {
                                 if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
-                                    {
+                                {
                                     // Find the APK file to install
                                     string apkFile = files.FirstOrDefault(file => Path.GetExtension(file) == ".apk");
 
                                     if (apkFile != null)
-                                        {
+                                    {
                                         CurrAPK = apkFile;
-                                            CurrPCKG = packagename;
-                                            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
-                                            {
-                                                Interval = 150000 // 150 seconds to fail
-                                            };
-                                            t.Tick += new EventHandler(timer_Tick4);
-                                            t.Start();
-                                            Thread apkThread = new Thread(() =>
-                                            {
-                                                Program.form.changeTitle($"Sideloading apk...");
+                                        CurrPCKG = packagename;
+                                        System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
+                                        {
+                                            Interval = 150000 // 150 seconds to fail
+                                        };
+                                        t.Tick += new EventHandler(timer_Tick4);
+                                        t.Start();
+                                        Thread apkThread = new Thread(() =>
+                                        {
+                                            Program.form.changeTitle($"Sideloading apk...");
                                             output += ADB.Sideload(apkFile, packagename);
-                                            })
-                                            {
-                                                IsBackground = true
-                                            };
-                                            apkThread.Start();
-                                            while (apkThread.IsAlive)
-                                            {
-                                                await Task.Delay(100);
-                                            }
-                                            t.Stop();
+                                        })
+                                        {
+                                            IsBackground = true
+                                        };
+                                        apkThread.Start();
+                                        while (apkThread.IsAlive)
+                                        {
+                                            await Task.Delay(100);
+                                        }
+                                        t.Stop();
 
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                         {
-                                                deleteOBB(packagename);
-                                                Thread obbThread = new Thread(() =>
-                                                {
-                                                    changeTitle($"Copying {packagename} obb to device...");
+                                            deleteOBB(packagename);
+                                            Thread obbThread = new Thread(() =>
+                                            {
+                                                changeTitle($"Copying {packagename} obb to device...");
                                                 ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
                                                 output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
-                                                    Program.form.changeTitle("");
-                                                })
+                                                Program.form.changeTitle("");
+                                            })
+                                            {
+                                                IsBackground = true
+                                            };
+                                            obbThread.Start();
+                                            while (obbThread.IsAlive)
+                                            {
+                                                await Task.Delay(100);
+                                            }
+                                            if (!nodeviceonstart | DeviceConnected)
+                                            {
+                                                if (!output.Output.Contains("offline"))
                                                 {
-                                                    IsBackground = true
-                                                };
-                                                obbThread.Start();
-                                                while (obbThread.IsAlive)
-                                                {
-                                                    await Task.Delay(100);
-                                                }
-                                                if (!nodeviceonstart | DeviceConnected)
-                                                {
-                                                    if (!output.Output.Contains("offline"))
+                                                    try
                                                     {
-                                                        try
-                                                        {
-                                                            obbsMismatch = await compareOBBSizes(packagename, gameName, output);
-                                                        }
-                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
+                                                        obbsMismatch = await compareOBBSizes(packagename, gameName, output);
                                                     }
+                                                    catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
                                                 }
                                             }
+                                        }
                                     }
                                 }
                                 else
@@ -4287,7 +4294,8 @@ Things you can try:
             lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
-        public static void OpenDirectory(string directoryPath) {
+        public static void OpenDirectory(string directoryPath)
+        {
             if (Directory.Exists(directoryPath))
             {
                 ProcessStartInfo p = new ProcessStartInfo
@@ -4325,13 +4333,16 @@ Things you can try:
         {
             bool currentStatus = Properties.Settings.Default.nodevicemode || false;
 
-            if (currentStatus) {
+            if (currentStatus)
+            {
                 // No Device Mode is currently On. Toggle it Off
                 Properties.Settings.Default.nodevicemode = false;
                 btnNoDevice.Text = "Disable Sideloading";
 
                 changeTitle($"Sideloading has been Enabled");
-            } else {
+            }
+            else
+            {
                 Properties.Settings.Default.nodevicemode = true;
                 Properties.Settings.Default.deleteAllAfterInstall = false;
                 btnNoDevice.Text = "Enable Sideloading";
