@@ -1,4 +1,5 @@
 ﻿using AndroidSideloader.Utilities;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -274,29 +275,47 @@ namespace AndroidSideloader
                                                  | SecurityProtocolType.Tls11
                                                  | SecurityProtocolType.Tls12
                                                  | SecurityProtocolType.Ssl3;
-            _ = Logger.Log($"Attempting to Update Public Config");
+
+            _ = Logger.Log("Attempting to update public config from main.");
+
+            string configUrl = "https://raw.githubusercontent.com/vrpyou/quest/main/vrp-public.json";
+            string fallbackUrl = "https://vrpirates.wiki/downloads/vrp-public.json";
+
             try
             {
-                string configUrl = "https://vrpirates.wiki/downloads/vrp-public.json";
+                string resultString;
 
+                // Try fetching raw JSON data from the provided link
                 HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
                 {
-                    string resultString = responseReader.ReadToEnd();
-
-                    _ = Logger.Log($"Retrieved updated config from: {configUrl}");
-
-                    File.WriteAllText(Environment.CurrentDirectory + "\\vrp-public.json", resultString);
-
-                    _ = Logger.Log("Public config updated successfully.");
+                    resultString = responseReader.ReadToEnd();
+                    _ = Logger.Log($"Retrieved updated config from main: {configUrl}.");
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "vrp-public.json"), resultString);
+                    _ = Logger.Log("Public config updated successfully from main.");
                 }
             }
-            catch (Exception e)
+            catch (Exception mainException)
             {
-                _ = Logger.Log($"Failed to update Public config: {e.Message}", LogLevel.ERROR);
+                _ = Logger.Log($"Failed to update public config from main: {mainException.Message}, trying fallback.", LogLevel.ERROR);
+                try
+                {
+                    HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(fallbackUrl);
+                    using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
+                    {
+                        string resultString = responseReader.ReadToEnd();
+                        _ = Logger.Log($"Retrieved updated config from fallback: {fallbackUrl}.");
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "vrp-public.json"), resultString);
+                        _ = Logger.Log("Public config updated successfully from fallback.");
+                    }
+                }
+                catch (Exception fallbackException)
+                {
+                    _ = Logger.Log($"Failed to update public config from fallback: {fallbackException.Message}.", LogLevel.ERROR);
+                }
             }
         }
-
+        
         private static string CalculateMD5(string filename)
         {
             using (MD5 md5 = MD5.Create())
