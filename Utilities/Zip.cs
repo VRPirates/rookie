@@ -48,6 +48,7 @@ namespace AndroidSideloader.Utilities
                 {
                     _ = FlexibleMessageBox.Show($"You are unable to access the GitHub page with the Exception: {ex.Message}\nSome files may be missing (7z)");
                     _ = FlexibleMessageBox.Show("7z was unable to be downloaded\nRookie will now close");
+                    Application.Exit();
                 }
                 _ = Logger.Log("Complete download 7-zip");
             }
