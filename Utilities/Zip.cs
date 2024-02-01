@@ -39,8 +39,16 @@ namespace AndroidSideloader.Utilities
                 _ = Logger.Log("Begin download 7-zip");
                 WebClient client = new WebClient();
                 string architecture = Environment.Is64BitOperatingSystem ? "64" : "";
-                client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.exe", $"7z.exe");
-                client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.dll", $"7z.dll");
+                try
+                {
+                    client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.exe", $"7z.exe");
+                    client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.dll", $"7z.dll");
+                }
+                catch (Exception ex)
+                {
+                    _ = FlexibleMessageBox.Show($"You are unable to access the GitHub page with the Exception: {ex.Message}\nSome files may be missing (7z)");
+                    _ = FlexibleMessageBox.Show("7z was unable to be downloaded\nRookie will now close");
+                }
                 _ = Logger.Log("Complete download 7-zip");
             }
 
