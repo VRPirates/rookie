@@ -13,7 +13,7 @@ namespace AndroidSideloader
         private static readonly string RawGitHubUrl = "https://raw.githubusercontent.com/VRPirates/rookie";
         private static readonly string GitHubUrl = "https://github.com/VRPirates/rookie";
 
-        public static readonly string LocalVersion = "2.26";
+        public static readonly string LocalVersion = "2.27";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
@@ -58,7 +58,7 @@ namespace AndroidSideloader
                 {
                     ServicePointManager.Expect100Continue = true;
                     ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                        
+
                     Logger.Log($"Downloading update from {GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe to {AppName} v{currentVersion}.exe");
                     fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
 

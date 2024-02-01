@@ -94,12 +94,12 @@ namespace AndroidSideloader
 
             _ = Logger.Log($"Running Rclone command: {logcmd}");
 
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
             rclone.StartInfo.RedirectStandardError = true;
             rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
@@ -118,10 +118,13 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Environment.CurrentDirectory} and try again.",
+                Program.form.Invoke(() =>
+                {
+                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Properties.Settings.Default.downloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
+                });
                 return new ProcessOutput("Download failed.", "");
             }
 
@@ -150,7 +153,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrWhiteSpace(error))
                 {
-                    _ = Logger.Log($"Rclone error: {error}\n", LogLevel.ERROR);    
+                    _ = Logger.Log($"Rclone error: {error}\n", LogLevel.ERROR);
                 }
 
                 if (!string.IsNullOrWhiteSpace(output))
@@ -188,12 +191,12 @@ namespace AndroidSideloader
 
             command += " --checkers 0 --no-check-dest --retries 1";
 
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+            rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
             rclone.StartInfo.RedirectStandardError = true;
             rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
@@ -263,13 +266,13 @@ namespace AndroidSideloader
 
             //set http source & args
             command += $" --http-url {MainForm.PublicConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
-          
-            rclone.StartInfo.FileName = Environment.CurrentDirectory + "\\rclone\\rclone.exe";
+
+            rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
             rclone.StartInfo.RedirectStandardError = true;
             rclone.StartInfo.RedirectStandardOutput = true;
-            rclone.StartInfo.WorkingDirectory = Environment.CurrentDirectory + "\\rclone";
+            rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
@@ -288,18 +291,21 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Environment.CurrentDirectory} and try again.",
+                Program.form.Invoke(() =>
+                {
+                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Properties.Settings.Default.downloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
+                });
                 return new ProcessOutput("Download failed.", string.Empty);
             }
 
-            if (error.Contains("Only one usage of each socket address (protocol/network address/port) is normally permitted")) {
+            if (error.Contains("Only one usage of each socket address (protocol/network address/port) is normally permitted"))
+            {
                 _ = Logger.Log(error, LogLevel.ERROR);
                 return new ProcessOutput("Failed to fetch from public mirror.", "Failed to fetch from public mirror.\nYou may have a running RCLONE Task!\nCheck your Task Manager, Sort by Network Usage, and kill the process Rsync for Cloud Storage/Rclone");
             }
-
             else if (error.Contains("400 Bad Request")
                 || error.Contains("cannot fetch token")
                 || error.Contains("authError")

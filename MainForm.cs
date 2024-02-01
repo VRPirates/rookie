@@ -173,7 +173,7 @@ namespace AndroidSideloader
         {
             if (string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
             {
-                Properties.Settings.Default.CurrentLogPath = $"{Environment.CurrentDirectory}\\debuglog.txt";
+                Properties.Settings.Default.CurrentLogPath = Path.Combine(Environment.CurrentDirectory, "debuglog.txt");
             }
         }
 
@@ -209,7 +209,7 @@ namespace AndroidSideloader
 
             if (!isOffline)
             {
-                if (File.Exists($"{Environment.CurrentDirectory}\\vrp-public.json"))
+                if (File.Exists(Path.Combine(Environment.CurrentDirectory, "vrp-public.json")))
                 {
                     Thread worker = new Thread(() =>
                     {
@@ -224,7 +224,7 @@ namespace AndroidSideloader
                     try
                     {
                         string configFileData =
-                            File.ReadAllText($"{Environment.CurrentDirectory}\\vrp-public.json");
+                            File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "vrp-public.json"));
                         PublicConfig config = JsonConvert.DeserializeObject<PublicConfig>(configFileData);
 
                         if (config != null
@@ -244,9 +244,9 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
 
-                    if (Directory.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\EBWebView"))
+                    if (Directory.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView")))
                     {
-                        Directory.Delete($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\EBWebView", true);
+                        Directory.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView"), true);
                     }
                 }
             }
@@ -256,7 +256,7 @@ namespace AndroidSideloader
 
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
-            
+
             if (Directory.Exists(Sideloader.TempFolder))
             {
                 Directory.Delete(Sideloader.TempFolder, true);
@@ -305,11 +305,11 @@ namespace AndroidSideloader
                 DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.OK)
                 {
-                    if (File.Exists($"{Environment.CurrentDirectory}\\crashlog.txt"))
+                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "crashlog.txt")))
                     {
                         string UUID = SideloaderUtilities.UUID();
-                        System.IO.File.Move("crashlog.txt", $"{Environment.CurrentDirectory}\\{UUID}.log");
-                        Properties.Settings.Default.CurrentCrashPath = $"{Environment.CurrentDirectory}\\{UUID}.log";
+                        System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, "{UUID}.log"));
+                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, "{UUID}.log");
                         Properties.Settings.Default.CurrentCrashName = UUID;
                         Properties.Settings.Default.Save();
 
@@ -321,7 +321,7 @@ namespace AndroidSideloader
                 }
                 else
                 {
-                    File.Delete($"{Environment.CurrentDirectory}\\crashlog.txt");
+                    File.Delete(Path.Combine(Environment.CurrentDirectory, "crashlog.txt"));
                 }
             }
 
@@ -335,12 +335,13 @@ namespace AndroidSideloader
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = Size.Empty;
             }
-            if (Properties.Settings.Default.nodevicemode) {
+            if (Properties.Settings.Default.nodevicemode)
+            {
                 btnNoDevice.Text = "Enable Sideloading";
             }
 
             _ = Logger.Log("Attempting to Initalize ADB Server");
-            if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe"))
+            if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe")))
             {
                 _ = ADB.RunAdbCommandToString("kill-server");
                 _ = ADB.RunAdbCommandToString("start-server");
@@ -355,10 +356,12 @@ namespace AndroidSideloader
             new Thread(() =>
             {
                 Thread.Sleep(10000);
-                freeDisclaimer.Invoke(() => {
+                freeDisclaimer.Invoke(() =>
+                {
                     freeDisclaimer.Dispose();
                 });
-                freeDisclaimer.Invoke(() => {
+                freeDisclaimer.Invoke(() =>
+                {
                     freeDisclaimer.Enabled = false;
                 });
             }).Start();
@@ -416,7 +419,7 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
                 {
-                    string path = $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe";
+                    string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
                     ProcessOutput wakeywakey = ADB.RunCommandToString($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
                     if (wakeywakey.Output.Contains("more than one"))
                     {
@@ -430,9 +433,9 @@ namespace AndroidSideloader
                     }
                 }
 
-                if (File.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\platform-tools\StoredIP.txt") && !Properties.Settings.Default.Wired)
+                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")) && !Properties.Settings.Default.Wired)
                 {
-                    string IPcmndfromtxt = File.ReadAllText($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\platform-tools\StoredIP.txt");
+                    string IPcmndfromtxt = File.ReadAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
                     Properties.Settings.Default.IPAddress = IPcmndfromtxt;
                     Properties.Settings.Default.Save();
                     ProcessOutput IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
@@ -441,7 +444,7 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
                         Properties.Settings.Default.IPAddress = "";
                         Properties.Settings.Default.Save();
-                        try { File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt"); }
+                        try { File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")); }
                         catch (Exception ex) { Logger.Log($"Unable to delete StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     }
                     else
@@ -450,7 +453,7 @@ namespace AndroidSideloader
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                     }
                 }
-                else if (!File.Exists($@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\platform-tools\StoredIP.txt"))
+                else if (!File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
                 {
                     Properties.Settings.Default.IPAddress = "";
                     Properties.Settings.Default.Save();
@@ -1047,131 +1050,154 @@ namespace AndroidSideloader
                 return;
             }
 
-            if (!isworking)
+            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
+            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
+            bool codenameExists = false;
+            try
             {
-                isworking = true;
-                progressBar.Style = ProgressBarStyle.Marquee;
-                string HWID = SideloaderUtilities.UUID();
-                string GameName = m_combo.SelectedItem.ToString();
-                string packageName = Sideloader.gameNameToPackageName(GameName);
-                string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
-                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                ulong VersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+            }
+            catch
+            {
+                _ = Logger.Log("Unable to download Codenames file.");
+                FlexibleMessageBox.Show(Program.form, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
+            }
 
-                string gameName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0, 1)}";
-                string gameZipName = $"{gameName}.zip";
+            _ = Logger.Log($"Found Device Code Name: {deviceCodeName}");
+            _ = Logger.Log($"Identified as Meta Device: {codenameExists}");
 
-                // Delete both zip & txt if the files exist, most likely due to a failed upload.
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+            if (codenameExists)
+            {
+                if (!isworking)
                 {
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
-                }
+                    isworking = true;
+                    progressBar.Style = ProgressBarStyle.Marquee;
+                    string HWID = SideloaderUtilities.UUID();
+                    string GameName = m_combo.SelectedItem.ToString();
+                    string packageName = Sideloader.gameNameToPackageName(GameName);
+                    string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
+                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                    ulong VersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
 
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
-                {
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                }
+                    string gameName = $"{GameName} v{VersionInt} {packageName} {HWID.Substring(0, 1)} {deviceCodeName}";
+                    string gameZipName = $"{gameName}.zip";
 
-                ProcessOutput output = new ProcessOutput("", "");
-                changeTitle("Extracting APK....");
+                    // Delete both zip & txt if the files exist, most likely due to a failed upload.
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                    {
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                    }
 
-                _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
+                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                    {
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                    }
 
-                Thread t1 = new Thread(() =>
-                {
-                    output = Sideloader.getApk(GameName);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
+                    ProcessOutput output = new ProcessOutput("", "");
+                    changeTitle("Extracting APK....");
 
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
 
-                changeTitle("Extracting obb if it exists....");
-                Thread t2 = new Thread(() =>
-                {
-                    output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
-                })
-                {
-                    IsBackground = true
-                };
-                t2.Start();
+                    Thread t1 = new Thread(() =>
+                    {
+                        output = Sideloader.getApk(GameName);
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t1.Start();
 
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    while (t1.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
 
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
-                changeTitle("Zipping extracted application...");
-                string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
-                string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                progressBar.Style = ProgressBarStyle.Continuous;
-                Thread t4 = new Thread(() =>
-                {
-                    _ = ADB.RunCommandToString(cmd, path);
-                })
-                {
-                    IsBackground = true
-                };
-                t4.Start();
-                while (t4.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    changeTitle("Extracting obb if it exists....");
+                    Thread t2 = new Thread(() =>
+                    {
+                        output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t2.Start();
 
-                changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
-                ULGif.Visible = true;
-                ULLabel.Visible = true;
-                ULGif.Enabled = true;
-                isworking = false;
-                isuploading = true;
-                Thread t3 = new Thread(() =>
-                {
-                    string currentlyUploading = GameName;
+                    while (t2.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
+                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
+                    changeTitle("Zipping extracted application...");
+                    string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
+                    string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                    progressBar.Style = ProgressBarStyle.Continuous;
+                    Thread t4 = new Thread(() =>
+                    {
+                        _ = ADB.RunCommandToString(cmd, path);
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t4.Start();
+                    while (t4.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
+
                     changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
+                    ULGif.Visible = true;
+                    ULLabel.Visible = true;
+                    ULGif.Enabled = true;
+                    isworking = false;
+                    isuploading = true;
+                    Thread t3 = new Thread(() =>
+                    {
+                        string currentlyUploading = GameName;
+                        changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
 
-                    // Get size of pending zip upload and write to text file
-                    long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
-                    // Upload size file.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
-                    // Upload zip.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+                        // Get size of pending zip upload and write to text file
+                        long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
+                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
+                        // Upload size file.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
+                        // Upload zip.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
 
-                    // Delete files once uploaded.
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        // Delete files once uploaded.
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
 
-                    this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
-                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
-                })
-                {
-                    IsBackground = true
-                };
-                t3.Start();
-                isuploading = true;
+                        this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
+                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                    })
+                    {
+                        IsBackground = true
+                    };
+                    t3.Start();
+                    isuploading = true;
 
-                while (t3.IsAlive)
-                {
-                    await Task.Delay(100);
+                    while (t3.IsAlive)
+                    {
+                        await Task.Delay(100);
+                    }
+
+                    changeTitle("                         \n\n");
+                    isuploading = false;
+                    ULGif.Visible = false;
+                    ULLabel.Visible = false;
+                    ULGif.Enabled = false;
                 }
-
-                changeTitle("                         \n\n");
-                isuploading = false;
-                ULGif.Visible = false;
-                ULLabel.Visible = false;
-                ULGif.Enabled = false;
+                else
+                {
+                    _ = MessageBox.Show("You must wait until each app is finished uploading to start another.");
+                }
             }
             else
             {
-                _ = MessageBox.Show("You must wait until each app is finished uploading to start another.");
+                FlexibleMessageBox.Show(Program.form, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
             }
         }
 
@@ -1524,9 +1550,9 @@ namespace AndroidSideloader
                         string foldername = filename.Substring(filename.IndexOf('.') + 1);
                         foldername = foldername.Substring(foldername.IndexOf('.') + 1);
                         foldername = foldername.Replace(".obb", "");
-                        foldername = Environment.CurrentDirectory + "\\" + foldername;
+                        foldername = Path.Combine(Environment.CurrentDirectory, foldername);
                         _ = Directory.CreateDirectory(foldername);
-                        File.Copy(data, foldername + "\\" + filename);
+                        File.Copy(data, Path.Combine(foldername, filename));
                         path = foldername;
 
                         Thread t1 = new Thread(() =>
@@ -1734,7 +1760,8 @@ namespace AndroidSideloader
                                             }
                                         }
                                     }
-                                    if (installedVersionInt == cloudVersionInt) {
+                                    if (installedVersionInt == cloudVersionInt)
+                                    {
                                         upToDateCount++;
                                     }
                                     //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
@@ -1917,19 +1944,19 @@ namespace AndroidSideloader
                                 string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
                                 apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
                                 apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                                if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk"))
+                                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
                                 {
-                                    File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk");
+                                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
                                 }
 
                                 _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
                                 string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                                string workingpath = $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe";
+                                string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
                                 string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
                                 ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
                                 ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
                                 ReleaseName = ReleaseName.Replace("'", "");
-                                File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk");
+                                File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
                                 if (ReleaseName.Contains("Microsoft Windows"))
                                 {
                                     ReleaseName = RlsName;
@@ -1984,6 +2011,7 @@ namespace AndroidSideloader
             loaded = true;
         }
 
+        private static readonly HttpClient HttpClient = new HttpClient();
         public static async void doUpload()
         {
             Program.form.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
@@ -1991,79 +2019,90 @@ namespace AndroidSideloader
             Program.form.ULLabel.Visible = true;
             Program.form.ULGif.Enabled = true;
             isworking = true;
+            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
+            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
+            bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
 
-            foreach (UploadGame game in Program.form.gamesToUpload)
+            if (codenameExists)
             {
-
-                Thread t3 = new Thread(() =>
+                foreach (UploadGame game in Program.form.gamesToUpload)
                 {
-                    string packagename = game.Pckgcommand;
-                    string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)}";
-                    string gameZipName = $"{gameName}.zip";
 
-                    // Delete both zip & txt if the files exist, most likely due to a failed upload.
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                    Thread t3 = new Thread(() =>
                     {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
-                    }
+                        string packagename = game.Pckgcommand;
+                        string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)} {deviceCodeName}";
+                        string gameZipName = $"{gameName}.zip";
 
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        // Delete both zip & txt if the files exist, most likely due to a failed upload.
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        }
+
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        }
+
+                        string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                        string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
+                        Program.form.changeTitle("Zipping extracted application...");
+                        _ = ADB.RunCommandToString(cmd, path);
+                        if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}"))
+                        {
+                            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                        }
+                        Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
+
+                        // Get size of pending zip upload and write to text file
+                        long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
+                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
+                        // Upload size file.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
+                        // Upload zip.
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+
+                        if (game.isUpdate)
+                        {
+                            Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + "\n";
+                            Properties.Settings.Default.Save();
+                        }
+
+                        // Delete files once uploaded.
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        }
+                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        {
+                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        }
+
+                    })
                     {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    }
-
-                    string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                    string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
-                    Program.form.changeTitle("Zipping extracted application...");
-                    _ = ADB.RunCommandToString(cmd, path);
-                    if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}"))
+                        IsBackground = true
+                    };
+                    t3.Start();
+                    while (t3.IsAlive)
                     {
-                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                        isuploading = true;
+                        await Task.Delay(100);
                     }
-                    Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
-
-                    // Get size of pending zip upload and write to text file
-                    long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
-                    // Upload size file.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
-                    // Upload zip.
-                    _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
-
-                    if (game.isUpdate)
-                    {
-                        Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + "\n";
-                        Properties.Settings.Default.Save();
-                    }
-
-                    // Delete files once uploaded.
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
-                    {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                    }
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}")) 
-                    {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
-                    }
-
-                })
-                {
-                    IsBackground = true
-                };
-                t3.Start();
-                while (t3.IsAlive)
-                {
-                    isuploading = true;
-                    await Task.Delay(100);
                 }
+
+                Program.form.gamesToUpload.Clear();
+                isworking = false;
+                isuploading = false;
+                Program.form.ULGif.Visible = false;
+                Program.form.ULLabel.Visible = false;
+                Program.form.ULGif.Enabled = false;
+                Program.form.changeTitle(" \n\n");
             }
-            Program.form.gamesToUpload.Clear();
-            isworking = false;
-            isuploading = false;
-            Program.form.ULGif.Visible = false;
-            Program.form.ULLabel.Visible = false;
-            Program.form.ULGif.Enabled = false;
-            Program.form.changeTitle(" \n\n");
+            else
+            {
+                FlexibleMessageBox.Show(Program.form, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
+            }
         }
 
         public static async void newPackageUpload()
@@ -2283,7 +2322,7 @@ namespace AndroidSideloader
                     Properties.Settings.Default.Save();
                     try
                     {
-                        File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd);
+                        File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd);
                     }
                     catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     ADB.wirelessadbON = true;
@@ -2405,7 +2444,7 @@ First time launching Rookie? Please relaunch and try again.
 Things you can try:
 1) Move the Rookie directory (Folder containing AndroidSideloader.exe) into {Path.GetPathRoot(Environment.SystemDirectory)}RSL
 2) Try changing your systems DNS to either Cloudflare/Google/OpenDNS
-3) Try using a systemwide VPN like ProtonVPN
+3) Try using a systemwide VPN like ProtonVPN (which is free)
 4) Sponsor a private server (https://vrpirates.wiki/en/Howto/sponsored-mirrors)
 ";
 
@@ -2505,7 +2544,7 @@ Things you can try:
                     gameName = gamesQueueList.ToArray()[0];
                     string packagename = Sideloader.gameNameToPackageName(gameName);
                     string dir = Path.GetDirectoryName(gameName);
-                    string gameDirectory = Properties.Settings.Default.downloadDir + "\\" + gameName;
+                    string gameDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
                     string path = gameDirectory;
 
                     string gameNameHash = string.Empty;
@@ -2695,46 +2734,46 @@ Things you can try:
                         if (hasPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
                         {
 
-                                Thread extractionThread = new Thread(() =>
+                            Thread extractionThread = new Thread(() =>
+                            {
+                                Invoke(new Action(() =>
+                                {
+                                    speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
+                                    progressBar.Style = ProgressBarStyle.Continuous;
+                                    progressBar.Value = 0;
+                                    isInDownloadExtract = true;
+                                }));
+                                try
+                                {
+                                    changeTitle("Extracting " + gameName, false);
+                                    Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                    Program.form.changeTitle("");
+                                }
+                                catch (ExtractionException ex)
                                 {
                                     Invoke(new Action(() =>
                                     {
-                                        speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
-                                        progressBar.Style = ProgressBarStyle.Continuous;
-                                        progressBar.Value = 0;
-                                        isInDownloadExtract = true;
+                                        cleanupActiveDownloadStatus();
                                     }));
-                                    try
-                                    {
-                                        changeTitle("Extracting " + gameName, false);
-                                        Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
-                                        Program.form.changeTitle("");
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        Invoke(new Action(() =>
-                                        {
-                                            cleanupActiveDownloadStatus();
-                                        }));
-                                        otherError = true;
-                                        this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
-                                        output += new ProcessOutput("", "Extract Failed");
-                                    }
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                extractionThread.Start();
-
-                                while (extractionThread.IsAlive)
-                                {
-                                    await Task.Delay(100);
+                                    otherError = true;
+                                    this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
+                                    output += new ProcessOutput("", "Extract Failed");
                                 }
+                            })
+                            {
+                                IsBackground = true
+                            };
+                            extractionThread.Start();
 
-                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
-                                {
-                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
-                                }
+                            while (extractionThread.IsAlive)
+                            {
+                                await Task.Delay(100);
+                            }
+
+                            if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
+                            {
+                                Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
+                            }
                         }
 
                         if (quotaError == false && otherError == false)
@@ -2764,86 +2803,86 @@ Things you can try:
                             if (isinstalltxt)
                             {
                                 if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
-                                        {
-                                            Thread installtxtThread = new Thread(() =>
-                                            {
-                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
-                                                changeTitle(" \n\n");
-                                            });
-                                            installtxtThread.Start();
-                                            while (installtxtThread.IsAlive)
-                                            {
-                                                await Task.Delay(100);
-                                            }
-                                        }
-                                    else
+                                {
+                                    Thread installtxtThread = new Thread(() =>
                                     {
-                                        output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
+                                        output += Sideloader.RunADBCommandsFromFile(installTxtPath);
+                                        changeTitle(" \n\n");
+                                    });
+                                    installtxtThread.Start();
+                                    while (installtxtThread.IsAlive)
+                                    {
+                                        await Task.Delay(100);
                                     }
                                 }
-                            else
+                                else
                                 {
+                                    output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
+                                }
+                            }
+                            else
+                            {
                                 if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
-                                    {
+                                {
                                     // Find the APK file to install
                                     string apkFile = files.FirstOrDefault(file => Path.GetExtension(file) == ".apk");
 
                                     if (apkFile != null)
-                                        {
+                                    {
                                         CurrAPK = apkFile;
-                                            CurrPCKG = packagename;
-                                            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
-                                            {
-                                                Interval = 150000 // 150 seconds to fail
-                                            };
-                                            t.Tick += new EventHandler(timer_Tick4);
-                                            t.Start();
-                                            Thread apkThread = new Thread(() =>
-                                            {
-                                                Program.form.changeTitle($"Sideloading apk...");
+                                        CurrPCKG = packagename;
+                                        System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
+                                        {
+                                            Interval = 150000 // 150 seconds to fail
+                                        };
+                                        t.Tick += new EventHandler(timer_Tick4);
+                                        t.Start();
+                                        Thread apkThread = new Thread(() =>
+                                        {
+                                            Program.form.changeTitle($"Sideloading apk...");
                                             output += ADB.Sideload(apkFile, packagename);
-                                            })
-                                            {
-                                                IsBackground = true
-                                            };
-                                            apkThread.Start();
-                                            while (apkThread.IsAlive)
-                                            {
-                                                await Task.Delay(100);
-                                            }
-                                            t.Stop();
+                                        })
+                                        {
+                                            IsBackground = true
+                                        };
+                                        apkThread.Start();
+                                        while (apkThread.IsAlive)
+                                        {
+                                            await Task.Delay(100);
+                                        }
+                                        t.Stop();
 
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
                                         {
-                                                deleteOBB(packagename);
-                                                Thread obbThread = new Thread(() =>
-                                                {
-                                                    changeTitle($"Copying {packagename} obb to device...");
+                                            deleteOBB(packagename);
+                                            Thread obbThread = new Thread(() =>
+                                            {
+                                                changeTitle($"Copying {packagename} obb to device...");
                                                 ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
                                                 output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
-                                                    Program.form.changeTitle("");
-                                                })
+                                                Program.form.changeTitle("");
+                                            })
+                                            {
+                                                IsBackground = true
+                                            };
+                                            obbThread.Start();
+                                            while (obbThread.IsAlive)
+                                            {
+                                                await Task.Delay(100);
+                                            }
+                                            if (!nodeviceonstart | DeviceConnected)
+                                            {
+                                                if (!output.Output.Contains("offline"))
                                                 {
-                                                    IsBackground = true
-                                                };
-                                                obbThread.Start();
-                                                while (obbThread.IsAlive)
-                                                {
-                                                    await Task.Delay(100);
-                                                }
-                                                if (!nodeviceonstart | DeviceConnected)
-                                                {
-                                                    if (!output.Output.Contains("offline"))
+                                                    try
                                                     {
-                                                        try
-                                                        {
-                                                            obbsMismatch = await compareOBBSizes(packagename, gameName, output);
-                                                        }
-                                                        catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
+                                                        obbsMismatch = await compareOBBSizes(packagename, gameName, output);
                                                     }
+                                                    catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
                                                 }
                                             }
+                                        }
                                     }
                                 }
                                 else
@@ -3068,9 +3107,9 @@ Things you can try:
                     _ = ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{CurrPCKG}\" /sdcard/Android/data/");
 
                     timerticked = false;
-                    if (Directory.Exists($"{Environment.CurrentDirectory}\\{CurrPCKG}"))
+                    if (Directory.Exists(Path.Combine(Environment.CurrentDirectory, CurrPCKG)))
                     {
-                        Directory.Delete($"{Environment.CurrentDirectory}\\{CurrPCKG}", true);
+                        Directory.Delete(Path.Combine(Environment.CurrentDirectory, CurrPCKG), true);
                     }
 
                     changeTitle(" \n\n");
@@ -3163,9 +3202,9 @@ Things you can try:
                 _ = Program.form.GetDeviceID();
                 Program.form.changeTitlebarToDevice();
                 _ = FlexibleMessageBox.Show(Program.form, "Relaunch Rookie to complete the process and switch back to USB adb.");
-                if (File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt"))
+                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
                 {
-                    File.Delete($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt");
+                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
                 }
             }
         }
@@ -3403,7 +3442,8 @@ Things you can try:
                 try
                 {
                     var matches = _allItems
-                        .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
+                        .Where(i => i.Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0
+                                || i.SubItems[1].Text.IndexOf(searchTerm, StringComparison.CurrentCultureIgnoreCase) >= 0)
                         .ToList();
 
                     gamesListView.BeginUpdate(); // Improve UI performance
@@ -3473,7 +3513,7 @@ Things you can try:
 
         private async Task CreateEnvironment()
         {
-            string appDataLocation = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\RSL\";
+            string appDataLocation = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL");
             var webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: appDataLocation);
             await webView21.EnsureCoreWebView2Async(webView2Environment);
         }
@@ -3546,7 +3586,7 @@ Things you can try:
             else
             {
                 webView21.Enabled = true;
-                if (!Directory.Exists(Environment.CurrentDirectory + "\\runtimes"))
+                if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "runtimes")))
                 {
                     WebClient client = new WebClient();
                     ServicePointManager.Expect100Continue = true;
@@ -3554,7 +3594,7 @@ Things you can try:
                     try
                     {
                         client.DownloadFile("https://vrpirates.wiki/downloads/runtimes.7z", "runtimes.7z");
-                        Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\runtimes.7z", Environment.CurrentDirectory);
+                        Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "runtimes.7z"), Environment.CurrentDirectory);
                         File.Delete("runtimes.7z");
                     }
                     catch (Exception ex)
@@ -3816,7 +3856,7 @@ Things you can try:
                         Program.form.showAvailableSpace();
                         Properties.Settings.Default.IPAddress = IPcmnd;
                         Properties.Settings.Default.Save();
-                        try { File.WriteAllText($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\StoredIP.txt", IPcmnd); }
+                        try { File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd); }
                         catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                         ADB.wirelessadbON = true;
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
@@ -4254,7 +4294,8 @@ Things you can try:
             lblNeedsDonate.Click += lblNeedsDonate_Click;
         }
 
-        public static void OpenDirectory(string directoryPath) {
+        public static void OpenDirectory(string directoryPath)
+        {
             if (Directory.Exists(directoryPath))
             {
                 ProcessStartInfo p = new ProcessStartInfo
@@ -4292,13 +4333,16 @@ Things you can try:
         {
             bool currentStatus = Properties.Settings.Default.nodevicemode || false;
 
-            if (currentStatus) {
+            if (currentStatus)
+            {
                 // No Device Mode is currently On. Toggle it Off
                 Properties.Settings.Default.nodevicemode = false;
                 btnNoDevice.Text = "Disable Sideloading";
 
                 changeTitle($"Sideloading has been Enabled");
-            } else {
+            }
+            else
+            {
                 Properties.Settings.Default.nodevicemode = true;
                 Properties.Settings.Default.deleteAllAfterInstall = false;
                 btnNoDevice.Text = "Enable Sideloading";

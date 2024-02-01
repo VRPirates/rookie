@@ -11,6 +11,11 @@ using System.Windows.Forms;
 
 namespace AndroidSideloader.Utilities
 {
+    public class ExtractionException : Exception
+    {
+        public ExtractionException(string message) : base(message) { }
+    }
+
     internal class Zip
     {
         public static void ExtractFile(string sourceArchive, string destination)
@@ -25,14 +30,26 @@ namespace AndroidSideloader.Utilities
             DoExtract(args);
         }
 
+        private static string extractionError = null;
+        private static bool errorMessageShown = false;
         private static void DoExtract(string args)
         {
-            if (!File.Exists(Environment.CurrentDirectory + "\\7z.exe") || !File.Exists(Environment.CurrentDirectory + "\\7z.dll"))
+            if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "7z.exe")) || !File.Exists(Path.Combine(Environment.CurrentDirectory, "7z.dll")))
             {
                 _ = Logger.Log("Begin download 7-zip");
                 WebClient client = new WebClient();
-                client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/7z.exe", "7z.exe");
-                client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/7z.dll", "7z.dll");
+                string architecture = Environment.Is64BitOperatingSystem ? "64" : "";
+                try
+                {
+                    client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.exe", $"7z.exe");
+                    client.DownloadFile($"https://github.com/VRPirates/rookie/raw/master/7z{architecture}.dll", $"7z.dll");
+                }
+                catch (Exception ex)
+                {
+                    _ = FlexibleMessageBox.Show($"You are unable to access the GitHub page with the Exception: {ex.Message}\nSome files may be missing (7z)");
+                    _ = FlexibleMessageBox.Show("7z was unable to be downloaded\nRookie will now close");
+                    Application.Exit();
+                }
                 _ = Logger.Log("Complete download 7-zip");
             }
 
@@ -73,28 +90,43 @@ namespace AndroidSideloader.Utilities
                         }
                     };
                 }
-                x.ErrorDataReceived += (sender, e) => Console.WriteLine(e.Data);
+
+                x.ErrorDataReceived += (sender, e) =>
+                {
+                    if (e.Data != null)
+                    {
+                        var error = e.Data;
+                        if (error.Contains("There is not enough space on the disk") && !errorMessageShown)
+                        {
+                            errorMessageShown = true;
+                            Program.form.Invoke(new Action(() =>
+                            {
+                                _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(Properties.Settings.Default.downloadDir)} drive has at least double the space of the game, then try again.",
+                                   "NOT ENOUGH SPACE",
+                                   MessageBoxButtons.OK,
+                                   MessageBoxIcon.Error);
+                                return;
+                            }));
+                        }
+                        _ = Logger.Log(error, LogLevel.ERROR);
+                        extractionError = $"Extracting failed, status code {x.ExitCode}";
+                        return;
+                    }
+                };
 
                 x.Start();
-
                 x.BeginOutputReadLine();
                 x.BeginErrorReadLine();
                 x.WaitForExit();
-                if (x.ExitCode != 0)
-                {
-                    string error = x.StandardError.ReadToEnd();
+                errorMessageShown = false;
 
-                    if (error.Contains("There is not enough space on the disk"))
-                    {
-                        _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(Properties.Settings.Default.downloadDir)} drive has at least double the space of the game, then try again.",
-                            "NOT ENOUGH SPACE",
-                            MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
-                    }
-                    _ = Logger.Log(x.StandardOutput.ReadToEnd());
-                    _ = Logger.Log(error, LogLevel.ERROR);
-                    throw new ApplicationException($"Extracting failed, status code {x.ExitCode}");
+                if (!string.IsNullOrEmpty(extractionError))
+                {
+                    string errorMessage = extractionError;
+                    extractionError = null; // Reset the error message
+                    throw new ExtractionException(errorMessage);
                 }
+
             }
         }
     }

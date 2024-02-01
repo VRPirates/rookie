@@ -138,7 +138,7 @@ namespace AndroidSideloader
                 _ = Directory.CreateDirectory($"{path}\\Quest Recordings");
             }
 
-            _ = MessageBox.Show("Please wait until you get the message that the transfer has finished.");;
+            _ = MessageBox.Show("Please wait until you get the message that the transfer has finished.");
             Program.form.changeTitle("Pulling files...");
             _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Oculus/Videoshots\" \"{path}\\Quest Recordings\"");
             if (delsh)
