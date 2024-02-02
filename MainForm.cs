@@ -1051,7 +1051,7 @@ namespace AndroidSideloader
             }
 
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
-            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
+            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
             bool codenameExists = false;
             try
             {
@@ -2020,7 +2020,7 @@ namespace AndroidSideloader
             Program.form.ULGif.Enabled = true;
             isworking = true;
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
-            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/main/codenames";
+            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
             bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
 
             if (codenameExists)
