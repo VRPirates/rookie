@@ -2019,9 +2019,18 @@ namespace AndroidSideloader
             Program.form.ULLabel.Visible = true;
             Program.form.ULGif.Enabled = true;
             isworking = true;
-            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
+            string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
             string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
-            bool codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+            bool codenameExists = false;
+            try
+            {
+                codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+            }
+            catch
+            {
+                _ = Logger.Log("Unable to download Codenames file.");
+                FlexibleMessageBox.Show(Program.form, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
+            }
 
             if (codenameExists)
             {
