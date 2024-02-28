@@ -353,6 +353,7 @@ namespace AndroidSideloader
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            searchTextBox.Enabled = false;
             new Thread(() =>
             {
                 Thread.Sleep(10000);
@@ -581,6 +582,7 @@ namespace AndroidSideloader
                     }
                 }
             }
+            searchTextBox.Enabled = true;
         }
 
         private void timer_Tick(object sender, EventArgs e)
