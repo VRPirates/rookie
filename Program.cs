@@ -19,7 +19,12 @@ namespace AndroidSideloader
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
+            if (AndroidSideloader.Properties.Settings.Default.UpdateSettings)
+            {
+                AndroidSideloader.Properties.Settings.Default.Upgrade();
+                AndroidSideloader.Properties.Settings.Default.UpdateSettings = false;
+                AndroidSideloader.Properties.Settings.Default.Save();
+            }
             form = new MainForm();
             Application.Run(form);
             //form.Show();
