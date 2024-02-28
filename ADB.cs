@@ -15,6 +15,9 @@ namespace AndroidSideloader
         public static string package = "";
         public static ProcessOutput RunAdbCommandToString(string command)
         {
+            // Replacing "adb" from command if the user added it
+            command = command.Replace("adb", "");
+
             Properties.Settings.Default.ADBFolder = adbFolderPath;
             Properties.Settings.Default.ADBPath = adbFilePath;
             Properties.Settings.Default.Save();
