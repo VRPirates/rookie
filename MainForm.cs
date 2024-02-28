@@ -964,7 +964,7 @@ namespace AndroidSideloader
                 }));
                 _ = Directory.CreateDirectory(CurrBackups);
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{CurrBackups}\"");
-                changeTitle("Backing up gamedatas...");
+                changeTitle("Backing up Game Data in SD/Android/data...");
                 try
                 {
                     Directory.Move(ADB.adbFolderPath + "\\data", CurrBackups + "\\data");
@@ -982,6 +982,7 @@ namespace AndroidSideloader
             while (t1.IsAlive)
             {
                 await Task.Delay(100);
+                changeTitle("Backing up Game Data in SD/Android/data...");
             }
             ShowPrcOutput(output);
             changeTitle("                         \n\n");
@@ -990,22 +991,59 @@ namespace AndroidSideloader
         private async void restorebutton_Click(object sender, EventArgs e)
         {
             ProcessOutput output = new ProcessOutput("", "");
-            FolderSelectDialog dialog = new FolderSelectDialog
+
+            if (!Properties.Settings.Default.customBackupDir)
             {
-                Title = "Select full backup or packagename backup folder"
-            };
-            if (dialog.Show(Handle))
+                backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
             {
-                string path = dialog.FileName;
+                backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
+
+
+            FileDialog fileDialog = new OpenFileDialog();
+            fileDialog.Title = "Select a .ab Backup file or press Cancel to select a Folder";
+            fileDialog.CheckFileExists = true;
+            fileDialog.CheckPathExists = true;
+            fileDialog.ValidateNames = false;
+            fileDialog.InitialDirectory = backupFolder;
+            fileDialog.Filter = "Android Backup Files (*.ab)|*.ab|All Files (*.*)|*.*";
+
+            FolderBrowserDialog folderDialog = new FolderBrowserDialog();
+            folderDialog.Description = "Select Game Backup folder";
+            folderDialog.SelectedPath = backupFolder;
+            folderDialog.ShowNewFolderButton = false; // To prevent creating new folders
+
+            DialogResult fileDialogResult = fileDialog.ShowDialog();
+            DialogResult folderDialogResult = DialogResult.Cancel;
+
+            if (fileDialogResult == DialogResult.OK) {
+                string selectedPath = fileDialog.FileName;
+                Console.WriteLine("Selected .ab file: " + selectedPath);
+
+                _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Restore My Data'\r\nRookie will remain frozen until the process is completed.");
+                output = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}");
+            }
+            if (fileDialogResult != DialogResult.OK)
+            {
+                folderDialogResult = folderDialog.ShowDialog();
+            }
+
+            if (folderDialogResult == DialogResult.OK)
+            {
+                string selectedFolder = folderDialog.SelectedPath;
+                Console.WriteLine("Selected folder: " + selectedFolder);
+
                 Thread t1 = new Thread(() =>
                 {
-                    if (path.Contains("data"))
+                    if (selectedFolder.Contains("data"))
                     {
-                        output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/");
+                        output += ADB.RunAdbCommandToString($"push \"{selectedFolder}\" /sdcard/Android/");
                     }
                     else
                     {
-                        output += ADB.RunAdbCommandToString($"push \"{path}\" /sdcard/Android/data/");
+                        output += ADB.RunAdbCommandToString($"push \"{selectedFolder}\" /sdcard/Android/data/");
                     }
                 })
                 {
@@ -1018,12 +1056,11 @@ namespace AndroidSideloader
                     await Task.Delay(100);
                 }
             }
-            else
-            {
-                return;
-            }
 
-            ShowPrcOutput(output);
+            if (fileDialogResult == DialogResult.OK || folderDialogResult == DialogResult.OK)
+            {
+                ShowPrcOutput(output);
+            }
         }
 
         private string listApps()
