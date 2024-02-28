@@ -829,7 +829,7 @@ namespace AndroidSideloader
                     }
                 });
             }
-            else if (Devices[0].Length > 1)
+            else if (Devices.Count > 0 && Devices[0].Length > 1) // Check if Devices list is not empty and the first device has a valid length
             {
                 this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
                 DeviceConnected = true;
