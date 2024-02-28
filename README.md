@@ -6,9 +6,8 @@
 
 androidsideloader uses the GPL license, any forks of it must have their source code made public on the internet.
 
-## !IMPORTANT!
-
-This app may be buggy and have problems.
+Need Help? Please use our Support Channels-
+https://vrpirates.wiki/en/general_information/live-chats
 
 ### This app might get detected as malware, however both the sideloader and the sideloader launcher are open source.
 Rookie 1.25.1 VirusTotal Scan (1/72)-
