@@ -315,9 +315,9 @@ namespace AndroidSideloader
 
                     currentAccessedWebsite = "github";
                     _ = Logger.Log($"Missing adb within {Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools. Attempting to download from {currentAccessedWebsite}");
-                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/adb2.zip", "_adb.7z");
-                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "_adb.7z"), $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
-                    File.Delete("_adb.7z");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/dependencies.7z", "dependencies.7z");
+                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "dependencies.7z"), $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
+                    File.Delete("dependencies.7z");
                     _ = Logger.Log($"adb download successful");
                 }
 
