@@ -991,6 +991,7 @@ namespace AndroidSideloader
         private async void restorebutton_Click(object sender, EventArgs e)
         {
             ProcessOutput output = new ProcessOutput("", "");
+            string output_abRestore = string.Empty;
 
             if (!Properties.Settings.Default.customBackupDir)
             {
@@ -1024,7 +1025,7 @@ namespace AndroidSideloader
                 Console.WriteLine("Selected .ab file: " + selectedPath);
 
                 _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Restore My Data'\r\nRookie will remain frozen until the process is completed.");
-                output = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}");
+                output_abRestore = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}").Output;
             }
             if (fileDialogResult != DialogResult.OK)
             {
@@ -1058,9 +1059,13 @@ namespace AndroidSideloader
                 }
             }
 
-            if (fileDialogResult == DialogResult.OK || folderDialogResult == DialogResult.OK)
+            if (folderDialogResult == DialogResult.OK)
             {
                 ShowPrcOutput(output);
+            }
+            else if (fileDialogResult == DialogResult.OK)
+            {
+                _ = FlexibleMessageBox.Show(Program.form, $"{output_abRestore}");
             }
         }
 
