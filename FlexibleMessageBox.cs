@@ -8,58 +8,58 @@ using System.Windows.Forms;
 namespace JR.Utils.GUI.Forms
 {
     /*  FlexibleMessageBox – A flexible replacement for the .NET MessageBox
-     * 
+     *
      *  Author:         Jörg Reichert (public@jreichert.de)
      *  Contributors:   Thanks to: David Hall, Roink
      *  Version:        1.3
      *  Published at:   http://www.codeproject.com/Articles/601900/FlexibleMessageBox
-     *  
+     *
      ************************************************************************************************************
      * Features:
      *  - It can be simply used instead of MessageBox since all important static "Show"-Functions are supported
-     *  - It is small, only one source file, which could be added easily to each solution 
+     *  - It is small, only one source file, which could be added easily to each solution
      *  - It can be resized and the content is correctly word-wrapped
      *  - It tries to auto-size the width to show the longest text row
      *  - It never exceeds the current desktop working area
      *  - It displays a vertical scrollbar when needed
      *  - It does support hyperlinks in text
-     * 
-     *  Because the interface is identical to MessageBox, you can add this single source file to your project 
-     *  and use the FlexibleMessageBox almost everywhere you use a standard MessageBox. 
-     *  The goal was NOT to produce as many features as possible but to provide a simple replacement to fit my 
+     *
+     *  Because the interface is identical to MessageBox, you can add this single source file to your project
+     *  and use the FlexibleMessageBox almost everywhere you use a standard MessageBox.
+     *  The goal was NOT to produce as many features as possible but to provide a simple replacement to fit my
      *  own needs. Feel free to add additional features on your own, but please left my credits in this class.
-     * 
+     *
      ************************************************************************************************************
      * Usage examples:
-     * 
+     *
      *  FlexibleMessageBox.Show("Just a text");
-     * 
-     *  FlexibleMessageBox.Show("A text", 
-     *                          "A caption"); 
-     *  
-     *  FlexibleMessageBox.Show("Some text with a link: www.google.com", 
+     *
+     *  FlexibleMessageBox.Show("A text",
+     *                          "A caption");
+     *
+     *  FlexibleMessageBox.Show("Some text with a link: www.google.com",
      *                          "Some caption",
      *                          MessageBoxButton
-     *                          
-     *                          
-     *                          
-     *                          
-     *                          
-     *                          s.AbortRetryIgnore, 
+     *
+     *
+     *
+     *
+     *
+     *                          s.AbortRetryIgnore,
      *                          MessageBoxIcon.Information,
      *                          MessageBoxDefaultButton.Button2);
-     *  
-     *  var dialogResult = FlexibleMessageBox.Show("Do you know the answer to life the universe and everything?", 
+     *
+     *  var dialogResult = FlexibleMessageBox.Show("Do you know the answer to life the universe and everything?",
      *                                             "One short question",
-     *                                             MessageBoxButtons.YesNo);     
-     * 
+     *                                             MessageBoxButtons.YesNo);
+     *
      ************************************************************************************************************
      *  THE SOFTWARE IS PROVIDED BY THE AUTHOR "AS IS", WITHOUT WARRANTY
      *  OF ANY KIND, EXPRESS OR IMPLIED. IN NO EVENT SHALL THE AUTHOR BE
      *  LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY ARISING FROM,
      *  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OF THIS
      *  SOFTWARE.
-     *  
+     *
      ************************************************************************************************************
      * History:
      *  Version 1.3 - 19.Dezember 2014
@@ -70,17 +70,17 @@ namespace JR.Utils.GUI.Forms
      *  - Tab handling is now corrected (only tabbing over the visible buttons)
      *  - Added standard MessageBox handling for ALT-Keyboard shortcuts
      *  - SetDialogSizes: Refactored completely: Corrected sizing and added caption driven sizing
-     * 
+     *
      *  Version 1.2 - 10.August 2013
      *   - Do not ShowInTaskbar anymore (original MessageBox is also hidden in taskbar)
      *   - Added handling for Escape-Button
      *   - Adapted top right close button (red X) to behave like MessageBox (but hidden instead of deactivated)
-     * 
+     *
      *  Version 1.1 - 14.June 2013
      *   - Some Refactoring
      *   - Added internal form class
      *   - Added missing code comments, etc.
-     *  
+     *
      *  Version 1.0 - 15.April 2013
      *   - Initial Version
     */
@@ -90,29 +90,29 @@ namespace JR.Utils.GUI.Forms
 
         /// <summary>
         /// Defines the maximum width for all FlexibleMessageBox instances in percent of the working area.
-        /// 
-        /// Allowed values are 0.2 - 1.0 where: 
+        ///
+        /// Allowed values are 0.2 - 1.0 where:
         /// 0.2 means:  The FlexibleMessageBox can be at most half as wide as the working area.
         /// 1.0 means:  The FlexibleMessageBox can be as wide as the working area.
-        /// 
+        ///
         /// Default is: 70% of the working area width.
         /// </summary>
         public static double MAX_WIDTH_FACTOR = 0.7;
 
         /// <summary>
         /// Defines the maximum height for all FlexibleMessageBox instances in percent of the working area.
-        /// 
-        /// Allowed values are 0.2 - 1.0 where: 
+        ///
+        /// Allowed values are 0.2 - 1.0 where:
         /// 0.2 means:  The FlexibleMessageBox can be at most half as high as the working area.
         /// 1.0 means:  The FlexibleMessageBox can be as high as the working area.
-        /// 
+        ///
         /// Default is: 90% of the working area height.
         /// </summary>
         public static double MAX_HEIGHT_FACTOR = 0.9;
 
         /// <summary>
         /// Defines the font for all FlexibleMessageBox instances.
-        /// 
+        ///
         /// Default is: SystemFonts.MessageBoxFont
         /// </summary>
         public static Font FONT = SystemFonts.MessageBoxFont;
@@ -294,9 +294,9 @@ namespace JR.Utils.GUI.Forms
                 panel1.SuspendLayout();
                 ((System.ComponentModel.ISupportInitialize)pictureBoxForIcon).BeginInit();
                 SuspendLayout();
-                // 
+                //
                 // button1
-                // 
+                //
                 button1.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
                 button1.AutoSize = true;
                 button1.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -308,9 +308,9 @@ namespace JR.Utils.GUI.Forms
                 button1.Text = "OK";
                 button1.UseVisualStyleBackColor = true;
                 button1.Visible = false;
-                // 
+                //
                 // richTextBoxMessage
-                // 
+                //
                 richTextBoxMessage.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right;
@@ -328,9 +328,9 @@ namespace JR.Utils.GUI.Forms
                 richTextBoxMessage.TabStop = false;
                 richTextBoxMessage.Text = "<Message>";
                 richTextBoxMessage.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(richTextBoxMessage_LinkClicked);
-                // 
+                //
                 // panel1
-                // 
+                //
                 panel1.Anchor = System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom
                 | System.Windows.Forms.AnchorStyles.Left
                 | System.Windows.Forms.AnchorStyles.Right;
@@ -341,18 +341,18 @@ namespace JR.Utils.GUI.Forms
                 panel1.Name = "panel1";
                 panel1.Size = new System.Drawing.Size(268, 59);
                 panel1.TabIndex = 1;
-                // 
+                //
                 // pictureBoxForIcon
-                // 
+                //
                 pictureBoxForIcon.BackColor = System.Drawing.Color.Transparent;
                 pictureBoxForIcon.Location = new System.Drawing.Point(15, 19);
                 pictureBoxForIcon.Name = "pictureBoxForIcon";
                 pictureBoxForIcon.Size = new System.Drawing.Size(32, 32);
                 pictureBoxForIcon.TabIndex = 8;
                 pictureBoxForIcon.TabStop = false;
-                // 
+                //
                 // button2
-                // 
+                //
                 button2.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
                 button2.DialogResult = System.Windows.Forms.DialogResult.OK;
                 button2.Location = new System.Drawing.Point(92, 67);
@@ -363,9 +363,9 @@ namespace JR.Utils.GUI.Forms
                 button2.Text = "OK";
                 button2.UseVisualStyleBackColor = true;
                 button2.Visible = false;
-                // 
+                //
                 // button3
-                // 
+                //
                 button3.Anchor = System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right;
                 button3.AutoSize = true;
                 button3.DialogResult = System.Windows.Forms.DialogResult.OK;
@@ -377,9 +377,9 @@ namespace JR.Utils.GUI.Forms
                 button3.Text = "OK";
                 button3.UseVisualStyleBackColor = true;
                 button3.Visible = false;
-                // 
+                //
                 // FlexibleMessageBoxForm
-                // 
+                //
                 AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
                 AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
                 ClientSize = new System.Drawing.Size(260, 102);
@@ -425,7 +425,7 @@ namespace JR.Utils.GUI.Forms
             //These are the possible buttons (in a standard MessageBox)
             private enum ButtonID { OK = 0, CANCEL, YES, NO, ABORT, RETRY, IGNORE };
 
-            //These are the buttons texts for different languages. 
+            //These are the buttons texts for different languages.
             //If you want to add a new language, add it here and in the GetButtonText-Function
             private enum TwoLetterISOLanguageID { en, de, es, it };
             private static readonly string[] BUTTON_TEXTS_ENGLISH_EN = { "OK", "Cancel", "&Yes", "&No", "&Abort", "&Retry", "&Ignore" }; //Note: This is also the fallback language
@@ -500,8 +500,8 @@ namespace JR.Utils.GUI.Forms
             }
 
             /// <summary>
-            /// Ensure the given working area factor in the range of  0.2 - 1.0 where: 
-            /// 
+            /// Ensure the given working area factor in the range of  0.2 - 1.0 where:
+            ///
             /// 0.2 means:  20 percent of the working area height or width.
             /// 1.0 means:  100 percent of the working area height or width.
             /// </summary>
@@ -516,7 +516,7 @@ namespace JR.Utils.GUI.Forms
             }
 
             /// <summary>
-            /// Set the dialogs start position when given. 
+            /// Set the dialogs start position when given.
             /// Otherwise center the dialog on the current screen.
             /// </summary>
             /// <param name="flexibleMessageBoxForm">The FlexibleMessageBox dialog.</param>
@@ -535,7 +535,7 @@ namespace JR.Utils.GUI.Forms
 
             /// <summary>
             /// Calculate the dialogs start size (Try to auto-size width to show longest text row).
-            /// Also set the maximum dialog size. 
+            /// Also set the maximum dialog size.
             /// </summary>
             /// <param name="flexibleMessageBoxForm">The FlexibleMessageBox dialog.</param>
             /// <param name="text">The text (the longest text row is used to calculate the dialog width).</param>
@@ -572,7 +572,7 @@ namespace JR.Utils.GUI.Forms
             }
 
             /// <summary>
-            /// Set the dialogs icon. 
+            /// Set the dialogs icon.
             /// When no icon is used: Correct placement and width of rich text box.
             /// </summary>
             /// <param name="flexibleMessageBoxForm">The FlexibleMessageBox dialog.</param>
@@ -603,7 +603,7 @@ namespace JR.Utils.GUI.Forms
             }
 
             /// <summary>
-            /// Set dialog buttons visibilities and texts. 
+            /// Set dialog buttons visibilities and texts.
             /// Also set a default button.
             /// </summary>
             /// <param name="flexibleMessageBoxForm">The FlexibleMessageBox dialog.</param>
@@ -849,7 +849,7 @@ namespace JR.Utils.GUI.Forms
                 flexibleMessageBoxForm.Font = FONT;
                 flexibleMessageBoxForm.richTextBoxMessage.Font = FONT;
 
-                //Calculate the dialogs start size (Try to auto-size width to show longest text row). Also set the maximum dialog size. 
+                //Calculate the dialogs start size (Try to auto-size width to show longest text row). Also set the maximum dialog size.
                 SetDialogSizes(flexibleMessageBoxForm, text, caption);
 
                 //Set the dialogs start position when given. Otherwise center the dialog on the current screen.

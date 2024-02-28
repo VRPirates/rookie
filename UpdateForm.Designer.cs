@@ -40,9 +40,9 @@ namespace AndroidSideloader
             this.panel1.SuspendLayout();
             this.panel3.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // panel1
-            // 
+            //
             this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.panel1.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
             this.panel1.Controls.Add(this.YesUpdate);
@@ -58,9 +58,9 @@ namespace AndroidSideloader
             this.panel1.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseDown);
             this.panel1.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseMove);
             this.panel1.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseUp);
-            // 
+            //
             // YesUpdate
-            // 
+            //
             this.YesUpdate.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.YesUpdate.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.YesUpdate.BackColor = System.Drawing.Color.Transparent;
@@ -79,9 +79,9 @@ namespace AndroidSideloader
             this.YesUpdate.Text = "Update Now";
             this.YesUpdate.Transparency = false;
             this.YesUpdate.Click += new System.EventHandler(this.YesUpdate_Click);
-            // 
+            //
             // panel3
-            // 
+            //
             this.panel3.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
             this.panel3.Controls.Add(this.UpdateTextBox);
             this.panel3.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -89,9 +89,9 @@ namespace AndroidSideloader
             this.panel3.Name = "panel3";
             this.panel3.Size = new System.Drawing.Size(432, 218);
             this.panel3.TabIndex = 0;
-            // 
+            //
             // UpdateTextBox
-            // 
+            //
             this.UpdateTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.ComboBoxColor;
             this.UpdateTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.UpdateTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "ComboBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -109,9 +109,9 @@ namespace AndroidSideloader
             this.UpdateTextBox.MouseDown += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseDown);
             this.UpdateTextBox.MouseMove += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseMove);
             this.UpdateTextBox.MouseUp += new System.Windows.Forms.MouseEventHandler(this.UpdateForm_MouseUp);
-            // 
+            //
             // UpdateVerLabel
-            // 
+            //
             this.UpdateVerLabel.AutoSize = true;
             this.UpdateVerLabel.BackColor = System.Drawing.Color.Transparent;
             this.UpdateVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
@@ -121,9 +121,9 @@ namespace AndroidSideloader
             this.UpdateVerLabel.Size = new System.Drawing.Size(94, 15);
             this.UpdateVerLabel.TabIndex = 3;
             this.UpdateVerLabel.Text = "Update Version:";
-            // 
+            //
             // CurVerLabel
-            // 
+            //
             this.CurVerLabel.AutoSize = true;
             this.CurVerLabel.BackColor = System.Drawing.Color.Transparent;
             this.CurVerLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F);
@@ -133,9 +133,9 @@ namespace AndroidSideloader
             this.CurVerLabel.Size = new System.Drawing.Size(94, 15);
             this.CurVerLabel.TabIndex = 2;
             this.CurVerLabel.Text = "Current Version:";
-            // 
+            //
             // SkipUpdate
-            // 
+            //
             this.SkipUpdate.AutoSize = true;
             this.SkipUpdate.BackColor = System.Drawing.Color.Transparent;
             this.SkipUpdate.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -147,9 +147,9 @@ namespace AndroidSideloader
             this.SkipUpdate.TabIndex = 4;
             this.SkipUpdate.Text = "𝖲𝖪𝖨𝖯 𝖥𝖮𝖱 𝖭𝖮𝖶";
             this.SkipUpdate.Click += new System.EventHandler(this.SkipUpdate_Click);
-            // 
+            //
             // UpdateForm
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoValidate = System.Windows.Forms.AutoValidate.EnablePreventFocusChange;

@@ -1018,7 +1018,8 @@ namespace AndroidSideloader
             DialogResult fileDialogResult = fileDialog.ShowDialog();
             DialogResult folderDialogResult = DialogResult.Cancel;
 
-            if (fileDialogResult == DialogResult.OK) {
+            if (fileDialogResult == DialogResult.OK)
+            {
                 string selectedPath = fileDialog.FileName;
                 Console.WriteLine("Selected .ab file: " + selectedPath);
 
@@ -2313,7 +2314,7 @@ namespace AndroidSideloader
 
         private readonly string wrDelimiter = "-------";
 
-        
+
         private void deviceDropContainer_Click(object sender, EventArgs e)
         {
             ShowSubMenu(deviceDropContainer);
@@ -2352,7 +2353,7 @@ namespace AndroidSideloader
  - Thanks to the VRP Mod Staff, data team, and anyone else we missed!
  - Thanks to VRP staff of the present and past: fenopy, Chax, pmow, SytheZN,
         Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
- 
+
  - Additional Thanks and Credits:
  - -- rclone https://rclone.org/
  - -- 7zip https://www.7-zip.org/
@@ -4428,20 +4429,23 @@ Things you can try:
             string adbResult = ADB.RunAdbCommandToString("adb shell pm list packages -d").Output;
             bool isUpdatesDisabled = adbResult.Contains("com.oculus.updater");
 
-            if (isUpdatesDisabled == true) {
-                 // Updates are already disabled. Enable them
-                 adbCmd_CommandBox.Text = "adb shell pm enable com.oculus.updater";
-            } else {
+            if (isUpdatesDisabled == true)
+            {
+                // Updates are already disabled. Enable them
+                adbCmd_CommandBox.Text = "adb shell pm enable com.oculus.updater";
+            }
+            else
+            {
                 adbCmd_CommandBox.Text = "shell pm disable-user --user 0 com.oculus.updater";
             }
-            
+
             // adb shell pm enable com.oculus.updater
             KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
             ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
         }
     }
 
-    
+
 
     public static class ControlExtensions
     {

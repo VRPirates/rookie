@@ -33,9 +33,9 @@ namespace AndroidSideloader
 
         private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {
-            // Capture unhandled exceptions and write to file. 
+            // Capture unhandled exceptions and write to file.
             Exception e = (Exception)args.ExceptionObject;
-            string innerExceptionMessage = (e.InnerException != null) 
+            string innerExceptionMessage = (e.InnerException != null)
                 ? e.InnerException.Message
                 : "None";
             string date_time = DateTime.Now.ToString("dddd, MMMM dd @ hh:mmtt (UTC)");

@@ -38,9 +38,9 @@ namespace AndroidSideloader
             this.NewAppsButton = new AndroidSideloader.RoundButton();
             this.panel2.SuspendLayout();
             this.SuspendLayout();
-            // 
+            //
             // NewAppsListView
-            // 
+            //
             this.NewAppsListView.AccessibleRole = System.Windows.Forms.AccessibleRole.None;
             this.NewAppsListView.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.NewAppsListView.BorderStyle = System.Windows.Forms.BorderStyle.None;
@@ -64,18 +64,18 @@ namespace AndroidSideloader
             this.NewAppsListView.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label2_MouseDown);
             this.NewAppsListView.MouseMove += new System.Windows.Forms.MouseEventHandler(this.label2_MouseMove);
             this.NewAppsListView.MouseUp += new System.Windows.Forms.MouseEventHandler(this.label2_MouseUp);
-            // 
+            //
             // GameNameIndex
-            // 
+            //
             this.GameNameIndex.Text = "Game Name";
             this.GameNameIndex.Width = 284;
-            // 
+            //
             // PackageNameIndex
-            // 
+            //
             this.PackageNameIndex.Width = 0;
-            // 
+            //
             // panel2
-            // 
+            //
             this.panel2.BackColor = global::AndroidSideloader.Properties.Settings.Default.SubButtonColor;
             this.panel2.Controls.Add(this.NewAppsListView);
             this.panel2.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -83,9 +83,9 @@ namespace AndroidSideloader
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(295, 175);
             this.panel2.TabIndex = 8;
-            // 
+            //
             // label2
-            // 
+            //
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 10.25F, System.Drawing.FontStyle.Bold);
@@ -99,9 +99,9 @@ namespace AndroidSideloader
             this.label2.MouseDown += new System.Windows.Forms.MouseEventHandler(this.label2_MouseDown);
             this.label2.MouseMove += new System.Windows.Forms.MouseEventHandler(this.label2_MouseMove);
             this.label2.MouseUp += new System.Windows.Forms.MouseEventHandler(this.label2_MouseUp);
-            // 
+            //
             // NewAppsButton
-            // 
+            //
             this.NewAppsButton.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.NewAppsButton.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
             this.NewAppsButton.BackColor = System.Drawing.Color.Transparent;
@@ -120,9 +120,9 @@ namespace AndroidSideloader
             this.NewAppsButton.Text = "Accept";
             this.NewAppsButton.Transparency = false;
             this.NewAppsButton.Click += new System.EventHandler(this.DonateButton_Click);
-            // 
+            //
             // NewApps
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
