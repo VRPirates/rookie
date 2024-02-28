@@ -308,8 +308,8 @@ namespace AndroidSideloader
                     if (File.Exists(Path.Combine(Environment.CurrentDirectory, "crashlog.txt")))
                     {
                         string UUID = SideloaderUtilities.UUID();
-                        System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, "{UUID}.log"));
-                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, "{UUID}.log");
+                        System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, $"{UUID}.log"));
+                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, $"{UUID}.log");
                         Properties.Settings.Default.CurrentCrashName = UUID;
                         Properties.Settings.Default.Save();
 
