@@ -749,7 +749,7 @@ namespace AndroidSideloader
             battery = Utilities.StringUtilities.RemoveEverythingBeforeFirst(battery, "level:");
             battery = Utilities.StringUtilities.RemoveEverythingAfterFirst(battery, "\n");
             battery = Utilities.StringUtilities.KeepOnlyNumbers(battery);
-            BatteryLbl.Text = battery + "%";
+            batteryLabel.Text = battery + "%";
             return devicesComboBox.SelectedIndex;
         }
 
@@ -897,6 +897,48 @@ namespace AndroidSideloader
         }
 
         public static string taa = String.Empty;
+
+        private async void backupadbbutton_Click(object sender, EventArgs e)
+        {
+            if (m_combo.SelectedIndex == -1)
+            {
+                notify("Please select an App from the Dropdown");
+                return;
+            }
+
+            if (!Properties.Settings.Default.customBackupDir)
+            {
+                backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
+            }
+            else
+            {
+                backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+            }
+            if (!Directory.Exists(backupFolder))
+            {
+                _ = Directory.CreateDirectory(backupFolder);
+            }
+            string output = String.Empty;
+
+            string date_str = "ab." + DateTime.Today.ToString("yyyy.MM.dd");
+            string CurrBackups = Path.Combine(backupFolder, date_str);
+            Program.form.Invoke(new Action(() =>
+            {
+                FlexibleMessageBox.Show(Program.form, $"Backing up Game Data to {backupFolder}\\{date_str}");
+            }));
+            _ = Directory.CreateDirectory(CurrBackups);
+
+            string GameName = m_combo.SelectedItem.ToString();
+            string packageName = Sideloader.gameNameToPackageName(GameName);
+            string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
+
+            changeTitle("Running ADB Backup...");
+            _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Back Up My Data'");
+            output = ADB.RunAdbCommandToString($"adb backup -f \"{CurrBackups}\\{packageName}.ab\" {packageName}").Output;
+
+            changeTitle("                         \n\n");
+        }
+
         private async void backupbutton_Click(object sender, EventArgs e)
         {
             if (!Properties.Settings.Default.customBackupDir)
@@ -1041,7 +1083,7 @@ namespace AndroidSideloader
 
             if (m_combo.SelectedIndex == -1)
             {
-                notify("Please select an app first");
+                notify("Please select an App from the Dropdown");
                 return;
             }
             DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, $"Do you want to upload {m_combo.SelectedItem} now?", "Upload app?", MessageBoxButtons.YesNo);
@@ -1148,9 +1190,7 @@ namespace AndroidSideloader
                     }
 
                     changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
-                    ULGif.Visible = true;
                     ULLabel.Visible = true;
-                    ULGif.Enabled = true;
                     isworking = false;
                     isuploading = true;
                     Thread t3 = new Thread(() =>
@@ -1186,9 +1226,7 @@ namespace AndroidSideloader
 
                     changeTitle("                         \n\n");
                     isuploading = false;
-                    ULGif.Visible = false;
                     ULLabel.Visible = false;
-                    ULGif.Enabled = false;
                 }
                 else
                 {
@@ -2015,9 +2053,7 @@ namespace AndroidSideloader
         public static async void doUpload()
         {
             Program.form.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
-            Program.form.ULGif.Visible = true;
             Program.form.ULLabel.Visible = true;
-            Program.form.ULGif.Enabled = true;
             isworking = true;
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower();
             string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
@@ -2094,9 +2130,7 @@ namespace AndroidSideloader
                 Program.form.gamesToUpload.Clear();
                 isworking = false;
                 isuploading = false;
-                Program.form.ULGif.Visible = false;
                 Program.form.ULLabel.Visible = false;
-                Program.form.ULGif.Enabled = false;
                 Program.form.changeTitle(" \n\n");
             }
             else
@@ -2233,12 +2267,24 @@ namespace AndroidSideloader
 
         private readonly string wrDelimiter = "-------";
 
+        
+        private void deviceDropContainer_Click(object sender, EventArgs e)
+        {
+            ShowSubMenu(deviceDropContainer);
+            deviceDrop.Text = (deviceDrop.Text == "▼ DEVICE ▼") ? "▶ DEVICE ◀" : "▼ DEVICE ▼";
+        }
+
         private void sideloadContainer_Click(object sender, EventArgs e)
         {
             ShowSubMenu(sideloadContainer);
             sideloadDrop.Text = (sideloadDrop.Text == "▼ SIDELOAD ▼") ? "▶ SIDELOAD ◀" : "▼ SIDELOAD ▼";
         }
 
+        private void installedAppsMenuContainer_Click(object sender, EventArgs e)
+        {
+            ShowSubMenu(installedAppsMenuContainer);
+            installedAppsMenu.Text = (installedAppsMenu.Text == "▼ INSTALLED APPS ▼") ? "▶ INSTALLED APPS ◀" : "▼ INSTALLED APPS ▼";
+        }
 
         private void backupDrop_Click(object sender, EventArgs e)
         {
@@ -2279,14 +2325,13 @@ namespace AndroidSideloader
             Manual = res == DialogResult.No;
             if (Manual)
             {
-                ADBcommandbox.Visible = true;
-                ADBcommandbox.Clear();
-                lblAdbCommand.Visible = true;
-                lblAdbCommand.Text = "Enter your Quests\r\nIP Address";
-                lblAdbCommand.Location = new System.Drawing.Point(531, 213);
-                label2.Visible = true;
+                adbCmd_CommandBox.Visible = true;
+                adbCmd_CommandBox.Clear();
+                adbCmd_Label.Visible = true;
+                adbCmd_Label.Text = "Enter your Quest IP Address";
+                adbCmd_background.Visible = true;
                 manualIP = true;
-                _ = ADBcommandbox.Focus();
+                _ = adbCmd_CommandBox.Focus();
                 Program.form.changeTitle("Attempting manual connection...", false);
             }
             else
@@ -3277,32 +3322,27 @@ Things you can try:
                     }
                 }
                 searchTextBox.Visible = false;
-                label2.Visible = false;
-                lblSearchHelp.Visible = false;
-                lblShortcutsF2.Visible = false;
+                adbCmd_background.Visible = false;
 
-                if (ADBcommandbox.Visible)
+                if (adbCmd_CommandBox.Visible)
                 {
-                    changeTitle($"Entered command: ADB {ADBcommandbox.Text}");
-                    _ = ADB.RunAdbCommandToString(ADBcommandbox.Text);
+                    changeTitle($"Entered command: ADB {adbCmd_CommandBox.Text}");
+                    _ = ADB.RunAdbCommandToString(adbCmd_CommandBox.Text);
                     changeTitle(" \n\n");
                 }
-                ADBcommandbox.Visible = false;
-                lblAdbCommand.Visible = false;
-                lblShortcutCtrlR.Visible = false;
-                label2.Visible = false;
+                adbCmd_CommandBox.Visible = false;
+                adbCmd_Label.Visible = false;
+                adbCmd_background.Visible = false;
 
             }
             if (e.KeyChar == (char)Keys.Escape)
             {
                 searchTextBox.Visible = false;
-                label2.Visible = false;
-                lblSearchHelp.Visible = false;
-                lblShortcutsF2.Visible = false;
-                ADBcommandbox.Visible = false;
-                lblAdbCommand.Visible = false;
-                lblShortcutCtrlR.Visible = false;
-                label2.Visible = false;
+                adbCmd_background.Visible = false;
+                adbCmd_CommandBox.Visible = false;
+                adbCmd_btnToggleUpdates.Visible = false;
+                adbCmd_Label.Visible = false;
+                adbCmd_background.Visible = false;
             }
         }
 
@@ -3313,9 +3353,7 @@ Things you can try:
                 // Show search box.
                 searchTextBox.Clear();
                 searchTextBox.Visible = true;
-                label2.Visible = true;
-                lblSearchHelp.Visible = true;
-                lblShortcutsF2.Visible = true;
+                adbCmd_background.Visible = true;
                 _ = searchTextBox.Focus();
             }
             if (keyData == (Keys.Control | Keys.L))
@@ -3344,21 +3382,12 @@ Things you can try:
             }
             if (keyData == (Keys.Control | Keys.R))
             {
-                ADBcommandbox.Visible = true;
-                ADBcommandbox.Clear();
-                lblAdbCommand.Visible = true;
-                lblShortcutCtrlR.Visible = true;
-                label2.Visible = true;
-                _ = ADBcommandbox.Focus();
-            }
-            if (keyData == Keys.F2)
-            {
-                searchTextBox.Clear();
-                searchTextBox.Visible = true;
-                label2.Visible = true;
-                lblSearchHelp.Visible = true;
-                lblShortcutsF2.Visible = true;
-                _ = searchTextBox.Focus();
+                adbCmd_CommandBox.Visible = true;
+                adbCmd_btnToggleUpdates.Visible = true;
+                adbCmd_CommandBox.Clear();
+                adbCmd_Label.Visible = true;
+                adbCmd_background.Visible = true;
+                _ = adbCmd_CommandBox.Focus();
             }
             if (keyData == (Keys.Control | Keys.F4))
             {
@@ -3399,7 +3428,7 @@ Things you can try:
             bool dialogIsUp = false;
             if (keyData == Keys.F1 && !dialogIsUp)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "Shortcuts:\nF1 -------- Shortcuts List\nF2 --OR-- CTRL+F: QuickSearch\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie Sideloader.");
+                _ = FlexibleMessageBox.Show(Program.form, "Shortcuts:\nF1 -------- Shortcuts List\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie Sideloader.");
             }
             if (keyData == (Keys.Control | Keys.P))
             {
@@ -3469,9 +3498,7 @@ Things you can try:
 
         private void ADBcommandbox_Enter(object sender, EventArgs e)
         {
-            _ = ADBcommandbox.Focus();
-
-
+            _ = adbCmd_CommandBox.Focus();
         }
 
         private bool fullScreen = false;
@@ -3670,9 +3697,7 @@ Things you can try:
         {
             if (searchTextBox.Visible)
             {
-                label2.Visible = false;
-                lblSearchHelp.Visible = false;
-                lblShortcutsF2.Visible = false;
+                adbCmd_background.Visible = false;
             }
             else
             {
@@ -3833,7 +3858,7 @@ Things you can try:
                 if (manualIP)
                 {
                     string IPaddr;
-                    IPaddr = ADBcommandbox.Text;
+                    IPaddr = adbCmd_CommandBox.Text;
                     string IPcmnd = "connect " + IPaddr + ":5555";
                     Thread.Sleep(1000);
                     string errorChecker = ADB.RunAdbCommandToString(IPcmnd).Output;
@@ -3842,12 +3867,11 @@ Things you can try:
                         changeTitle(String.Empty);
                         _ = FlexibleMessageBox.Show(Program.form, "Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
                         manualIP = false;
-                        ADBcommandbox.Visible = false;
-                        lblAdbCommand.Visible = false;
-                        lblShortcutCtrlR.Visible = false;
-                        label2.Visible = false;
-                        lblAdbCommand.Text = "Type command without\r\n\"adb\" prefix.\r\n\r\n\r\n";
-                        lblAdbCommand.Location = new System.Drawing.Point(514, 206);
+                        adbCmd_CommandBox.Visible = false;
+                        adbCmd_btnToggleUpdates.Visible = false;
+                        adbCmd_Label.Visible = false;
+                        adbCmd_background.Visible = false;
+                        adbCmd_Label.Text = "Type ADB Command";
                         _ = gamesListView.Focus();
                     }
                     else
@@ -3862,12 +3886,11 @@ Things you can try:
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                         manualIP = false;
-                        ADBcommandbox.Visible = false;
-                        lblAdbCommand.Visible = false;
-                        lblShortcutCtrlR.Visible = false;
-                        label2.Visible = false;
-                        lblAdbCommand.Text = "Type command without\r\n\"adb\" prefix.\r\n\r\n\r\n";
-                        lblAdbCommand.Location = new System.Drawing.Point(514, 206);
+                        adbCmd_CommandBox.Visible = false;
+                        adbCmd_btnToggleUpdates.Visible = false;
+                        adbCmd_Label.Visible = false;
+                        adbCmd_background.Visible = false;
+                        adbCmd_Label.Text = "Type ADB Command";
                         changeTitle("");
                         Program.form.changeTitlebarToDevice();
                         _ = gamesListView.Focus();
@@ -3875,33 +3898,33 @@ Things you can try:
                 }
                 else
                 {
-                    Program.form.changeTitle($"Running adb command: ADB {ADBcommandbox.Text}");
-                    string output = ADB.RunAdbCommandToString(ADBcommandbox.Text).Output;
-                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {ADBcommandbox.Text}, Output: {output}");
-                    ADBcommandbox.Visible = false;
-                    lblAdbCommand.Visible = false;
-                    lblShortcutCtrlR.Visible = false;
-                    label2.Visible = false;
+                    Program.form.changeTitle($"Running adb command: ADB {adbCmd_CommandBox.Text}");
+                    string output = ADB.RunAdbCommandToString(adbCmd_CommandBox.Text).Output;
+                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {adbCmd_CommandBox.Text}\r\nOutput:\r\n{output}");
+                    adbCmd_CommandBox.Visible = false;
+                    adbCmd_btnToggleUpdates.Visible = false;
+                    adbCmd_Label.Visible = false;
+                    adbCmd_background.Visible = false;
                     _ = gamesListView.Focus();
                     Program.form.changeTitle(String.Empty);
                 }
             }
             if (e.KeyChar == (char)Keys.Escape)
             {
-                ADBcommandbox.Visible = false;
-                lblShortcutCtrlR.Visible = false;
-                lblAdbCommand.Visible = false;
-                label2.Visible = false;
+                adbCmd_CommandBox.Visible = false;
+                adbCmd_btnToggleUpdates.Visible = false;
+                adbCmd_Label.Visible = false;
+                adbCmd_background.Visible = false;
                 _ = gamesListView.Focus();
             }
         }
 
         private void ADBcommandbox_Leave(object sender, EventArgs e)
         {
-            label2.Visible = false;
-            ADBcommandbox.Visible = false;
-            lblAdbCommand.Visible = false;
-            lblShortcutCtrlR.Visible = false;
+            adbCmd_background.Visible = false;
+            adbCmd_CommandBox.Visible = false;
+            adbCmd_btnToggleUpdates.Visible = false;
+            adbCmd_Label.Visible = false;
         }
 
         private void gamesQueListBox_MouseDown(object sender, MouseEventArgs e)
@@ -3923,7 +3946,7 @@ Things you can try:
         {
             if (m_combo.SelectedIndex == -1)
             {
-                notify("Please select an app first");
+                notify("Please select an App from the Dropdown");
                 return;
             }
             DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, $"Do you want to extract {m_combo.SelectedItem}'s apk and obb to a folder on your desktop now?", "Extract app?", MessageBoxButtons.YesNo);
@@ -4315,12 +4338,13 @@ Things you can try:
 
         private async void btnRunAdbCmd_Click(object sender, EventArgs e)
         {
-            ADBcommandbox.Visible = true;
-            ADBcommandbox.Clear();
-            lblAdbCommand.Visible = true;
-            lblShortcutCtrlR.Visible = true;
-            label2.Visible = true;
-            _ = ADBcommandbox.Focus();
+            adbCmd_CommandBox.Visible = true;
+            adbCmd_btnToggleUpdates.Visible = true;
+            adbCmd_CommandBox.Clear();
+            adbCmd_Label.Text = "Type ADB Command";
+            adbCmd_Label.Visible = true;
+            adbCmd_background.Visible = true;
+            _ = adbCmd_CommandBox.Focus();
         }
 
         private void btnOpenDownloads_Click(object sender, EventArgs e)
@@ -4352,7 +4376,26 @@ Things you can try:
 
             Properties.Settings.Default.Save();
         }
+
+        private void adbCmd_btnToggleUpdates_Click(object sender, EventArgs e)
+        {
+            string adbResult = ADB.RunAdbCommandToString("adb shell pm list packages -d").Output;
+            bool isUpdatesDisabled = adbResult.Contains("com.oculus.updater");
+
+            if (isUpdatesDisabled == true) {
+                 // Updates are already disabled. Enable them
+                 adbCmd_CommandBox.Text = "adb shell pm enable com.oculus.updater";
+            } else {
+                adbCmd_CommandBox.Text = "shell pm disable-user --user 0 com.oculus.updater";
+            }
+            
+            // adb shell pm enable com.oculus.updater
+            KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
+            ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
+        }
     }
+
+    
 
     public static class ControlExtensions
     {
