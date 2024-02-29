@@ -6,7 +6,7 @@
 ![Issues](https://img.shields.io/github/issues/VRPirates/rookie)
 
 ## Disclaimer
-This application might get flagged as malware by some antivirus software; however, both the sideloader and the sideloader launcher are open source.
+This application might get flagged as malware by some antivirus software; however, both the Sideloader and the Sideloader Launcher are open source.
 
 **Latest VirusTotal Scan (1/72):** [Check here](https://www.virustotal.com/gui/file/dc3ed59057d508646a06a978c44ae72d473fd678129483ab186202046cbc713f)
 
@@ -14,7 +14,7 @@ This application might get flagged as malware by some antivirus software; howeve
 For any assistance or questions, please utilize our support channels available at [Live Chats](https://vrpirates.wiki/en/general_information/live-chats).
 
 ## Build Instructions
-This project is developed using C# with WinForms targeting .NET Framework 4.5.2. To build the project successfully in Visual Studio 2022, follow these steps:
+This project is developed using C# with WinForms targeting the .NET Framework 4.5.2. To build the project successfully in Visual Studio 2022, follow these steps:
 
 1. Clone this repository to your local machine.
 2. Ensure you have the .NET Framework 4.5.2 installed on your machine.
