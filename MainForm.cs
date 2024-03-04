@@ -308,8 +308,8 @@ namespace AndroidSideloader
                     if (File.Exists(Path.Combine(Environment.CurrentDirectory, "crashlog.txt")))
                     {
                         string UUID = SideloaderUtilities.UUID();
-                        System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, "{UUID}.log"));
-                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, "{UUID}.log");
+                        System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, $"{UUID}.log"));
+                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, $"{UUID}.log");
                         Properties.Settings.Default.CurrentCrashName = UUID;
                         Properties.Settings.Default.Save();
 
@@ -353,6 +353,7 @@ namespace AndroidSideloader
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
+            searchTextBox.Enabled = false;
             new Thread(() =>
             {
                 Thread.Sleep(10000);
@@ -581,6 +582,7 @@ namespace AndroidSideloader
                     }
                 }
             }
+            searchTextBox.Enabled = true;
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -827,7 +829,7 @@ namespace AndroidSideloader
                     }
                 });
             }
-            else if (Devices[0].Length > 1)
+            else if (Devices.Count > 0 && Devices[0].Length > 1) // Check if Devices list is not empty and the first device has a valid length
             {
                 this.Invoke(() => { Text = "Device Connected with ID | " + Devices[0].Replace("device", String.Empty); });
                 DeviceConnected = true;
