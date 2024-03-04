@@ -107,7 +107,7 @@ namespace AndroidSideloader
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
             this.updateConfigCheckBox.Size = new System.Drawing.Size(208, 22);
             this.updateConfigCheckBox.TabIndex = 6;
-            this.updateConfigCheckBox.Text = "Update config automatically";
+            this.updateConfigCheckBox.Text = "Update Public Config Automatically";
             this.updateConfigCheckBox.UseVisualStyleBackColor = false;
             this.updateConfigCheckBox.CheckedChanged += new System.EventHandler(this.updateConfigCheckBox_CheckedChanged);
             //
@@ -144,7 +144,7 @@ namespace AndroidSideloader
             this.nodevicemodeBox.Name = "nodevicemodeBox";
             this.nodevicemodeBox.Size = new System.Drawing.Size(181, 22);
             this.nodevicemodeBox.TabIndex = 9;
-            this.nodevicemodeBox.Text = "Enable no device mode";
+            this.nodevicemodeBox.Text = "Disable Sideloading (Installing)";
             this.nodevicemodeBox.UseVisualStyleBackColor = false;
             this.nodevicemodeBox.CheckedChanged += new System.EventHandler(this.nodevicemodeBox_CheckedChanged);
             //
