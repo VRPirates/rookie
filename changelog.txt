@@ -1,8 +1,16 @@
-RSL 2.27.2
+RSL 2.28
 
-- Feature: Searchbar can now also search release names
-- Feature: Rookie will now download 64 bit 7zip binaries for faster extractions (when possible)
-- Fix: 7zip error handler
-- Fix: Crash when downloading without enough space
-- Fix: Rookie will no longer deny game donations.
-- Chore: Cleanup code
+- Feature: Added ADB-Backup Support. Now supports creation and restoration of .AB backups
+- Feature: Added OS-Updates toggle to ADB-Command window (Click to toggle on/off)
+- Feature: Allow ADB Commands with or without prefix
+- Fix: Left-Navigation UI Reorganization
+- Fix: 7zip crash, empty device list crash
+- Fix: Update settings after version update
+- Fix: Crashlog naming
+- Fix: Disable searchbar until Rookie is fully loaded
+- Chore: Add public mirror as a default to Git-downloads
+- Chore: Readme Updates
+- Chore: Code Cleanup / Beautification
+- Chore: Chnage from _adb dependency files to dependencies.7z file
+- Chore: Remove unused files
+- Chore: Default to Single-Thread Mode (Eliminates many download failures)
