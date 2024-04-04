@@ -2916,7 +2916,7 @@ Things you can try:
                                 }
                                 else
                                 {
-                                    output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
+                                    output.Output = "\n--- SIDELOADING DISABLED ---\nAll tasks finished.";
                                 }
                             }
                             else
@@ -2986,7 +2986,7 @@ Things you can try:
                                 }
                                 else
                                 {
-                                    output.Output = "\n--- NO DEVICE MODE ---\nAll tasks finished.\n--- NO DEVICE MODE --";
+                                    output.Output = "\n--- SIDELOADING DISABLED ---\nAll tasks finished.\n";
                                 }
                                 changeTitle($"Installation of {gameName} completed.");
                             }
