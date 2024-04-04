@@ -109,7 +109,7 @@ namespace AndroidSideloader.Utilities
                             }));
                         }
                         _ = Logger.Log(error, LogLevel.ERROR);
-                        extractionError = $"Extracting failed, status code {x.ExitCode}";
+                        extractionError = $"Extracting failed: {error}"; // Store the error message directly
                         return;
                     }
                 };

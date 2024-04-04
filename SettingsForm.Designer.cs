@@ -42,7 +42,7 @@ namespace AndroidSideloader
             this.trailersOn = new System.Windows.Forms.CheckBox();
             this.downloadDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
             this.backupDirectorySetter = new System.Windows.Forms.FolderBrowserDialog();
-            this.singleThread = new System.Windows.Forms.CheckBox();
+            this.chkSingleThread = new System.Windows.Forms.CheckBox();
             this.setBackupDirectory = new AndroidSideloader.RoundButton();
             this.setDownloadDirectory = new AndroidSideloader.RoundButton();
             this.btnOpenDebug = new AndroidSideloader.RoundButton();
@@ -105,9 +105,9 @@ namespace AndroidSideloader
             this.updateConfigCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.updateConfigCheckBox.Location = new System.Drawing.Point(11, 95);
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
-            this.updateConfigCheckBox.Size = new System.Drawing.Size(208, 22);
+            this.updateConfigCheckBox.Size = new System.Drawing.Size(256, 22);
             this.updateConfigCheckBox.TabIndex = 6;
-            this.updateConfigCheckBox.Text = "Update config automatically";
+            this.updateConfigCheckBox.Text = "Update Public Config Automatically";
             this.updateConfigCheckBox.UseVisualStyleBackColor = false;
             this.updateConfigCheckBox.CheckedChanged += new System.EventHandler(this.updateConfigCheckBox_CheckedChanged);
             // 
@@ -142,9 +142,9 @@ namespace AndroidSideloader
             this.nodevicemodeBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.nodevicemodeBox.Location = new System.Drawing.Point(12, 12);
             this.nodevicemodeBox.Name = "nodevicemodeBox";
-            this.nodevicemodeBox.Size = new System.Drawing.Size(181, 22);
+            this.nodevicemodeBox.Size = new System.Drawing.Size(226, 22);
             this.nodevicemodeBox.TabIndex = 9;
-            this.nodevicemodeBox.Text = "Enable no device mode";
+            this.nodevicemodeBox.Text = "Disable Sideloading (Installing)";
             this.nodevicemodeBox.UseVisualStyleBackColor = false;
             this.nodevicemodeBox.CheckedChanged += new System.EventHandler(this.nodevicemodeBox_CheckedChanged);
             // 
@@ -199,19 +199,19 @@ namespace AndroidSideloader
             // 
             this.backupDirectorySetter.RootFolder = System.Environment.SpecialFolder.MyComputer;
             // 
-            // singleThread
+            // chkSingleThread
             // 
-            this.singleThread.AutoSize = true;
-            this.singleThread.BackColor = System.Drawing.Color.Transparent;
-            this.singleThread.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.singleThread.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.singleThread.Location = new System.Drawing.Point(11, 263);
-            this.singleThread.Name = "singleThread";
-            this.singleThread.Size = new System.Drawing.Size(186, 22);
-            this.singleThread.TabIndex = 25;
-            this.singleThread.Text = "Enable Single-Threading";
-            this.singleThread.UseVisualStyleBackColor = false;
-            this.singleThread.CheckedChanged += new System.EventHandler(this.singleThread_CheckedChanged);
+            this.chkSingleThread.AutoSize = true;
+            this.chkSingleThread.BackColor = System.Drawing.Color.Transparent;
+            this.chkSingleThread.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chkSingleThread.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.chkSingleThread.Location = new System.Drawing.Point(11, 263);
+            this.chkSingleThread.Name = "chkSingleThread";
+            this.chkSingleThread.Size = new System.Drawing.Size(186, 22);
+            this.chkSingleThread.TabIndex = 25;
+            this.chkSingleThread.Text = "Enable Single-Threading";
+            this.chkSingleThread.UseVisualStyleBackColor = false;
+            this.chkSingleThread.CheckedChanged += new System.EventHandler(this.chkSingleThread_CheckedChanged);
             // 
             // setBackupDirectory
             // 
@@ -429,7 +429,7 @@ namespace AndroidSideloader
             this.Controls.Add(this.openBackupDirectory);
             this.Controls.Add(this.openDownloadDirectory);
             this.Controls.Add(this.virtualFilesystemCompatibilityCheckbox);
-            this.Controls.Add(this.singleThread);
+            this.Controls.Add(this.chkSingleThread);
             this.Controls.Add(this.setBackupDirectory);
             this.Controls.Add(this.trailersOn);
             this.Controls.Add(this.setDownloadDirectory);
@@ -485,7 +485,7 @@ namespace AndroidSideloader
         private System.Windows.Forms.FolderBrowserDialog downloadDirectorySetter;
         private RoundButton setBackupDirectory;
         private System.Windows.Forms.FolderBrowserDialog backupDirectorySetter;
-        private System.Windows.Forms.CheckBox singleThread;
+        private System.Windows.Forms.CheckBox chkSingleThread;
         private System.Windows.Forms.CheckBox virtualFilesystemCompatibilityCheckbox;
         private RoundButton openBackupDirectory;
         private RoundButton openDownloadDirectory;

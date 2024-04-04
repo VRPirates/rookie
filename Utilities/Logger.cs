@@ -18,7 +18,7 @@ namespace AndroidSideloader
     {
         private static readonly object lockObject = new object();
         private static string logFilePath = Properties.Settings.Default.CurrentLogPath;
-        
+
         public static bool Log(string text, LogLevel logLevel = LogLevel.INFO, bool ret = true)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Length <= 5)
@@ -42,7 +42,7 @@ namespace AndroidSideloader
 
             return ret;
         }
-        
+
         private static string GetCallerInfo()
         {
             System.Diagnostics.StackTrace stackTrace = new System.Diagnostics.StackTrace(true);

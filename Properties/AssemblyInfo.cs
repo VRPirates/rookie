@@ -8,7 +8,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("AndroidSideloader")]
 [assembly: AssemblyDescription("Rookie Sideloader")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("Rookie.WTF")]
+[assembly: AssemblyCompany("Rookie.AndroidSideloader")]
 [assembly: AssemblyProduct("AndroidSideloader")]
 [assembly: AssemblyCopyright("Copyright ©  2020")]
 [assembly: AssemblyTrademark("")]

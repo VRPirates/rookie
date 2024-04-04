@@ -1,4 +1,13 @@
-﻿RSL 2.26
+﻿RSL 2.27.2
+
+- Feature: Searchbar can now also search release names
+- Feature: Rookie will now download 64 bit 7zip binaries for faster extractions (when possible)
+- Fix: 7zip error handler
+- Fix: Crash when downloading without enough space
+- Fix: Rookie will no longer deny game donations.
+- Chore: Cleanup code
+
+RSL 2.26
 
 - Feature: Top right update labels will now show the amount of games per state
 - Feature: Open Download Dir and Run ADB Commands added to left sidebar

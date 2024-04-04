@@ -32,9 +32,9 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.button1 = new AndroidSideloader.RoundButton();
             this.SuspendLayout();
-            // 
+            //
             // textBox1
-            // 
+            //
             this.textBox1.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.textBox1.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -45,9 +45,9 @@
             this.textBox1.Size = new System.Drawing.Size(418, 24);
             this.textBox1.TabIndex = 0;
             this.textBox1.Text = "Enter your username here";
-            // 
+            //
             // button1
-            // 
+            //
             this.button1.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.button1.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.button1.BackColor = System.Drawing.Color.Transparent;
@@ -66,9 +66,9 @@
             this.button1.Text = "Create User.Json";
             this.button1.Transparency = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
+            //
             // UsernameForm
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;

@@ -7,7 +7,7 @@ namespace AndroidSideloader
         /// <summary>
         /// Required designer variable.
         /// </summary>
-        /// 
+        ///
 
         private System.ComponentModel.IContainer components = null;
 
@@ -54,9 +54,9 @@ namespace AndroidSideloader
             this.button3 = new AndroidSideloader.RoundButton();
             this.label3 = new System.Windows.Forms.Label();
             this.SuspendLayout();
-            // 
+            //
             // label1
-            // 
+            //
             this.label1.AutoSize = true;
             this.label1.BackColor = System.Drawing.Color.Transparent;
             this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -67,9 +67,9 @@ namespace AndroidSideloader
             this.label1.TabIndex = 6;
             this.label1.Text = "Temporary Settings";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
+            //
             // label2
-            // 
+            //
             this.label2.AutoSize = true;
             this.label2.BackColor = System.Drawing.Color.Transparent;
             this.label2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -81,9 +81,9 @@ namespace AndroidSideloader
             this.label2.TabIndex = 6;
             this.label2.Text = "Reboot Quest to Reset";
             this.label2.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
+            //
             // label11
-            // 
+            //
             this.label11.AutoSize = true;
             this.label11.BackColor = System.Drawing.Color.Transparent;
             this.label11.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -95,9 +95,9 @@ namespace AndroidSideloader
             this.label11.TabIndex = 6;
             this.label11.Text = "Transfer screenshots to Desktop";
             this.label11.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
+            //
             // label12
-            // 
+            //
             this.label12.AutoSize = true;
             this.label12.BackColor = System.Drawing.Color.Transparent;
             this.label12.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -109,9 +109,9 @@ namespace AndroidSideloader
             this.label12.TabIndex = 6;
             this.label12.Text = "Set Username";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
+            //
             // DeleteShots
-            // 
+            //
             this.DeleteShots.AutoSize = true;
             this.DeleteShots.BackColor = System.Drawing.Color.Transparent;
             this.DeleteShots.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -127,35 +127,35 @@ namespace AndroidSideloader
             this.DeleteShots.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.DeleteShots.UseVisualStyleBackColor = false;
             this.DeleteShots.CheckedChanged += new System.EventHandler(this.DeleteShots_CheckedChanged);
-            // 
+            //
             // splitter1
-            // 
+            //
             this.splitter1.Location = new System.Drawing.Point(0, 0);
             this.splitter1.Name = "splitter1";
             this.splitter1.Size = new System.Drawing.Size(3, 486);
             this.splitter1.TabIndex = 14;
             this.splitter1.TabStop = false;
-            // 
+            //
             // label10
-            // 
+            //
             this.label10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.label10.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label10.Location = new System.Drawing.Point(-4, 261);
             this.label10.Name = "label10";
             this.label10.Size = new System.Drawing.Size(394, 3);
             this.label10.TabIndex = 15;
-            // 
+            //
             // label14
-            // 
+            //
             this.label14.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.label14.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.label14.Location = new System.Drawing.Point(-4, 80);
             this.label14.Name = "label14";
             this.label14.Size = new System.Drawing.Size(394, 3);
             this.label14.TabIndex = 17;
-            // 
+            //
             // label16
-            // 
+            //
             this.label16.AutoSize = true;
             this.label16.BackColor = System.Drawing.Color.Transparent;
             this.label16.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -167,9 +167,9 @@ namespace AndroidSideloader
             this.label16.TabIndex = 6;
             this.label16.Text = "Exports to: Desktop\\Quest Screenshots";
             this.label16.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
+            //
             // CPUComboBox
-            // 
+            //
             this.CPUComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.CPUComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.CPUComboBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -188,9 +188,9 @@ namespace AndroidSideloader
             this.CPUComboBox.Size = new System.Drawing.Size(232, 26);
             this.CPUComboBox.TabIndex = 2;
             this.CPUComboBox.Text = "Select CPU level (0 for default)";
-            // 
+            //
             // GPUComboBox
-            // 
+            //
             this.GPUComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.GPUComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.GPUComboBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -209,9 +209,9 @@ namespace AndroidSideloader
             this.GPUComboBox.Size = new System.Drawing.Size(232, 26);
             this.GPUComboBox.TabIndex = 1;
             this.GPUComboBox.Text = "Select GPU level (0 for default)";
-            // 
+            //
             // ResolutionLabel
-            // 
+            //
             this.ResolutionLabel.AutoSize = true;
             this.ResolutionLabel.BackColor = System.Drawing.Color.Transparent;
             this.ResolutionLabel.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -224,9 +224,9 @@ namespace AndroidSideloader
             this.ResolutionLabel.Size = new System.Drawing.Size(153, 18);
             this.ResolutionLabel.TabIndex = 3;
             this.ResolutionLabel.Text = "Resolution (0=default)";
-            // 
+            //
             // GlobalUsername
-            // 
+            //
             this.GlobalUsername.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
             this.GlobalUsername.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.GlobalUsername.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -238,9 +238,9 @@ namespace AndroidSideloader
             this.GlobalUsername.Size = new System.Drawing.Size(142, 24);
             this.GlobalUsername.TabIndex = 12;
             this.GlobalUsername.TextChanged += new System.EventHandler(this.GlobalUsername_TextChanged);
-            // 
+            //
             // TextureResTextBox
-            // 
+            //
             this.TextureResTextBox.BackColor = global::AndroidSideloader.Properties.Settings.Default.TextBoxColor;
             this.TextureResTextBox.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "TextBoxColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.TextureResTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -252,9 +252,9 @@ namespace AndroidSideloader
             this.TextureResTextBox.Size = new System.Drawing.Size(111, 24);
             this.TextureResTextBox.TabIndex = 3;
             this.TextureResTextBox.Text = "0";
-            // 
+            //
             // RefreshRateComboBox
-            // 
+            //
             this.RefreshRateComboBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.RefreshRateComboBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.RefreshRateComboBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -271,9 +271,9 @@ namespace AndroidSideloader
             this.RefreshRateComboBox.Size = new System.Drawing.Size(232, 26);
             this.RefreshRateComboBox.TabIndex = 0;
             this.RefreshRateComboBox.Text = "Select refresh rate";
-            // 
+            //
             // button1
-            // 
+            //
             this.button1.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.button1.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.button1.BackColor = System.Drawing.Color.Transparent;
@@ -292,9 +292,9 @@ namespace AndroidSideloader
             this.button1.Text = "APPLY";
             this.button1.Transparency = false;
             this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
+            //
             // questVids
-            // 
+            //
             this.questVids.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.questVids.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.questVids.BackColor = System.Drawing.Color.Transparent;
@@ -313,9 +313,9 @@ namespace AndroidSideloader
             this.questVids.Text = "RECORDINGS";
             this.questVids.Transparency = false;
             this.questVids.Click += new System.EventHandler(this.questVids_Click);
-            // 
+            //
             // questPics
-            // 
+            //
             this.questPics.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.questPics.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.questPics.BackColor = System.Drawing.Color.Transparent;
@@ -334,9 +334,9 @@ namespace AndroidSideloader
             this.questPics.Text = "SCREENSHOTS";
             this.questPics.Transparency = false;
             this.questPics.Click += new System.EventHandler(this.questPics_Click);
-            // 
+            //
             // button3
-            // 
+            //
             this.button3.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.button3.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
             this.button3.BackColor = System.Drawing.Color.Transparent;
@@ -355,9 +355,9 @@ namespace AndroidSideloader
             this.button3.Text = "APPLY";
             this.button3.Transparency = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
-            // 
+            //
             // label3
-            // 
+            //
             this.label3.AutoSize = true;
             this.label3.BackColor = System.Drawing.Color.Transparent;
             this.label3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
@@ -369,9 +369,9 @@ namespace AndroidSideloader
             this.label3.TabIndex = 28;
             this.label3.Text = "Exports to: Desktop\\Quest Recordings";
             this.label3.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
+            //
             // QuestForm
-            // 
+            //
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(45)))), ((int)(((byte)(45)))), ((int)(((byte)(45)))));
