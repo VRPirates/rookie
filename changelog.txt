@@ -11,6 +11,6 @@ RSL 2.28
 - Chore: Add public mirror as a default to Git-downloads
 - Chore: Readme Updates
 - Chore: Code Cleanup / Beautification
-- Chore: Chnage from _adb dependency files to dependencies.7z file
+- Chore: Change from _adb dependency files to dependencies.7z file
 - Chore: Remove unused files
-- Chore: Default to Single-Thread Mode (Eliminates many download failures)
+- Chore: Default to Single-Thread Mode
