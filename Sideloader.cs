@@ -321,23 +321,51 @@ namespace AndroidSideloader
                     _ = Logger.Log($"adb download successful");
                 }
 
-                if (!Directory.Exists(Path.Combine(Environment.CurrentDirectory, "rclone")))
+
+                bool updateRclone = false;
+                string wantedVersion = "1.66.0";
+                string version = "0.0.0";
+                string pathToRclone = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
+                if (File.Exists(pathToRclone))
                 {
+                    var versionInfo = FileVersionInfo.GetVersionInfo(pathToRclone);
+                    version = versionInfo.ProductVersion;
+                    Logger.Log($"Current RCLONE Version {version}");
+                    if (version != wantedVersion)
+                    {
+                        updateRclone = true;
+                    }
+                }
+
+                if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone") || updateRclone == true)
+                {
+                    if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
+                    {
+                        Logger.Log($"rclone does not exist.", LogLevel.WARNING);
+                    }
+                    else
+                    {
+                        Logger.Log($"rclone is the wrong version. Wanted: {wantedVersion} Current: {version}", LogLevel.WARNING);
+                        if (Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
+                        {
+                            Directory.Delete(Environment.CurrentDirectory + "\\rclone", true);
+                        }
+                    }
+
+                    Logger.Log($"Downloading from rclone.org", LogLevel.WARNING);
                     currentAccessedWebsite = "rclone";
-                    _ = Logger.Log($"Missing rclone. Attempting to download from {currentAccessedWebsite}.org");
-                    string url = Environment.Is64BitOperatingSystem
-                        ? "https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-amd64.zip"
-                        : "https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-386.zip";
+                    string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
+                    string url = $"https://downloads.rclone.org/v{wantedVersion}/rclone-v{wantedVersion}-windows-{architecture}.zip";
                     //Since sideloader is build for x86, it should work on both x86 and x64 so we download the according rclone version
 
-                    _ = Logger.Log("Begin download rclone");
+                    Logger.Log(url, LogLevel.INFO);
                     client.DownloadFile(url, "rclone.zip");
-                    _ = Logger.Log("Complete download rclone");
 
-                    _ = Logger.Log($"Extract {Environment.CurrentDirectory}\\rclone.zip");
-                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
+                    Logger.Log($"rclone download completed, unzipping contents");
+                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\rclone.zip", Environment.CurrentDirectory);
 
                     File.Delete("rclone.zip");
+                    Logger.Log($"rclone downloaded successfully");
 
                     string[] folders = Directory.GetDirectories(Environment.CurrentDirectory);
                     foreach (string folder in folders)
@@ -346,35 +374,6 @@ namespace AndroidSideloader
                         {
                             Directory.Move(folder, "rclone");
                             break; //only 1 rclone folder
-                        }
-                    }
-                    _ = Logger.Log($"rclone download successful");
-                }
-                else
-                {
-                    _ = Logger.Log($"Checking for Local rclone...");
-                    string pathToRclone = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
-                    if (File.Exists(pathToRclone))
-                    {
-                        var versionInfo = FileVersionInfo.GetVersionInfo(pathToRclone);
-                        string version = versionInfo.ProductVersion;
-                        Logger.Log($"Current RCLONE Version {version}");
-                        if (!MainForm.noRcloneUpdating)
-                        {
-                            if (version != "1.62.2")
-                            {
-                                Logger.Log($"RCLONE Version does not match ({version})! Downloading required version (1.62.2)", LogLevel.WARNING);
-                                File.Delete(pathToRclone);
-                                currentAccessedWebsite = "rclone";
-                                string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
-                                string url = $"https://downloads.rclone.org/v1.62.2/rclone-v1.62.2-windows-{architecture}.zip";
-                                client.DownloadFile(url, "rclone.zip");
-                                Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
-                                File.Delete("rclone.zip");
-                                string rcloneDirectory = Path.Combine(Environment.CurrentDirectory, $"rclone-v1.62.2-windows-{architecture}");
-                                File.Move(Path.Combine(rcloneDirectory, "rclone.exe"), pathToRclone);
-                                Directory.Delete(rcloneDirectory, true);
-                            }
                         }
                     }
                 }
