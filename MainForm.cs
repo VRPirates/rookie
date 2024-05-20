@@ -395,14 +395,14 @@ namespace AndroidSideloader
                 if (!isOffline)
                 {
                     changeTitle("Initializing Servers...");
-                    initMirrors(true);
                     if (Properties.Settings.Default.autoUpdateConfig)
                     {
                         changeTitle("Checking for a new Configuration File...");
                         SideloaderRCLONE.updateDownloadConfig();
                     }
-
                     SideloaderRCLONE.updateUploadConfig();
+
+                    initMirrors(true);
 
                     if (!hasPublicConfig)
                     {
@@ -2295,36 +2295,20 @@ namespace AndroidSideloader
             {
                 if (mirror.Contains("mirror"))
                 {
-
-
                     _ = Logger.Log(mirror.Remove(mirror.Length - 1));
                     remotesList.Invoke(() => { _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); });
                     itemsCount++;
-
                 }
             }
 
             if (itemsCount > 0)
             {
-
                 Random rand = new Random();
-                // Code that implements a randomized mirror.  The rotation logic (the rotation) is reported as being bugged so I just disabled as a workaround ~pmow
-                //  if (random == true && index < itemsCount)
-                //    index = rand.Next(0, itemsCount);
-                //    remotesList.Invoke(() =>
-                // {
-                //     remotesList.SelectedIndex = index;
-                //     remotesList.SelectedIndex = 0;
-                //    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
-                //  });
-
                 remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = 0; // Set mirror to first item in array.
                     currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
                 });
-
-
             };
         }
 
