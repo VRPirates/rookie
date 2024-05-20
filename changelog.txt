@@ -1,16 +1,9 @@
-RSL 2.28
+RSL 2.29
 
-- Feature: Added ADB-Backup Support. Now supports creation and restoration of .AB backups
-- Feature: Added OS-Updates toggle to ADB-Command window (Click to toggle on/off)
-- Feature: Allow ADB Commands with or without prefix
-- Fix: Left-Navigation UI Reorganization
-- Fix: 7zip crash, empty device list crash
-- Fix: Update settings after version update
-- Fix: Crashlog naming
-- Fix: Disable searchbar until Rookie is fully loaded
-- Chore: Add public mirror as a default to Git-downloads
-- Chore: Readme Updates
-- Chore: Code Cleanup / Beautification
-- Chore: Chnage from _adb dependency files to dependencies.7z file
-- Chore: Remove unused files
-- Chore: Default to Single-Thread Mode (Eliminates many download failures)
+- Feature: Prompt to keep temporary files and allow resuming of downloads
+- Feature: Fixed progress bar jump-back
+- Feature: Added part tracking during download
+- Fix: Change UUID calculation. No longer uses system details (caused virus flags)
+- Fix: Added rclone fallback download
+- Fix: Additional connect/startup troubleshooting steps
+- Chore: Bump rclone to 1.66.0
