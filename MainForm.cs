@@ -195,6 +195,31 @@ namespace AndroidSideloader
             t2.Start();
         }
 
+        private async Task GetPublicConfigAsync()
+        {
+            await Task.Run(() => SideloaderRCLONE.updatePublicConfig());
+
+            try
+            {
+                string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
+                if (File.Exists(configFilePath))
+                {
+                    string configFileData = File.ReadAllText(configFilePath);
+                    PublicConfig config = JsonConvert.DeserializeObject<PublicConfig>(configFileData);
+
+                    if (config != null && !string.IsNullOrWhiteSpace(config.BaseUri) && !string.IsNullOrWhiteSpace(config.Password))
+                    {
+                        PublicConfigFile = config;
+                        hasPublicConfig = true;
+                    }
+                }
+            }
+            catch
+            {
+                hasPublicConfig = false;
+            }
+        }
+
         public static string donorApps = String.Empty;
         private string oldTitle = String.Empty;
         public static bool updatesNotified = false;
@@ -209,45 +234,33 @@ namespace AndroidSideloader
 
             if (!isOffline)
             {
-                if (File.Exists(Path.Combine(Environment.CurrentDirectory, "vrp-public.json")))
+                string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
+                if (File.Exists(configFilePath))
                 {
-                    Thread worker = new Thread(() =>
-                    {
-                        SideloaderRCLONE.updatePublicConfig();
-                    });
-                    worker.Start();
-                    while (worker.IsAlive)
-                    {
-                        Thread.Sleep(10);
-                    }
-
-                    try
-                    {
-                        string configFileData =
-                            File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "vrp-public.json"));
-                        PublicConfig config = JsonConvert.DeserializeObject<PublicConfig>(configFileData);
-
-                        if (config != null
-                            && !string.IsNullOrWhiteSpace(config.BaseUri)
-                            && !string.IsNullOrWhiteSpace(config.Password))
-                        {
-                            PublicConfigFile = config;
-                            hasPublicConfig = true;
-                        }
-                    }
-                    catch
-                    {
-                        hasPublicConfig = false;
-                    }
+                    await GetPublicConfigAsync();
                     if (!hasPublicConfig)
                     {
                         _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
-
-                    if (Directory.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView")))
+                }
+                else if (Properties.Settings.Default.autoUpdateConfig)
+                {
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
                     {
-                        Directory.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView"), true);
+                        File.Create(configFilePath).Close(); // Ensure the file is closed after creation
+                        await GetPublicConfigAsync();
+                        if (!hasPublicConfig)
+                        {
+                            _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                        }
                     }
+                }
+
+                string webViewDirectoryPath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView");
+                if (Directory.Exists(webViewDirectoryPath))
+                {
+                    Directory.Delete(webViewDirectoryPath, true);
                 }
             }
 
