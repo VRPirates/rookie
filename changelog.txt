@@ -7,3 +7,11 @@ RSL 2.29
 - Fix: Added rclone fallback download
 - Fix: Additional connect/startup troubleshooting steps
 - Chore: Bump rclone to 1.66.0
+
+RSL 2.29.1
+- Fix: Correct initilization sequence to prevent crashes
+- Chore: bump package dependencies
+- Chore: Fix initial GUI name
+
+RSL 2.29.2
+- Fix: Fix for failed uploads using new rclone version
