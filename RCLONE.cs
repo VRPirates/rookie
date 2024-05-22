@@ -189,7 +189,7 @@ namespace AndroidSideloader
 
             _ = Logger.Log($"Running Rclone command: {logcmd}");
 
-            command += " --checkers 0 --no-check-dest --retries 1";
+            command += " --checkers 0 --no-check-dest --retries 1 --inplace";
 
             rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
