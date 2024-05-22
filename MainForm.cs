@@ -2356,8 +2356,8 @@ namespace AndroidSideloader
 
  - Software orignally coded by rookie.wtf
  - Thanks to the VRP Mod Staff, data team, and anyone else we missed!
- - Thanks to VRP staff of the present and past: fenopy, Chax, pmow, SytheZN,
-        Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
+ - Thanks to VRP staff of the present and past: fenopy, Maxine, JarJarBlinkz
+        pmow, SytheZN, Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
 
  - Additional Thanks and Credits:
  - -- rclone https://rclone.org/
