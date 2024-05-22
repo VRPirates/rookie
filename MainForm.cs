@@ -232,38 +232,6 @@ namespace AndroidSideloader
             Splash splash = new Splash();
             splash.Show();
 
-            if (!isOffline)
-            {
-                string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
-                if (File.Exists(configFilePath))
-                {
-                    await GetPublicConfigAsync();
-                    if (!hasPublicConfig)
-                    {
-                        _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
-                    }
-                }
-                else if (Properties.Settings.Default.autoUpdateConfig)
-                {
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
-                    if (dialogResult == DialogResult.Yes)
-                    {
-                        File.Create(configFilePath).Close(); // Ensure the file is closed after creation
-                        await GetPublicConfigAsync();
-                        if (!hasPublicConfig)
-                        {
-                            _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
-                        }
-                    }
-                }
-
-                string webViewDirectoryPath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView");
-                if (Directory.Exists(webViewDirectoryPath))
-                {
-                    Directory.Delete(webViewDirectoryPath, true);
-                }
-            }
-
             // download dependencies
             Sideloader.downloadFiles();
 
@@ -361,8 +329,9 @@ namespace AndroidSideloader
             }
 
             splash.Close();
-        }
 
+            this.Form1_Shown(sender, e);
+        }
 
         private async void Form1_Shown(object sender, EventArgs e)
         {
@@ -379,6 +348,38 @@ namespace AndroidSideloader
                     freeDisclaimer.Enabled = false;
                 });
             }).Start();
+
+            if (!isOffline)
+            {
+                string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
+                if (File.Exists(configFilePath))
+                {
+                    await GetPublicConfigAsync();
+                    if (!hasPublicConfig)
+                    {
+                        _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                    }
+                }
+                else if (Properties.Settings.Default.autoUpdateConfig)
+                {
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
+                    if (dialogResult == DialogResult.Yes)
+                    {
+                        File.Create(configFilePath).Close(); // Ensure the file is closed after creation
+                        await GetPublicConfigAsync();
+                        if (!hasPublicConfig)
+                        {
+                            _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                        }
+                    }
+                }
+
+                string webViewDirectoryPath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView");
+                if (Directory.Exists(webViewDirectoryPath))
+                {
+                    Directory.Delete(webViewDirectoryPath, true);
+                }
+            }
 
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(() =>
@@ -2355,8 +2356,8 @@ namespace AndroidSideloader
 
  - Software orignally coded by rookie.wtf
  - Thanks to the VRP Mod Staff, data team, and anyone else we missed!
- - Thanks to VRP staff of the present and past: fenopy, Chax, pmow, SytheZN,
-        Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
+ - Thanks to VRP staff of the present and past: fenopy, Maxine, JarJarBlinkz
+        pmow, SytheZN, Roma/Rookie, Flow, Ivan, Kaladin, HarryEffinPotter, John, Sam Hoque
 
  - Additional Thanks and Credits:
  - -- rclone https://rclone.org/
