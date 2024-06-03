@@ -1041,7 +1041,7 @@ namespace AndroidSideloader
                 Logger.Log("Selected .ab file: " + selectedPath);
 
                 _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Restore My Data'\r\nRookie will remain frozen until the process is completed.");
-                output_abRestore = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}").Output;
+                output_abRestore = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}\"").Output;
             }
             if (fileDialogResult != DialogResult.OK)
             {
@@ -1502,7 +1502,7 @@ namespace AndroidSideloader
 
                                 {
                                     _ = ADB.RunCommandToString(command2, file2);
-                                    output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
+                                    output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" \"/sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/\"");
                                 })
                                 {
                                     IsBackground = true
@@ -1686,7 +1686,7 @@ namespace AndroidSideloader
 
                         {
                             _ = ADB.RunCommandToString(command, data);
-                            output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
+                            output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" \"/sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/\"");
                         })
                         {
                             IsBackground = true
@@ -3069,7 +3069,7 @@ Things you can try:
         {
             changeTitle("Deleting old OBB Folder...");
             Logger.Log("Attempting to delete old OBB Folder");
-            ADB.RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{packagename}");
+            ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{packagename}\"");
         }
 
         private const string OBBFolderPath = "/sdcard/Android/obb/";
@@ -3092,7 +3092,7 @@ Things you can try:
                 DirectoryInfo localFolder = new DirectoryInfo(localFolderPath);
                 long totalLocalFolderSize = localFolderSize(localFolder) / (1024 * 1024);
 
-                string remoteFolderSizeResult = ADB.RunAdbCommandToString($"shell du -m {OBBFolderPath}{packageName}").Output;
+                string remoteFolderSizeResult = ADB.RunAdbCommandToString($"shell du -m \"{OBBFolderPath}{packageName}\"").Output;
                 string cleanedRemoteFolderSize = cleanRemoteFolderSize(remoteFolderSizeResult);
 
                 int localObbSize = (int)totalLocalFolderSize;

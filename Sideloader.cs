@@ -60,12 +60,12 @@ namespace AndroidSideloader
             {
                 return null;
             }
-            return ADB.RunAdbCommandToString($"shell rm -r {path}");
+            return ADB.RunAdbCommandToString($"shell rm -r \"{path}\"");
         }
 
         public static ProcessOutput RemoveFile(string path)
         {
-            return ADB.RunAdbCommandToString($"shell rm -f {path}");
+            return ADB.RunAdbCommandToString($"shell rm -f \"{path}\"");
         }
 
         //For games that require manual install, like having another folder that isnt an obb

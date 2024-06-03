@@ -283,7 +283,7 @@ namespace AndroidSideloader
                     Program.form.changeTitle("Performing reinstall, please wait...");
                     _ = ADB.RunAdbCommandToString("kill-server");
                     _ = ADB.RunAdbCommandToString("devices");
-                    _ = ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{MainForm.CurrPCKG} \"{Environment.CurrentDirectory}\"");
+                    _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{MainForm.CurrPCKG}\" \"{Environment.CurrentDirectory}\"");
                     Program.form.changeTitle("Uninstalling game...");
                     _ = Sideloader.UninstallGame(MainForm.CurrPCKG);
                     Program.form.changeTitle("Reinstalling Game");
@@ -308,7 +308,7 @@ namespace AndroidSideloader
             string folder = Path.GetFileName(path);
             string lastFolder = Path.GetFileName(path);
             return folder.Contains(".")
-                ? RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{lastFolder} && mkdir /sdcard/Android/obb/{lastFolder}") + RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"")
+                ? RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{lastFolder}\" && mkdir \"/sdcard/Android/obb/{lastFolder}\"") + RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"")
                 : new ProcessOutput("No OBB Folder found");
         }
     }
