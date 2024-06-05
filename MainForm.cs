@@ -403,7 +403,7 @@ namespace AndroidSideloader
                     }
                     SideloaderRCLONE.updateUploadConfig();
 
-                    initMirrors(true);
+                    initMirrors();
 
                     if (!hasPublicConfig)
                     {
@@ -2283,7 +2283,7 @@ namespace AndroidSideloader
             };
             gamesToUpload.Add(game);
         }
-        private void initMirrors(bool random)
+        private void initMirrors()
         {
             int index = 0;
             remotesList.Invoke(() => { index = remotesList.SelectedIndex; remotesList.Items.Clear(); });
@@ -2304,7 +2304,6 @@ namespace AndroidSideloader
 
             if (itemsCount > 0)
             {
-                Random rand = new Random();
                 remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = 0; // Set mirror to first item in array.
@@ -2448,7 +2447,7 @@ namespace AndroidSideloader
 
             Thread t1 = new Thread(() =>
             {
-                initMirrors(false);
+                initMirrors();
                 if (!hasPublicConfig)
                 {
                     SideloaderRCLONE.initGames(currentRemote);
@@ -2994,7 +2993,7 @@ Things you can try:
                                             Thread obbThread = new Thread(() =>
                                             {
                                                 changeTitle($"Copying {packagename} obb to device...");
-                                                ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
+                                                ADB.RunAdbCommandToString($"shell mkdir \"/sdcard/Android/obb/{packagename}\"");
                                                 output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                 Program.form.changeTitle("");
                                             })
