@@ -360,7 +360,7 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
-                else if (Properties.Settings.Default.autoUpdateConfig)
+                else if (Properties.Settings.Default.autoUpdateConfig && Properties.Settings.Default.createPubMirrorFile)
                 {
                     DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
@@ -371,6 +371,11 @@ namespace AndroidSideloader
                         {
                             _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                         }
+                    }
+                    else
+                    {
+                        Properties.Settings.Default.createPubMirrorFile = false;
+                        Properties.Settings.Default.Save();
                     }
                 }
 
