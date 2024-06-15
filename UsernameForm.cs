@@ -53,7 +53,7 @@ namespace AndroidSideloader
 
         public static void createUserJson(string username)
         {
-            _ = ADB.RunAdbCommandToString($"shell settings put global username {username}");
+            _ = ADB.RunAdbCommandToString($"shell settings put global username \"{username}\"");
             foreach (string jsonFileName in userJsons)
             {
                 createUserJsonByName(username, jsonFileName);
