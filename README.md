@@ -24,7 +24,7 @@ This project is developed using C# with WinForms targeting the .NET Framework 4.
 6. Run the application.
 
 ## Contributing
-We welcome contributions from the community. If you would like to contribute, please fork the repository, make your changes, and submit a pull request.
+We welcome contributions from the community. If you would like to contribute, please fork the repository, branch from the newest beta branch from this repository, make your changes, and submit a pull request.
 
 ## License
 AndroidSideloader is distributed under the GPL license, meaning any forks of it must have their source code made public on the internet. See the [LICENSE](LICENSE) file for details.
