@@ -1,4 +1,4 @@
-﻿using JR.Utils.GUI.Forms;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -304,6 +304,14 @@ namespace AndroidSideloader
                     _ = Logger.Log($"Missing 'Rookie Offline.cmd'. Attempting to download from {currentAccessedWebsite}");
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Rookie%20Offline.cmd", "Rookie Offline.cmd");
                     _ = Logger.Log($"'Rookie Offline.cmd' download successful");
+                }
+
+                if (!File.Exists("CleanupInstall.cmd"))
+                {
+                    currentAccessedWebsite = "github";
+                    _ = Logger.Log($"Missing 'CleanupInstall.cmd'. Attempting to download from {currentAccessedWebsite}");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/CleanupInstall.cmd", "CleanupInstall.cmd");
+                    _ = Logger.Log($"'CleanupInstall.cmd' download successful");
                 }
 
                 if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
