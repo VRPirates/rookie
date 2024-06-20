@@ -2542,11 +2542,7 @@ $@"Unable to connect to Remote Server. Rookie is unable to connect to our Server
 
 First time launching Rookie? Please relaunch and try again.
 
-Things you can try:
-1) Move the Rookie directory (Folder containing AndroidSideloader.exe) into {Path.GetPathRoot(Environment.SystemDirectory)}RSL
-2) Try changing your systems DNS to either Cloudflare/Google/OpenDNS
-3) Try using a systemwide VPN like ProtonVPN (which is free)
-4) Sponsor a private server (https://vrpirates.wiki/en/Howto/sponsored-mirrors)
+Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.gg/DcfEpwVa4a) for Troubleshooting steps!
 ";
 
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
