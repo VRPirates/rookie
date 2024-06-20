@@ -1,4 +1,6 @@
-﻿using System.Windows.Forms;
+﻿using System;
+using System.Drawing;
+using System.Windows.Forms;
 
 namespace AndroidSideloader
 {
@@ -7,6 +9,11 @@ namespace AndroidSideloader
         public Splash()
         {
             InitializeComponent();
+        }
+
+        public void UpdateBackgroundImage(Image newImage)
+        {
+            this.BackgroundImage = newImage;
         }
     }
 }

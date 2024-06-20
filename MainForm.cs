@@ -21,6 +21,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
 namespace AndroidSideloader
 {
@@ -59,6 +60,7 @@ namespace AndroidSideloader
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
+        public static Splash SplashScreen;
         private bool manualIP;
         private System.Windows.Forms.Timer _debounceTimer;
         private CancellationTokenSource _cts;
@@ -66,6 +68,8 @@ namespace AndroidSideloader
         public MainForm()
         {
             InitializeComponent();
+            SplashScreen = new Splash();
+            SplashScreen.Show();
 
             // Check for Offline Mode or No RCLONE Updating
             CheckCommandLineArguments();
@@ -229,11 +233,9 @@ namespace AndroidSideloader
         {
             _ = Logger.Log("Starting AndroidSideloader Application");
 
-            Splash splash = new Splash();
-            splash.Show();
-
             // download dependencies
             Sideloader.downloadFiles();
+            MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
 
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
@@ -313,8 +315,6 @@ namespace AndroidSideloader
                 _ = ADB.RunAdbCommandToString("start-server");
             }
 
-            splash.Close();
-
             this.Form1_Shown(sender, e);
         }
 
@@ -333,6 +333,8 @@ namespace AndroidSideloader
                     freeDisclaimer.Enabled = false;
                 });
             }).Start();
+
+            SplashScreen.Close();
 
             if (!isOffline)
             {
@@ -373,12 +375,12 @@ namespace AndroidSideloader
                 if (hasPublicConfig)
                 {
                     lblMirror.Text = " Public Mirror";
-                    remotesList.Size = Size.Empty;
+                    remotesList.Size = System.Drawing.Size.Empty;
                 }
                 if (isOffline)
                 {
                     lblMirror.Text = " Offline Mode";
-                    remotesList.Size = Size.Empty;
+                    remotesList.Size = System.Drawing.Size.Empty;
                 }
                 if (Properties.Settings.Default.nodevicemode)
                 {
@@ -3592,7 +3594,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 {
                     MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.None;
                     webView21.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-                    webView21.Location = new Point(0, 0);
+                    webView21.Location = new System.Drawing.Point(0, 0);
                     webView21.Size = MainForm.ActiveForm.Size;
                 }
                 else
@@ -3600,7 +3602,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.Sizable;
                     webView21.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
                     webView21.Location = gamesPictureBox.Location;
-                    webView21.Size = new Size(374, 214);
+                    webView21.Size = new System.Drawing.Size(374, 214);
                 }
             }
         }
