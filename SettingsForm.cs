@@ -104,7 +104,9 @@ namespace AndroidSideloader
             Properties.Settings.Default.customBackupDir = false;
             MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
+            Properties.Settings.Default.createPubMirrorFile = true;
             intSettings();
+            Properties.Settings.Default.Save();
         }
 
         private void deleteAfterInstallCheckBox_CheckedChanged(object sender, EventArgs e)
