@@ -306,21 +306,6 @@ namespace AndroidSideloader
                 }
             }
 
-            if (hasPublicConfig)
-            {
-                lblMirror.Text = " Public Mirror";
-                remotesList.Size = Size.Empty;
-            }
-            if (isOffline)
-            {
-                lblMirror.Text = " Offline Mode";
-                remotesList.Size = Size.Empty;
-            }
-            if (Properties.Settings.Default.nodevicemode)
-            {
-                btnNoDevice.Text = "Enable Sideloading";
-            }
-
             _ = Logger.Log("Attempting to Initalize ADB Server");
             if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe")))
             {
@@ -383,6 +368,21 @@ namespace AndroidSideloader
                 if (Directory.Exists(webViewDirectoryPath))
                 {
                     Directory.Delete(webViewDirectoryPath, true);
+                }
+
+                if (hasPublicConfig)
+                {
+                    lblMirror.Text = " Public Mirror";
+                    remotesList.Size = Size.Empty;
+                }
+                if (isOffline)
+                {
+                    lblMirror.Text = " Offline Mode";
+                    remotesList.Size = Size.Empty;
+                }
+                if (Properties.Settings.Default.nodevicemode)
+                {
+                    btnNoDevice.Text = "Enable Sideloading";
                 }
             }
 
