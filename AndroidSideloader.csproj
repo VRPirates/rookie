@@ -321,9 +321,7 @@
     <Content Include="Resources\splashimage.png" />
     <Content Include="Resources\splashimage_deps.png" />
     <Content Include="Resources\splashimage_rclone.png" />
-    <None Include="Resources\battery11.png" />
     <None Include="Resources\battery.png" />
-    <None Include="Resources\battery1.png" />
     <None Include="Resources\ajax-loader.gif" />
     <None Include="Resources\SearchGlass.PNG" />
   </ItemGroup>

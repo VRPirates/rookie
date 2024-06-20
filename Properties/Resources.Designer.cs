@@ -83,26 +83,6 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap battery1 {
-            get {
-                object obj = ResourceManager.GetObject("battery1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap battery11 {
-            get {
-                object obj = ResourceManager.GetObject("battery11", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap Pattern {
             get {
                 object obj = ResourceManager.GetObject("Pattern", resourceCulture);

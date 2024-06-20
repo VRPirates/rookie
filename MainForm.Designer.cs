@@ -1225,7 +1225,7 @@ namespace AndroidSideloader
             // batteryLevImg
             // 
             this.batteryLevImg.BackColor = System.Drawing.Color.Transparent;
-            this.batteryLevImg.BackgroundImage = global::AndroidSideloader.Properties.Resources.battery11;
+            this.batteryLevImg.BackgroundImage = global::AndroidSideloader.Properties.Resources.battery;
             this.batteryLevImg.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
             this.batteryLevImg.Location = new System.Drawing.Point(166, 715);
             this.batteryLevImg.Margin = new System.Windows.Forms.Padding(2);
