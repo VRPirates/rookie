@@ -1,10 +1,11 @@
-using JR.Utils.GUI.Forms;
+﻿using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Management;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -313,9 +314,18 @@ namespace AndroidSideloader
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/CleanupInstall.cmd", "CleanupInstall.cmd");
                     _ = Logger.Log($"'CleanupInstall.cmd' download successful");
                 }
+            }
+            catch (Exception ex)
+            {
+                _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception:\n{ex.Message}\n\nSome files may be missing (Offline/Cleanup Script, Launcher)");
+            }
 
+            try
+            {
                 if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
                 {
+                    MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_deps);
+
                     if (!Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools"))
                     {
                         _ = Directory.CreateDirectory($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
@@ -328,8 +338,16 @@ namespace AndroidSideloader
                     File.Delete("dependencies.7z");
                     _ = Logger.Log($"adb download successful");
                 }
+            }
+            catch (Exception ex)
+            {
+                _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception:\n{ex.Message}\n\nSome files may be missing (ADB)");
+                _ = FlexibleMessageBox.Show("ADB was unable to be downloaded\nRookie will now close.");
+                Application.Exit();
+            }
 
-
+            try
+            {
                 bool updateRclone = false;
                 string wantedVersion = "1.66.0";
                 string version = "0.0.0";
@@ -347,6 +365,8 @@ namespace AndroidSideloader
 
                 if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone") || updateRclone == true)
                 {
+                    MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_rclone);
+                    
                     if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
                     {
                         Logger.Log($"rclone does not exist.", LogLevel.WARNING);
@@ -388,18 +408,9 @@ namespace AndroidSideloader
             }
             catch (Exception ex)
             {
-                if (currentAccessedWebsite == "github")
-                {
-                    _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception: {ex.Message}\nSome files may be missing (ADB, Offline Script, Launcher)");
-                    _ = FlexibleMessageBox.Show("These required files were unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
-                    Application.Exit();
-                }
-                if (currentAccessedWebsite == "rclone")
-                {
-                    _ = FlexibleMessageBox.Show($"You are unable to access the rclone page with the Exception: {ex.Message}\nSome files may be missing (RCLONE)");
-                    _ = FlexibleMessageBox.Show("Rclone was unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
-                    Application.Exit();
-                }
+                _ = FlexibleMessageBox.Show($"You are unable to access the rclone page with the Exception: {ex.Message}\nSome files may be missing (RCLONE)");
+                _ = FlexibleMessageBox.Show("Rclone was unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
+                Application.Exit();
             }
         }
     }
