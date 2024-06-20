@@ -2496,17 +2496,6 @@ namespace AndroidSideloader
                     {
                         ShowError_QuotaExceeded();
 
-                        DialogResult om = MessageBox.Show("Relaunch Rookie in Offline Mode?", "Offline Mode?", MessageBoxButtons.YesNo);
-                        if (om == DialogResult.Yes)
-                        {
-                            Process pr = new Process();
-                            pr.StartInfo.WorkingDirectory = Application.StartupPath;
-                            pr.StartInfo.FileName = System.AppDomain.CurrentDomain.FriendlyName;
-                            pr.StartInfo.Arguments = "--offline";
-                            _ = pr.Start();
-                            Process.GetCurrentProcess().Kill();
-                        }
-
                         if (System.Windows.Forms.Application.MessageLoop)
                         {
                             Process.GetCurrentProcess().Kill();
