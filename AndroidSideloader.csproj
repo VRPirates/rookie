@@ -307,6 +307,9 @@
     <None Include="Rookie Offline.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="CleanupInstall.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="version" />
   </ItemGroup>
   <ItemGroup>
