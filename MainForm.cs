@@ -334,8 +334,6 @@ namespace AndroidSideloader
                 });
             }).Start();
 
-            SplashScreen.Close();
-
             if (!isOffline)
             {
                 string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
@@ -371,31 +369,33 @@ namespace AndroidSideloader
                 {
                     Directory.Delete(webViewDirectoryPath, true);
                 }
-
-                if (hasPublicConfig)
-                {
-                    lblMirror.Text = " Public Mirror";
-                    remotesList.Size = System.Drawing.Size.Empty;
-                }
-                if (isOffline)
-                {
-                    lblMirror.Text = " Offline Mode";
-                    remotesList.Size = System.Drawing.Size.Empty;
-                }
-                if (Properties.Settings.Default.nodevicemode)
-                {
-                    btnNoDevice.Text = "Enable Sideloading";
-                }
             }
 
+            if (hasPublicConfig)
+            {
+                lblMirror.Text = " Public Mirror";
+                remotesList.Size = System.Drawing.Size.Empty;
+            }
+            if (isOffline)
+            {
+                lblMirror.Text = " Offline Mode";
+                remotesList.Size = System.Drawing.Size.Empty;
+            }
+            if (Properties.Settings.Default.nodevicemode)
+            {
+                btnNoDevice.Text = "Enable Sideloading";
+            }
+
+            SplashScreen.Close();
+
             progressBar.Style = ProgressBarStyle.Marquee;
-            Thread t1 = new Thread(() =>
+            Thread t1 = new Thread(async () =>
             {
                 if (!debugMode && Properties.Settings.Default.checkForUpdates)
                 {
                     Updater.AppName = "AndroidSideloader";
                     Updater.Repository = "VRPirates/rookie";
-                    Updater.Update();
+                    await Updater.Update();
                 }
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
 
@@ -439,6 +439,7 @@ namespace AndroidSideloader
 
             Thread t5 = new Thread(() =>
             {
+                changeTitle("Connecting to your Quest...");
                 if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
                 {
                     string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
@@ -2404,7 +2405,7 @@ namespace AndroidSideloader
                 _ = ADB.RunAdbCommandToString("tcpip 5555");
 
                 _ = FlexibleMessageBox.Show(Program.form, "Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
                 string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
                 Properties.Settings.Default.WirelessADB = true;
@@ -2416,7 +2417,7 @@ namespace AndroidSideloader
                     string IPaddr = strArrayOne[8];
                     string IPcmnd = "connect " + IPaddr + ":5555";
                     _ = FlexibleMessageBox.Show(Program.form, $"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                     _ = ADB.RunAdbCommandToString(IPcmnd);
                     _ = await Program.form.CheckForDevice();
                     Program.form.changeTitlebarToDevice();
@@ -3303,7 +3304,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         }
 
-        private void ADBWirelessDisable_Click(object sender, EventArgs e)
+        private async void ADBWirelessDisable_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.No)
@@ -3317,11 +3318,11 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 _ = FlexibleMessageBox.Show(Program.form, "Make sure your device is not connected to USB and press OK.");
                 _ = ADB.RunAdbCommandToString("devices");
                 _ = ADB.RunAdbCommandToString("shell USB");
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("disconnect");
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("kill-server");
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("start-server");
                 Properties.Settings.Default.IPAddress = String.Empty;
                 Properties.Settings.Default.Save();
@@ -3941,7 +3942,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     string IPaddr;
                     IPaddr = adbCmd_CommandBox.Text;
                     string IPcmnd = "connect " + IPaddr + ":5555";
-                    Thread.Sleep(1000);
+                    await Task.Delay(1000);
                     string errorChecker = ADB.RunAdbCommandToString(IPcmnd).Output;
                     if (errorChecker.Contains("cannot resolve host") | errorChecker.Contains("cannot connect to"))
                     {
