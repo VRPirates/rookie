@@ -717,5 +717,17 @@ namespace AndroidSideloader.Properties {
                 this["createPubMirrorFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool useDownloadedFiles {
+            get {
+                return ((bool)(this["useDownloadedFiles"]));
+            }
+            set {
+                this["useDownloadedFiles"] = value;
+            }
+        }
     }
 }

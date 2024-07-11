@@ -1,4 +1,4 @@
-﻿
+
 namespace AndroidSideloader
 {
     partial class SettingsForm
@@ -53,6 +53,7 @@ namespace AndroidSideloader
             this.virtualFilesystemCompatibilityCheckbox = new System.Windows.Forms.CheckBox();
             this.openBackupDirectory = new AndroidSideloader.RoundButton();
             this.openDownloadDirectory = new AndroidSideloader.RoundButton();
+            this.chkUseDownloadedFiles = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -419,13 +420,27 @@ namespace AndroidSideloader
             this.openDownloadDirectory.Transparency = false;
             this.openDownloadDirectory.Click += new System.EventHandler(this.openDownloadDirectory_Click);
             // 
+            // chkUseDownloadedFiles
+            // 
+            this.chkUseDownloadedFiles.AutoSize = true;
+            this.chkUseDownloadedFiles.BackColor = System.Drawing.Color.Transparent;
+            this.chkUseDownloadedFiles.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.chkUseDownloadedFiles.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
+            this.chkUseDownloadedFiles.Location = new System.Drawing.Point(13, 173);
+            this.chkUseDownloadedFiles.Name = "chkUseDownloadedFiles";
+            this.chkUseDownloadedFiles.Size = new System.Drawing.Size(219, 22);
+            this.chkUseDownloadedFiles.TabIndex = 29;
+            this.chkUseDownloadedFiles.Text = "Don\'t Prompt to Re-Download";
+            this.chkUseDownloadedFiles.UseVisualStyleBackColor = false;
+            this.chkUseDownloadedFiles.CheckedChanged += new System.EventHandler(this.chkUseDownloadedFiles_CheckedChanged);
+            // 
             // SettingsForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(339, 665);
+            this.Controls.Add(this.chkUseDownloadedFiles);
             this.Controls.Add(this.openBackupDirectory);
             this.Controls.Add(this.openDownloadDirectory);
             this.Controls.Add(this.virtualFilesystemCompatibilityCheckbox);
@@ -489,5 +504,6 @@ namespace AndroidSideloader
         private System.Windows.Forms.CheckBox virtualFilesystemCompatibilityCheckbox;
         private RoundButton openBackupDirectory;
         private RoundButton openDownloadDirectory;
+        private System.Windows.Forms.CheckBox chkUseDownloadedFiles;
     }
 }

@@ -1,4 +1,4 @@
-﻿using JR.Utils.GUI.Forms;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -39,6 +39,7 @@ namespace AndroidSideloader
                 deleteAfterInstallCheckBox.Checked = false;
                 deleteAfterInstallCheckBox.Enabled = false;
             }
+            chkUseDownloadedFiles.Checked = Properties.Settings.Default.useDownloadedFiles;
         }
 
         private void intToolTips()
@@ -49,6 +50,8 @@ namespace AndroidSideloader
             enableMessageBoxesToolTip.SetToolTip(enableMessageBoxesCheckBox, "If this is checked, the software will display message boxes after every completed task");
             ToolTip deleteAfterInstallToolTip = new ToolTip();
             deleteAfterInstallToolTip.SetToolTip(deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
+            ToolTip chkUseDownloadedFilesTooltip = new ToolTip();
+            chkUseDownloadedFilesTooltip.SetToolTip(chkUseDownloadedFiles, "If this is checked, Rookie will always install Downloaded files without Re-Downloading or Asking to Re-Download");
         }
 
         public void btnUploadDebug_click(object sender, EventArgs e)
@@ -90,6 +93,11 @@ namespace AndroidSideloader
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.checkForUpdates = checkForUpdatesCheckBox.Checked;
+        }
+        private void chkUseDownloadedFiles_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.useDownloadedFiles = chkUseDownloadedFiles.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void enableMessageBoxesCheckBox_CheckedChanged(object sender, EventArgs e)

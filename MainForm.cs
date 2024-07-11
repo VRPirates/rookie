@@ -2664,13 +2664,24 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     if (hasPublicConfig)
                     {
                         bool doDownload = true;
+                        bool skipRedownload = false;
+                        if (Properties.Settings.Default.useDownloadedFiles == true) {
+                            skipRedownload = true;
+                        }
+
                         if (Directory.Exists(gameDirectory))
                         {
-                            DialogResult res = FlexibleMessageBox.Show(Program.form,
-                                $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
-                                "Download again?", MessageBoxButtons.YesNo);
+                            if (skipRedownload == true) {
+                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}")) {
+                                    doDownload = false;
+                                }
+                            } else {
+                                DialogResult res = FlexibleMessageBox.Show(Program.form,
+                                    $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
+                                    "Download again?", MessageBoxButtons.YesNo);
 
-                            doDownload = res == DialogResult.Yes;
+                                doDownload = res == DialogResult.Yes;
+                            }
 
                             if (doDownload)
                             {
