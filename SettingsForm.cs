@@ -1,4 +1,4 @@
-using JR.Utils.GUI.Forms;
+﻿using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -93,6 +93,7 @@ namespace AndroidSideloader
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.checkForUpdates = checkForUpdatesCheckBox.Checked;
+            Properties.Settings.Default.Save();
         }
         private void chkUseDownloadedFiles_CheckedChanged(object sender, EventArgs e)
         {
@@ -103,6 +104,7 @@ namespace AndroidSideloader
         private void enableMessageBoxesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.enableMessageBoxes = enableMessageBoxesCheckBox.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void resetSettingsButton_Click(object sender, EventArgs e)
