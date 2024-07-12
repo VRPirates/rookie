@@ -56,6 +56,7 @@ namespace AndroidSideloader
         private bool isLoading = true;
         public static bool isOffline = false;
         public static bool noRcloneUpdating;
+        public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
@@ -118,6 +119,10 @@ namespace AndroidSideloader
                 if (arg == "--no-rclone-update")
                 {
                     noRcloneUpdating = true;
+                }
+                if (arg == "--disable-app-check")
+                {
+                    noAppCheck = true;
                 }
             }
             if (isOffline)
@@ -2026,9 +2031,8 @@ namespace AndroidSideloader
                            }
                        }*/
                     //This is for games that are not blacklisted and we dont have on rookie
-                    if (blacklistItems.Count > 100 && rookieList.Count > 100)
+                    if (blacklistItems.Count > 100 && rookieList.Count > 100 && !noAppCheck)
                     {
-
                         foreach (string newGamesToUpload in newGamesList)
                         {
                             changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
