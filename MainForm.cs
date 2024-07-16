@@ -23,6 +23,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
@@ -1769,7 +1770,6 @@ namespace AndroidSideloader
         private readonly List<UpdateGameData> gamesToAskForUpdate = new List<UpdateGameData>();
         public static bool loaded = false;
         public static string rookienamelist;
-        public static string rookienamelist2;
         private bool errorOnList;
         public static bool updates = false;
         public static bool newapps = false;
@@ -1827,7 +1827,6 @@ namespace AndroidSideloader
                         if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                         {
                             rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                            rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                         }
 
                         ListViewItem Game = new ListViewItem(release);
@@ -3442,8 +3441,16 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 if (loaded)
                 {
-                    Clipboard.SetText(rookienamelist);
-                    _ = MessageBox.Show("Entire game list copied as a line by line list to clipboard!\nPress CTRL+V to paste it anywhere!");
+                    StringBuilder copyGamesListView = new StringBuilder();
+
+                    foreach (ListViewItem item in gamesListView.Items)
+                    {
+                        // Assuming the game name is in the first column (subitem index 0)
+                        copyGamesListView.Append(item.SubItems[0].Text).Append("\n");
+                    }
+
+                    Clipboard.SetText(copyGamesListView.ToString());
+                    _ = MessageBox.Show("Entire game list copied as a paragraph to clipboard!\nPress CTRL+V to paste it anywhere!");
                 }
 
             }
@@ -3451,7 +3458,21 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 if (loaded)
                 {
-                    Clipboard.SetText(rookienamelist2);
+                    StringBuilder copyGamesListView = new StringBuilder();
+
+                    foreach (ListViewItem item in gamesListView.Items)
+                    {
+                        // Assuming the game name is in the first column (subitem index 0)
+                        copyGamesListView.Append(item.SubItems[0].Text).Append(", ");
+                    }
+
+                    // Remove the last ", " if there's any content in rookienamelist2
+                    if (copyGamesListView.Length > 2)
+                    {
+                        copyGamesListView.Length -= 2;
+                    }
+
+                    Clipboard.SetText(copyGamesListView.ToString());
                     _ = MessageBox.Show("Entire game list copied as a paragraph to clipboard!\nPress CTRL+V to paste it anywhere!");
                 }
 
@@ -3853,7 +3874,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                                rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                             }
 
                             ListViewItem Game = new ListViewItem(release);
@@ -4179,7 +4199,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                                rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                             }
 
                             ListViewItem Game = new ListViewItem(release);
@@ -4312,7 +4331,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                                rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                             }
 
                             ListViewItem Game = new ListViewItem(release);
