@@ -31,6 +31,7 @@ namespace AndroidSideloader
         public static int VersionCodeIndex = 3;
         public static int ReleaseAPKPathIndex = 4;
         public static int VersionNameIndex = 5;
+        public static int DownloadsIndex = 6;
 
         public static List<string> gameProperties = new List<string>();
         /* Game Name

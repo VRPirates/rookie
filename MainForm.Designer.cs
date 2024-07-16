@@ -49,6 +49,7 @@ namespace AndroidSideloader
             this.VersionCodeIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.ReleaseAPKPathIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.VersionNameIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.DownloadsIndex = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.searchTextBox = new System.Windows.Forms.TextBox();
             this.gamesQueueLabel = new System.Windows.Forms.Label();
             this.ProgressText = new System.Windows.Forms.Label();
@@ -283,7 +284,8 @@ namespace AndroidSideloader
             this.PackageNameIndex,
             this.VersionCodeIndex,
             this.ReleaseAPKPathIndex,
-            this.VersionNameIndex});
+            this.VersionNameIndex,
+            this.DownloadsIndex});
             this.gamesListView.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesListView.Font = new System.Drawing.Font("Segoe UI", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.gamesListView.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
@@ -332,6 +334,12 @@ namespace AndroidSideloader
             this.VersionNameIndex.Text = "Size (MB)";
             this.VersionNameIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.VersionNameIndex.Width = 66;
+            // 
+            // DownloadsIndex
+            // 
+            this.DownloadsIndex.Text = "Downloads";
+            this.DownloadsIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.DownloadsIndex.Width = 80;
             // 
             // searchTextBox
             // 
@@ -1506,6 +1514,7 @@ namespace AndroidSideloader
         private System.Windows.Forms.ColumnHeader VersionCodeIndex;
         private System.Windows.Forms.ColumnHeader ReleaseAPKPathIndex;
         public System.Windows.Forms.ColumnHeader VersionNameIndex;
+        public System.Windows.Forms.ColumnHeader DownloadsIndex;
         private RoundButton downloadInstallGameButton;
         private RoundButton MountButton;
         private ToolTip startsideloadbutton_Tooltip;
