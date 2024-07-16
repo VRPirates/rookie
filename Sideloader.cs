@@ -252,6 +252,16 @@ namespace AndroidSideloader
             return gameName;
         }
 
+        public static string gameNameToVersionCode(string gameName)
+        {
+            foreach (string[] game in SideloaderRCLONE.games)
+            {
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
+                    return game[SideloaderRCLONE.VersionCodeIndex];
+            }
+            return gameName;
+        }
+
         public static string PackageNametoGameName(string packageName)
         {
             foreach (string[] game in SideloaderRCLONE.games)

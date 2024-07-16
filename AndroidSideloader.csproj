@@ -253,6 +253,7 @@
     <Compile Include="Utilities\UpdateGameData.cs" />
     <Compile Include="Utilities\UploadGame.cs" />
     <Compile Include="Utilities\Zip.cs" />
+    <Compile Include="Utilities\Metrics.cs" />
     <EmbeddedResource Include="DonorsListView.resx">
       <DependentUpon>DonorsListView.cs</DependentUpon>
     </EmbeddedResource>

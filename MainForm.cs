@@ -2636,6 +2636,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 {
                     gameName = gamesQueueList.ToArray()[0];
                     string packagename = Sideloader.gameNameToPackageName(gameName);
+                    string versioncode = Sideloader.gameNameToVersionCode(gameName);
                     string dir = Path.GetDirectoryName(gameName);
                     string gameDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
                     string downloadDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
@@ -2707,6 +2708,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc --check-first --fast-list";
                                 gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
                             });
+                            Utilities.Metrics.CountDownload(packagename, versioncode);
                         }
                         else
                         {
@@ -2722,6 +2724,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         {
                             gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 1 --low-level-retries 1 --check-first");
                         });
+                        Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
 
                     if (Directory.Exists(downloadDirectory)) {
