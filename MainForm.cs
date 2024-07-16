@@ -1416,6 +1416,16 @@ namespace AndroidSideloader
                 string path = $"{dir}\\Install.txt";
                 if (Directory.Exists(data))
                 {
+                    string installFilePath = Directory.GetFiles(data)
+                        .FirstOrDefault(f => string.Equals(Path.GetFileName(f), "install.txt", StringComparison.OrdinalIgnoreCase));
+
+                    if (installFilePath != null)
+                    {
+                        // Run commands from install.txt
+                        output += Sideloader.RunADBCommandsFromFile(installFilePath);
+                        continue; // Skip further processing if install.txt is found
+                    }
+
                     if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
                     {
                         _ = Logger.Log($"Copying {data} to device");
