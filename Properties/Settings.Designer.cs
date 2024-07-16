@@ -729,5 +729,17 @@ namespace AndroidSideloader.Properties {
                 this["useDownloadedFiles"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public float bandwidthLimit {
+            get {
+                return ((float)(this["bandwidthLimit"]));
+            }
+            set {
+                this["bandwidthLimit"] = value;
+            }
+        }
     }
 }

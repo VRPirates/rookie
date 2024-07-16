@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -34,6 +35,7 @@ namespace AndroidSideloader
             trailersOn.Checked = Properties.Settings.Default.TrailersOn;
             chkSingleThread.Checked = Properties.Settings.Default.singleThreadMode;
             virtualFilesystemCompatibilityCheckbox.Checked = Properties.Settings.Default.virtualFilesystemCompatibility;
+            bandwidthLimitTextBox.Text = Properties.Settings.Default.bandwidthLimit.ToString();
             if (nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = false;
@@ -86,8 +88,19 @@ namespace AndroidSideloader
         //Apply settings
         private void applyButton_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
-            this.Close();
+            string input = bandwidthLimitTextBox.Text;
+            Regex regex = new Regex(@"^\d+(\.\d+)?$");
+
+            if (regex.IsMatch(input) && float.TryParse(input, out float bandwidthLimit))
+            {
+                Properties.Settings.Default.bandwidthLimit = bandwidthLimit;
+                Properties.Settings.Default.Save();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number for the bandwidth limit.");
+            }
         }
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -267,6 +280,19 @@ namespace AndroidSideloader
         {
             string pathToOpen = Properties.Settings.Default.customBackupDir ? $"{Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups")}" : $"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups")}";
             MainForm.OpenDirectory(pathToOpen);
+        }
+
+        private void bandwidthLimitTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+
+            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

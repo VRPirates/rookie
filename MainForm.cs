@@ -2666,6 +2666,11 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         extraArgs = "--transfers 1 --multi-thread-streams 0";
                     }
+                    string bandwidthLimit = string.Empty;
+                    if (Properties.Settings.Default.bandwidthLimit >= 0)
+                    {
+                        bandwidthLimit = $"--bwlimit={Properties.Settings.Default.bandwidthLimit}M";
+                    }
                     if (hasPublicConfig)
                     {
                         bool doDownload = true;
@@ -2705,7 +2710,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             t1 = new Thread(() =>
                             {
                                 string rclonecommand =
-                                $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc --check-first --fast-list";
+                                $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc --check-first --fast-list {bandwidthLimit}";
                                 gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
                             });
                             Utilities.Metrics.CountDownload(packagename, versioncode);
@@ -2722,7 +2727,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 1 --low-level-retries 1 --check-first");
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 1 --low-level-retries 1 --check-first {bandwidthLimit}");
                         });
                         Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
