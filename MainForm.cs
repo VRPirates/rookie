@@ -3441,6 +3441,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 adbCmd_background.Visible = false;
                 adbCmd_CommandBox.Visible = false;
                 adbCmd_btnToggleUpdates.Visible = false;
+                adbCmd_btnSend.Visible = false;
                 adbCmd_Label.Visible = false;
                 adbCmd_background.Visible = false;
             }
@@ -3484,6 +3485,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 adbCmd_CommandBox.Visible = true;
                 adbCmd_btnToggleUpdates.Visible = true;
+                adbCmd_btnSend.Visible = true;
                 adbCmd_CommandBox.Clear();
                 adbCmd_Label.Visible = true;
                 adbCmd_background.Visible = true;
@@ -3969,6 +3971,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         manualIP = false;
                         adbCmd_CommandBox.Visible = false;
                         adbCmd_btnToggleUpdates.Visible = false;
+                        adbCmd_btnSend.Visible = false;
                         adbCmd_Label.Visible = false;
                         adbCmd_background.Visible = false;
                         adbCmd_Label.Text = "Type ADB Command";
@@ -3988,6 +3991,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         manualIP = false;
                         adbCmd_CommandBox.Visible = false;
                         adbCmd_btnToggleUpdates.Visible = false;
+                        adbCmd_btnSend.Visible = false;
                         adbCmd_Label.Visible = false;
                         adbCmd_background.Visible = false;
                         adbCmd_Label.Text = "Type ADB Command";
@@ -3998,11 +4002,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
                 else
                 {
-                    Program.form.changeTitle($"Running adb command: ADB {adbCmd_CommandBox.Text}");
+                    string sentCommand = adbCmd_CommandBox.Text.Replace("adb", "");
+                    Program.form.changeTitle($"Running adb command: ADB {sentCommand}");
                     string output = ADB.RunAdbCommandToString(adbCmd_CommandBox.Text).Output;
-                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {adbCmd_CommandBox.Text}\r\nOutput:\r\n{output}");
+                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {sentCommand}\r\nOutput:\r\n{output}");
                     adbCmd_CommandBox.Visible = false;
                     adbCmd_btnToggleUpdates.Visible = false;
+                    adbCmd_btnSend.Visible = false;
                     adbCmd_Label.Visible = false;
                     adbCmd_background.Visible = false;
                     _ = gamesListView.Focus();
@@ -4013,6 +4019,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 adbCmd_CommandBox.Visible = false;
                 adbCmd_btnToggleUpdates.Visible = false;
+                adbCmd_btnSend.Visible = false;
                 adbCmd_Label.Visible = false;
                 adbCmd_background.Visible = false;
                 _ = gamesListView.Focus();
@@ -4024,6 +4031,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             adbCmd_background.Visible = false;
             adbCmd_CommandBox.Visible = false;
             adbCmd_btnToggleUpdates.Visible = false;
+            adbCmd_btnSend.Visible = false;
             adbCmd_Label.Visible = false;
         }
 
@@ -4440,6 +4448,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         {
             adbCmd_CommandBox.Visible = true;
             adbCmd_btnToggleUpdates.Visible = true;
+            adbCmd_btnSend.Visible = true;
             adbCmd_CommandBox.Clear();
             adbCmd_Label.Text = "Type ADB Command";
             adbCmd_Label.Visible = true;
@@ -4493,6 +4502,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
 
             // adb shell pm enable com.oculus.updater
+            KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
+            ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
+        }
+
+        private void adbCmd_btnSend_Click(object sender, EventArgs e)
+        {
             KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
             ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
         }

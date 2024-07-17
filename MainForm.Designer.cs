@@ -128,6 +128,7 @@ namespace AndroidSideloader
             this.adbCmd_btnToggleUpdates = new AndroidSideloader.RoundButton();
             this.MountButton = new AndroidSideloader.RoundButton();
             this.btnNoDevice = new AndroidSideloader.RoundButton();
+            this.adbCmd_btnSend = new AndroidSideloader.RoundButton();
             ((System.ComponentModel.ISupportInitialize)(this.gamesPictureBox)).BeginInit();
             this.progressDLbtnContainer.SuspendLayout();
             this.bottomContainer.SuspendLayout();
@@ -441,9 +442,9 @@ namespace AndroidSideloader
             // 
             this.adbCmd_background.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.adbCmd_background.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.adbCmd_background.Location = new System.Drawing.Point(467, 196);
+            this.adbCmd_background.Location = new System.Drawing.Point(462, 196);
             this.adbCmd_background.Name = "adbCmd_background";
-            this.adbCmd_background.Size = new System.Drawing.Size(271, 103);
+            this.adbCmd_background.Size = new System.Drawing.Size(322, 103);
             this.adbCmd_background.TabIndex = 89;
             this.adbCmd_background.Visible = false;
             // 
@@ -505,11 +506,10 @@ namespace AndroidSideloader
             this.adbCmd_CommandBox.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.adbCmd_CommandBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.adbCmd_CommandBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.adbCmd_CommandBox.Location = new System.Drawing.Point(479, 231);
-            this.adbCmd_CommandBox.MaximumSize = new System.Drawing.Size(247, 24);
+            this.adbCmd_CommandBox.Location = new System.Drawing.Point(477, 231);
             this.adbCmd_CommandBox.MinimumSize = new System.Drawing.Size(247, 24);
             this.adbCmd_CommandBox.Name = "adbCmd_CommandBox";
-            this.adbCmd_CommandBox.Size = new System.Drawing.Size(247, 24);
+            this.adbCmd_CommandBox.Size = new System.Drawing.Size(293, 24);
             this.adbCmd_CommandBox.TabIndex = 5;
             this.adbCmd_CommandBox.Visible = false;
             this.adbCmd_CommandBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
@@ -525,7 +525,7 @@ namespace AndroidSideloader
             this.adbCmd_Label.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.adbCmd_Label.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold);
             this.adbCmd_Label.ForeColor = System.Drawing.SystemColors.ControlLightLight;
-            this.adbCmd_Label.Location = new System.Drawing.Point(479, 205);
+            this.adbCmd_Label.Location = new System.Drawing.Point(500, 205);
             this.adbCmd_Label.MaximumSize = new System.Drawing.Size(247, 20);
             this.adbCmd_Label.MinimumSize = new System.Drawing.Size(247, 20);
             this.adbCmd_Label.Name = "adbCmd_Label";
@@ -1352,10 +1352,10 @@ namespace AndroidSideloader
             this.adbCmd_btnToggleUpdates.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.adbCmd_btnToggleUpdates.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
             this.adbCmd_btnToggleUpdates.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.adbCmd_btnToggleUpdates.Location = new System.Drawing.Point(523, 262);
+            this.adbCmd_btnToggleUpdates.Location = new System.Drawing.Point(627, 262);
             this.adbCmd_btnToggleUpdates.Name = "adbCmd_btnToggleUpdates";
             this.adbCmd_btnToggleUpdates.Radius = 5;
-            this.adbCmd_btnToggleUpdates.Size = new System.Drawing.Size(153, 28);
+            this.adbCmd_btnToggleUpdates.Size = new System.Drawing.Size(143, 28);
             this.adbCmd_btnToggleUpdates.Stroke = true;
             this.adbCmd_btnToggleUpdates.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
             this.adbCmd_btnToggleUpdates.TabIndex = 99;
@@ -1417,6 +1417,33 @@ namespace AndroidSideloader
             this.btnNoDevice.Transparency = false;
             this.btnNoDevice.Click += new System.EventHandler(this.btnNoDevice_Click);
             // 
+            // adbCmd_btnSend
+            // 
+            this.adbCmd_btnSend.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.adbCmd_btnSend.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.adbCmd_btnSend.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.adbCmd_btnSend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.adbCmd_btnSend.Cursor = System.Windows.Forms.Cursors.Default;
+            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.adbCmd_btnSend.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.adbCmd_btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.adbCmd_btnSend.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.adbCmd_btnSend.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.adbCmd_btnSend.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.adbCmd_btnSend.Location = new System.Drawing.Point(478, 262);
+            this.adbCmd_btnSend.Name = "adbCmd_btnSend";
+            this.adbCmd_btnSend.Radius = 5;
+            this.adbCmd_btnSend.Size = new System.Drawing.Size(126, 28);
+            this.adbCmd_btnSend.Stroke = true;
+            this.adbCmd_btnSend.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.adbCmd_btnSend.TabIndex = 100;
+            this.adbCmd_btnSend.Text = "Send Command";
+            this.adbCmd_btnSend.Transparency = false;
+            this.adbCmd_btnSend.Visible = false;
+            this.adbCmd_btnSend.Click += new System.EventHandler(this.adbCmd_btnSend_Click);
+            // 
             // MainForm
             // 
             this.AllowDrop = true;
@@ -1425,6 +1452,7 @@ namespace AndroidSideloader
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
             this.ClientSize = new System.Drawing.Size(1040, 747);
+            this.Controls.Add(this.adbCmd_btnSend);
             this.Controls.Add(this.adbCmd_btnToggleUpdates);
             this.Controls.Add(this.ULLabel);
             this.Controls.Add(this.verLabel);
@@ -1579,5 +1607,6 @@ namespace AndroidSideloader
         private Button btnRunAdbCmd;
         private RoundButton btnNoDevice;
         private RoundButton adbCmd_btnToggleUpdates;
+        private RoundButton adbCmd_btnSend;
     }
 }
