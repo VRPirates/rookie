@@ -32,7 +32,7 @@ namespace AndroidSideloader.Utilities
 
         private static async Task<string> sendToApi(string apiUrl, string requestBody = null, string type = "get")
         {
-            var authToken = "dnJwX21ldHJpYzo0SXVMaVdzYUpHYnBpWU12QWFjYVpn";
+            string token = "cm9va2llOkN0UHlyTE9oUGoxWXg1cE9KdDNBSkswZ25n";
 
             using (var client = new HttpClient())
             {
@@ -60,7 +60,7 @@ namespace AndroidSideloader.Utilities
                 }
 
                 // Add headers to the request
-                request.Headers.Add("Authorization", authToken);
+                request.Headers.Add("Authorization", token);
                 request.Headers.Add("Origin", "rookie");
 
                 string responseContent = "";
