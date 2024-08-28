@@ -2123,7 +2123,7 @@ namespace AndroidSideloader
             }
             progressBar.Style = ProgressBarStyle.Continuous;
 
-            if (either && !updatesNotified)
+            if (either && !updatesNotified && !noAppCheck)
             {
                 changeTitle("                                                \n\n");
                 DonorsListViewForm DonorForm = new DonorsListViewForm();
