@@ -16,7 +16,7 @@ namespace AndroidSideloader
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnApplyTempSettings_Click(object sender, EventArgs e)
         {
             bool ChangesMade = false;
 
@@ -155,7 +155,7 @@ namespace AndroidSideloader
             Program.form.changeTitle("Done!");
         }
 
-        private void button3_Click(object sender, EventArgs e)
+        private void btnApplyUsername_Click(object sender, EventArgs e)
         {
             _ = ADB.RunAdbCommandToString($"shell settings put global username {GlobalUsername.Text}");
             _ = MessageBox.Show($"Username set as {GlobalUsername.Text}", "Success");
@@ -180,7 +180,7 @@ namespace AndroidSideloader
 
         private void GlobalUsername_TextChanged(object sender, EventArgs e)
         {
-            button3.Enabled = GlobalUsername.TextLength > 0;
+            btnApplyUsername.Enabled = GlobalUsername.TextLength > 0;
             Properties.Settings.Default.GlobalUsername = GlobalUsername.Text;
             Properties.Settings.Default.Save();
         }
