@@ -75,6 +75,8 @@ namespace AndroidSideloader
                 command += $" --config {downloadConfigPath}";
             }
 
+            command += $" --inplace";
+
             // set rclonepw
             if (rclonepw.Length > 0)
             {
