@@ -56,7 +56,7 @@ namespace AndroidSideloader
         public static void UpdateGamePhotos(string remote)
         {
             _ = Logger.Log($"Updating Thumbnails");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\"");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --transfers 10");
         }
 
         public static void UpdateGameNotes(string remote)
@@ -179,9 +179,12 @@ namespace AndroidSideloader
                                                  | SecurityProtocolType.Tls12
                                                  | SecurityProtocolType.Ssl3;
             _ = Logger.Log($"Attempting to Update Download Config");
+
+            string downloadConfigFilename = "vrp.download.config";
+
             try
             {
-                string configUrl = "https://vrpirates.wiki/downloads/vrp.download.config";
+                string configUrl = $"https://vrpirates.wiki/downloads/{downloadConfigFilename}";
 
                 HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))
@@ -190,23 +193,23 @@ namespace AndroidSideloader
 
                     _ = Logger.Log($"Retrieved updated config from: {configUrl}");
 
-                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new")))
+                    if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")))
                     {
-                        File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
+                        File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"));
                     }
 
-                    File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new")).Close();
-                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"), resultString);
+                    File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")).Close();
+                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"), resultString);
 
                     if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")))
                     {
                         File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")).Close();
                     }
 
-                    string newConfig = CalculateMD5(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
+                    string newConfig = CalculateMD5(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"));
                     string oldConfig = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"));
 
-                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config")))
+                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}")))
                     {
                         oldConfig = "Config Doesnt Exist!";
                     }
@@ -217,12 +220,12 @@ namespace AndroidSideloader
                     {
                         _ = Logger.Log($"Updated Config Hash is different than the current Config. Updating Configuration File.");
 
-                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config")))
+                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}")))
                         {
-                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config"));
+                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}"));
                         }
 
-                        File.Move(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"), Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config"));
+                        File.Move(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"), Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}"));
 
                         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), string.Empty);
                         File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), newConfig);
@@ -231,9 +234,9 @@ namespace AndroidSideloader
                     {
                         _ = Logger.Log($"Updated Config Hash matches last download. Not updating.");
 
-                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new")))
+                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")))
                         {
-                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.download.config_new"));
+                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}g_new"));
                         }
                     }
                 }
