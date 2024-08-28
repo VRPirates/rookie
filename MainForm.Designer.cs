@@ -1045,7 +1045,7 @@ namespace AndroidSideloader
             // deviceDrop
             // 
             this.deviceDrop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.deviceDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c;
+            this.deviceDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone;
             this.deviceDrop.Cursor = System.Windows.Forms.Cursors.Default;
             this.deviceDrop.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.deviceDrop.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -1082,7 +1082,7 @@ namespace AndroidSideloader
             // sideloadDrop
             // 
             this.sideloadDrop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.sideloadDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c;
+            this.sideloadDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone;
             this.sideloadDrop.Cursor = System.Windows.Forms.Cursors.Default;
             this.sideloadDrop.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.sideloadDrop.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -1119,7 +1119,7 @@ namespace AndroidSideloader
             // installedAppsMenu
             // 
             this.installedAppsMenu.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.installedAppsMenu.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c;
+            this.installedAppsMenu.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone;
             this.installedAppsMenu.Cursor = System.Windows.Forms.Cursors.Default;
             this.installedAppsMenu.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.installedAppsMenu.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -1156,7 +1156,7 @@ namespace AndroidSideloader
             // backupDrop
             // 
             this.backupDrop.BackColor = global::AndroidSideloader.Properties.Settings.Default.ButtonColor;
-            this.backupDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c;
+            this.backupDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone;
             this.backupDrop.Cursor = System.Windows.Forms.Cursors.Default;
             this.backupDrop.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.backupDrop.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -1194,7 +1194,7 @@ namespace AndroidSideloader
             // otherDrop
             // 
             this.otherDrop.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(50)))), ((int)(((byte)(50)))), ((int)(((byte)(50)))));
-            this.otherDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c;
+            this.otherDrop.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_herringbone;
             this.otherDrop.Cursor = System.Windows.Forms.Cursors.Default;
             this.otherDrop.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.otherDrop.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
@@ -1450,7 +1450,7 @@ namespace AndroidSideloader
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
+            this.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes;
             this.ClientSize = new System.Drawing.Size(1040, 747);
             this.Controls.Add(this.adbCmd_btnSend);
             this.Controls.Add(this.adbCmd_btnToggleUpdates);

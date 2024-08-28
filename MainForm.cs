@@ -71,7 +71,7 @@ namespace AndroidSideloader
             InitializeComponent();
             SplashScreen = new Splash();
             SplashScreen.Show();
-
+            
             // Check for Offline Mode or No RCLONE Updating
             CheckCommandLineArguments();
 
@@ -124,10 +124,6 @@ namespace AndroidSideloader
                 {
                     noAppCheck = true;
                 }
-            }
-            if (isOffline)
-            {
-                _ = FlexibleMessageBox.Show(Program.form, "Offline Mode Activated. You cannot download from servers in Offline Mode.");
             }
         }
 
@@ -238,9 +234,14 @@ namespace AndroidSideloader
         {
             _ = Logger.Log("Starting AndroidSideloader Application");
 
-            // download dependencies
-            Sideloader.downloadFiles();
-            MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
+            if (isOffline) {
+                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_offline);
+                changeTitle("Starting in Offline Mode...");
+            } else {
+                // download dependencies
+                Sideloader.downloadFiles();
+                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
+            }
 
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
