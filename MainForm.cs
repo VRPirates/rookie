@@ -381,11 +381,13 @@ namespace AndroidSideloader
             {
                 lblMirror.Text = " Public Mirror";
                 remotesList.Size = System.Drawing.Size.Empty;
+                _ = Logger.Log($"Using Public Mirror");
             }
             if (isOffline)
             {
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = System.Drawing.Size.Empty;
+                _ = Logger.Log($"Using Offline Mode");
             }
             if (Properties.Settings.Default.nodevicemode)
             {
@@ -409,14 +411,30 @@ namespace AndroidSideloader
                 if (!isOffline)
                 {
                     changeTitle("Initializing Servers...");
-                    if (Properties.Settings.Default.autoUpdateConfig)
-                    {
-                        changeTitle("Checking for a new Configuration File...");
-                        SideloaderRCLONE.updateDownloadConfig();
-                    }
                     SideloaderRCLONE.updateUploadConfig();
+                }
 
-                    initMirrors();
+            });
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.IsBackground = true;
+
+            if (!isOffline)
+            {
+                t1.Start();
+            }
+            while (t1.IsAlive)
+            {
+                await Task.Delay(100);
+            }
+
+
+            Thread t6 = new Thread(async () =>
+            {
+                if (!isOffline)
+                {
+                    _ = Logger.Log("Initializing Servers");
+                    changeTitle("Initializing Servers...");
+                    await initMirrors();
 
                     if (!hasPublicConfig)
                     {
@@ -430,18 +448,18 @@ namespace AndroidSideloader
                 }
 
             });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = true;
+            t6.SetApartmentState(ApartmentState.STA);
+            t6.IsBackground = false;
 
             if (!isOffline)
             {
-                t1.Start();
+                t6.Start();
             }
-
-            while (t1.IsAlive)
+            while (t6.IsAlive)
             {
                 await Task.Delay(100);
             }
+
 
             Thread t5 = new Thread(() =>
             {
@@ -2296,12 +2314,18 @@ namespace AndroidSideloader
             };
             gamesToUpload.Add(game);
         }
-        private void initMirrors()
+        
+        private async Task initMirrors()
         {
+            _ = Logger.Log("Looking for Additional Mirrors...");
             int index = 0;
-            remotesList.Invoke(() => { index = remotesList.SelectedIndex; remotesList.Items.Clear(); });
+            await Task.Run(() => remotesList.Invoke(() => 
+            { 
+                index = remotesList.SelectedIndex; 
+                remotesList.Items.Clear(); 
+            }));
 
-            string[] mirrors = RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n');
+            string[] mirrors = await Task.Run(() => RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n'));
 
             _ = Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
@@ -2310,19 +2334,22 @@ namespace AndroidSideloader
                 if (mirror.Contains("mirror"))
                 {
                     _ = Logger.Log(mirror.Remove(mirror.Length - 1));
-                    remotesList.Invoke(() => { _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); });
+                    await Task.Run(() => remotesList.Invoke(() => 
+                    { 
+                        _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); 
+                    }));
                     itemsCount++;
                 }
             }
 
             if (itemsCount > 0)
             {
-                remotesList.Invoke(() =>
+                await Task.Run(() => remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = 0; // Set mirror to first item in array.
                     currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
-                });
-            };
+                }));
+            }
         }
 
         public static string processError = string.Empty;
@@ -2458,9 +2485,10 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Marquee;
             devicesbutton_Click(sender, e);
 
+            await initMirrors();
+
             Thread t1 = new Thread(() =>
             {
-                initMirrors();
                 if (!hasPublicConfig)
                 {
                     SideloaderRCLONE.initGames(currentRemote);
@@ -2723,7 +2751,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 1 --low-level-retries 1 --check-first");
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first");
                         });
                         Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
