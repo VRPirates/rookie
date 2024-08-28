@@ -12,6 +12,7 @@ RSL 2.30
 - Feature: Added additional Splashes to indicate loading status
 - Feature: Added setting to supress Re-Download prompt
 - Feature: Added "Disable Checking for New Apps" argument (for Testers sanity)
+- Feature: Added Bandwidth Limiter to Settings
 - Fix: Fixes for using Sponsored Mirrors
     -- Eliminated downloading of vrp.download.config from the wiki
     -- Fixed issue where Rookie would check for the mirror before it was loaded in
@@ -19,6 +20,8 @@ RSL 2.30
 - Fix: Public Mirror label not displaying
 - Fix: Allow spaces when setting username
 - Fix: Prevent Rookie from constantly prompting for the Public Config
+- Fix: Fixed issue where the Game List doesn't copy/export properly
+- Fix: Fixed issue where dropping an entire folder doesn't read the install.txt
 - Chore: Remove random mirror picker (no longer used)
 - Chore: Changed unable to connect message
 - Chore: Remove Offline Mode popup
