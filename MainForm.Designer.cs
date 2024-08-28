@@ -507,9 +507,10 @@ namespace AndroidSideloader
             this.adbCmd_CommandBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.adbCmd_CommandBox.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.adbCmd_CommandBox.Location = new System.Drawing.Point(477, 231);
-            this.adbCmd_CommandBox.MinimumSize = new System.Drawing.Size(247, 24);
+            this.adbCmd_CommandBox.MaximumSize = new System.Drawing.Size(290, 24);
+            this.adbCmd_CommandBox.MinimumSize = new System.Drawing.Size(290, 24);
             this.adbCmd_CommandBox.Name = "adbCmd_CommandBox";
-            this.adbCmd_CommandBox.Size = new System.Drawing.Size(357, 24);
+            this.adbCmd_CommandBox.Size = new System.Drawing.Size(290, 24);
             this.adbCmd_CommandBox.TabIndex = 5;
             this.adbCmd_CommandBox.Visible = false;
             this.adbCmd_CommandBox.TextChanged += new System.EventHandler(this.searchTextBox_TextChanged);
