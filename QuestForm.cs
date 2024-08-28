@@ -94,6 +94,7 @@ namespace AndroidSideloader
                 Properties.Settings.Default.Save();
             }
         }
+
         private void QuestForm_Load(object sender, EventArgs e)
         {
             DeleteShots.Checked = Properties.Settings.Default.delsh;
@@ -153,19 +154,12 @@ namespace AndroidSideloader
             _ = MessageBox.Show("Transfer finished! Recordings can be found in a folder named Quest Recordings on your desktop!");
             Program.form.changeTitle("Done!");
         }
+
         private void button3_Click(object sender, EventArgs e)
         {
-            if (GlobalUsername.Text.Contains(" "))
-            {
-                _ = MessageBox.Show("Usernames with a space are not permitted.", "Detected a space in username!");
-            }
-            else
-            {
-                _ = ADB.RunAdbCommandToString($"shell settings put global username {GlobalUsername.Text}");
-                _ = MessageBox.Show($"Username set as {GlobalUsername.Text}", "Success");
-            }
+            _ = ADB.RunAdbCommandToString($"shell settings put global username {GlobalUsername.Text}");
+            _ = MessageBox.Show($"Username set as {GlobalUsername.Text}", "Success");
         }
-
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
