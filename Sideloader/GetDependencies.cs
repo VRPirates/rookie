@@ -63,6 +63,8 @@ namespace AndroidSideloader
         // Download required dependencies.
         public static void downloadFiles()
         {
+            MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_deps);
+            
             WebClient client = new WebClient();
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -102,8 +104,6 @@ namespace AndroidSideloader
             {
                 if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
                 {
-                    MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_deps);
-
                     if (!Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools"))
                     {
                         _ = Directory.CreateDirectory($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
@@ -176,6 +176,8 @@ namespace AndroidSideloader
 
                 if (updateRclone == true)
                 {
+                    MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_rclone);
+
                     string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
                     string url = $"https://downloads.rclone.org/v{wantedRcloneVersion}/rclone-v{wantedRcloneVersion}-windows-{architecture}.zip";
                     if (useFallback == true) {
