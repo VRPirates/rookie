@@ -194,6 +194,7 @@
     </Compile>
     <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="RoundedRectangleF.cs" />
+    <Compile Include="Sideloader\GetDependencies.cs" />
     <Compile Include="Splash.cs">
       <SubType>Form</SubType>
     </Compile>

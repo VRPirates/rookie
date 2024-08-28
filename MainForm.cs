@@ -202,7 +202,7 @@ namespace AndroidSideloader
 
         private async Task GetPublicConfigAsync()
         {
-            await Task.Run(() => SideloaderRCLONE.updatePublicConfig());
+            await Task.Run(() => GetDependencies.updatePublicConfig());
 
             try
             {
@@ -239,7 +239,7 @@ namespace AndroidSideloader
                 changeTitle("Starting in Offline Mode...");
             } else {
                 // download dependencies
-                Sideloader.downloadFiles();
+                GetDependencies.downloadFiles();
                 SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
             }
 
