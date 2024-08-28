@@ -127,7 +127,7 @@ namespace AndroidSideloader
             }
             if (isOffline)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "Offline mode activated. You can't download games in this mode, only do local stuff.");
+                _ = FlexibleMessageBox.Show(Program.form, "Offline Mode Activated. You cannot download from servers in Offline Mode.");
             }
         }
 
