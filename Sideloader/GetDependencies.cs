@@ -66,6 +66,7 @@ namespace AndroidSideloader
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             var currentAccessedWebsite = "";
+
             try
             {
                 if (!File.Exists("Sideloader Launcher.exe"))
@@ -161,7 +162,7 @@ namespace AndroidSideloader
             {
                 if (currentAccessedWebsite == "github")
                 {
-                    _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception: {ex.Message}\nSome files may be missing (ADB, Offline Script, Launcher)");
+                    _ = FlexibleMessageBox.Show($"You are unable to access raw.githubusercontent.com with the Exception: {ex.Message}\nSome files may be missing (ADB, Offline Script, Launcher)");
                     _ = FlexibleMessageBox.Show("These required files were unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
                     Application.Exit();
                 }

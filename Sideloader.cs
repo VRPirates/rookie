@@ -327,7 +327,7 @@ namespace AndroidSideloader
             }
             catch (Exception ex)
             {
-                _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception:\n{ex.Message}\n\nSome files may be missing (Offline/Cleanup Script, Launcher)");
+                _ = FlexibleMessageBox.Show($"You are unable to access raw.githubusercontent.com with the Exception:\n{ex.Message}\n\nSome files may be missing (Offline/Cleanup Script, Launcher)");
             }
 
             try
@@ -351,7 +351,7 @@ namespace AndroidSideloader
             }
             catch (Exception ex)
             {
-                _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception:\n{ex.Message}\n\nSome files may be missing (ADB)");
+                _ = FlexibleMessageBox.Show($"You are unable to access raw.githubusercontent.com page with the Exception:\n{ex.Message}\n\nSome files may be missing (ADB)");
                 _ = FlexibleMessageBox.Show("ADB was unable to be downloaded\nRookie will now close.");
                 Application.Exit();
             }
