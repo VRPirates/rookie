@@ -2705,7 +2705,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         extraArgs = "--transfers 1 --multi-thread-streams 0";
                     }
                     string bandwidthLimit = string.Empty;
-                    if (Properties.Settings.Default.bandwidthLimit >= 0)
+                    if (Properties.Settings.Default.bandwidthLimit > 0)
                     {
                         bandwidthLimit = $"--bwlimit={Properties.Settings.Default.bandwidthLimit}M";
                     }
