@@ -2748,7 +2748,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             t1 = new Thread(() =>
                             {
                                 string rclonecommand =
-                                $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc --check-first --fast-list {bandwidthLimit}";
+                                $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc {bandwidthLimit}";
                                 gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
                             });
                             Utilities.Metrics.CountDownload(packagename, versioncode);
