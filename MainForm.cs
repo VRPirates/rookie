@@ -411,7 +411,7 @@ namespace AndroidSideloader
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (!isOffline)
                 {
-                    changeTitle("Initializing Servers...");
+                    changeTitle("Getting Upload Config...");
                     SideloaderRCLONE.updateUploadConfig();
                 }
 
