@@ -166,7 +166,11 @@ namespace AndroidSideloader
                             _ = Logger.Log($"RCLONE Version does not match ({currentRcloneVersion})! Downloading required version ({wantedRcloneVersion})");
                         }
                     }
+                } else {
+                    updateRclone = true;
+                    _ = Logger.Log($"RCLONE exe does not exist, attempting to download");
                 }
+
                 if (!Directory.Exists(dirRclone)) {
                     updateRclone = true;
                     _ = Logger.Log($"Missing RCLONE Folder, attempting to download");
