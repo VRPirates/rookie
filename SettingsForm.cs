@@ -140,6 +140,9 @@ namespace AndroidSideloader
         private void updateConfigCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.autoUpdateConfig = updateConfigCheckBox.Checked;
+            if (Properties.Settings.Default.autoUpdateConfig == true) {
+                Properties.Settings.Default.createPubMirrorFile = true;
+            }
         }
 
         private void userJsonOnGameInstall_CheckedChanged(object sender, EventArgs e)

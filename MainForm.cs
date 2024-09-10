@@ -367,6 +367,7 @@ namespace AndroidSideloader
                     else
                     {
                         Properties.Settings.Default.createPubMirrorFile = false;
+                        Properties.Settings.Default.autoUpdateConfig = false;
                         Properties.Settings.Default.Save();
                     }
                 }
