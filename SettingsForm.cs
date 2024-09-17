@@ -2,6 +2,7 @@
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -34,11 +35,13 @@ namespace AndroidSideloader
             trailersOn.Checked = Properties.Settings.Default.TrailersOn;
             chkSingleThread.Checked = Properties.Settings.Default.singleThreadMode;
             virtualFilesystemCompatibilityCheckbox.Checked = Properties.Settings.Default.virtualFilesystemCompatibility;
+            bandwidthLimitTextBox.Text = Properties.Settings.Default.bandwidthLimit.ToString();
             if (nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = false;
                 deleteAfterInstallCheckBox.Enabled = false;
             }
+            chkUseDownloadedFiles.Checked = Properties.Settings.Default.useDownloadedFiles;
         }
 
         private void intToolTips()
@@ -49,6 +52,8 @@ namespace AndroidSideloader
             enableMessageBoxesToolTip.SetToolTip(enableMessageBoxesCheckBox, "If this is checked, the software will display message boxes after every completed task");
             ToolTip deleteAfterInstallToolTip = new ToolTip();
             deleteAfterInstallToolTip.SetToolTip(deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
+            ToolTip chkUseDownloadedFilesTooltip = new ToolTip();
+            chkUseDownloadedFilesTooltip.SetToolTip(chkUseDownloadedFiles, "If this is checked, Rookie will always install Downloaded files without Re-Downloading or Asking to Re-Download");
         }
 
         public void btnUploadDebug_click(object sender, EventArgs e)
@@ -83,18 +88,36 @@ namespace AndroidSideloader
         //Apply settings
         private void applyButton_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Save();
-            this.Close();
+            string input = bandwidthLimitTextBox.Text;
+            Regex regex = new Regex(@"^\d+(\.\d+)?$");
+
+            if (regex.IsMatch(input) && float.TryParse(input, out float bandwidthLimit))
+            {
+                Properties.Settings.Default.bandwidthLimit = bandwidthLimit;
+                Properties.Settings.Default.Save();
+                this.Close();
+            }
+            else
+            {
+                MessageBox.Show("Please enter a valid number for the bandwidth limit.");
+            }
         }
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.checkForUpdates = checkForUpdatesCheckBox.Checked;
+            Properties.Settings.Default.Save();
+        }
+        private void chkUseDownloadedFiles_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.useDownloadedFiles = chkUseDownloadedFiles.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void enableMessageBoxesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.enableMessageBoxes = enableMessageBoxesCheckBox.Checked;
+            Properties.Settings.Default.Save();
         }
 
         private void resetSettingsButton_Click(object sender, EventArgs e)
@@ -104,7 +127,9 @@ namespace AndroidSideloader
             Properties.Settings.Default.customBackupDir = false;
             MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
+            Properties.Settings.Default.createPubMirrorFile = true;
             intSettings();
+            Properties.Settings.Default.Save();
         }
 
         private void deleteAfterInstallCheckBox_CheckedChanged(object sender, EventArgs e)
@@ -115,6 +140,9 @@ namespace AndroidSideloader
         private void updateConfigCheckBox_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.autoUpdateConfig = updateConfigCheckBox.Checked;
+            if (Properties.Settings.Default.autoUpdateConfig == true) {
+                Properties.Settings.Default.createPubMirrorFile = true;
+            }
         }
 
         private void userJsonOnGameInstall_CheckedChanged(object sender, EventArgs e)
@@ -255,6 +283,19 @@ namespace AndroidSideloader
         {
             string pathToOpen = Properties.Settings.Default.customBackupDir ? $"{Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups")}" : $"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups")}";
             MainForm.OpenDirectory(pathToOpen);
+        }
+
+        private void bandwidthLimitTextBox_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+
+            if ((e.KeyChar == '.') && ((sender as TextBox).Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
+            }
         }
     }
 }

@@ -201,10 +201,10 @@ namespace AndroidSideloader
         {
             Program.form.Invoke(() =>
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt, check box to \"Always allow from this computer.\" and hit OK.\nPlease note that even if you have done this\nbefore it will reset itself from time to time.\n\nPress CANCEL if you want to disable this prompt (FOR DEBUGGING ONLY, NOT RECOMMENDED).", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "On your headset, click on the Notifications Bell, and then select the USB Detected notification to enable Connections.", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
-                    Properties.Settings.Default.adbdebugwarned = true;
+                    // Properties.Settings.Default.adbdebugwarned = true;
                     Properties.Settings.Default.Save();
                 }
             });
@@ -283,7 +283,7 @@ namespace AndroidSideloader
                     Program.form.changeTitle("Performing reinstall, please wait...");
                     _ = ADB.RunAdbCommandToString("kill-server");
                     _ = ADB.RunAdbCommandToString("devices");
-                    _ = ADB.RunAdbCommandToString($"pull /sdcard/Android/data/{MainForm.CurrPCKG} \"{Environment.CurrentDirectory}\"");
+                    _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data/{MainForm.CurrPCKG}\" \"{Environment.CurrentDirectory}\"");
                     Program.form.changeTitle("Uninstalling game...");
                     _ = Sideloader.UninstallGame(MainForm.CurrPCKG);
                     Program.form.changeTitle("Reinstalling Game");
@@ -308,7 +308,7 @@ namespace AndroidSideloader
             string folder = Path.GetFileName(path);
             string lastFolder = Path.GetFileName(path);
             return folder.Contains(".")
-                ? RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{lastFolder} && mkdir /sdcard/Android/obb/{lastFolder}") + RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"")
+                ? RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{lastFolder}\" && mkdir \"/sdcard/Android/obb/{lastFolder}\"") + RunAdbCommandToString($"push \"{path}\" \"/sdcard/Android/obb\"")
                 : new ProcessOutput("No OBB Folder found");
         }
     }

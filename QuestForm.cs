@@ -16,7 +16,7 @@ namespace AndroidSideloader
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnApplyTempSettings_Click(object sender, EventArgs e)
         {
             bool ChangesMade = false;
 
@@ -94,6 +94,7 @@ namespace AndroidSideloader
                 Properties.Settings.Default.Save();
             }
         }
+
         private void QuestForm_Load(object sender, EventArgs e)
         {
             DeleteShots.Checked = Properties.Settings.Default.delsh;
@@ -153,19 +154,12 @@ namespace AndroidSideloader
             _ = MessageBox.Show("Transfer finished! Recordings can be found in a folder named Quest Recordings on your desktop!");
             Program.form.changeTitle("Done!");
         }
-        private void button3_Click(object sender, EventArgs e)
-        {
-            if (GlobalUsername.Text.Contains(" "))
-            {
-                _ = MessageBox.Show("Usernames with a space are not permitted.", "Detected a space in username!");
-            }
-            else
-            {
-                _ = ADB.RunAdbCommandToString($"shell settings put global username {GlobalUsername.Text}");
-                _ = MessageBox.Show($"Username set as {GlobalUsername.Text}", "Success");
-            }
-        }
 
+        private void btnApplyUsername_Click(object sender, EventArgs e)
+        {
+            _ = ADB.RunAdbCommandToString($"shell settings put global username {GlobalUsername.Text}");
+            _ = MessageBox.Show($"Username set as {GlobalUsername.Text}", "Success");
+        }
 
         private void Form_KeyDown(object sender, KeyEventArgs e)
         {
@@ -186,7 +180,7 @@ namespace AndroidSideloader
 
         private void GlobalUsername_TextChanged(object sender, EventArgs e)
         {
-            button3.Enabled = GlobalUsername.TextLength > 0;
+            btnApplyUsername.Enabled = GlobalUsername.TextLength > 0;
             Properties.Settings.Default.GlobalUsername = GlobalUsername.Text;
             Properties.Settings.Default.Save();
         }

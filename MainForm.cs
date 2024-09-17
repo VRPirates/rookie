@@ -21,7 +21,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
@@ -55,10 +57,12 @@ namespace AndroidSideloader
         private bool isLoading = true;
         public static bool isOffline = false;
         public static bool noRcloneUpdating;
+        public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
+        public static Splash SplashScreen;
         private bool manualIP;
         private System.Windows.Forms.Timer _debounceTimer;
         private CancellationTokenSource _cts;
@@ -66,7 +70,9 @@ namespace AndroidSideloader
         public MainForm()
         {
             InitializeComponent();
-
+            SplashScreen = new Splash();
+            SplashScreen.Show();
+            
             // Check for Offline Mode or No RCLONE Updating
             CheckCommandLineArguments();
 
@@ -115,10 +121,10 @@ namespace AndroidSideloader
                 {
                     noRcloneUpdating = true;
                 }
-            }
-            if (isOffline)
-            {
-                _ = FlexibleMessageBox.Show(Program.form, "Offline mode activated. You can't download games in this mode, only do local stuff.");
+                if (arg == "--disable-app-check")
+                {
+                    noAppCheck = true;
+                }
             }
         }
 
@@ -197,7 +203,7 @@ namespace AndroidSideloader
 
         private async Task GetPublicConfigAsync()
         {
-            await Task.Run(() => SideloaderRCLONE.updatePublicConfig());
+            await Task.Run(() => GetDependencies.updatePublicConfig());
 
             try
             {
@@ -229,11 +235,14 @@ namespace AndroidSideloader
         {
             _ = Logger.Log("Starting AndroidSideloader Application");
 
-            Splash splash = new Splash();
-            splash.Show();
-
-            // download dependencies
-            Sideloader.downloadFiles();
+            if (isOffline) {
+                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_offline);
+                changeTitle("Starting in Offline Mode...");
+            } else {
+                // download dependencies
+                GetDependencies.downloadFiles();
+                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
+            }
 
             Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
             Properties.Settings.Default.Save();
@@ -306,29 +315,12 @@ namespace AndroidSideloader
                 }
             }
 
-            if (hasPublicConfig)
-            {
-                lblMirror.Text = " Public Mirror";
-                remotesList.Size = Size.Empty;
-            }
-            if (isOffline)
-            {
-                lblMirror.Text = " Offline Mode";
-                remotesList.Size = Size.Empty;
-            }
-            if (Properties.Settings.Default.nodevicemode)
-            {
-                btnNoDevice.Text = "Enable Sideloading";
-            }
-
             _ = Logger.Log("Attempting to Initalize ADB Server");
             if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe")))
             {
                 _ = ADB.RunAdbCommandToString("kill-server");
                 _ = ADB.RunAdbCommandToString("start-server");
             }
-
-            splash.Close();
 
             this.Form1_Shown(sender, e);
         }
@@ -360,7 +352,7 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
-                else if (Properties.Settings.Default.autoUpdateConfig)
+                else if (Properties.Settings.Default.autoUpdateConfig && Properties.Settings.Default.createPubMirrorFile)
                 {
                     DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
@@ -372,6 +364,12 @@ namespace AndroidSideloader
                             _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                         }
                     }
+                    else
+                    {
+                        Properties.Settings.Default.createPubMirrorFile = false;
+                        Properties.Settings.Default.autoUpdateConfig = false;
+                        Properties.Settings.Default.Save();
+                    }
                 }
 
                 string webViewDirectoryPath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "EBWebView");
@@ -381,29 +379,64 @@ namespace AndroidSideloader
                 }
             }
 
+            if (hasPublicConfig)
+            {
+                lblMirror.Text = " Public Mirror";
+                remotesList.Size = System.Drawing.Size.Empty;
+                _ = Logger.Log($"Using Public Mirror");
+            }
+            if (isOffline)
+            {
+                lblMirror.Text = " Offline Mode";
+                remotesList.Size = System.Drawing.Size.Empty;
+                _ = Logger.Log($"Using Offline Mode");
+            }
+            if (Properties.Settings.Default.nodevicemode)
+            {
+                btnNoDevice.Text = "Enable Sideloading";
+            }
+
+            SplashScreen.Close();
+
             progressBar.Style = ProgressBarStyle.Marquee;
-            Thread t1 = new Thread(() =>
+            Thread t1 = new Thread(async () =>
             {
                 if (!debugMode && Properties.Settings.Default.checkForUpdates)
                 {
                     Updater.AppName = "AndroidSideloader";
                     Updater.Repository = "VRPirates/rookie";
-                    Updater.Update();
+                    await Updater.Update();
                 }
                 progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
 
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (!isOffline)
                 {
-                    changeTitle("Initializing Servers...");
-                    if (Properties.Settings.Default.autoUpdateConfig)
-                    {
-                        changeTitle("Checking for a new Configuration File...");
-                        SideloaderRCLONE.updateDownloadConfig();
-                    }
+                    changeTitle("Getting Upload Config...");
                     SideloaderRCLONE.updateUploadConfig();
+                }
 
-                    initMirrors(true);
+            });
+            t1.SetApartmentState(ApartmentState.STA);
+            t1.IsBackground = true;
+
+            if (!isOffline)
+            {
+                t1.Start();
+            }
+            while (t1.IsAlive)
+            {
+                await Task.Delay(100);
+            }
+
+
+            Thread t6 = new Thread(async () =>
+            {
+                if (!isOffline)
+                {
+                    _ = Logger.Log("Initializing Servers");
+                    changeTitle("Initializing Servers...");
+                    await initMirrors();
 
                     if (!hasPublicConfig)
                     {
@@ -417,21 +450,22 @@ namespace AndroidSideloader
                 }
 
             });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = true;
+            t6.SetApartmentState(ApartmentState.STA);
+            t6.IsBackground = false;
 
             if (!isOffline)
             {
-                t1.Start();
+                t6.Start();
             }
-
-            while (t1.IsAlive)
+            while (t6.IsAlive)
             {
                 await Task.Delay(100);
             }
 
+
             Thread t5 = new Thread(() =>
             {
+                changeTitle("Connecting to your Quest...");
                 if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
                 {
                     string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
@@ -1041,7 +1075,7 @@ namespace AndroidSideloader
                 Logger.Log("Selected .ab file: " + selectedPath);
 
                 _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Restore My Data'\r\nRookie will remain frozen until the process is completed.");
-                output_abRestore = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}").Output;
+                output_abRestore = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}\"").Output;
             }
             if (fileDialogResult != DialogResult.OK)
             {
@@ -1403,6 +1437,16 @@ namespace AndroidSideloader
                 string path = $"{dir}\\Install.txt";
                 if (Directory.Exists(data))
                 {
+                    string installFilePath = Directory.GetFiles(data)
+                        .FirstOrDefault(f => string.Equals(Path.GetFileName(f), "install.txt", StringComparison.OrdinalIgnoreCase));
+
+                    if (installFilePath != null)
+                    {
+                        // Run commands from install.txt
+                        output += Sideloader.RunADBCommandsFromFile(installFilePath);
+                        continue; // Skip further processing if install.txt is found
+                    }
+
                     if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
                     {
                         _ = Logger.Log($"Copying {data} to device");
@@ -1502,7 +1546,7 @@ namespace AndroidSideloader
 
                                 {
                                     _ = ADB.RunCommandToString(command2, file2);
-                                    output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
+                                    output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" \"/sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/\"");
                                 })
                                 {
                                     IsBackground = true
@@ -1686,7 +1730,7 @@ namespace AndroidSideloader
 
                         {
                             _ = ADB.RunCommandToString(command, data);
-                            output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" /sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/");
+                            output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" \"/sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/\"");
                         })
                         {
                             IsBackground = true
@@ -1761,7 +1805,6 @@ namespace AndroidSideloader
         private readonly List<UpdateGameData> gamesToAskForUpdate = new List<UpdateGameData>();
         public static bool loaded = false;
         public static string rookienamelist;
-        public static string rookienamelist2;
         private bool errorOnList;
         public static bool updates = false;
         public static bool newapps = false;
@@ -1819,7 +1862,6 @@ namespace AndroidSideloader
                         if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                         {
                             rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                            rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                         }
 
                         ListViewItem Game = new ListViewItem(release);
@@ -2018,9 +2060,8 @@ namespace AndroidSideloader
                            }
                        }*/
                     //This is for games that are not blacklisted and we dont have on rookie
-                    if (blacklistItems.Count > 100 && rookieList.Count > 100)
+                    if (blacklistItems.Count > 100 && rookieList.Count > 100 && !noAppCheck)
                     {
-
                         foreach (string newGamesToUpload in newGamesList)
                         {
                             changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
@@ -2083,11 +2124,11 @@ namespace AndroidSideloader
             }
             progressBar.Style = ProgressBarStyle.Continuous;
 
-            if (either && !updatesNotified)
+            if (either && !updatesNotified && !noAppCheck)
             {
                 changeTitle("                                                \n\n");
                 DonorsListViewForm DonorForm = new DonorsListViewForm();
-                _ = DonorForm.ShowDialog();
+                _ = DonorForm.ShowDialog(this);
                 _ = Focus();
             }
             changeTitle("Populating update list...                               \n\n");
@@ -2283,12 +2324,18 @@ namespace AndroidSideloader
             };
             gamesToUpload.Add(game);
         }
-        private void initMirrors(bool random)
+        
+        private async Task initMirrors()
         {
+            _ = Logger.Log("Looking for Additional Mirrors...");
             int index = 0;
-            remotesList.Invoke(() => { index = remotesList.SelectedIndex; remotesList.Items.Clear(); });
+            await Task.Run(() => remotesList.Invoke(() => 
+            { 
+                index = remotesList.SelectedIndex; 
+                remotesList.Items.Clear(); 
+            }));
 
-            string[] mirrors = RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n');
+            string[] mirrors = await Task.Run(() => RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n'));
 
             _ = Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
@@ -2297,20 +2344,22 @@ namespace AndroidSideloader
                 if (mirror.Contains("mirror"))
                 {
                     _ = Logger.Log(mirror.Remove(mirror.Length - 1));
-                    remotesList.Invoke(() => { _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); });
+                    await Task.Run(() => remotesList.Invoke(() => 
+                    { 
+                        _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); 
+                    }));
                     itemsCount++;
                 }
             }
 
             if (itemsCount > 0)
             {
-                Random rand = new Random();
-                remotesList.Invoke(() =>
+                await Task.Run(() => remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = 0; // Set mirror to first item in array.
                     currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
-                });
-            };
+                }));
+            }
         }
 
         public static string processError = string.Empty;
@@ -2398,7 +2447,7 @@ namespace AndroidSideloader
                 _ = ADB.RunAdbCommandToString("tcpip 5555");
 
                 _ = FlexibleMessageBox.Show(Program.form, "Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
-                Thread.Sleep(1000);
+                await Task.Delay(1000);
                 string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
                 Properties.Settings.Default.WirelessADB = true;
@@ -2410,7 +2459,7 @@ namespace AndroidSideloader
                     string IPaddr = strArrayOne[8];
                     string IPcmnd = "connect " + IPaddr + ":5555";
                     _ = FlexibleMessageBox.Show(Program.form, $"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
-                    Thread.Sleep(2000);
+                    await Task.Delay(2000);
                     _ = ADB.RunAdbCommandToString(IPcmnd);
                     _ = await Program.form.CheckForDevice();
                     Program.form.changeTitlebarToDevice();
@@ -2446,9 +2495,10 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Marquee;
             devicesbutton_Click(sender, e);
 
+            await initMirrors();
+
             Thread t1 = new Thread(() =>
             {
-                initMirrors(false);
                 if (!hasPublicConfig)
                 {
                     SideloaderRCLONE.initGames(currentRemote);
@@ -2492,17 +2542,6 @@ namespace AndroidSideloader
                     {
                         ShowError_QuotaExceeded();
 
-                        DialogResult om = MessageBox.Show("Relaunch Rookie in Offline Mode?", "Offline Mode?", MessageBoxButtons.YesNo);
-                        if (om == DialogResult.Yes)
-                        {
-                            Process pr = new Process();
-                            pr.StartInfo.WorkingDirectory = Application.StartupPath;
-                            pr.StartInfo.FileName = System.AppDomain.CurrentDomain.FriendlyName;
-                            pr.StartInfo.Arguments = "--offline";
-                            _ = pr.Start();
-                            Process.GetCurrentProcess().Kill();
-                        }
-
                         if (System.Windows.Forms.Application.MessageLoop)
                         {
                             Process.GetCurrentProcess().Kill();
@@ -2538,11 +2577,7 @@ $@"Unable to connect to Remote Server. Rookie is unable to connect to our Server
 
 First time launching Rookie? Please relaunch and try again.
 
-Things you can try:
-1) Move the Rookie directory (Folder containing AndroidSideloader.exe) into {Path.GetPathRoot(Environment.SystemDirectory)}RSL
-2) Try changing your systems DNS to either Cloudflare/Google/OpenDNS
-3) Try using a systemwide VPN like ProtonVPN (which is free)
-4) Sponsor a private server (https://vrpirates.wiki/en/Howto/sponsored-mirrors)
+Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.gg/DcfEpwVa4a) for Troubleshooting steps!
 ";
 
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
@@ -2640,6 +2675,7 @@ Things you can try:
                 {
                     gameName = gamesQueueList.ToArray()[0];
                     string packagename = Sideloader.gameNameToPackageName(gameName);
+                    string versioncode = Sideloader.gameNameToVersionCode(gameName);
                     string dir = Path.GetDirectoryName(gameName);
                     string gameDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
                     string downloadDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
@@ -2669,16 +2705,32 @@ Things you can try:
                     {
                         extraArgs = "--transfers 1 --multi-thread-streams 0";
                     }
+                    string bandwidthLimit = string.Empty;
+                    if (Properties.Settings.Default.bandwidthLimit > 0)
+                    {
+                        bandwidthLimit = $"--bwlimit={Properties.Settings.Default.bandwidthLimit}M";
+                    }
                     if (hasPublicConfig)
                     {
                         bool doDownload = true;
+                        bool skipRedownload = false;
+                        if (Properties.Settings.Default.useDownloadedFiles == true) {
+                            skipRedownload = true;
+                        }
+
                         if (Directory.Exists(gameDirectory))
                         {
-                            DialogResult res = FlexibleMessageBox.Show(Program.form,
-                                $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
-                                "Download again?", MessageBoxButtons.YesNo);
+                            if (skipRedownload == true) {
+                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}")) {
+                                    doDownload = false;
+                                }
+                            } else {
+                                DialogResult res = FlexibleMessageBox.Show(Program.form,
+                                    $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
+                                    "Download again?", MessageBoxButtons.YesNo);
 
-                            doDownload = res == DialogResult.Yes;
+                                doDownload = res == DialogResult.Yes;
+                            }
 
                             if (doDownload)
                             {
@@ -2697,9 +2749,10 @@ Things you can try:
                             t1 = new Thread(() =>
                             {
                                 string rclonecommand =
-                                $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc --check-first --fast-list";
+                                $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc {bandwidthLimit}";
                                 gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
                             });
+                            Utilities.Metrics.CountDownload(packagename, versioncode);
                         }
                         else
                         {
@@ -2713,8 +2766,9 @@ Things you can try:
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 1 --low-level-retries 1 --check-first");
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first {bandwidthLimit}");
                         });
+                        Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
 
                     if (Directory.Exists(downloadDirectory)) {
@@ -2994,7 +3048,7 @@ Things you can try:
                                             Thread obbThread = new Thread(() =>
                                             {
                                                 changeTitle($"Copying {packagename} obb to device...");
-                                                ADB.RunAdbCommandToString($"shell mkdir /sdcard/Android/obb/{packagename}");
+                                                ADB.RunAdbCommandToString($"shell mkdir \"/sdcard/Android/obb/{packagename}\"");
                                                 output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                 Program.form.changeTitle("");
                                             })
@@ -3069,7 +3123,7 @@ Things you can try:
         {
             changeTitle("Deleting old OBB Folder...");
             Logger.Log("Attempting to delete old OBB Folder");
-            ADB.RunAdbCommandToString($"shell rm -rf /sdcard/Android/obb/{packagename}");
+            ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{packagename}\"");
         }
 
         private const string OBBFolderPath = "/sdcard/Android/obb/";
@@ -3092,7 +3146,7 @@ Things you can try:
                 DirectoryInfo localFolder = new DirectoryInfo(localFolderPath);
                 long totalLocalFolderSize = localFolderSize(localFolder) / (1024 * 1024);
 
-                string remoteFolderSizeResult = ADB.RunAdbCommandToString($"shell du -m {OBBFolderPath}{packageName}").Output;
+                string remoteFolderSizeResult = ADB.RunAdbCommandToString($"shell du -m \"{OBBFolderPath}{packageName}\"").Output;
                 string cleanedRemoteFolderSize = cleanRemoteFolderSize(remoteFolderSizeResult);
 
                 int localObbSize = (int)totalLocalFolderSize;
@@ -3312,7 +3366,7 @@ Things you can try:
 
         }
 
-        private void ADBWirelessDisable_Click(object sender, EventArgs e)
+        private async void ADBWirelessDisable_Click(object sender, EventArgs e)
         {
             DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.No)
@@ -3326,11 +3380,11 @@ Things you can try:
                 _ = FlexibleMessageBox.Show(Program.form, "Make sure your device is not connected to USB and press OK.");
                 _ = ADB.RunAdbCommandToString("devices");
                 _ = ADB.RunAdbCommandToString("shell USB");
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("disconnect");
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("kill-server");
-                Thread.Sleep(2000);
+                await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("start-server");
                 Properties.Settings.Default.IPAddress = String.Empty;
                 Properties.Settings.Default.Save();
@@ -3431,6 +3485,7 @@ Things you can try:
                 adbCmd_background.Visible = false;
                 adbCmd_CommandBox.Visible = false;
                 adbCmd_btnToggleUpdates.Visible = false;
+                adbCmd_btnSend.Visible = false;
                 adbCmd_Label.Visible = false;
                 adbCmd_background.Visible = false;
             }
@@ -3450,8 +3505,16 @@ Things you can try:
             {
                 if (loaded)
                 {
-                    Clipboard.SetText(rookienamelist);
-                    _ = MessageBox.Show("Entire game list copied as a line by line list to clipboard!\nPress CTRL+V to paste it anywhere!");
+                    StringBuilder copyGamesListView = new StringBuilder();
+
+                    foreach (ListViewItem item in gamesListView.Items)
+                    {
+                        // Assuming the game name is in the first column (subitem index 0)
+                        copyGamesListView.Append(item.SubItems[0].Text).Append("\n");
+                    }
+
+                    Clipboard.SetText(copyGamesListView.ToString());
+                    _ = MessageBox.Show("Entire game list copied as a paragraph to clipboard!\nPress CTRL+V to paste it anywhere!");
                 }
 
             }
@@ -3459,7 +3522,21 @@ Things you can try:
             {
                 if (loaded)
                 {
-                    Clipboard.SetText(rookienamelist2);
+                    StringBuilder copyGamesListView = new StringBuilder();
+
+                    foreach (ListViewItem item in gamesListView.Items)
+                    {
+                        // Assuming the game name is in the first column (subitem index 0)
+                        copyGamesListView.Append(item.SubItems[0].Text).Append(", ");
+                    }
+
+                    // Remove the last ", " if there's any content in rookienamelist2
+                    if (copyGamesListView.Length > 2)
+                    {
+                        copyGamesListView.Length -= 2;
+                    }
+
+                    Clipboard.SetText(copyGamesListView.ToString());
                     _ = MessageBox.Show("Entire game list copied as a paragraph to clipboard!\nPress CTRL+V to paste it anywhere!");
                 }
 
@@ -3474,6 +3551,7 @@ Things you can try:
             {
                 adbCmd_CommandBox.Visible = true;
                 adbCmd_btnToggleUpdates.Visible = true;
+                adbCmd_btnSend.Visible = true;
                 adbCmd_CommandBox.Clear();
                 adbCmd_Label.Visible = true;
                 adbCmd_background.Visible = true;
@@ -3603,7 +3681,7 @@ Things you can try:
                 {
                     MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.None;
                     webView21.Anchor = (AnchorStyles.Top | AnchorStyles.Left);
-                    webView21.Location = new Point(0, 0);
+                    webView21.Location = new System.Drawing.Point(0, 0);
                     webView21.Size = MainForm.ActiveForm.Size;
                 }
                 else
@@ -3611,7 +3689,7 @@ Things you can try:
                     MainForm.ActiveForm.FormBorderStyle = FormBorderStyle.Sizable;
                     webView21.Anchor = (AnchorStyles.Left | AnchorStyles.Bottom);
                     webView21.Location = gamesPictureBox.Location;
-                    webView21.Size = new Size(374, 214);
+                    webView21.Size = new System.Drawing.Size(374, 214);
                 }
             }
         }
@@ -3861,7 +3939,6 @@ Things you can try:
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                                rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                             }
 
                             ListViewItem Game = new ListViewItem(release);
@@ -3950,7 +4027,7 @@ Things you can try:
                     string IPaddr;
                     IPaddr = adbCmd_CommandBox.Text;
                     string IPcmnd = "connect " + IPaddr + ":5555";
-                    Thread.Sleep(1000);
+                    await Task.Delay(1000);
                     string errorChecker = ADB.RunAdbCommandToString(IPcmnd).Output;
                     if (errorChecker.Contains("cannot resolve host") | errorChecker.Contains("cannot connect to"))
                     {
@@ -3959,6 +4036,7 @@ Things you can try:
                         manualIP = false;
                         adbCmd_CommandBox.Visible = false;
                         adbCmd_btnToggleUpdates.Visible = false;
+                        adbCmd_btnSend.Visible = false;
                         adbCmd_Label.Visible = false;
                         adbCmd_background.Visible = false;
                         adbCmd_Label.Text = "Type ADB Command";
@@ -3978,6 +4056,7 @@ Things you can try:
                         manualIP = false;
                         adbCmd_CommandBox.Visible = false;
                         adbCmd_btnToggleUpdates.Visible = false;
+                        adbCmd_btnSend.Visible = false;
                         adbCmd_Label.Visible = false;
                         adbCmd_background.Visible = false;
                         adbCmd_Label.Text = "Type ADB Command";
@@ -3988,11 +4067,13 @@ Things you can try:
                 }
                 else
                 {
-                    Program.form.changeTitle($"Running adb command: ADB {adbCmd_CommandBox.Text}");
+                    string sentCommand = adbCmd_CommandBox.Text.Replace("adb", "");
+                    Program.form.changeTitle($"Running adb command: ADB {sentCommand}");
                     string output = ADB.RunAdbCommandToString(adbCmd_CommandBox.Text).Output;
-                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {adbCmd_CommandBox.Text}\r\nOutput:\r\n{output}");
+                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {sentCommand}\r\nOutput:\r\n{output}");
                     adbCmd_CommandBox.Visible = false;
                     adbCmd_btnToggleUpdates.Visible = false;
+                    adbCmd_btnSend.Visible = false;
                     adbCmd_Label.Visible = false;
                     adbCmd_background.Visible = false;
                     _ = gamesListView.Focus();
@@ -4003,6 +4084,7 @@ Things you can try:
             {
                 adbCmd_CommandBox.Visible = false;
                 adbCmd_btnToggleUpdates.Visible = false;
+                adbCmd_btnSend.Visible = false;
                 adbCmd_Label.Visible = false;
                 adbCmd_background.Visible = false;
                 _ = gamesListView.Focus();
@@ -4014,6 +4096,7 @@ Things you can try:
             adbCmd_background.Visible = false;
             adbCmd_CommandBox.Visible = false;
             adbCmd_btnToggleUpdates.Visible = false;
+            adbCmd_btnSend.Visible = false;
             adbCmd_Label.Visible = false;
         }
 
@@ -4187,7 +4270,6 @@ Things you can try:
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                                rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                             }
 
                             ListViewItem Game = new ListViewItem(release);
@@ -4320,7 +4402,6 @@ Things you can try:
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                                rookienamelist2 += release[SideloaderRCLONE.GameNameIndex].ToString() + ", ";
                             }
 
                             ListViewItem Game = new ListViewItem(release);
@@ -4430,6 +4511,7 @@ Things you can try:
         {
             adbCmd_CommandBox.Visible = true;
             adbCmd_btnToggleUpdates.Visible = true;
+            adbCmd_btnSend.Visible = true;
             adbCmd_CommandBox.Clear();
             adbCmd_Label.Text = "Type ADB Command";
             adbCmd_Label.Visible = true;
@@ -4483,6 +4565,12 @@ Things you can try:
             }
 
             // adb shell pm enable com.oculus.updater
+            KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
+            ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
+        }
+
+        private void adbCmd_btnSend_Click(object sender, EventArgs e)
+        {
             KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
             ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
         }

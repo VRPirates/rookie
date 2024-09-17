@@ -1,4 +1,24 @@
-﻿RSL 2.28
+﻿RSL 2.29
+
+- Feature: Prompt to keep temporary files and allow resuming of downloads
+- Feature: Fixed progress bar jump-back
+- Feature: Added part tracking during download
+- Fix: Change UUID calculation. No longer uses system details (caused virus flags)
+- Fix: Added rclone fallback download
+- Fix: Additional connect/startup troubleshooting steps
+- Chore: Bump rclone to 1.66.0
+
+RSL 2.29.1
+- Fix: Correct initilization sequence to prevent crashes
+- Chore: bump package dependencies
+- Chore: Fix initial GUI name
+
+RSL 2.29.2
+- Fix: Fix for failed uploads using new rclone version
+- Fix: Changes to initilization order to prevent crashes and display splash
+
+
+RSL 2.28
 
 - Feature: Added ADB-Backup Support. Now supports creation and restoration of .AB backups
 - Feature: Added OS-Updates toggle to ADB-Command window (Click to toggle on/off)

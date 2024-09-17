@@ -111,7 +111,7 @@ namespace AndroidSideloader
             // panel1
             //
             this.panel1.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
-            this.panel1.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes_1_1_1_0_0_0_1__000000_212121;
+            this.panel1.BackgroundImage = global::AndroidSideloader.Properties.Resources.pattern_cubes;
             this.panel1.Controls.Add(this.SkipButton);
             this.panel1.Controls.Add(this.DonateButton);
             this.panel1.Controls.Add(this.panel2);

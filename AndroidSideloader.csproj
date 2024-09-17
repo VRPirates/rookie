@@ -194,6 +194,7 @@
     </Compile>
     <Compile Include="FlexibleMessageBox.cs" />
     <Compile Include="RoundedRectangleF.cs" />
+    <Compile Include="Sideloader\GetDependencies.cs" />
     <Compile Include="Splash.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -253,6 +254,7 @@
     <Compile Include="Utilities\UpdateGameData.cs" />
     <Compile Include="Utilities\UploadGame.cs" />
     <Compile Include="Utilities\Zip.cs" />
+    <Compile Include="Utilities\Metrics.cs" />
     <EmbeddedResource Include="DonorsListView.resx">
       <DependentUpon>DonorsListView.cs</DependentUpon>
     </EmbeddedResource>
@@ -307,6 +309,9 @@
     <None Include="Rookie Offline.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="CleanupInstall.cmd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="version" />
   </ItemGroup>
   <ItemGroup>
@@ -316,12 +321,13 @@
     <Content Include="changelog.txt" />
     <Content Include="icon.ico" />
     <Content Include="ChangelogHistory.txt" />
-    <Content Include="Resources\pattern_cubes-1_1_1_0-0_0_1__000000_212121.png" />
-    <Content Include="Resources\pattern_herringbone-2_1_3_0-0_90_1__000000_1c1c1c.png" />
-    <Content Include="Resources\splash.jpg" />
-    <None Include="Resources\battery11.png" />
+    <Content Include="Resources\pattern_cubes.png" />
+    <Content Include="Resources\pattern_herringbone.png" />
+    <Content Include="Resources\splashimage.png" />
+    <Content Include="Resources\splashimage_deps.png" />
+    <Content Include="Resources\splashimage_offline.png" />
+    <Content Include="Resources\splashimage_rclone.png" />
     <None Include="Resources\battery.png" />
-    <None Include="Resources\battery1.png" />
     <None Include="Resources\ajax-loader.gif" />
     <None Include="Resources\SearchGlass.PNG" />
   </ItemGroup>

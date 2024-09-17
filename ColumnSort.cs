@@ -41,7 +41,7 @@ public class ListViewColumnSorter : IComparer
         // Cast the objects to be compared to ListViewItem objects
         listviewX = (ListViewItem)x;
         listviewY = (ListViewItem)y;
-        if (SortColumn == 5)
+        if (SortColumn == 5 || SortColumn == 6)
         {
             try
             {

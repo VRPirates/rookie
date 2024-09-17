@@ -5,6 +5,7 @@ using System.IO;
 using System.Management;
 using System.Net;
 using System.Text.RegularExpressions;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
@@ -60,12 +61,12 @@ namespace AndroidSideloader
             {
                 return null;
             }
-            return ADB.RunAdbCommandToString($"shell rm -r {path}");
+            return ADB.RunAdbCommandToString($"shell rm -r \"{path}\"");
         }
 
         public static ProcessOutput RemoveFile(string path)
         {
-            return ADB.RunAdbCommandToString($"shell rm -f {path}");
+            return ADB.RunAdbCommandToString($"shell rm -f \"{path}\"");
         }
 
         //For games that require manual install, like having another folder that isnt an obb
@@ -251,6 +252,16 @@ namespace AndroidSideloader
             return gameName;
         }
 
+        public static string gameNameToVersionCode(string gameName)
+        {
+            foreach (string[] game in SideloaderRCLONE.games)
+            {
+                if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
+                    return game[SideloaderRCLONE.VersionCodeIndex];
+            }
+            return gameName;
+        }
+
         public static string PackageNametoGameName(string packageName)
         {
             foreach (string[] game in SideloaderRCLONE.games)
@@ -280,121 +291,5 @@ namespace AndroidSideloader
             }
             return packageName;
         }
-
-        // Download required dependencies.
-        public static void downloadFiles()
-        {
-            WebClient client = new WebClient();
-            ServicePointManager.Expect100Continue = true;
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            var currentAccessedWebsite = "";
-            try
-            {
-                if (!File.Exists("Sideloader Launcher.exe"))
-                {
-                    currentAccessedWebsite = "github";
-                    _ = Logger.Log($"Missing 'Sideloader Launcher.exe'. Attempting to download from {currentAccessedWebsite}");
-                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Sideloader%20Launcher.exe", "Sideloader Launcher.exe");
-                    _ = Logger.Log($"'Sideloader Launcher.exe' download successful");
-                }
-
-                if (!File.Exists("Rookie Offline.cmd"))
-                {
-                    currentAccessedWebsite = "github";
-                    _ = Logger.Log($"Missing 'Rookie Offline.cmd'. Attempting to download from {currentAccessedWebsite}");
-                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/Rookie%20Offline.cmd", "Rookie Offline.cmd");
-                    _ = Logger.Log($"'Rookie Offline.cmd' download successful");
-                }
-
-                if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
-                {
-                    if (!Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools"))
-                    {
-                        _ = Directory.CreateDirectory($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
-                    }
-
-                    currentAccessedWebsite = "github";
-                    _ = Logger.Log($"Missing adb within {Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools. Attempting to download from {currentAccessedWebsite}");
-                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/dependencies.7z", "dependencies.7z");
-                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "dependencies.7z"), $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
-                    File.Delete("dependencies.7z");
-                    _ = Logger.Log($"adb download successful");
-                }
-
-
-                bool updateRclone = false;
-                string wantedVersion = "1.66.0";
-                string version = "0.0.0";
-                string pathToRclone = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
-                if (File.Exists(pathToRclone))
-                {
-                    var versionInfo = FileVersionInfo.GetVersionInfo(pathToRclone);
-                    version = versionInfo.ProductVersion;
-                    Logger.Log($"Current RCLONE Version {version}");
-                    if (version != wantedVersion)
-                    {
-                        updateRclone = true;
-                    }
-                }
-
-                if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone") || updateRclone == true)
-                {
-                    if (!Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
-                    {
-                        Logger.Log($"rclone does not exist.", LogLevel.WARNING);
-                    }
-                    else
-                    {
-                        Logger.Log($"rclone is the wrong version. Wanted: {wantedVersion} Current: {version}", LogLevel.WARNING);
-                        if (Directory.Exists(Environment.CurrentDirectory + "\\rclone"))
-                        {
-                            Directory.Delete(Environment.CurrentDirectory + "\\rclone", true);
-                        }
-                    }
-
-                    Logger.Log($"Downloading from rclone.org", LogLevel.WARNING);
-                    currentAccessedWebsite = "rclone";
-                    string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
-                    string url = $"https://downloads.rclone.org/v{wantedVersion}/rclone-v{wantedVersion}-windows-{architecture}.zip";
-                    //Since sideloader is build for x86, it should work on both x86 and x64 so we download the according rclone version
-
-                    Logger.Log(url, LogLevel.INFO);
-                    client.DownloadFile(url, "rclone.zip");
-
-                    Logger.Log($"rclone download completed, unzipping contents");
-                    Utilities.Zip.ExtractFile(Environment.CurrentDirectory + "\\rclone.zip", Environment.CurrentDirectory);
-
-                    File.Delete("rclone.zip");
-                    Logger.Log($"rclone downloaded successfully");
-
-                    string[] folders = Directory.GetDirectories(Environment.CurrentDirectory);
-                    foreach (string folder in folders)
-                    {
-                        if (folder.Contains("rclone"))
-                        {
-                            Directory.Move(folder, "rclone");
-                            break; //only 1 rclone folder
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                if (currentAccessedWebsite == "github")
-                {
-                    _ = FlexibleMessageBox.Show($"You are unable to access the raw.githubusercontent.com page with the Exception: {ex.Message}\nSome files may be missing (ADB, Offline Script, Launcher)");
-                    _ = FlexibleMessageBox.Show("These required files were unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
-                    Application.Exit();
-                }
-                if (currentAccessedWebsite == "rclone")
-                {
-                    _ = FlexibleMessageBox.Show($"You are unable to access the rclone page with the Exception: {ex.Message}\nSome files may be missing (RCLONE)");
-                    _ = FlexibleMessageBox.Show("Rclone was unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
-                    Application.Exit();
-                }
-            }
-        }
     }
-
-
 }

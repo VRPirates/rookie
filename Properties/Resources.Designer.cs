@@ -83,26 +83,6 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap battery1 {
-            get {
-                object obj = ResourceManager.GetObject("battery1", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
-        public static System.Drawing.Bitmap battery11 {
-            get {
-                object obj = ResourceManager.GetObject("battery11", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized resource of type System.Drawing.Bitmap.
-        /// </summary>
         public static System.Drawing.Bitmap Pattern {
             get {
                 object obj = ResourceManager.GetObject("Pattern", resourceCulture);
@@ -113,9 +93,9 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap pattern_cubes_1_1_1_0_0_0_1__000000_212121 {
+        public static System.Drawing.Bitmap pattern_cubes {
             get {
-                object obj = ResourceManager.GetObject("pattern_cubes-1_1_1_0-0_0_1__000000_212121", resourceCulture);
+                object obj = ResourceManager.GetObject("pattern_cubes", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -123,9 +103,9 @@ namespace AndroidSideloader.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        public static System.Drawing.Bitmap pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c {
+        public static System.Drawing.Bitmap pattern_herringbone {
             get {
-                object obj = ResourceManager.GetObject("pattern_herringbone_2_1_3_0_0_90_1__000000_1c1c1c", resourceCulture);
+                object obj = ResourceManager.GetObject("pattern_herringbone", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -146,6 +126,36 @@ namespace AndroidSideloader.Properties {
         public static System.Drawing.Bitmap splashimage {
             get {
                 object obj = ResourceManager.GetObject("splashimage", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap splashimage_deps {
+            get {
+                object obj = ResourceManager.GetObject("splashimage_deps", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap splashimage_offline {
+            get {
+                object obj = ResourceManager.GetObject("splashimage_offline", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap splashimage_rclone {
+            get {
+                object obj = ResourceManager.GetObject("splashimage_rclone", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

@@ -75,6 +75,8 @@ namespace AndroidSideloader
                 command += $" --config {downloadConfigPath}";
             }
 
+            command += $" --inplace";
+
             // set rclonepw
             if (rclonepw.Length > 0)
             {
@@ -189,7 +191,7 @@ namespace AndroidSideloader
 
             _ = Logger.Log($"Running Rclone command: {logcmd}");
 
-            command += " --checkers 0 --no-check-dest --retries 1 --inplace";
+            command += " --checkers 1 --retries 2 --inplace";
 
             rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
@@ -262,11 +264,12 @@ namespace AndroidSideloader
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
             }
 
+            command += $" --inplace";
+
             _ = Logger.Log($"Running Rclone command: {logcmd}");
 
             //set http source & args
             command += $" --http-url {MainForm.PublicConfigFile.BaseUri} {MainForm.PublicMirrorExtraArgs}";
-
             rclone.StartInfo.FileName = Path.Combine(Environment.CurrentDirectory, "rclone", "rclone.exe");
             rclone.StartInfo.Arguments = command;
             rclone.StartInfo.RedirectStandardInput = true;
