@@ -7,7 +7,8 @@
 
 ## Disclaimer
 This application might get flagged as malware by some antivirus software; however, both the Sideloader and the Sideloader Launcher are open source.
-**Latest VirusTotal Scan (1/72):** [Check here](https://www.virustotal.com/gui/file/dc3ed59057d508646a06a978c44ae72d473fd678129483ab186202046cbc713f)
+**Latest VirusTotal Scan (3/72):** [Check here](https://www.virustotal.com/gui/file/04ce50b0cf7fddaaac3e1940e21234ddfc6f05d352891989f8067310f4ec6a69)
+
 
 To run properly, Rookie must be extracted to a non-Protected folder on your drive. We recommend running Rookie from C:\RSL\Rookie
 Do Not use folders such as- C:\Users; C:\Users\Desktop; C:\Program Files; OneDrive; Google Drive; etc...
