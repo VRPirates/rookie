@@ -2128,7 +2128,7 @@ namespace AndroidSideloader
             {
                 changeTitle("                                                \n\n");
                 DonorsListViewForm DonorForm = new DonorsListViewForm();
-                _ = DonorForm.ShowDialog();
+                _ = DonorForm.ShowDialog(this);
                 _ = Focus();
             }
             changeTitle("Populating update list...                               \n\n");
