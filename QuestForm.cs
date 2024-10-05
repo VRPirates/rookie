@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AndroidSideloader.Utilities;
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -6,6 +7,7 @@ namespace AndroidSideloader
 {
     public partial class QuestForm : Form
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         public static int length = 0;
         public static string[] result;
         public bool settingsexist = false;
@@ -85,27 +87,26 @@ namespace AndroidSideloader
         {
             if (DeleteShots.Checked)
             {
-                Properties.Settings.Default.delsh = true;
-                Properties.Settings.Default.Save();
+                settings.Delsh = true;
+                settings.Save();
             }
             if (!DeleteShots.Checked)
             {
-                Properties.Settings.Default.delsh = false;
-                Properties.Settings.Default.Save();
+                settings.Delsh = false;
+                settings.Save();
             }
         }
 
         private void QuestForm_Load(object sender, EventArgs e)
         {
-            DeleteShots.Checked = Properties.Settings.Default.delsh;
-            GlobalUsername.Text = Properties.Settings.Default.GlobalUsername;
+            DeleteShots.Checked = settings.Delsh;
+            GlobalUsername.Text = settings.GlobalUsername;
         }
 
         private void DeleteButton_Click(object sender, EventArgs e)
         {
-
             _ = MessageBox.Show("Ok, Deleted your custom settings file.\nIf you would like to re-enable return here and apply settings again");
-            File.Delete($"{Properties.Settings.Default.MainDir}\\Config.Json");
+            File.Delete($"{settings.MainDir}\\Config.Json");
         }
         private void questPics_Click(object sender, EventArgs e)
         {
@@ -181,8 +182,8 @@ namespace AndroidSideloader
         private void GlobalUsername_TextChanged(object sender, EventArgs e)
         {
             btnApplyUsername.Enabled = GlobalUsername.TextLength > 0;
-            Properties.Settings.Default.GlobalUsername = GlobalUsername.Text;
-            Properties.Settings.Default.Save();
+            settings.GlobalUsername = GlobalUsername.Text;
+            settings.Save();
         }
     }
 }

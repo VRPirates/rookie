@@ -1,4 +1,5 @@
-﻿using JR.Utils.GUI.Forms;
+﻿using AndroidSideloader.Utilities;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -10,6 +11,7 @@ namespace AndroidSideloader
 {
     internal class RCLONE
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         // Kill RCLONE Processes that were started from Rookie by looking for child processes.
         public static void killRclone()
         {
@@ -84,9 +86,9 @@ namespace AndroidSideloader
             }
 
             string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
-            if (logcmd.Contains($"\"{Properties.Settings.Default.CurrentLogPath}\""))
+            if (logcmd.Contains($"\"{settings.CurrentLogPath}\""))
             {
-                logcmd = logcmd.Replace($"\"{Properties.Settings.Default.CurrentLogPath}\"", $"\"{Properties.Settings.Default.CurrentLogName}\"");
+                logcmd = logcmd.Replace($"\"{settings.CurrentLogPath}\"", $"\"{settings.CurrentLogName}\"");
             }
 
             if (logcmd.Contains(Environment.CurrentDirectory))
@@ -122,7 +124,7 @@ namespace AndroidSideloader
             {
                 Program.form.Invoke(() =>
                 {
-                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {Properties.Settings.Default.downloadDir} and try again.",
+                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {settings.DownloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
@@ -179,9 +181,9 @@ namespace AndroidSideloader
             }
 
             string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
-            if (logcmd.Contains($"\"{Properties.Settings.Default.CurrentLogPath}\""))
+            if (logcmd.Contains($"\"{settings.CurrentLogPath}\""))
             {
-                logcmd = logcmd.Replace($"\"{Properties.Settings.Default.CurrentLogPath}\"", $"\"{Properties.Settings.Default.CurrentLogName}\"");
+                logcmd = logcmd.Replace($"\"{settings.CurrentLogPath}\"", $"\"{settings.CurrentLogName}\"");
             }
 
             if (logcmd.Contains(Environment.CurrentDirectory))
@@ -254,9 +256,9 @@ namespace AndroidSideloader
             rclone.StartInfo.StandardOutputEncoding = Encoding.UTF8;
 
             string logcmd = Utilities.StringUtilities.RemoveEverythingBeforeFirst(command, "rclone.exe");
-            if (logcmd.Contains($"\"{Properties.Settings.Default.CurrentLogPath}\""))
+            if (logcmd.Contains($"\"{settings.CurrentLogPath}\""))
             {
-                logcmd = logcmd.Replace($"\"{Properties.Settings.Default.CurrentLogPath}\"", $"\"{Properties.Settings.Default.CurrentLogName}\"");
+                logcmd = logcmd.Replace($"\"{settings.CurrentLogPath}\"", $"\"{settings.CurrentLogName}\"");
             }
 
             if (logcmd.Contains(Environment.CurrentDirectory))
@@ -296,7 +298,7 @@ namespace AndroidSideloader
             {
                 Program.form.Invoke(() =>
                 {
-                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {Properties.Settings.Default.downloadDir} and try again.",
+                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {settings.DownloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);

@@ -17,7 +17,7 @@ namespace AndroidSideloader
     public static class Logger
     {
         private static readonly object lockObject = new object();
-        private static string logFilePath = Properties.Settings.Default.CurrentLogPath;
+        private static string logFilePath = settings.CurrentLogPath;
 
         public static bool Log(string text, LogLevel logLevel = LogLevel.INFO, bool ret = true)
         {

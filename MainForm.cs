@@ -1,4 +1,5 @@
 using AndroidSideloader.Models;
+using AndroidSideloader.Properties;
 using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Microsoft.Web.WebView2.Core;
@@ -29,7 +30,7 @@ namespace AndroidSideloader
     public partial class MainForm : Form
     {
         private readonly ListViewColumnSorter lvwColumnSorter;
-
+        private static readonly SettingsManager settings = SettingsManager.Instance;
 #if DEBUG
         public static bool debugMode = true;
         public bool DeviceConnected;
@@ -135,9 +136,9 @@ namespace AndroidSideloader
             TimeSpan newDayReference2 = new TimeSpan(72, 0, 0); // Time between asking for updates after uploading. (DEFAULT: 72 hours)
 
             // Calculate time differences
-            DateTime A = Properties.Settings.Default.LastLaunch;
+            DateTime A = settings.LastLaunch;
             DateTime B = DateTime.Now;
-            DateTime C = Properties.Settings.Default.LastLaunch2;
+            DateTime C = settings.LastLaunch2;
             TimeSpan comparison = B - A;
             TimeSpan comparison2 = B - C;
 
@@ -154,18 +155,18 @@ namespace AndroidSideloader
 
         private void ResetPropertiesAfterTimePassed()
         {
-            Properties.Settings.Default.ListUpped = false;
-            Properties.Settings.Default.NonAppPackages = String.Empty;
-            Properties.Settings.Default.AppPackages = String.Empty;
-            Properties.Settings.Default.LastLaunch = DateTime.Now;
-            Properties.Settings.Default.Save();
+            settings.ListUpped = false;
+            settings.NonAppPackages = String.Empty;
+            settings.AppPackages = String.Empty;
+            settings.LastLaunch = DateTime.Now;
+            settings.Save();
         }
 
         private void ResetProperties2AfterTimePassed()
         {
-            Properties.Settings.Default.LastLaunch2 = DateTime.Now;
-            Properties.Settings.Default.SubmittedUpdates = String.Empty;
-            Properties.Settings.Default.Save();
+            settings.LastLaunch2 = DateTime.Now;
+            settings.SubmittedUpdates = String.Empty;
+            settings.Save();
         }
 
         private void InitializeLogger()
@@ -177,9 +178,9 @@ namespace AndroidSideloader
 
         private void SetCurrentLogPath()
         {
-            if (string.IsNullOrEmpty(Properties.Settings.Default.CurrentLogPath))
+            if (string.IsNullOrEmpty(settings.CurrentLogPath))
             {
-                Properties.Settings.Default.CurrentLogPath = Path.Combine(Environment.CurrentDirectory, "debuglog.txt");
+                settings.CurrentLogPath = Path.Combine(Environment.CurrentDirectory, "debuglog.txt");
             }
         }
 
@@ -244,8 +245,8 @@ namespace AndroidSideloader
                 SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
             }
 
-            Properties.Settings.Default.MainDir = Environment.CurrentDirectory;
-            Properties.Settings.Default.Save();
+            settings.MainDir = Environment.CurrentDirectory;
+            settings.Save();
 
             if (Directory.Exists(Sideloader.TempFolder))
             {
@@ -254,7 +255,7 @@ namespace AndroidSideloader
             }
 
             // Delete the Debug file if it is more than 5MB
-            string logFilePath = Properties.Settings.Default.CurrentLogPath;
+            string logFilePath = settings.CurrentLogPath;
             if (File.Exists(logFilePath))
             {
                 FileInfo fileInfo = new FileInfo(logFilePath);
@@ -271,12 +272,6 @@ namespace AndroidSideloader
                 RCLONE.Init();
             }
 
-            if (Properties.Settings.Default.CallUpgrade)
-            {
-                Properties.Settings.Default.Upgrade();
-                Properties.Settings.Default.CallUpgrade = false;
-                Properties.Settings.Default.Save();
-            }
             CenterToScreen();
             gamesListView.View = View.Details;
             gamesListView.FullRowSelect = true;
@@ -287,9 +282,9 @@ namespace AndroidSideloader
             verLabel.Text = Updater.LocalVersion;
             if (File.Exists("crashlog.txt"))
             {
-                if (File.Exists(Properties.Settings.Default.CurrentCrashPath))
+                if (File.Exists(settings.CurrentCrashPath))
                 {
-                    File.Delete(Properties.Settings.Default.CurrentCrashPath);
+                    File.Delete(settings.CurrentCrashPath);
                 }
 
                 DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
@@ -299,14 +294,14 @@ namespace AndroidSideloader
                     {
                         string UUID = SideloaderUtilities.UUID();
                         System.IO.File.Move("crashlog.txt", Path.Combine(Environment.CurrentDirectory, $"{UUID}.log"));
-                        Properties.Settings.Default.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, $"{UUID}.log");
-                        Properties.Settings.Default.CurrentCrashName = UUID;
-                        Properties.Settings.Default.Save();
+                        settings.CurrentCrashPath = Path.Combine(Environment.CurrentDirectory, $"{UUID}.log");
+                        settings.CurrentCrashName = UUID;
+                        settings.Save();
 
                         Clipboard.SetText(UUID);
-                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
-                        _ = FlexibleMessageBox.Show(Program.form, $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({Properties.Settings.Default.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
-                        Clipboard.SetText(Properties.Settings.Default.CurrentCrashName);
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
+                        _ = FlexibleMessageBox.Show(Program.form, $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
+                        Clipboard.SetText(settings.CurrentCrashName);
                     }
                 }
                 else
@@ -352,7 +347,7 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
-                else if (Properties.Settings.Default.autoUpdateConfig && Properties.Settings.Default.createPubMirrorFile)
+                else if (settings.AutoUpdateConfig && settings.CreatePubMirrorFile)
                 {
                     DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
@@ -366,9 +361,9 @@ namespace AndroidSideloader
                     }
                     else
                     {
-                        Properties.Settings.Default.createPubMirrorFile = false;
-                        Properties.Settings.Default.autoUpdateConfig = false;
-                        Properties.Settings.Default.Save();
+                        settings.CreatePubMirrorFile = false;
+                        settings.AutoUpdateConfig = false;
+                        settings.Save();
                     }
                 }
 
@@ -391,7 +386,7 @@ namespace AndroidSideloader
                 remotesList.Size = System.Drawing.Size.Empty;
                 _ = Logger.Log($"Using Offline Mode");
             }
-            if (Properties.Settings.Default.nodevicemode)
+            if (settings.NodeviceMode)
             {
                 btnNoDevice.Text = "Enable Sideloading";
             }
@@ -401,7 +396,7 @@ namespace AndroidSideloader
             progressBar.Style = ProgressBarStyle.Marquee;
             Thread t1 = new Thread(async () =>
             {
-                if (!debugMode && Properties.Settings.Default.checkForUpdates)
+                if (!debugMode && settings.CheckForUpdates)
                 {
                     Updater.AppName = "AndroidSideloader";
                     Updater.Repository = "VRPirates/rookie";
@@ -466,33 +461,33 @@ namespace AndroidSideloader
             Thread t5 = new Thread(() =>
             {
                 changeTitle("Connecting to your Quest...");
-                if (!string.IsNullOrEmpty(Properties.Settings.Default.IPAddress))
+                if (!string.IsNullOrEmpty(settings.IPAddress))
                 {
                     string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
                     ProcessOutput wakeywakey = ADB.RunCommandToString($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
                     if (wakeywakey.Output.Contains("more than one"))
                     {
-                        Properties.Settings.Default.Wired = true;
-                        Properties.Settings.Default.Save();
+                        settings.Wired = true;
+                        settings.Save();
                     }
                     else if (wakeywakey.Output.Contains("found"))
                     {
-                        Properties.Settings.Default.Wired = false;
-                        Properties.Settings.Default.Save();
+                        settings.Wired = false;
+                        settings.Save();
                     }
                 }
 
-                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")) && !Properties.Settings.Default.Wired)
+                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")) && !settings.Wired)
                 {
                     string IPcmndfromtxt = File.ReadAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
-                    Properties.Settings.Default.IPAddress = IPcmndfromtxt;
-                    Properties.Settings.Default.Save();
+                    settings.IPAddress = IPcmndfromtxt;
+                    settings.Save();
                     ProcessOutput IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
                     if (IPoutput.Output.Contains("attempt failed") || IPoutput.Output.Contains("refused"))
                     {
                         _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
-                        Properties.Settings.Default.IPAddress = "";
-                        Properties.Settings.Default.Save();
+                        settings.IPAddress = "";
+                        settings.Save();
                         try { File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")); }
                         catch (Exception ex) { Logger.Log($"Unable to delete StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     }
@@ -504,8 +499,8 @@ namespace AndroidSideloader
                 }
                 else if (!File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
                 {
-                    Properties.Settings.Default.IPAddress = "";
-                    Properties.Settings.Default.Save();
+                    settings.IPAddress = "";
+                    settings.Save();
                 }
             })
             {
@@ -622,7 +617,7 @@ namespace AndroidSideloader
                 {
                     fileName = fileName.Substring(fileName.IndexOf("\\") + 1);
                 }
-                if (!fileName.Contains(Properties.Settings.Default.CurrentLogName) && !fileName.Contains(Properties.Settings.Default.CurrentCrashName))
+                if (!fileName.Contains(settings.CurrentLogName) && !fileName.Contains(settings.CurrentCrashName))
                 {
                     if (!fileName.Contains("debuglog") && fileName.EndsWith(".txt"))
                     {
@@ -814,7 +809,7 @@ namespace AndroidSideloader
 
         public static void notify(string message)
         {
-            if (Properties.Settings.Default.enableMessageBoxes == true)
+            if (settings.EnableMessageBoxes == true)
             {
                 _ = FlexibleMessageBox.Show(new Form
                 {
@@ -888,7 +883,7 @@ namespace AndroidSideloader
                 {
                     DeviceConnected = false;
                     Text = "No Device Connected";
-                    if (!Properties.Settings.Default.nodevicemode)
+                    if (!settings.NodeviceMode)
                     {
                         DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
@@ -907,7 +902,7 @@ namespace AndroidSideloader
         public async void showAvailableSpace()
         {
             string AvailableSpace = string.Empty;
-            if (!Properties.Settings.Default.nodevicemode || DeviceConnected)
+            if (!settings.NodeviceMode || DeviceConnected)
             {
                 try
                 {
@@ -956,13 +951,13 @@ namespace AndroidSideloader
                 return;
             }
 
-            if (!Properties.Settings.Default.customBackupDir)
+            if (!settings.CustomBackupDir)
             {
                 backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             }
             else
             {
-                backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+                backupFolder = Path.Combine((settings.BackupDir), $"Rookie Backups");
             }
             if (!Directory.Exists(backupFolder))
             {
@@ -991,13 +986,13 @@ namespace AndroidSideloader
 
         private async void backupbutton_Click(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.customBackupDir)
+            if (!settings.CustomBackupDir)
             {
                 backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             }
             else
             {
-                backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+                backupFolder = Path.Combine((settings.BackupDir), $"Rookie Backups");
             }
             if (!Directory.Exists(backupFolder))
             {
@@ -1043,13 +1038,13 @@ namespace AndroidSideloader
             ProcessOutput output = new ProcessOutput("", "");
             string output_abRestore = string.Empty;
 
-            if (!Properties.Settings.Default.customBackupDir)
+            if (!settings.CustomBackupDir)
             {
                 backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             }
             else
             {
-                backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+                backupFolder = Path.Combine((settings.BackupDir), $"Rookie Backups");
             }
 
 
@@ -1132,8 +1127,8 @@ namespace AndroidSideloader
             string[] line = listApps().Split('\n');
 
             string forsettings = string.Join(String.Empty, line);
-            Properties.Settings.Default.InstalledApps = forsettings;
-            Properties.Settings.Default.Save();
+            settings.InstalledApps = forsettings;
+            settings.Save();
 
             for (int i = 0; i < line.Length; i++)
             {
@@ -1219,20 +1214,20 @@ namespace AndroidSideloader
                     string gameZipName = $"{gameName}.zip";
 
                     // Delete both zip & txt if the files exist, most likely due to a failed upload.
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                    if (File.Exists($"{settings.MainDir}\\{gameZipName}"))
                     {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        File.Delete($"{settings.MainDir}\\{gameZipName}");
                     }
 
-                    if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                    if (File.Exists($"{settings.MainDir}\\{gameName}.txt"))
                     {
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                        File.Delete($"{settings.MainDir}\\{gameName}.txt");
                     }
 
                     ProcessOutput output = new ProcessOutput("", "");
                     changeTitle("Extracting APK....");
 
-                    _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
+                    _ = Directory.CreateDirectory($"{settings.MainDir}\\{packageName}");
 
                     Thread t1 = new Thread(() =>
                     {
@@ -1251,7 +1246,7 @@ namespace AndroidSideloader
                     changeTitle("Extracting obb if it exists....");
                     Thread t2 = new Thread(() =>
                     {
-                        output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
+                        output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{settings.MainDir}\\{packageName}\"");
                     })
                     {
                         IsBackground = true
@@ -1263,11 +1258,11 @@ namespace AndroidSideloader
                         await Task.Delay(100);
                     }
 
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\HWID.txt", HWID);
-                    File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
+                    File.WriteAllText($"{settings.MainDir}\\{packageName}\\HWID.txt", HWID);
+                    File.WriteAllText($"{settings.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
                     changeTitle("Zipping extracted application...");
                     string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
-                    string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
+                    string path = $"{settings.MainDir}\\7z.exe";
                     progressBar.Style = ProgressBarStyle.Continuous;
                     Thread t4 = new Thread(() =>
                     {
@@ -1292,19 +1287,19 @@ namespace AndroidSideloader
                         changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
 
                         // Get size of pending zip upload and write to text file
-                        long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
-                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
+                        long zipSize = new FileInfo($"{settings.MainDir}\\{gameZipName}").Length;
+                        File.WriteAllText($"{settings.MainDir}\\{gameName}.txt", zipSize.ToString());
                         // Upload size file.
-                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
                         // Upload zip.
-                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.MainDir}\\{gameZipName}\" RSL-gameuploads:");
 
                         // Delete files once uploaded.
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
-                        File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                        File.Delete($"{settings.MainDir}\\{gameName}.txt");
+                        File.Delete($"{settings.MainDir}\\{gameZipName}");
 
                         this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
-                        Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                        Directory.Delete($"{settings.MainDir}\\{packageName}", true);
                     })
                     {
                         IsBackground = true
@@ -1334,13 +1329,13 @@ namespace AndroidSideloader
 
         private async void uninstallAppButton_Click(object sender, EventArgs e)
         {
-            if (!Properties.Settings.Default.customBackupDir)
+            if (!settings.CustomBackupDir)
             {
                 backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             }
             else
             {
-                backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+                backupFolder = Path.Combine((settings.BackupDir), $"Rookie Backups");
             }
             string packagename;
             if (m_combo.SelectedIndex == -1)
@@ -1468,8 +1463,8 @@ namespace AndroidSideloader
                         }
 
                         Program.form.changeTitle(String.Empty);
-                        Properties.Settings.Default.CurrPckg = dir;
-                        Properties.Settings.Default.Save();
+                        settings.CurrPckg = dir;
+                        settings.Save();
                     }
                     Program.form.changeTitle(String.Empty);
                     string extension = Path.GetExtension(data);
@@ -1533,14 +1528,14 @@ namespace AndroidSideloader
                                 }
                             }
 
-                            if (file2.EndsWith(".zip") && Properties.Settings.Default.BMBFchecked)
+                            if (file2.EndsWith(".zip") && settings.BMBFChecked)
                             {
                                 string datazip = file2;
                                 string zippath = Path.GetDirectoryName(data);
                                 datazip = datazip.Replace(zippath, "");
                                 datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
                                 datazip = datazip.Replace(".", "");
-                                string command2 = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{file2}\" -o\"{zippath}\\{datazip}\\\"";
+                                string command2 = $"\"{settings.MainDir}\\7z.exe\" e \"{file2}\" -o\"{zippath}\\{datazip}\\\"";
 
                                 Thread t2 = new Thread(() =>
 
@@ -1584,8 +1579,8 @@ namespace AndroidSideloader
                         }
 
                         Program.form.changeTitle("");
-                        Properties.Settings.Default.CurrPckg = dir;
-                        Properties.Settings.Default.Save();
+                        settings.CurrPckg = dir;
+            settings.Save();
                     }
                 }
                 //if it's a file
@@ -1716,7 +1711,7 @@ namespace AndroidSideloader
                         changeTitle(" \n\n");
                     }
                     // BMBF Zip extraction then push to BMBF song folder on Quest.
-                    else if (extension == ".zip" && Properties.Settings.Default.BMBFchecked)
+                    else if (extension == ".zip" && settings.BMBFChecked)
                     {
                         string datazip = data;
                         string zippath = Path.GetDirectoryName(data);
@@ -1724,7 +1719,7 @@ namespace AndroidSideloader
                         datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
                         datazip = datazip.Replace(".", "");
 
-                        string command = $"\"{Properties.Settings.Default.MainDir}\\7z.exe\" e \"{data}\" -o\"{zippath}\\{datazip}\\\"";
+                        string command = $"\"{settings.MainDir}\\7z.exe\" e \"{data}\" -o\"{zippath}\\{datazip}\\\"";
 
                         Thread t1 = new Thread(() =>
 
@@ -1822,7 +1817,7 @@ namespace AndroidSideloader
             int newerThanListCount = 0;
             rookienamelist = String.Empty;
             loaded = false;
-            string lines = Properties.Settings.Default.InstalledApps;
+            string lines = settings.InstalledApps;
             string pattern = "package:";
             string replacement = String.Empty;
             Regex rgx = new Regex(pattern);
@@ -1831,13 +1826,13 @@ namespace AndroidSideloader
             string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
             string[] blacklist = new string[] { };
             string[] whitelist = new string[] { };
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+            if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
             {
-                blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+                blacklist = File.ReadAllLines($"{settings.MainDir}\\nouns\\blacklist.txt");
             }
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+            if (File.Exists($"{settings.MainDir}\\nouns\\whitelist.txt"))
             {
-                whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+                whitelist = File.ReadAllLines($"{settings.MainDir}\\nouns\\whitelist.txt");
             }
 
             List<ListViewItem> GameList = new List<ListViewItem>();
@@ -1929,7 +1924,7 @@ namespace AndroidSideloader
                                         string RlsName = Sideloader.PackageNametoGameName(packagename);
                                         string GameName = Sideloader.gameNameToSimpleName(RlsName);
 
-                                        if (!dontget && !updatesNotified && !isworking && updint < 6 && !Properties.Settings.Default.SubmittedUpdates.Contains(packagename))
+                                        if (!dontget && !updatesNotified && !isworking && updint < 6 && !settings.SubmittedUpdates.Contains(packagename))
                                         {
                                             either = true;
                                             updates = true;
@@ -1967,7 +1962,7 @@ namespace AndroidSideloader
             }
 
 
-            if (blacklistItems.Count == 0 && GameList.Count == 0 && !Properties.Settings.Default.nodevicemode && !isOffline)
+            if (blacklistItems.Count == 0 && GameList.Count == 0 && !settings.NodeviceMode && !isOffline)
             {
                 //This means either the user does not have headset connected or the blacklist
                 //did not load, so we are just going to skip everything
@@ -2009,7 +2004,7 @@ namespace AndroidSideloader
                     {
                         foreach (UpdateGameData gameData in gamesToAskForUpdate)
                         {
-                            if (!updatesNotified && !Properties.Settings.Default.SubmittedUpdates.Contains(gameData.Packagename))
+                            if (!updatesNotified && !settings.SubmittedUpdates.Contains(gameData.Packagename))
                             {
                                 either = true;
                                 updates = true;
@@ -2066,7 +2061,7 @@ namespace AndroidSideloader
                         {
                             changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
                             bool onapplist = false;
-                            string NewApp = Properties.Settings.Default.NonAppPackages + "\n" + Properties.Settings.Default.AppPackages;
+                            string NewApp = settings.NonAppPackages + "\n" + settings.AppPackages;
                             if (NewApp.Contains(newGamesToUpload))
                             {
                                 onapplist = true;
@@ -2180,48 +2175,48 @@ namespace AndroidSideloader
                         string gameZipName = $"{gameName}.zip";
 
                         // Delete both zip & txt if the files exist, most likely due to a failed upload.
-                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        if (File.Exists($"{settings.MainDir}\\{gameZipName}"))
                         {
-                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                            File.Delete($"{settings.MainDir}\\{gameZipName}");
                         }
 
-                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        if (File.Exists($"{settings.MainDir}\\{gameName}.txt"))
                         {
-                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                            File.Delete($"{settings.MainDir}\\{gameName}.txt");
                         }
 
-                        string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                        string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
+                        string path = $"{settings.MainDir}\\7z.exe";
+                        string cmd = $"7z a -mx1 \"{settings.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
                         Program.form.changeTitle("Zipping extracted application...");
                         _ = ADB.RunCommandToString(cmd, path);
-                        if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}"))
+                        if (Directory.Exists($"{settings.MainDir}\\{game.Pckgcommand}"))
                         {
-                            Directory.Delete($"{Properties.Settings.Default.MainDir}\\{game.Pckgcommand}", true);
+                            Directory.Delete($"{settings.MainDir}\\{game.Pckgcommand}", true);
                         }
                         Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
 
                         // Get size of pending zip upload and write to text file
-                        long zipSize = new FileInfo($"{Properties.Settings.Default.MainDir}\\{gameZipName}").Length;
-                        File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{gameName}.txt", zipSize.ToString());
+                        long zipSize = new FileInfo($"{settings.MainDir}\\{gameZipName}").Length;
+                        File.WriteAllText($"{settings.MainDir}\\{gameName}.txt", zipSize.ToString());
                         // Upload size file.
-                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.MainDir}\\{gameName}.txt\" RSL-gameuploads:");
                         // Upload zip.
-                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{Properties.Settings.Default.MainDir}\\{gameZipName}\" RSL-gameuploads:");
+                        _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.MainDir}\\{gameZipName}\" RSL-gameuploads:");
 
                         if (game.isUpdate)
                         {
-                            Properties.Settings.Default.SubmittedUpdates += game.Pckgcommand + "\n";
-                            Properties.Settings.Default.Save();
+                            settings.SubmittedUpdates += game.Pckgcommand + "\n";
+                            settings.Save();
                         }
 
                         // Delete files once uploaded.
-                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameName}.txt"))
+                        if (File.Exists($"{settings.MainDir}\\{gameName}.txt"))
                         {
-                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameName}.txt");
+                            File.Delete($"{settings.MainDir}\\{gameName}.txt");
                         }
-                        if (File.Exists($"{Properties.Settings.Default.MainDir}\\{gameZipName}"))
+                        if (File.Exists($"{settings.MainDir}\\{gameZipName}"))
                         {
-                            File.Delete($"{Properties.Settings.Default.MainDir}\\{gameZipName}");
+                            File.Delete($"{settings.MainDir}\\{gameZipName}");
                         }
 
                     })
@@ -2250,18 +2245,18 @@ namespace AndroidSideloader
 
         public static async void newPackageUpload()
         {
-            if (!string.IsNullOrEmpty(Properties.Settings.Default.NonAppPackages) && !Properties.Settings.Default.ListUpped)
+            if (!string.IsNullOrEmpty(settings.NonAppPackages) && !settings.ListUpped)
             {
                 Random r = new Random();
                 int x = r.Next(9999);
                 int y = x;
-                File.WriteAllText($"{Properties.Settings.Default.MainDir}\\FreeOrNonVR{y}.txt", Properties.Settings.Default.NonAppPackages);
-                string path = $"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe";
+                File.WriteAllText($"{settings.MainDir}\\FreeOrNonVR{y}.txt", settings.NonAppPackages);
+                string path = $"{settings.MainDir}\\rclone\\rclone.exe";
 
                 Thread t1 = new Thread(() =>
                 {
-                    _ = ADB.RunCommandToString($"\"{Properties.Settings.Default.MainDir}\\rclone\\rclone.exe\" copy \"{Properties.Settings.Default.MainDir}\\FreeOrNonVR{y}.txt\" VRP-debuglogs:InstalledGamesList", path);
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\FreeOrNonVR{y}.txt");
+                    _ = ADB.RunCommandToString($"\"{settings.MainDir}\\rclone\\rclone.exe\" copy \"{settings.MainDir}\\FreeOrNonVR{y}.txt\" VRP-debuglogs:InstalledGamesList", path);
+                    File.Delete($"{settings.MainDir}\\FreeOrNonVR{y}.txt");
                 })
                 {
                     IsBackground = true
@@ -2273,8 +2268,8 @@ namespace AndroidSideloader
                     await Task.Delay(100);
                 }
 
-                Properties.Settings.Default.ListUpped = true;
-                Properties.Settings.Default.Save();
+                settings.ListUpped = true;
+                settings.Save();
 
             }
         }
@@ -2300,7 +2295,7 @@ namespace AndroidSideloader
             changeTitle("Extracting obb if it exists....");
             Thread t2 = new Thread(() =>
             {
-                _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packagename}\" \"{Properties.Settings.Default.MainDir}\\{packagename}\"");
+                _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packagename}\" \"{settings.MainDir}\\{packagename}\"");
             })
             {
                 IsBackground = true
@@ -2313,7 +2308,7 @@ namespace AndroidSideloader
             }
 
             string HWID = SideloaderUtilities.UUID();
-            File.WriteAllText($"{Properties.Settings.Default.MainDir}\\{packagename}\\HWID.txt", HWID);
+            File.WriteAllText($"{settings.MainDir}\\{packagename}\\HWID.txt", HWID);
             progressBar.Style = ProgressBarStyle.Continuous;
             UploadGame game = new UploadGame
             {
@@ -2450,8 +2445,8 @@ namespace AndroidSideloader
                 await Task.Delay(1000);
                 string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
-                Properties.Settings.Default.WirelessADB = true;
-                Properties.Settings.Default.Save();
+                settings.WirelessADB = true;
+                settings.Save();
                 _ = new string[] { String.Empty };
                 string[] strArrayOne = input.Split(' ');
                 if (strArrayOne[0].Length > 7)
@@ -2464,8 +2459,8 @@ namespace AndroidSideloader
                     _ = await Program.form.CheckForDevice();
                     Program.form.changeTitlebarToDevice();
                     Program.form.showAvailableSpace();
-                    Properties.Settings.Default.IPAddress = IPcmnd;
-                    Properties.Settings.Default.Save();
+                    settings.IPAddress = IPcmnd;
+                    settings.Save();
                     try
                     {
                         File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd);
@@ -2602,9 +2597,9 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         public async void downloadInstallGameButton_Click(object sender, EventArgs e)
         {
             {
-                if (!Properties.Settings.Default.customDownloadDir)
+                if (!settings.CustomDownloadDir)
                 {
-                    Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
+                    settings.DownloadDir = Environment.CurrentDirectory.ToString();
                 }
                 bool obbsMismatch = false;
                 if (nodeviceonstart && !updatesNotified)
@@ -2658,7 +2653,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
 
                 //Do user json on firsttime
-                if (Properties.Settings.Default.userJsonOnGameInstall)
+                if (settings.UserJsonOnGameInstall)
                 {
                     Thread userJsonThread = new Thread(() => { changeTitle("Pushing user.json"); Sideloader.PushUserJsons(); })
                     {
@@ -2677,8 +2672,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     string packagename = Sideloader.gameNameToPackageName(gameName);
                     string versioncode = Sideloader.gameNameToVersionCode(gameName);
                     string dir = Path.GetDirectoryName(gameName);
-                    string gameDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
-                    string downloadDirectory = Path.Combine(Properties.Settings.Default.downloadDir, gameName);
+                    string gameDirectory = Path.Combine(settings.DownloadDir, gameName);
+                    string downloadDirectory = Path.Combine(settings.DownloadDir, gameName);
                     string path = gameDirectory;
 
                     string gameNameHash = string.Empty;
@@ -2701,27 +2696,27 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                     Thread t1;
                     string extraArgs = string.Empty;
-                    if (Properties.Settings.Default.singleThreadMode)
+                    if (settings.SingleThreadMode)
                     {
                         extraArgs = "--transfers 1 --multi-thread-streams 0";
                     }
                     string bandwidthLimit = string.Empty;
-                    if (Properties.Settings.Default.bandwidthLimit > 0)
+                    if (settings.BandwidthLimit > 0)
                     {
-                        bandwidthLimit = $"--bwlimit={Properties.Settings.Default.bandwidthLimit}M";
+                        bandwidthLimit = $"--bwlimit={settings.BandwidthLimit}M";
                     }
                     if (hasPublicConfig)
                     {
                         bool doDownload = true;
                         bool skipRedownload = false;
-                        if (Properties.Settings.Default.useDownloadedFiles == true) {
+                        if (settings.UseDownloadedFiles == true) {
                             skipRedownload = true;
                         }
 
                         if (Directory.Exists(gameDirectory))
                         {
                             if (skipRedownload == true) {
-                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}")) {
+                                if (Directory.Exists($"{settings.DownloadDir}\\{gameName}")) {
                                     doDownload = false;
                                 }
                             } else {
@@ -2735,16 +2730,16 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (doDownload)
                             {
                                 // only delete after extraction; allows for resume if the fetch fails midway.
-                                if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}"))
+                                if (Directory.Exists($"{settings.DownloadDir}\\{gameName}"))
                                 {
-                                    Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameName}", true);
+                                    Directory.Delete($"{settings.DownloadDir}\\{gameName}", true);
                                 }
                             }
                         }
 
                         if (doDownload)
                         {
-                            downloadDirectory = $"{Properties.Settings.Default.downloadDir}\\{gameNameHash}";
+                            downloadDirectory = $"{settings.DownloadDir}\\{gameNameHash}";
                             _ = Logger.Log($"rclone copy \"Public:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
                             t1 = new Thread(() =>
                             {
@@ -2766,7 +2761,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{Properties.Settings.Default.downloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first {bandwidthLimit}");
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{settings.DownloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first {bandwidthLimit}");
                         });
                         Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
@@ -2867,19 +2862,19 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 changeTitle("Deleting game files", false);
                                 if (hasPublicConfig)
                                 {
-                                    if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
+                                    if (Directory.Exists($"{settings.DownloadDir}\\{gameNameHash}"))
                                     {
-                                        Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
+                                        Directory.Delete($"{settings.DownloadDir}\\{gameNameHash}", true);
                                     }
 
-                                    if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}"))
+                                    if (Directory.Exists($"{settings.DownloadDir}\\{gameName}"))
                                     {
-                                        Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameName}", true);
+                                        Directory.Delete($"{settings.DownloadDir}\\{gameName}", true);
                                     }
                                 }
                                 else
                                 {
-                                    Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true);
+                                    Directory.Delete(settings.DownloadDir + "\\" + gameName, true);
                                 }
                             }
                         }
@@ -2935,7 +2930,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 try
                                 {
                                     changeTitle("Extracting " + gameName, false);
-                                    Zip.ExtractFile($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{Properties.Settings.Default.downloadDir}", PublicConfigFile.Password);
+                                    Zip.ExtractFile($"{settings.DownloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{settings.DownloadDir}", PublicConfigFile.Password);
                                     Program.form.changeTitle("");
                                 }
                                 catch (ExtractionException ex)
@@ -2959,9 +2954,9 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 await Task.Delay(100);
                             }
 
-                            if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}"))
+                            if (Directory.Exists($"{settings.DownloadDir}\\{gameNameHash}"))
                             {
-                                Directory.Delete($"{Properties.Settings.Default.downloadDir}\\{gameNameHash}", true);
+                                Directory.Delete($"{settings.DownloadDir}\\{gameNameHash}", true);
                             }
                         }
 
@@ -2974,24 +2969,24 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             changeTitle("Installing game apk " + gameName, false);
                             etaLabel.Text = "ETA: Wait for install...";
                             speedLabel.Text = "DLS: Finished";
-                            if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt")))
+                            if (File.Exists(Path.Combine(settings.DownloadDir, gameName, "install.txt")))
                             {
                                 isinstalltxt = true;
-                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "install.txt");
+                                installTxtPath = Path.Combine(settings.DownloadDir, gameName, "install.txt");
                             }
-                            else if (File.Exists(Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt")))
+                            else if (File.Exists(Path.Combine(settings.DownloadDir, gameName, "Install.txt")))
                             {
                                 isinstalltxt = true;
-                                installTxtPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, "Install.txt");
+                                installTxtPath = Path.Combine(settings.DownloadDir, gameName, "Install.txt");
                             }
 
-                            string[] files = Directory.GetFiles(Properties.Settings.Default.downloadDir + "\\" + gameName);
+                            string[] files = Directory.GetFiles(settings.DownloadDir + "\\" + gameName);
 
-                            Debug.WriteLine("Game Folder is: " + Properties.Settings.Default.downloadDir + "\\" + gameName);
+                            Debug.WriteLine("Game Folder is: " + settings.DownloadDir + "\\" + gameName);
                             Debug.WriteLine("FILES IN GAME FOLDER: ");
                             if (isinstalltxt)
                             {
-                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
+                                if (!settings.NodeviceMode || !nodeviceonstart && DeviceConnected)
                                 {
                                     Thread installtxtThread = new Thread(() =>
                                     {
@@ -3011,7 +3006,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             }
                             else
                             {
-                                if (!Properties.Settings.Default.nodevicemode || !nodeviceonstart && DeviceConnected)
+                                if (!settings.NodeviceMode || !nodeviceonstart && DeviceConnected)
                                 {
                                     // Find the APK file to install
                                     string apkFile = files.FirstOrDefault(file => Path.GetExtension(file) == ".apk");
@@ -3042,14 +3037,14 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         t.Stop();
 
                                         Debug.WriteLine(wrDelimiter);
-                                        if (Directory.Exists($"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}"))
+                                        if (Directory.Exists($"{settings.DownloadDir}\\{gameName}\\{packagename}"))
                                         {
                                             deleteOBB(packagename);
                                             Thread obbThread = new Thread(() =>
                                             {
                                                 changeTitle($"Copying {packagename} obb to device...");
                                                 ADB.RunAdbCommandToString($"shell mkdir \"/sdcard/Android/obb/{packagename}\"");
-                                                output += ADB.RunAdbCommandToString($"push \"{Properties.Settings.Default.downloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
+                                                output += ADB.RunAdbCommandToString($"push \"{settings.DownloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                 Program.form.changeTitle("");
                                             })
                                             {
@@ -3080,10 +3075,10 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 }
                                 changeTitle($"Installation of {gameName} completed.");
                             }
-                            if (Properties.Settings.Default.deleteAllAfterInstall)
+                            if (settings.DeleteAllAfterInstall)
                             {
                                 changeTitle("Deleting game files", false);
-                                try { Directory.Delete(Properties.Settings.Default.downloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}"); }
+                                try { Directory.Delete(settings.DownloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}"); }
                             }
                             //Remove current game
                             cleanupActiveDownloadStatus();
@@ -3102,7 +3097,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     changeTitle("Refreshing games list, please wait...         \n");
                     showAvailableSpace();
                     listAppsBtn();
-                    if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !Properties.Settings.Default.nodevicemode && !gamesQueueList.Any())
+                    if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !settings.NodeviceMode && !gamesQueueList.Any())
                     {
                         initListView();
                     }
@@ -3131,7 +3126,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         // Logic to compare OBB folders.
         private async Task<bool> compareOBBSizes(string packageName, string gameName, ProcessOutput output)
         {
-            string localFolderPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, packageName);
+            string localFolderPath = Path.Combine(settings.DownloadDir, gameName, packageName);
 
             if (!Directory.Exists(localFolderPath))
             {
@@ -3195,7 +3190,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
             changeTitle("Retrying push");
 
-            string obbFolderPath = Path.Combine(Properties.Settings.Default.downloadDir, gameName, packageName);
+            string obbFolderPath = Path.Combine(settings.DownloadDir, gameName, packageName);
 
             if (!Directory.Exists(obbFolderPath))
             {
@@ -3219,7 +3214,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             showAvailableSpace();
             listAppsBtn();
 
-            if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !Properties.Settings.Default.nodevicemode && !gamesQueueList.Any())
+            if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !settings.NodeviceMode && !gamesQueueList.Any())
             {
                 initListView();
             }
@@ -3268,13 +3263,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 timerticked = true;
                 bool isinstalled = false;
-                if (Properties.Settings.Default.InstalledApps.Contains(CurrPCKG))
+                if (settings.InstalledApps.Contains(CurrPCKG))
                 {
                     isinstalled = true;
                 }
                 if (isinstalled)
                 {
-                    if (!Properties.Settings.Default.AutoReinstall)
+                    if (!settings.AutoReinstall)
                     {
                         DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed." +
                             "\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to " +
@@ -3337,7 +3332,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
                 else
                 {
-                    if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
+                    if (!settings.TrailersOn) { Sideloader.killWebView2(); }
                     RCLONE.killRclone();
                 }
             }
@@ -3352,14 +3347,14 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
                 else
                 {
-                    if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
+                    if (!settings.TrailersOn) { Sideloader.killWebView2(); }
                     RCLONE.killRclone();
                     _ = ADB.RunAdbCommandToString("kill-server");
                 }
             }
             else
             {
-                if (!Properties.Settings.Default.TrailersOn) { Sideloader.killWebView2(); }
+                if (!settings.TrailersOn) { Sideloader.killWebView2(); }
                 RCLONE.killRclone();
                 _ = ADB.RunAdbCommandToString("kill-server");
             }
@@ -3386,8 +3381,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 _ = ADB.RunAdbCommandToString("kill-server");
                 await Task.Delay(2000);
                 _ = ADB.RunAdbCommandToString("start-server");
-                Properties.Settings.Default.IPAddress = String.Empty;
-                Properties.Settings.Default.Save();
+                settings.IPAddress = String.Empty;
+                settings.Save();
                 _ = Program.form.GetDeviceID();
                 Program.form.changeTitlebarToDevice();
                 _ = FlexibleMessageBox.Show(Program.form, "Relaunch Rookie to complete the process and switch back to USB adb.");
@@ -3603,13 +3598,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
-                    Properties.Settings.Default.PackageNameToCB = true;
-                    Properties.Settings.Default.Save();
+                    settings.PackageNameToCB = true;
+                    settings.Save();
                 }
                 if (dialogResult == DialogResult.No)
                 {
-                    Properties.Settings.Default.PackageNameToCB = false;
-                    Properties.Settings.Default.Save();
+                    settings.PackageNameToCB = false;
+                    settings.Save();
                 }
             }
             return base.ProcessCmdKey(ref msg, keyData);
@@ -3741,13 +3736,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             string CurrentGameName = gamesListView.SelectedItems[gamesListView.SelectedItems.Count - 1].SubItems[SideloaderRCLONE.GameNameIndex].Text;
             Console.WriteLine(CurrentGameName);
 
-            if (!Properties.Settings.Default.TrailersOn)
+            if (!settings.TrailersOn)
             {
                 webView21.Enabled = false;
                 webView21.Hide();
                 if (!keyheld)
                 {
-                    if (Properties.Settings.Default.PackageNameToCB)
+                    if (settings.PackageNameToCB)
                     {
                         Clipboard.SetText(CurrentPackageName);
                     }
@@ -3902,7 +3897,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 updateAvailableClicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = Properties.Settings.Default.InstalledApps;
+                string lines = settings.InstalledApps;
                 string pattern = "package:";
                 string replacement = String.Empty;
                 Regex rgx = new Regex(pattern);
@@ -3911,13 +3906,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+                if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
                 {
-                    blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+                    blacklist = File.ReadAllLines($"{settings.MainDir}\\nouns\\blacklist.txt");
                 }
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+                if (File.Exists($"{settings.MainDir}\\nouns\\whitelist.txt"))
                 {
-                    whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+                    whitelist = File.ReadAllLines($"{settings.MainDir}\\nouns\\whitelist.txt");
                 }
 
                 List<ListViewItem> GameList = new List<ListViewItem>();
@@ -4046,8 +4041,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         _ = await Program.form.CheckForDevice();
                         Program.form.showAvailableSpace();
-                        Properties.Settings.Default.IPAddress = IPcmnd;
-                        Properties.Settings.Default.Save();
+                        settings.IPAddress = IPcmnd;
+                        settings.Save();
                         try { File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd); }
                         catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                         ADB.wirelessadbON = true;
@@ -4139,15 +4134,15 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
                 InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
                 ulong VersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
+                if (Directory.Exists($"{settings.MainDir}\\{packageName}"))
                 {
-                    Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                    Directory.Delete($"{settings.MainDir}\\{packageName}", true);
                 }
 
                 ProcessOutput output = new ProcessOutput("", "");
                 changeTitle("Extracting APK....");
 
-                _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
+                _ = Directory.CreateDirectory($"{settings.MainDir}\\{packageName}");
 
                 Thread t1 = new Thread(() =>
                 {
@@ -4166,7 +4161,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 changeTitle("Extracting obb if it exists....");
                 Thread t2 = new Thread(() =>
                 {
-                    output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{Properties.Settings.Default.MainDir}\\{packageName}\"");
+                    output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{settings.MainDir}\\{packageName}\"");
                 })
                 {
                     IsBackground = true
@@ -4178,13 +4173,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     await Task.Delay(100);
                 }
 
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip"))
+                if (File.Exists($"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip"))
                 {
-                    File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
+                    File.Delete($"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
                 }
 
-                string path = $"{Properties.Settings.Default.MainDir}\\7z.exe";
-                string cmd = $"7z a -mx1 \"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
+                string path = $"{settings.MainDir}\\7z.exe";
+                string cmd = $"7z a -mx1 \"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
                 Program.form.changeTitle("Zipping extracted application...");
                 Thread t3 = new Thread(() =>
                 {
@@ -4205,9 +4200,9 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     File.Delete($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
                 }
 
-                File.Copy($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
-                File.Delete($"{Properties.Settings.Default.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
-                Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                File.Copy($"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip", $"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip");
+                File.Delete($"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
+                Directory.Delete($"{settings.MainDir}\\{packageName}", true);
                 isworking = false;
                 Program.form.changeTitle("                                   \n\n");
                 progressBar.Style = ProgressBarStyle.Continuous;
@@ -4233,7 +4228,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 upToDate_Clicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = Properties.Settings.Default.InstalledApps;
+                string lines = settings.InstalledApps;
                 string pattern = "package:";
                 string replacement = String.Empty;
                 Regex rgx = new Regex(pattern);
@@ -4242,13 +4237,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+                if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
                 {
-                    blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+                    blacklist = File.ReadAllLines($"{settings.MainDir}\\nouns\\blacklist.txt");
                 }
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+                if (File.Exists($"{settings.MainDir}\\nouns\\whitelist.txt"))
                 {
-                    whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+                    whitelist = File.ReadAllLines($"{settings.MainDir}\\nouns\\whitelist.txt");
                 }
 
                 List<ListViewItem> GameList = new List<ListViewItem>();
@@ -4365,7 +4360,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 NeedsDonation_Clicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = Properties.Settings.Default.InstalledApps;
+                string lines = settings.InstalledApps;
                 string pattern = "package:";
                 string replacement = String.Empty;
                 Regex rgx = new Regex(pattern);
@@ -4374,13 +4369,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt"))
+                if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
                 {
-                    blacklist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\blacklist.txt");
+                    blacklist = File.ReadAllLines($"{settings.MainDir}\\nouns\\blacklist.txt");
                 }
-                if (File.Exists($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt"))
+                if (File.Exists($"{settings.MainDir}\\nouns\\whitelist.txt"))
                 {
-                    whitelist = File.ReadAllLines($"{Properties.Settings.Default.MainDir}\\nouns\\whitelist.txt");
+                    whitelist = File.ReadAllLines($"{settings.MainDir}\\nouns\\whitelist.txt");
                 }
 
                 List<ListViewItem> GameList = new List<ListViewItem>();
@@ -4521,32 +4516,32 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         private void btnOpenDownloads_Click(object sender, EventArgs e)
         {
-            string pathToOpen = Properties.Settings.Default.customDownloadDir ? $"{Properties.Settings.Default.downloadDir}" : $"{Environment.CurrentDirectory}";
+            string pathToOpen = settings.CustomDownloadDir ? $"{settings.DownloadDir}" : $"{Environment.CurrentDirectory}";
             OpenDirectory(pathToOpen);
         }
 
         private void btnNoDevice_Click(object sender, EventArgs e)
         {
-            bool currentStatus = Properties.Settings.Default.nodevicemode || false;
+            bool currentStatus = settings.NodeviceMode || false;
 
             if (currentStatus)
             {
                 // No Device Mode is currently On. Toggle it Off
-                Properties.Settings.Default.nodevicemode = false;
+                settings.NodeviceMode = false;
                 btnNoDevice.Text = "Disable Sideloading";
 
                 changeTitle($"Sideloading has been Enabled");
             }
             else
             {
-                Properties.Settings.Default.nodevicemode = true;
-                Properties.Settings.Default.deleteAllAfterInstall = false;
+                settings.NodeviceMode = true;
+                settings.DeleteAllAfterInstall = false;
                 btnNoDevice.Text = "Enable Sideloading";
 
                 changeTitle($"Sideloading Disabled. Games will only Download.");
             }
 
-            Properties.Settings.Default.Save();
+            settings.Save();
         }
 
         private void adbCmd_btnToggleUpdates_Click(object sender, EventArgs e)

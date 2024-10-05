@@ -1,4 +1,5 @@
-﻿using JR.Utils.GUI.Forms;
+﻿using AndroidSideloader.Utilities;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ namespace AndroidSideloader
 {
     internal class ADB
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         private static readonly Process adb = new Process();
         public static string adbFolderPath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools");
         public static string adbFilePath = Path.Combine(adbFolderPath, "adb.exe");
@@ -18,9 +20,9 @@ namespace AndroidSideloader
             // Replacing "adb" from command if the user added it
             command = command.Replace("adb", "");
 
-            Properties.Settings.Default.ADBFolder = adbFolderPath;
-            Properties.Settings.Default.ADBPath = adbFilePath;
-            Properties.Settings.Default.Save();
+            settings.ADBFolder = adbFolderPath;
+            settings.ADBPath = adbFilePath;
+            settings.Save();
             if (DeviceID.Length > 1)
             {
                 command = $" -s {DeviceID} {command}";
@@ -68,7 +70,7 @@ namespace AndroidSideloader
                     }
                 }
 
-                if (error.Contains("ADB_VENDOR_KEYS") && !Properties.Settings.Default.adbdebugwarned)
+                if (error.Contains("ADB_VENDOR_KEYS") && !settings.AdbDebugWarned)
                 {
                     ADBDebugWarning();
                 }
@@ -137,7 +139,7 @@ namespace AndroidSideloader
                     adb.WaitForExit();
                 }
             }
-            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
+            if (error.Contains("ADB_VENDOR_KEYS") && settings.AdbDebugWarned)
             {
                 ADBDebugWarning();
             }
@@ -188,7 +190,7 @@ namespace AndroidSideloader
                 }
             }
 
-            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
+            if (error.Contains("ADB_VENDOR_KEYS") && settings.AdbDebugWarned)
             {
                 ADBDebugWarning();
             }
@@ -204,8 +206,8 @@ namespace AndroidSideloader
                 DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "On your headset, click on the Notifications Bell, and then select the USB Detected notification to enable Connections.", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
-                    // Properties.Settings.Default.adbdebugwarned = true;
-                    Properties.Settings.Default.Save();
+                    // settings.adbdebugwarned = true;
+                    settings.Save();
                 }
             });
         }
@@ -246,7 +248,6 @@ namespace AndroidSideloader
         public static bool wirelessadbON;
         public static ProcessOutput Sideload(string path, string packagename = "")
         {
-
             ProcessOutput ret = new ProcessOutput();
             ret += RunAdbCommandToString($"install -g \"{path}\"");
             string out2 = ret.Output + ret.Error;
@@ -254,7 +255,7 @@ namespace AndroidSideloader
             {
                 _ = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
                 _ = Logger.Log(out2);
-                if (out2.Contains("offline") && !Properties.Settings.Default.nodevicemode)
+                if (out2.Contains("offline") && !settings.NodeviceMode)
                 {
                     DialogResult dialogResult2 = FlexibleMessageBox.Show(Program.form, "Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                 }
@@ -262,11 +263,11 @@ namespace AndroidSideloader
                 {
                     ret.Error = string.Empty;
                     ret.Output = string.Empty;
-                    if (!Properties.Settings.Default.AutoReinstall)
+                    if (!settings.AutoReinstall)
                     {
                         bool cancelClicked = false;
 
-                        if (!Properties.Settings.Default.AutoReinstall)
+                        if (!settings.AutoReinstall)
                         {
                             Program.form.Invoke((MethodInvoker)(() =>
                             {

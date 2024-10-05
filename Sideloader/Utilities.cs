@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AndroidSideloader.Utilities;
+using System;
 using System.IO;
 using System.Management;
 using System.Security.Cryptography;
@@ -8,6 +9,7 @@ namespace AndroidSideloader
 {
     internal class SideloaderUtilities
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         public static bool CheckFolderIsObb(string path)
         {
             string[] files = Directory.GetFiles(path);
@@ -26,7 +28,7 @@ namespace AndroidSideloader
         private static string uuid = null;
         public static string UUID()
         {
-            uuid = Properties.Settings.Default.UUID;
+            uuid = settings.UUID;
             if (string.IsNullOrEmpty(uuid) != true)
             {
                 return uuid;
@@ -40,8 +42,8 @@ namespace AndroidSideloader
 
             uuid = BitConverter.ToString(bytes).Replace("-", "");
 
-            Properties.Settings.Default.UUID = uuid;
-            Properties.Settings.Default.Save();
+            settings.UUID = uuid;
+            settings.Save();
 
             return uuid;
         }
