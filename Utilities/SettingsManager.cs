@@ -135,6 +135,7 @@ namespace AndroidSideloader.Utilities
         private SettingsManager()
         {
             Load();
+            Save();
         }
 
         public static SettingsManager Instance => _instance.Value;

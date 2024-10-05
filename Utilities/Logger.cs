@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AndroidSideloader.Utilities;
+using System;
 using System.IO;
 using System.Text;
 
@@ -16,6 +17,7 @@ namespace AndroidSideloader
 
     public static class Logger
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         private static readonly object lockObject = new object();
         private static string logFilePath = settings.CurrentLogPath;
 
