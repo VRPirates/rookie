@@ -1943,7 +1943,10 @@ namespace AndroidSideloader
                                 }
                             }
                         }
-                        GameList.Add(Game);
+                        if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("ADULT"))
+                        {
+                            GameList.Add(Game);
+                        }
                     }
                 })
                 {
@@ -3640,10 +3643,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                     gamesListView.BeginUpdate(); // Improve UI performance
                     gamesListView.Items.Clear();
-
                     foreach (var match in matches)
                     {
-                        gamesListView.Items.Add(match);
+                        if (settings.HideAdultContent && !match.SubItems[1].Text.Contains("ADULT"))
+                        {
+                            gamesListView.Items.Add(match);
+                        }
                     }
 
                     gamesListView.EndUpdate(); // End the update to refresh the UI
@@ -3965,7 +3970,10 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         if (installedVersionInt < cloudVersionInt)
                                         {
                                             Game.ForeColor = colorFont_updateAvailable;
-                                            GameList.Add(Game);
+                                            if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("ADULT"))
+                                            {
+                                                GameList.Add(Game);
+                                            }
                                         }
                                         else
                                         {
@@ -4296,7 +4304,10 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         if (installedVersionInt == cloudVersionInt)
                                         {
                                             Game.ForeColor = colorFont_installedGame;
-                                            GameList.Add(Game);
+                                            if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("ADULT"))
+                                            {
+                                                GameList.Add(Game);
+                                            }
                                         }
                                         else
                                         {
@@ -4436,7 +4447,10 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                             if (!dontget)
                                             {
                                                 Game.ForeColor = colorFont_donateGame;
-                                                GameList.Add(Game);
+                                                if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("ADULT"))
+                                                {
+                                                    GameList.Add(Game);
+                                                }
                                             }
                                         }
                                         else

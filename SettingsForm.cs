@@ -25,7 +25,6 @@ namespace AndroidSideloader
 
         private void initSettings()
         {
-            Console.WriteLine("Opened Settins Form");
             checkForUpdatesCheckBox.Checked = _settings.CheckForUpdates;
             enableMessageBoxesCheckBox.Checked = _settings.EnableMessageBoxes;
             deleteAfterInstallCheckBox.Checked = _settings.DeleteAllAfterInstall;
@@ -37,6 +36,7 @@ namespace AndroidSideloader
             trailersOn.Checked = _settings.TrailersOn;
             chkSingleThread.Checked = _settings.SingleThreadMode;
             virtualFilesystemCompatibilityCheckbox.Checked = _settings.VirtualFilesystemCompatibility;
+            hideAdultContentCheckBox.Checked = _settings.HideAdultContent;
             bandwidthLimitTextBox.Text = _settings.BandwidthLimit.ToString();
             if (nodevicemodeBox.Checked)
             {
@@ -60,7 +60,6 @@ namespace AndroidSideloader
 
         public void btnUploadDebug_click(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             if (File.Exists($"{_settings.CurrentLogPath}"))
             {
                 string UUID = SideloaderUtilities.UUID();
@@ -76,7 +75,6 @@ namespace AndroidSideloader
 
         public void btnResetDebug_click(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             if (File.Exists($"{_settings.CurrentLogPath}"))
             {
                 File.Delete($"{_settings.CurrentLogPath}");
@@ -90,7 +88,6 @@ namespace AndroidSideloader
 
         private void applyButton_Click(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             string input = bandwidthLimitTextBox.Text;
             Regex regex = new Regex(@"^\d+(\.\d+)?$");
 
@@ -108,29 +105,24 @@ namespace AndroidSideloader
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.CheckForUpdates = checkForUpdatesCheckBox.Checked;
             _settings.Save();
         }
 
         private void chkUseDownloadedFiles_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.UseDownloadedFiles = chkUseDownloadedFiles.Checked;
             _settings.Save();
         }
 
         private void enableMessageBoxesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.EnableMessageBoxes = enableMessageBoxesCheckBox.Checked;
             _settings.Save();
         }
 
         private void resetSettingsButton_Click(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
-
             // Reset the specific properties
             _settings.CustomDownloadDir = false;
             _settings.CustomBackupDir = false;
@@ -149,14 +141,12 @@ namespace AndroidSideloader
 
         private void deleteAfterInstallCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.DeleteAllAfterInstall = deleteAfterInstallCheckBox.Checked;
             _settings.Save();
         }
 
         private void updateConfigCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.AutoUpdateConfig = updateConfigCheckBox.Checked;
             if (_settings.AutoUpdateConfig)
             {
@@ -167,7 +157,6 @@ namespace AndroidSideloader
 
         private void userJsonOnGameInstall_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.UserJsonOnGameInstall = userJsonOnGameInstall.Checked;
             _settings.Save();
         }
@@ -205,7 +194,6 @@ namespace AndroidSideloader
 
         private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.NodeviceMode = nodevicemodeBox.Checked;
             if (!nodevicemodeBox.Checked)
             {
@@ -224,14 +212,12 @@ namespace AndroidSideloader
 
         private void bmbfBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.BMBFChecked = bmbfBox.Checked;
             _settings.Save();
         }
 
         private void AutoReinstBox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.AutoReinstall = AutoReinstBox.Checked;
             _settings.Save();
         }
@@ -254,7 +240,6 @@ namespace AndroidSideloader
 
         private void trailersOn_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.TrailersOn = trailersOn.Checked;
             _settings.Save();
         }
@@ -271,7 +256,6 @@ namespace AndroidSideloader
         {
             if (downloadDirectorySetter.ShowDialog() == DialogResult.OK)
             {
-                var _settings = SettingsManager.Instance;
                 _settings.CustomDownloadDir = true;
                 _settings.DownloadDir = downloadDirectorySetter.SelectedPath;
                 _settings.Save();
@@ -282,7 +266,6 @@ namespace AndroidSideloader
         {
             if (backupDirectorySetter.ShowDialog() == DialogResult.OK)
             {
-                var _settings = SettingsManager.Instance;
                 _settings.CustomBackupDir = true;
                 _settings.BackupDir = backupDirectorySetter.SelectedPath;
                 MainForm.backupFolder = _settings.BackupDir;
@@ -292,28 +275,24 @@ namespace AndroidSideloader
 
         private void chkSingleThread_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.SingleThreadMode = chkSingleThread.Checked;
             _settings.Save();
         }
 
         private void virtualFilesystemCompatibilityCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             _settings.VirtualFilesystemCompatibility = virtualFilesystemCompatibilityCheckbox.Checked;
             _settings.Save();
         }
 
         private void openDownloadDirectory_Click(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             string pathToOpen = _settings.CustomDownloadDir ? _settings.DownloadDir : Environment.CurrentDirectory;
             MainForm.OpenDirectory(pathToOpen);
         }
 
         private void openBackupDirectory_Click(object sender, EventArgs e)
         {
-            var _settings = SettingsManager.Instance;
             string pathToOpen = _settings.CustomBackupDir
                 ? Path.Combine(_settings.BackupDir, "Rookie Backups")
                 : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Rookie Backups");
@@ -331,6 +310,12 @@ namespace AndroidSideloader
             {
                 e.Handled = true;
             }
+        }
+
+        private void hideAdultContentCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _settings.HideAdultContent = hideAdultContentCheckBox.Checked;
+            _settings.Save();
         }
     }
 }

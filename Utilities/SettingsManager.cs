@@ -131,6 +131,7 @@ namespace AndroidSideloader.Utilities
         public bool CreatePubMirrorFile { get; set; } = true;
         public bool UseDownloadedFiles { get; set; } = false;
         public float BandwidthLimit { get; set; } = 0f;
+        public bool HideAdultContent { get; set; } = false;
 
         private SettingsManager()
         {
@@ -251,6 +252,7 @@ namespace AndroidSideloader.Utilities
             CreatePubMirrorFile = true;
             UseDownloadedFiles = false;
             BandwidthLimit = 0f;
+            HideAdultContent = false;
 
             Save();
             Debug.WriteLine("Default settings created.");

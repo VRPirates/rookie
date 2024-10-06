@@ -356,7 +356,7 @@ namespace AndroidSideloader
             this.searchTextBox.Location = new System.Drawing.Point(224, 70);
             this.searchTextBox.MinimumSize = new System.Drawing.Size(231, 26);
             this.searchTextBox.Name = "searchTextBox";
-            this.searchTextBox.Size = new System.Drawing.Size(862, 26);
+            this.searchTextBox.Size = new System.Drawing.Size(862, 24);
             this.searchTextBox.TabIndex = 5;
             this.searchTextBox.Text = "Search";
             this.searchTextBox.Click += new System.EventHandler(this.searchTextBox_Click);
