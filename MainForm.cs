@@ -737,10 +737,7 @@ namespace AndroidSideloader
             {
                 message += $"\nError: {prcout.Error}";
             }
-            if (settings.EnableMessageBoxes)
-            {
-                _ = FlexibleMessageBox.Show(Program.form, message);
-            }
+            _ = FlexibleMessageBox.Show(Program.form, message);
         }
 
         public List<string> Devices = new List<string>();
@@ -1772,7 +1769,6 @@ namespace AndroidSideloader
 
             ShowPrcOutput(output);
             listAppsBtn();
-
         }
 
         private void Form1_DragEnter(object sender, DragEventArgs e)
@@ -3105,7 +3101,10 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         initListView();
                     }
-                    ShowPrcOutput(output);
+                    if (settings.EnableMessageBoxes)
+                    {
+                        ShowPrcOutput(output);
+                    }
                     progressBar.Style = ProgressBarStyle.Continuous;
                     etaLabel.Text = "ETA: Finished Queue";
                     speedLabel.Text = "DLS: Finished Queue";
@@ -3222,8 +3221,10 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 initListView();
             }
-
-            ShowPrcOutput(output);
+            if (settings.EnableMessageBoxes)
+            {
+                ShowPrcOutput(output);
+            }
             progressBar.Style = ProgressBarStyle.Continuous;
             etaLabel.Text = "ETA: Finished Queue";
             speedLabel.Text = "DLS: Finished Queue";
