@@ -737,8 +737,10 @@ namespace AndroidSideloader
             {
                 message += $"\nError: {prcout.Error}";
             }
-
-            _ = FlexibleMessageBox.Show(Program.form, message);
+            if (settings.EnableMessageBoxes)
+            {
+                _ = FlexibleMessageBox.Show(Program.form, message);
+            }
         }
 
         public List<string> Devices = new List<string>();
@@ -809,7 +811,7 @@ namespace AndroidSideloader
 
         public static void notify(string message)
         {
-            if (settings.EnableMessageBoxes == true)
+            if (settings.EnableMessageBoxes)
             {
                 _ = FlexibleMessageBox.Show(new Form
                 {
@@ -923,7 +925,6 @@ namespace AndroidSideloader
                 catch (Exception ex)
                 {
                     _ = Logger.Log($"Unable to get available space with the exception: {ex}", LogLevel.ERROR);
-
                 }
             }
         }
