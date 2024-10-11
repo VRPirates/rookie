@@ -156,47 +156,65 @@ namespace AndroidSideloader
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
             }
 
-            _ = Logger.Log($"Running command: {logcmd}");
-            adb.StartInfo.FileName = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\Windows\System32\cmd.exe";
-            adb.StartInfo.Arguments = command;
-            adb.StartInfo.RedirectStandardError = true;
-            adb.StartInfo.RedirectStandardInput = true;
-            adb.StartInfo.RedirectStandardOutput = true;
-            adb.StartInfo.CreateNoWindow = true;
-            adb.StartInfo.UseShellExecute = false;
-            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
-            _ = adb.Start();
-            adb.StandardInput.WriteLine(command);
-            adb.StandardInput.Flush();
-            adb.StandardInput.Close();
-
-
-            string output = "";
-            string error = "";
+            Logger.Log($"Running command: {logcmd}");
 
             try
             {
-                output += adb.StandardOutput.ReadToEnd();
-                error += adb.StandardError.ReadToEnd();
-            }
-            catch { }
-            if (command.Contains("connect"))
-            {
-                bool graceful = adb.WaitForExit(3000);
-                if (!graceful)
+                using (var adb = new Process())
                 {
-                    adb.Kill();
-                    adb.WaitForExit();
+                    adb.StartInfo.FileName = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\Windows\System32\cmd.exe";
+                    adb.StartInfo.Arguments = command;
+                    adb.StartInfo.RedirectStandardError = true;
+                    adb.StartInfo.RedirectStandardInput = true;
+                    adb.StartInfo.RedirectStandardOutput = true;
+                    adb.StartInfo.CreateNoWindow = true;
+                    adb.StartInfo.UseShellExecute = false;
+                    adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
+
+                    adb.Start();
+                    adb.StandardInput.WriteLine(command);
+                    adb.StandardInput.Flush();
+                    adb.StandardInput.Close();
+
+                    string output = adb.StandardOutput.ReadToEnd();
+                    string error = adb.StandardError.ReadToEnd();
+
+                    if (command.Contains("connect"))
+                    {
+                        bool graceful = adb.WaitForExit(3000);
+                        if (!graceful)
+                        {
+                            adb.Kill();
+                            adb.WaitForExit();
+                        }
+                    }
+                    else
+                    {
+                        adb.WaitForExit();
+                    }
+
+                    if (error.Contains("ADB_VENDOR_KEYS") && settings.AdbDebugWarned)
+                    {
+                        ADBDebugWarning();
+                    }
+
+                    if (error.Contains("Asset path") && error.Contains("is neither a directory nor file"))
+                    {
+                        Logger.Log("Asset path error detected. The specified path might not exist or be accessible.", LogLevel.WARNING);
+                        // You might want to handle this specific error differently
+                    }
+
+                    Logger.Log(output);
+                    Logger.Log(error, LogLevel.ERROR);
+
+                    return new ProcessOutput(output, error);
                 }
             }
-
-            if (error.Contains("ADB_VENDOR_KEYS") && settings.AdbDebugWarned)
+            catch (Exception ex)
             {
-                ADBDebugWarning();
+                Logger.Log($"Error in RunCommandToString: {ex.Message}", LogLevel.ERROR);
+                return new ProcessOutput("", $"Exception occurred: {ex.Message}");
             }
-            _ = Logger.Log(output);
-            _ = Logger.Log(error, LogLevel.ERROR);
-            return new ProcessOutput(output, error);
         }
 
         public static void ADBDebugWarning()
