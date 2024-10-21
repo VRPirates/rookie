@@ -2059,51 +2059,72 @@ namespace AndroidSideloader
                     {
                         foreach (string newGamesToUpload in newGamesList)
                         {
-                            changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
-                            bool onapplist = false;
-                            string NewApp = settings.NonAppPackages + "\n" + settings.AppPackages;
-                            if (NewApp.Contains(newGamesToUpload))
+                            try
                             {
-                                onapplist = true;
-                            }
-
-                            string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-
-                            if (!updatesNotified && !onapplist && newint < 6)
-                            {
-                                either = true;
-                                newapps = true;
-                                //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                                string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                                apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                                apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
+                                changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
+                                bool onapplist = false;
+                                string NewApp = settings.NonAppPackages + "\n" + settings.AppPackages;
+                                if (NewApp.Contains(newGamesToUpload))
                                 {
+                                    onapplist = true;
+                                    Logger.Log($"App '{newGamesToUpload}' found in app list.", LogLevel.INFO);
+                                }
+
+                                string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+                                Logger.Log($"Release name obtained: {RlsName}", LogLevel.INFO);
+                                if (!updatesNotified && !onapplist && newint < 6)
+                                {
+                                    either = true;
+                                    newapps = true;
+                                    Logger.Log($"New app detected: {newGamesToUpload}, starting APK extraction and AAPT process.", LogLevel.INFO);
+                                    //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                                    string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                                    Logger.Log($"ADB command 'pm path' executed. Path: {apppath}", LogLevel.INFO);
+                                    apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                                    apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                                    if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
+                                    {
+                                        File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
+                                        Logger.Log("Old base.apk file deleted.", LogLevel.INFO);
+                                    }
+
+                                    Logger.Log($"Pulling APK from path: {apppath}", LogLevel.INFO);
+                                    _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                                    string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                                    string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
+                                    Logger.Log($"Running AAPT command: {cmd}", LogLevel.INFO);
+                                    string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                                    Logger.Log($"AAPT command output: {ReleaseName}", LogLevel.INFO);
+                                    ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                                    ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                                    ReleaseName = ReleaseName.Replace("'", "");
                                     File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
+                                    Logger.Log("Base.apk deleted after extracting release name.", LogLevel.INFO);
+                                    if (ReleaseName.Contains("Microsoft Windows"))
+                                    {
+                                        ReleaseName = RlsName;
+                                        Logger.Log("Release name fallback to RlsName due to Microsoft Windows detection.", LogLevel.INFO);
+                                    }
+                                    Logger.Log($"Final Release Name: {ReleaseName}", LogLevel.INFO);
+                                    //end
+                                    string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                                    //Logger.Log(newGamesToUpload);
+                                    Logger.Log($"Fetching version code for app: {newGamesToUpload}", LogLevel.INFO);
+                                    string InstalledVersionCode;
+                                    InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                                    Logger.Log($"Version code command output: {InstalledVersionCode}", LogLevel.INFO);
+                                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                                    ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                                    Logger.Log($"Parsed installed version code: {installedVersionInt}", LogLevel.INFO);
+                                    donorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "New App" + "\n";
+                                    Logger.Log($"Donor app info updated: {ReleaseName}; {newGamesToUpload}; {installedVersionInt}", LogLevel.INFO);
+                                    newint++;
                                 }
-
-                                _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                                string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                                string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
-                                string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                                ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                                ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                                ReleaseName = ReleaseName.Replace("'", "");
-                                File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
-                                if (ReleaseName.Contains("Microsoft Windows"))
-                                {
-                                    ReleaseName = RlsName;
-                                }
-                                //end
-                                string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                                //Logger.Log(newGamesToUpload);
-                                string InstalledVersionCode;
-                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                                ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                                donorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "New App" + "\n";
-                                newint++;
+                            }
+                            catch (Exception ex) 
+                            {
+                                Logger.Log($"Exception occured in initListView (Unrecognized App Found): {ex.Message}", LogLevel.ERROR);
                             }
                         }
                     }
