@@ -180,6 +180,18 @@ namespace AndroidSideloader
 
                 if (updateRclone == true)
                 {
+                    // Preserve vrp.download.config if it exists
+                    string configPath = Path.Combine(dirRclone, "vrp.download.config");
+                    string tempConfigPath = Path.Combine(Environment.CurrentDirectory, "vrp.download.config.bak");
+                    bool hasConfig = false;
+
+                    if (File.Exists(configPath))
+                    {
+                        _ = Logger.Log("Preserving vrp.download.config before update");
+                        File.Copy(configPath, tempConfigPath, true);
+                        hasConfig = true;
+                    }
+
                     MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_rclone);
 
                     string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
@@ -211,6 +223,13 @@ namespace AndroidSideloader
                         File.Move(file, destFile);
                     }
                     Directory.Delete(dirExtractedRclone, true);
+
+                    // Restore vrp.download.config if it was backed up
+                    if (hasConfig && File.Exists(tempConfigPath))
+                    {
+                        _ = Logger.Log("Restoring vrp.download.config after update");
+                        File.Move(tempConfigPath, configPath);
+                    }
 
                     _ = Logger.Log($"rclone download successful");
                 }
