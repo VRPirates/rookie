@@ -1513,6 +1513,10 @@ namespace AndroidSideloader
                                     Program.form.changeTitle($"Copying obb folder to device...");
                                     Thread t1 = new Thread(() =>
                                     {
+                                        if (!string.IsNullOrEmpty(cmdout))
+                                        {
+                                            _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
+                                        }
                                         _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
                                     })
                                     {
@@ -1662,6 +1666,10 @@ namespace AndroidSideloader
                                 Program.form.changeTitle($"Copying obb folder to device...");
                                 Thread t2 = new Thread(() =>
                                 {
+                                    if (!string.IsNullOrEmpty(cmdout))
+                                    {
+                                        _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
+                                    }
                                     _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
                                 })
                                 {

@@ -308,12 +308,16 @@ namespace AndroidSideloader
                     Program.form.changeTitle("Reinstalling Game");
                     ret += ADB.RunAdbCommandToString($"install -g \"{path}\"");
                     _ = ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}\" /sdcard/Android/data/");
-                    if (Directory.Exists($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}"))
+                    string directoryToDelete = Path.Combine(Environment.CurrentDirectory, MainForm.CurrPCKG);
+                    if (Directory.Exists(directoryToDelete))
                     {
-                        Directory.Delete($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}", true);
+                        if (directoryToDelete != Environment.CurrentDirectory)
+                        {
+                            Directory.Delete(directoryToDelete, true);
+                        }
                     }
 
-                    Program.form.changeTitle(" \n\n");
+                        Program.form.changeTitle(" \n\n");
                     return ret;
                 }
             }
