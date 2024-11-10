@@ -21,10 +21,55 @@ namespace AndroidSideloader
         private static readonly object lockObject = new object();
         private static string logFilePath = settings.CurrentLogPath;
 
+        public static void Initialize()
+        {
+            try
+            {
+                // Set default log path if not already set
+                if (string.IsNullOrEmpty(logFilePath))
+                {
+                    logFilePath = Path.Combine(Environment.CurrentDirectory, "debuglog.txt");
+                }
+
+                // Create directory if it doesn't exist
+                string logDirectory = Path.GetDirectoryName(logFilePath);
+                if (!string.IsNullOrEmpty(logDirectory) && !Directory.Exists(logDirectory))
+                {
+                    Directory.CreateDirectory(logDirectory);
+                }
+
+                // Create log file if it doesn't exist
+                if (!File.Exists(logFilePath))
+                {
+                    using (FileStream fs = File.Create(logFilePath))
+                    {
+                        // Create empty file
+                    }
+                }
+
+                // Update settings with log path
+                settings.CurrentLogPath = logFilePath;
+                settings.Save();
+
+                // Initial log entry
+                Log($"Logger initialized at: {DateTime.Now:hh:mmtt(UTC)}", LogLevel.INFO);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error initializing logger: {ex.Message}");
+            }
+        }
+
         public static bool Log(string text, LogLevel logLevel = LogLevel.INFO, bool ret = true)
         {
             if (string.IsNullOrWhiteSpace(text) || text.Length <= 5)
                 return ret;
+
+            // Initialize logger if not already initialized
+            if (string.IsNullOrEmpty(logFilePath))
+            {
+                Initialize();
+            }
 
             string time = DateTime.UtcNow.ToString("hh:mm:ss.fff tt (UTC): ");
             string newline = text.Length > 40 && text.Contains("\n") ? "\n\n" : "\n";
@@ -37,9 +82,9 @@ namespace AndroidSideloader
                     File.AppendAllText(logFilePath, logEntry);
                 }
             }
-            catch
+            catch (Exception ex)
             {
-                // Handle the exception if necessary
+                Console.WriteLine($"Error writing to log: {ex.Message}");
             }
 
             return ret;

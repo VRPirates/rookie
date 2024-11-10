@@ -71,6 +71,9 @@ namespace AndroidSideloader
         public MainForm()
         {
             InitializeComponent();
+            Logger.Initialize();
+            InitializeTimeReferences();
+
             SplashScreen = new Splash();
             SplashScreen.Show();
             
@@ -87,11 +90,6 @@ namespace AndroidSideloader
 
             // Set data source for games queue list
             gamesQueListBox.DataSource = gamesQueueList;
-
-            InitializeTimeReferences();
-
-            // Log program launch time
-            InitializeLogger();
 
             // Set current log path if not already set
             SetCurrentLogPath();
@@ -167,13 +165,6 @@ namespace AndroidSideloader
             settings.LastLaunch2 = DateTime.Now;
             settings.SubmittedUpdates = String.Empty;
             settings.Save();
-        }
-
-        private void InitializeLogger()
-        {
-            // Log program launch time
-            string launchtime = DateTime.Now.ToString("hh:mmtt(UTC)");
-            _ = Logger.Log($"\n------\n------\nProgram Launched at: {launchtime}\n------\n------");
         }
 
         private void SetCurrentLogPath()
