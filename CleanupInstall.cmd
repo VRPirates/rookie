@@ -7,7 +7,7 @@ echo Killing adb.exe processes...
 taskkill /F /FI "IMAGENAME eq adb.exe" /T
 
 
-set "folderPath=C:\Users\%username%\AppData\Local\Rookie.WTF\"
+set "folderPath=%userprofile%\AppData\Local\Rookie.WTF\"
 echo Deleting contents of %folderPath%...
 for /D %%i in ("%folderPath%\*") do (
     rd /s /q "%%i"
@@ -15,7 +15,7 @@ for /D %%i in ("%folderPath%\*") do (
 del /q "%folderPath%\*.*"
 
 
-set "folderPath=C:\Users\%username%\AppData\Local\Rookie.AndroidSideloader\"
+set "folderPath=%userprofile%\AppData\Local\Rookie.AndroidSideloader\"
 echo Deleting contents of %folderPath%...
 for /D %%i in ("%folderPath%\*") do (
     rd /s /q "%%i"
