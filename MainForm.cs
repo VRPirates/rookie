@@ -1948,7 +1948,14 @@ namespace AndroidSideloader
                                 }
                             }
                         }
-                        if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("ADULT"))
+                        if (settings.HideAdultContent == true)
+                        {
+                            if (!Game.SubItems[1].Text.Contains("ADULT"))
+                            {
+                                GameList.Add(Game);
+                            }
+                        }
+                        else
                         {
                             GameList.Add(Game);
                         }
