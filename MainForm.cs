@@ -3835,22 +3835,31 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     enviromentCreated = true;
                 }
                 webView21.Show();
-                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
-                string encodedQuery = WebUtility.UrlEncode(query);
-                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                string videoUrl;
-                using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
-                {
-                    videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
-                }
-                if (videoUrl == "")
-                {
-                    MessageBox.Show("No video URL found in search results.");
-                    return;
-                }
+                try {
+                    string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
+                    string encodedQuery = WebUtility.UrlEncode(query);
+                    string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                await WebView_CoreWebView2ReadyAsync(videoUrl);
+                    string videoUrl;
+                    using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
+                    {
+                        videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
+                    }
+                    if (videoUrl == "")
+                    {
+                        MessageBox.Show("No video URL found in search results.");
+                        return;
+                    }
+
+                    await WebView_CoreWebView2ReadyAsync(videoUrl);
+                }
+                    catch (Exception ex)
+                    {
+                    Program.form.changeTitle($"Error loading Trailer: {ex.Message}");
+                    Logger.Log("Error Loading Trailer");
+                    Logger.Log(ex.Message);
+                }
             }
         }
 
