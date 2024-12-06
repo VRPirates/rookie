@@ -1,30 +1,15 @@
-RSL 2.30
+RSL 2.31
 
-- Feature: Added Download Metrics
-    -- Upon downloading a game, Rookie will attempt to log the download count with our server
-    -- No additional data is collected except for the Package Name and VersionCode of the Game being downloaded
-- Feature: Added Downloads column to Gamelist
-    -- Downloads counts are updated nightly
-- Feature: Added "Send Command" button to ADB Commands prompt (Enter still works)
-- Feature: Small changes to how the Upload Mirror works
-    -- Rookie can now verify game uploads are successful
-- Feature: Add Cleanup Install script
-- Feature: Added additional Splashes to indicate loading status
-- Feature: Added setting to supress Re-Download prompt
-- Feature: Added "Disable Checking for New Apps" argument (for Testers sanity)
-- Feature: Added Bandwidth Limiter to Settings
-- Fix: Fixes for using Sponsored Mirrors
-    -- Eliminated downloading of vrp.download.config from the wiki
-    -- Fixed issue where Rookie would check for the mirror before it was loaded in
-- Fix: Add quotes around all ADB path commands
-- Fix: Public Mirror label not displaying
-- Fix: Allow spaces when setting username
-- Fix: Prevent Rookie from constantly prompting for the Public Config
-- Fix: Fixed issue where the Game List doesn't copy/export properly
-- Fix: Fixed issue where dropping an entire folder doesn't read the install.txt
-- Chore: Remove random mirror picker (no longer used)
-- Chore: Changed unable to connect message
-- Chore: Remove Offline Mode popup
-- Chore: Remove unused dependencies
-- Chore: Rename random assets
-- Chore: Bump rclone to 1.67.0 (from 1.66.0)
+- Feature: Preserve download.config during rclone update
+- Feature: Added toggle to hide Adult Content
+- Fix: Changed settings configuration to settings.json
+- Fix: Always create debuglog on first-launch
+- Fix: Fixed numeric sorting
+- Fix: Wrap ADB commands to prevent crash
+- Fix: Update CleanupInstall to use UserProfile instead of Username
+- Fix: Fix to OBB pushing when Dragging and Dropping
+- Fix: Do not show ShowPrcOutput messages when "Enable Message Boxes" is disabled
+- Fix: Add safeguard to prevent deletion of current directory
+- Fix: Case insensitive package matching
+- Chore: Add build batch
+- Chore: Bump rclone to 1.68.1 (from 1.67.0)
