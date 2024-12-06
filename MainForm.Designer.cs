@@ -338,7 +338,7 @@ namespace AndroidSideloader
             // 
             // DownloadsIndex
             // 
-            this.DownloadsIndex.Text = "Downloads";
+            this.DownloadsIndex.Text = "Popularity";
             this.DownloadsIndex.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.DownloadsIndex.Width = 80;
             // 
