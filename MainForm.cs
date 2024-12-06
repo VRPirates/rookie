@@ -1841,7 +1841,7 @@ namespace AndroidSideloader
             errorOnList = false;
             //This is for the black list, but temporarily will be the whitelist
             //This list contains games that we are actually going to upload
-            newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
+            newGamesToUploadList = whitelistItems.Intersect(installedGames, StringComparer.OrdinalIgnoreCase).ToList();
             progressBar.Style = ProgressBarStyle.Marquee;
             if (SideloaderRCLONE.games.Count > 5)
             {
@@ -1975,7 +1975,7 @@ namespace AndroidSideloader
                 errorOnList = true;
                 _ = FlexibleMessageBox.Show(Program.form, $"Rookie seems to have failed to load all resources. Please try restarting Rookie a few times.\nIf error still persists please disable any VPN or firewalls (rookie uses direct download so a VPN is not needed)\nIf this error still persists try a system reboot, reinstalling the program, and lastly posting the problem on telegram.", "Error loading blacklist or game list!");
             }
-            newGamesList = installedGames.Except(rookieList).Except(blacklistItems).ToList();
+            newGamesList = installedGames.Except(rookieList, StringComparer.OrdinalIgnoreCase).Except(blacklistItems, StringComparer.OrdinalIgnoreCase).ToList();
             int topItemIndex = 0;
             try
             {
@@ -3973,7 +3973,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         foreach (string[] release in SideloaderRCLONE.games)
                         {
-                            rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
+                            rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString().ToLower());
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
                             {
                                 rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
@@ -4434,7 +4434,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 List<string> blacklistItems = blacklist.ToList();
                 List<string> whitelistItems = whitelist.ToList();
                 errorOnList = false;
-                newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
+                newGamesToUploadList = whitelistItems.Intersect(installedGames, StringComparer.OrdinalIgnoreCase).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
                 if (SideloaderRCLONE.games.Count > 5)
                 {
