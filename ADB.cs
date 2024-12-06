@@ -1,4 +1,5 @@
-﻿using JR.Utils.GUI.Forms;
+﻿using AndroidSideloader.Utilities;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -8,6 +9,7 @@ namespace AndroidSideloader
 {
     internal class ADB
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         private static readonly Process adb = new Process();
         public static string adbFolderPath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools");
         public static string adbFilePath = Path.Combine(adbFolderPath, "adb.exe");
@@ -18,9 +20,9 @@ namespace AndroidSideloader
             // Replacing "adb" from command if the user added it
             command = command.Replace("adb", "");
 
-            Properties.Settings.Default.ADBFolder = adbFolderPath;
-            Properties.Settings.Default.ADBPath = adbFilePath;
-            Properties.Settings.Default.Save();
+            settings.ADBFolder = adbFolderPath;
+            settings.ADBPath = adbFilePath;
+            settings.Save();
             if (DeviceID.Length > 1)
             {
                 command = $" -s {DeviceID} {command}";
@@ -68,7 +70,7 @@ namespace AndroidSideloader
                     }
                 }
 
-                if (error.Contains("ADB_VENDOR_KEYS") && !Properties.Settings.Default.adbdebugwarned)
+                if (error.Contains("ADB_VENDOR_KEYS") && !settings.AdbDebugWarned)
                 {
                     ADBDebugWarning();
                 }
@@ -137,7 +139,7 @@ namespace AndroidSideloader
                     adb.WaitForExit();
                 }
             }
-            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
+            if (error.Contains("ADB_VENDOR_KEYS") && settings.AdbDebugWarned)
             {
                 ADBDebugWarning();
             }
@@ -154,47 +156,65 @@ namespace AndroidSideloader
                 logcmd = logcmd.Replace($"{Environment.CurrentDirectory}", $"CurrentDirectory");
             }
 
-            _ = Logger.Log($"Running command: {logcmd}");
-            adb.StartInfo.FileName = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\Windows\System32\cmd.exe";
-            adb.StartInfo.Arguments = command;
-            adb.StartInfo.RedirectStandardError = true;
-            adb.StartInfo.RedirectStandardInput = true;
-            adb.StartInfo.RedirectStandardOutput = true;
-            adb.StartInfo.CreateNoWindow = true;
-            adb.StartInfo.UseShellExecute = false;
-            adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
-            _ = adb.Start();
-            adb.StandardInput.WriteLine(command);
-            adb.StandardInput.Flush();
-            adb.StandardInput.Close();
-
-
-            string output = "";
-            string error = "";
+            Logger.Log($"Running command: {logcmd}");
 
             try
             {
-                output += adb.StandardOutput.ReadToEnd();
-                error += adb.StandardError.ReadToEnd();
-            }
-            catch { }
-            if (command.Contains("connect"))
-            {
-                bool graceful = adb.WaitForExit(3000);
-                if (!graceful)
+                using (var adb = new Process())
                 {
-                    adb.Kill();
-                    adb.WaitForExit();
+                    adb.StartInfo.FileName = $@"{Path.GetPathRoot(Environment.SystemDirectory)}\Windows\System32\cmd.exe";
+                    adb.StartInfo.Arguments = command;
+                    adb.StartInfo.RedirectStandardError = true;
+                    adb.StartInfo.RedirectStandardInput = true;
+                    adb.StartInfo.RedirectStandardOutput = true;
+                    adb.StartInfo.CreateNoWindow = true;
+                    adb.StartInfo.UseShellExecute = false;
+                    adb.StartInfo.WorkingDirectory = Path.GetDirectoryName(path);
+
+                    adb.Start();
+                    adb.StandardInput.WriteLine(command);
+                    adb.StandardInput.Flush();
+                    adb.StandardInput.Close();
+
+                    string output = adb.StandardOutput.ReadToEnd();
+                    string error = adb.StandardError.ReadToEnd();
+
+                    if (command.Contains("connect"))
+                    {
+                        bool graceful = adb.WaitForExit(3000);
+                        if (!graceful)
+                        {
+                            adb.Kill();
+                            adb.WaitForExit();
+                        }
+                    }
+                    else
+                    {
+                        adb.WaitForExit();
+                    }
+
+                    if (error.Contains("ADB_VENDOR_KEYS") && settings.AdbDebugWarned)
+                    {
+                        ADBDebugWarning();
+                    }
+
+                    if (error.Contains("Asset path") && error.Contains("is neither a directory nor file"))
+                    {
+                        Logger.Log("Asset path error detected. The specified path might not exist or be accessible.", LogLevel.WARNING);
+                        // You might want to handle this specific error differently
+                    }
+
+                    Logger.Log(output);
+                    Logger.Log(error, LogLevel.ERROR);
+
+                    return new ProcessOutput(output, error);
                 }
             }
-
-            if (error.Contains("ADB_VENDOR_KEYS") && Properties.Settings.Default.adbdebugwarned)
+            catch (Exception ex)
             {
-                ADBDebugWarning();
+                Logger.Log($"Error in RunCommandToString: {ex.Message}", LogLevel.ERROR);
+                return new ProcessOutput("", $"Exception occurred: {ex.Message}");
             }
-            _ = Logger.Log(output);
-            _ = Logger.Log(error, LogLevel.ERROR);
-            return new ProcessOutput(output, error);
         }
 
         public static void ADBDebugWarning()
@@ -204,8 +224,8 @@ namespace AndroidSideloader
                 DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "On your headset, click on the Notifications Bell, and then select the USB Detected notification to enable Connections.", "ADB Debugging not enabled.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
-                    // Properties.Settings.Default.adbdebugwarned = true;
-                    Properties.Settings.Default.Save();
+                    // settings.adbdebugwarned = true;
+                    settings.Save();
                 }
             });
         }
@@ -246,7 +266,6 @@ namespace AndroidSideloader
         public static bool wirelessadbON;
         public static ProcessOutput Sideload(string path, string packagename = "")
         {
-
             ProcessOutput ret = new ProcessOutput();
             ret += RunAdbCommandToString($"install -g \"{path}\"");
             string out2 = ret.Output + ret.Error;
@@ -254,7 +273,7 @@ namespace AndroidSideloader
             {
                 _ = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
                 _ = Logger.Log(out2);
-                if (out2.Contains("offline") && !Properties.Settings.Default.nodevicemode)
+                if (out2.Contains("offline") && !settings.NodeviceMode)
                 {
                     DialogResult dialogResult2 = FlexibleMessageBox.Show(Program.form, "Device is offline. Press Yes to reconnect, or if you don't wish to connect and just want to download the game (requires unchecking \"Delete games after install\" from settings menu) then press No.", "Device offline.", MessageBoxButtons.YesNoCancel);
                 }
@@ -262,11 +281,11 @@ namespace AndroidSideloader
                 {
                     ret.Error = string.Empty;
                     ret.Output = string.Empty;
-                    if (!Properties.Settings.Default.AutoReinstall)
+                    if (!settings.AutoReinstall)
                     {
                         bool cancelClicked = false;
 
-                        if (!Properties.Settings.Default.AutoReinstall)
+                        if (!settings.AutoReinstall)
                         {
                             Program.form.Invoke((MethodInvoker)(() =>
                             {
@@ -289,12 +308,16 @@ namespace AndroidSideloader
                     Program.form.changeTitle("Reinstalling Game");
                     ret += ADB.RunAdbCommandToString($"install -g \"{path}\"");
                     _ = ADB.RunAdbCommandToString($"push \"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}\" /sdcard/Android/data/");
-                    if (Directory.Exists($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}"))
+                    string directoryToDelete = Path.Combine(Environment.CurrentDirectory, MainForm.CurrPCKG);
+                    if (Directory.Exists(directoryToDelete))
                     {
-                        Directory.Delete($"{Environment.CurrentDirectory}\\{MainForm.CurrPCKG}", true);
+                        if (directoryToDelete != Environment.CurrentDirectory)
+                        {
+                            Directory.Delete(directoryToDelete, true);
+                        }
                     }
 
-                    Program.form.changeTitle(" \n\n");
+                        Program.form.changeTitle(" \n\n");
                     return ret;
                 }
             }

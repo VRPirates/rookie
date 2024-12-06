@@ -7,11 +7,13 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Windows.Forms;
+using AndroidSideloader.Utilities;
 
 namespace AndroidSideloader
 {
     internal class Sideloader
     {
+        private static readonly SettingsManager settings = SettingsManager.Instance;
         public static string TempFolder = Path.Combine(Environment.CurrentDirectory, "temp");
         public static string CrashLogPath = "crashlog.txt";
 
@@ -87,8 +89,8 @@ namespace AndroidSideloader
                     string replacement = "";
                     string pattern = "adb";
                     replacement = ADB.DeviceID.Length > 1
-                        ? $"{Properties.Settings.Default.ADBPath} -s {ADB.DeviceID}"
-                        : $"{Properties.Settings.Default.ADBPath}";
+                        ? $"{settings.ADBPath} -s {ADB.DeviceID}"
+                        : $"{settings.ADBPath}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
                     Program.form.changeTitle($"Running {result}");
@@ -165,13 +167,13 @@ namespace AndroidSideloader
 
         public static void BackupGame(string packagename)
         {
-            if (!Properties.Settings.Default.customBackupDir)
+            if (!settings.CustomBackupDir)
             {
                 MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
             }
             else
             {
-                MainForm.backupFolder = Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups");
+                MainForm.backupFolder = Path.Combine((settings.BackupDir), $"Rookie Backups");
             }
             if (!Directory.Exists(MainForm.backupFolder))
             {
@@ -219,26 +221,26 @@ namespace AndroidSideloader
             apkPath = apkPath.Remove(apkPath.Length - 1);
             apkPath = apkPath.Remove(0, 8); //remove package:
             apkPath = apkPath.Remove(apkPath.Length - 1);
-            if (File.Exists($"{Properties.Settings.Default.ADBFolder}\\base.apk"))
+            if (File.Exists($"{settings.ADBFolder}\\base.apk"))
             {
-                File.Delete($"{Properties.Settings.Default.ADBFolder}\\base.apk");
+                File.Delete($"{settings.ADBFolder}\\base.apk");
             }
 
-            if (File.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk"))
+            if (File.Exists($"{settings.MainDir}\\{packageName}\\{packageName}.apk"))
             {
-                File.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk");
+                File.Delete($"{settings.MainDir}\\{packageName}\\{packageName}.apk");
             }
 
             output += ADB.RunAdbCommandToString("pull " + apkPath); //pull apk
 
-            if (Directory.Exists($"{Properties.Settings.Default.MainDir}\\{packageName}"))
+            if (Directory.Exists($"{settings.MainDir}\\{packageName}"))
             {
-                Directory.Delete($"{Properties.Settings.Default.MainDir}\\{packageName}", true);
+                Directory.Delete($"{settings.MainDir}\\{packageName}", true);
             }
 
-            _ = Directory.CreateDirectory($"{Properties.Settings.Default.MainDir}\\{packageName}");
+            _ = Directory.CreateDirectory($"{settings.MainDir}\\{packageName}");
 
-            File.Move($"{Properties.Settings.Default.ADBFolder}\\base.apk", $"{Properties.Settings.Default.MainDir}\\{packageName}\\{packageName}.apk");
+            File.Move($"{settings.ADBFolder}\\base.apk", $"{settings.MainDir}\\{packageName}\\{packageName}.apk");
             return output;
         }
 

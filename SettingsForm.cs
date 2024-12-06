@@ -1,4 +1,5 @@
-﻿using JR.Utils.GUI.Forms;
+﻿using AndroidSideloader.Utilities;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
@@ -9,6 +10,7 @@ namespace AndroidSideloader
 {
     public partial class SettingsForm : Form
     {
+        private static readonly SettingsManager _settings = SettingsManager.Instance;
         public SettingsForm()
         {
             InitializeComponent();
@@ -17,34 +19,34 @@ namespace AndroidSideloader
         private void SettingsForm_Load(object sender, EventArgs e)
         {
             CenterToParent();
-            intSettings();
-            intToolTips();
+            initSettings();
+            initToolTips();
         }
 
-        //Init form objects with values from settings
-        private void intSettings()
+        private void initSettings()
         {
-            checkForUpdatesCheckBox.Checked = Properties.Settings.Default.checkForUpdates;
-            enableMessageBoxesCheckBox.Checked = Properties.Settings.Default.enableMessageBoxes;
-            deleteAfterInstallCheckBox.Checked = Properties.Settings.Default.deleteAllAfterInstall;
-            updateConfigCheckBox.Checked = Properties.Settings.Default.autoUpdateConfig;
-            userJsonOnGameInstall.Checked = Properties.Settings.Default.userJsonOnGameInstall;
-            nodevicemodeBox.Checked = Properties.Settings.Default.nodevicemode;
-            bmbfBox.Checked = Properties.Settings.Default.BMBFchecked;
-            AutoReinstBox.Checked = Properties.Settings.Default.AutoReinstall;
-            trailersOn.Checked = Properties.Settings.Default.TrailersOn;
-            chkSingleThread.Checked = Properties.Settings.Default.singleThreadMode;
-            virtualFilesystemCompatibilityCheckbox.Checked = Properties.Settings.Default.virtualFilesystemCompatibility;
-            bandwidthLimitTextBox.Text = Properties.Settings.Default.bandwidthLimit.ToString();
+            checkForUpdatesCheckBox.Checked = _settings.CheckForUpdates;
+            enableMessageBoxesCheckBox.Checked = _settings.EnableMessageBoxes;
+            deleteAfterInstallCheckBox.Checked = _settings.DeleteAllAfterInstall;
+            updateConfigCheckBox.Checked = _settings.AutoUpdateConfig;
+            userJsonOnGameInstall.Checked = _settings.UserJsonOnGameInstall;
+            nodevicemodeBox.Checked = _settings.NodeviceMode;
+            bmbfBox.Checked = _settings.BMBFChecked;
+            AutoReinstBox.Checked = _settings.AutoReinstall;
+            trailersOn.Checked = _settings.TrailersOn;
+            chkSingleThread.Checked = _settings.SingleThreadMode;
+            virtualFilesystemCompatibilityCheckbox.Checked = _settings.VirtualFilesystemCompatibility;
+            hideAdultContentCheckBox.Checked = _settings.HideAdultContent;
+            bandwidthLimitTextBox.Text = _settings.BandwidthLimit.ToString();
             if (nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = false;
                 deleteAfterInstallCheckBox.Enabled = false;
             }
-            chkUseDownloadedFiles.Checked = Properties.Settings.Default.useDownloadedFiles;
+            chkUseDownloadedFiles.Checked = _settings.UseDownloadedFiles;
         }
 
-        private void intToolTips()
+        private void initToolTips()
         {
             ToolTip checkForUpdatesToolTip = new ToolTip();
             checkForUpdatesToolTip.SetToolTip(checkForUpdatesCheckBox, "If this is checked, the software will check for available updates");
@@ -58,7 +60,7 @@ namespace AndroidSideloader
 
         public void btnUploadDebug_click(object sender, EventArgs e)
         {
-            if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
+            if (File.Exists($"{_settings.CurrentLogPath}"))
             {
                 string UUID = SideloaderUtilities.UUID();
                 string debugLogPath = $"{Environment.CurrentDirectory}\\{UUID}.log";
@@ -71,12 +73,11 @@ namespace AndroidSideloader
             }
         }
 
-
         public void btnResetDebug_click(object sender, EventArgs e)
         {
-            if (File.Exists($"{Properties.Settings.Default.CurrentLogPath}"))
+            if (File.Exists($"{_settings.CurrentLogPath}"))
             {
-                File.Delete($"{Properties.Settings.Default.CurrentLogPath}");
+                File.Delete($"{_settings.CurrentLogPath}");
             }
 
             if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
@@ -85,7 +86,6 @@ namespace AndroidSideloader
             }
         }
 
-        //Apply settings
         private void applyButton_Click(object sender, EventArgs e)
         {
             string input = bandwidthLimitTextBox.Text;
@@ -93,8 +93,8 @@ namespace AndroidSideloader
 
             if (regex.IsMatch(input) && float.TryParse(input, out float bandwidthLimit))
             {
-                Properties.Settings.Default.bandwidthLimit = bandwidthLimit;
-                Properties.Settings.Default.Save();
+                _settings.BandwidthLimit = bandwidthLimit;
+                _settings.Save();
                 this.Close();
             }
             else
@@ -105,49 +105,60 @@ namespace AndroidSideloader
 
         private void checkForUpdatesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.checkForUpdates = checkForUpdatesCheckBox.Checked;
-            Properties.Settings.Default.Save();
+            _settings.CheckForUpdates = checkForUpdatesCheckBox.Checked;
+            _settings.Save();
         }
+
         private void chkUseDownloadedFiles_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.useDownloadedFiles = chkUseDownloadedFiles.Checked;
-            Properties.Settings.Default.Save();
+            _settings.UseDownloadedFiles = chkUseDownloadedFiles.Checked;
+            _settings.Save();
         }
 
         private void enableMessageBoxesCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.enableMessageBoxes = enableMessageBoxesCheckBox.Checked;
-            Properties.Settings.Default.Save();
+            _settings.EnableMessageBoxes = enableMessageBoxesCheckBox.Checked;
+            _settings.Save();
         }
 
         private void resetSettingsButton_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.Reset();
-            Properties.Settings.Default.customDownloadDir = false;
-            Properties.Settings.Default.customBackupDir = false;
-            MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups");
-            Properties.Settings.Default.downloadDir = Environment.CurrentDirectory.ToString();
-            Properties.Settings.Default.createPubMirrorFile = true;
-            intSettings();
-            Properties.Settings.Default.Save();
+            // Reset the specific properties
+            _settings.CustomDownloadDir = false;
+            _settings.CustomBackupDir = false;
+
+            // Set backup folder and download directory
+            MainForm.backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Rookie Backups");
+            _settings.DownloadDir = Environment.CurrentDirectory;
+            _settings.CreatePubMirrorFile = true;
+
+            // Optionally, call initSettings if it needs to initialize anything based on these settings
+            initSettings();
+
+            // Save the updated settings
+            _settings.Save();
         }
 
         private void deleteAfterInstallCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.deleteAllAfterInstall = deleteAfterInstallCheckBox.Checked;
+            _settings.DeleteAllAfterInstall = deleteAfterInstallCheckBox.Checked;
+            _settings.Save();
         }
 
         private void updateConfigCheckBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.autoUpdateConfig = updateConfigCheckBox.Checked;
-            if (Properties.Settings.Default.autoUpdateConfig == true) {
-                Properties.Settings.Default.createPubMirrorFile = true;
+            _settings.AutoUpdateConfig = updateConfigCheckBox.Checked;
+            if (_settings.AutoUpdateConfig)
+            {
+                _settings.CreatePubMirrorFile = true;
             }
+            _settings.Save();
         }
 
         private void userJsonOnGameInstall_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.userJsonOnGameInstall = userJsonOnGameInstall.Checked;
+            _settings.UserJsonOnGameInstall = userJsonOnGameInstall.Checked;
+            _settings.Save();
         }
 
         private void SettingsForm_KeyPress(object sender, KeyPressEventArgs e)
@@ -170,6 +181,7 @@ namespace AndroidSideloader
                 Close();
             }
         }
+
         protected override bool ProcessDialogKey(Keys keyData)
         {
             if (Form.ModifierKeys == Keys.None && keyData == Keys.Escape)
@@ -182,38 +194,32 @@ namespace AndroidSideloader
 
         private void nodevicemodeBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.nodevicemode = nodevicemodeBox.Checked;
+            _settings.NodeviceMode = nodevicemodeBox.Checked;
             if (!nodevicemodeBox.Checked)
             {
                 deleteAfterInstallCheckBox.Checked = true;
-                Properties.Settings.Default.deleteAllAfterInstall = true;
+                _settings.DeleteAllAfterInstall = true;
                 deleteAfterInstallCheckBox.Enabled = true;
             }
             else
             {
                 deleteAfterInstallCheckBox.Checked = false;
-                Properties.Settings.Default.deleteAllAfterInstall = false;
+                _settings.DeleteAllAfterInstall = false;
                 deleteAfterInstallCheckBox.Enabled = false;
             }
-            Properties.Settings.Default.Save();
+            _settings.Save();
         }
 
         private void bmbfBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.BMBFchecked = bmbfBox.Checked;
-            Properties.Settings.Default.Save();
+            _settings.BMBFChecked = bmbfBox.Checked;
+            _settings.Save();
         }
 
         private void AutoReinstBox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.AutoReinstall = AutoReinstBox.Checked;
-            Properties.Settings.Default.Save();
-        }
-
-        private void trailersOn_CheckedChanged(object sender, EventArgs e)
-        {
-            Properties.Settings.Default.TrailersOn = trailersOn.Checked;
-            Properties.Settings.Default.Save();
+            _settings.AutoReinstall = AutoReinstBox.Checked;
+            _settings.Save();
         }
 
         private void AutoReinstBox_Click(object sender, EventArgs e)
@@ -230,7 +236,12 @@ namespace AndroidSideloader
                     AutoReinstBox.Checked = false;
                 }
             }
+        }
 
+        private void trailersOn_CheckedChanged(object sender, EventArgs e)
+        {
+            _settings.TrailersOn = trailersOn.Checked;
+            _settings.Save();
         }
 
         private void btnOpenDebug_Click(object sender, EventArgs e)
@@ -245,9 +256,9 @@ namespace AndroidSideloader
         {
             if (downloadDirectorySetter.ShowDialog() == DialogResult.OK)
             {
-                Properties.Settings.Default.customDownloadDir = true;
-                Properties.Settings.Default.downloadDir = downloadDirectorySetter.SelectedPath;
-                Properties.Settings.Default.Save();
+                _settings.CustomDownloadDir = true;
+                _settings.DownloadDir = downloadDirectorySetter.SelectedPath;
+                _settings.Save();
             }
         }
 
@@ -255,33 +266,36 @@ namespace AndroidSideloader
         {
             if (backupDirectorySetter.ShowDialog() == DialogResult.OK)
             {
-                Properties.Settings.Default.customBackupDir = true;
-                Properties.Settings.Default.backupDir = backupDirectorySetter.SelectedPath;
-                MainForm.backupFolder = Properties.Settings.Default.backupDir;
-                Properties.Settings.Default.Save();
+                _settings.CustomBackupDir = true;
+                _settings.BackupDir = backupDirectorySetter.SelectedPath;
+                MainForm.backupFolder = _settings.BackupDir;
+                _settings.Save();
             }
         }
 
         private void chkSingleThread_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.singleThreadMode = chkSingleThread.Checked;
+            _settings.SingleThreadMode = chkSingleThread.Checked;
+            _settings.Save();
         }
 
         private void virtualFilesystemCompatibilityCheckbox_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.virtualFilesystemCompatibility = virtualFilesystemCompatibilityCheckbox.Checked;
-            Properties.Settings.Default.Save();
+            _settings.VirtualFilesystemCompatibility = virtualFilesystemCompatibilityCheckbox.Checked;
+            _settings.Save();
         }
 
         private void openDownloadDirectory_Click(object sender, EventArgs e)
         {
-            string pathToOpen = Properties.Settings.Default.customDownloadDir ? $"{Properties.Settings.Default.downloadDir}" : $"{Environment.CurrentDirectory}";
+            string pathToOpen = _settings.CustomDownloadDir ? _settings.DownloadDir : Environment.CurrentDirectory;
             MainForm.OpenDirectory(pathToOpen);
         }
 
         private void openBackupDirectory_Click(object sender, EventArgs e)
         {
-            string pathToOpen = Properties.Settings.Default.customBackupDir ? $"{Path.Combine((Properties.Settings.Default.backupDir), $"Rookie Backups")}" : $"{Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), $"Rookie Backups")}";
+            string pathToOpen = _settings.CustomBackupDir
+                ? Path.Combine(_settings.BackupDir, "Rookie Backups")
+                : Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), "Rookie Backups");
             MainForm.OpenDirectory(pathToOpen);
         }
 
@@ -297,6 +311,11 @@ namespace AndroidSideloader
                 e.Handled = true;
             }
         }
+
+        private void hideAdultContentCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            _settings.HideAdultContent = hideAdultContentCheckBox.Checked;
+            _settings.Save();
+        }
     }
 }
-
