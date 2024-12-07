@@ -3674,7 +3674,14 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     gamesListView.Items.Clear();
                     foreach (var match in matches)
                     {
-                        if (settings.HideAdultContent && !match.SubItems[1].Text.Contains("(18+)"))
+                        if (settings.HideAdultContent == true)
+                        {
+                            if (!match.SubItems[1].Text.Contains("(18+)"))
+                            {
+                                gamesListView.Items.Add(match);
+                            }
+                        }
+                        else
                         {
                             gamesListView.Items.Add(match);
                         }
@@ -4008,7 +4015,14 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         if (installedVersionInt < cloudVersionInt)
                                         {
                                             Game.ForeColor = colorFont_updateAvailable;
-                                            if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("(18+)"))
+                                            if (settings.HideAdultContent == true)
+                                            {
+                                                if (!Game.SubItems[1].Text.Contains("(18+)"))
+                                                {
+                                                    GameList.Add(Game);
+                                                }
+                                            }
+                                            else
                                             {
                                                 GameList.Add(Game);
                                             }
@@ -4342,7 +4356,14 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         if (installedVersionInt == cloudVersionInt)
                                         {
                                             Game.ForeColor = colorFont_installedGame;
-                                            if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("(18+)"))
+                                            if (settings.HideAdultContent == true)
+                                            {
+                                                if (!Game.SubItems[1].Text.Contains("(18+)"))
+                                                {
+                                                    GameList.Add(Game);
+                                                }
+                                            }
+                                            else
                                             {
                                                 GameList.Add(Game);
                                             }
@@ -4485,7 +4506,14 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                             if (!dontget)
                                             {
                                                 Game.ForeColor = colorFont_donateGame;
-                                                if (settings.HideAdultContent && !Game.SubItems[1].Text.Contains("(18+)"))
+                                                if (settings.HideAdultContent == true)
+                                                {
+                                                    if (!Game.SubItems[1].Text.Contains("(18+)"))
+                                                    {
+                                                        GameList.Add(Game);
+                                                    }
+                                                }
+                                                else
                                                 {
                                                     GameList.Add(Game);
                                                 }
