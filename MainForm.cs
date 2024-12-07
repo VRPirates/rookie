@@ -76,7 +76,7 @@ namespace AndroidSideloader
 
             SplashScreen = new Splash();
             SplashScreen.Show();
-            
+
             // Check for Offline Mode or No RCLONE Updating
             CheckCommandLineArguments();
 
@@ -227,10 +227,13 @@ namespace AndroidSideloader
         {
             _ = Logger.Log("Starting AndroidSideloader Application");
 
-            if (isOffline) {
+            if (isOffline)
+            {
                 SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_offline);
                 changeTitle("Starting in Offline Mode...");
-            } else {
+            }
+            else
+            {
                 // download dependencies
                 GetDependencies.downloadFiles();
                 SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
@@ -1573,7 +1576,7 @@ namespace AndroidSideloader
 
                         Program.form.changeTitle("");
                         settings.CurrPckg = dir;
-            settings.Save();
+                        settings.Save();
                     }
                 }
                 //if it's a file
@@ -2128,7 +2131,7 @@ namespace AndroidSideloader
                                     newint++;
                                 }
                             }
-                            catch (Exception ex) 
+                            catch (Exception ex)
                             {
                                 Logger.Log($"Exception occured in initListView (Unrecognized App Found): {ex.Message}", LogLevel.ERROR);
                             }
@@ -2346,15 +2349,15 @@ namespace AndroidSideloader
             };
             gamesToUpload.Add(game);
         }
-        
+
         private async Task initMirrors()
         {
             _ = Logger.Log("Looking for Additional Mirrors...");
             int index = 0;
-            await Task.Run(() => remotesList.Invoke(() => 
-            { 
-                index = remotesList.SelectedIndex; 
-                remotesList.Items.Clear(); 
+            await Task.Run(() => remotesList.Invoke(() =>
+            {
+                index = remotesList.SelectedIndex;
+                remotesList.Items.Clear();
             }));
 
             string[] mirrors = await Task.Run(() => RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n'));
@@ -2366,9 +2369,9 @@ namespace AndroidSideloader
                 if (mirror.Contains("mirror"))
                 {
                     _ = Logger.Log(mirror.Remove(mirror.Length - 1));
-                    await Task.Run(() => remotesList.Invoke(() => 
-                    { 
-                        _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", "")); 
+                    await Task.Run(() => remotesList.Invoke(() =>
+                    {
+                        _ = remotesList.Items.Add(mirror.Remove(mirror.Length - 1).Replace("VRP-mirror", ""));
                     }));
                     itemsCount++;
                 }
@@ -2736,17 +2739,22 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         bool doDownload = true;
                         bool skipRedownload = false;
-                        if (settings.UseDownloadedFiles == true) {
+                        if (settings.UseDownloadedFiles == true)
+                        {
                             skipRedownload = true;
                         }
 
                         if (Directory.Exists(gameDirectory))
                         {
-                            if (skipRedownload == true) {
-                                if (Directory.Exists($"{settings.DownloadDir}\\{gameName}")) {
+                            if (skipRedownload == true)
+                            {
+                                if (Directory.Exists($"{settings.DownloadDir}\\{gameName}"))
+                                {
                                     doDownload = false;
                                 }
-                            } else {
+                            }
+                            else
+                            {
                                 DialogResult res = FlexibleMessageBox.Show(Program.form,
                                     $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
                                     "Download again?", MessageBoxButtons.YesNo);
@@ -2793,7 +2801,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
 
-                    if (Directory.Exists(downloadDirectory)) {
+                    if (Directory.Exists(downloadDirectory))
+                    {
                         string[] partialFiles = Directory.GetFiles($"{downloadDirectory}", "*.partial");
                         foreach (string file in partialFiles)
                         {
@@ -3843,7 +3852,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
                 webView21.Show();
 
-                try {
+                try
+                {
                     string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
                     string encodedQuery = WebUtility.UrlEncode(query);
                     string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
@@ -3861,8 +3871,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                     await WebView_CoreWebView2ReadyAsync(videoUrl);
                 }
-                    catch (Exception ex)
-                    {
+                catch (Exception ex)
+                {
                     Program.form.changeTitle($"Error loading Trailer: {ex.Message}");
                     Logger.Log("Error Loading Trailer");
                     Logger.Log(ex.Message);
