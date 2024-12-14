@@ -11,7 +11,7 @@ namespace AndroidSideloader.Utilities
     {
         private static readonly Lazy<SettingsManager> _instance = new Lazy<SettingsManager>(() => new SettingsManager());
         private static readonly string settingsFilePath = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
+            Environment.CurrentDirectory,
             "settings.json");
 
         // Custom converters for special types
