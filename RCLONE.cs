@@ -113,7 +113,6 @@ namespace AndroidSideloader
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
-            rclone.StandardInput.Flush();
             rclone.StandardInput.Close();
 
             string output = rclone.StandardOutput.ReadToEnd();
