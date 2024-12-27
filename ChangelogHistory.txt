@@ -1,4 +1,24 @@
-﻿RSL 2.30
+﻿RSL 2.31.1
+
+- Fix: Filtering when Adult Content is shown
+
+RSL 2.31
+
+- Feature: Preserve download.config during rclone update
+- Feature: Added toggle to hide Adult Content
+- Fix: Changed settings configuration to settings.json
+- Fix: Always create debuglog on first-launch
+- Fix: Fixed numeric sorting
+- Fix: Wrap ADB commands to prevent crash
+- Fix: Update CleanupInstall to use UserProfile instead of Username
+- Fix: Fix to OBB pushing when Dragging and Dropping
+- Fix: Do not show ShowPrcOutput messages when "Enable Message Boxes" is disabled
+- Fix: Add safeguard to prevent deletion of current directory
+- Fix: Case insensitive package matching
+- Chore: Add build batch
+- Chore: Bump rclone to 1.68.2 (from 1.67.0)
+
+RSL 2.30
 
 - Feature: Added Download Metrics
     -- Upon downloading a game, Rookie will attempt to log the download count with our server
