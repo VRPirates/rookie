@@ -411,73 +411,39 @@ namespace AndroidSideloader
             SplashScreen.Close();
 
             progressBar.Style = ProgressBarStyle.Marquee;
-            Thread t1 = new Thread(async () =>
+
+            if (!debugMode && settings.CheckForUpdates && !isOffline)
             {
-                if (!debugMode && settings.CheckForUpdates)
-                {
-                    Updater.AppName = "AndroidSideloader";
-                    Updater.Repository = "VRPirates/rookie";
-                    await Updater.Update();
-                }
-                progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
-
-                progressBar.Style = ProgressBarStyle.Marquee;
-                if (!isOffline)
-                {
-                    changeTitle("Getting Upload Config...");
-                    SideloaderRCLONE.updateUploadConfig();
-                }
-
-            });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = true;
+                Updater.AppName = "AndroidSideloader";
+                Updater.Repository = "VRPirates/rookie";
+                await Updater.Update();
+            }
 
             if (!isOffline)
             {
-                t1.Start();
-            }
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+                changeTitle("Getting Upload Config...");
+                SideloaderRCLONE.updateUploadConfig();
 
+                _ = Logger.Log("Initializing Servers");
+                changeTitle("Initializing Servers...");
 
-            Thread t6 = new Thread(async () =>
-            {
-                if (!isOffline)
+                // Wait for mirrors to initialize
+                await initMirrors();
+
+                if (!hasPublicConfig)
                 {
-                    _ = Logger.Log("Initializing Servers");
-                    changeTitle("Initializing Servers...");
-                    await initMirrors();
-
-                    if (!hasPublicConfig)
-                    {
-                        changeTitle("Grabbing the Games List...");
-                        SideloaderRCLONE.initGames(currentRemote);
-                    }
+                    changeTitle("Grabbing the Games List...");
+                    SideloaderRCLONE.initGames(currentRemote);
                 }
-                else
-                {
-                    changeTitle("Offline mode enabled, no Rclone");
-                }
-
-            });
-            t6.SetApartmentState(ApartmentState.STA);
-            t6.IsBackground = false;
-
-            if (!isOffline)
-            {
-                t6.Start();
             }
-            while (t6.IsAlive)
+            else
             {
-                await Task.Delay(100);
+                changeTitle("Offline mode enabled, no Rclone");
             }
 
-
-            Thread t5 = new Thread(() =>
+            changeTitle("Connecting to your Quest...");
+            await Task.Run(() =>
             {
-                changeTitle("Connecting to your Quest...");
                 if (!string.IsNullOrEmpty(settings.IPAddress))
                 {
                     string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
@@ -519,56 +485,29 @@ namespace AndroidSideloader
                     settings.IPAddress = "";
                     settings.Save();
                 }
-            })
-            {
-                IsBackground = true
-            };
-            t5.Start();
-            while (t5.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
 
             if (hasPublicConfig)
             {
-                Thread t2 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     changeTitle("Updating Metadata...");
                     SideloaderRCLONE.UpdateMetadataFromPublic();
 
                     changeTitle("Processing Metadata...");
                     SideloaderRCLONE.ProcessMetadataFromPublic();
-                })
-                {
-                    IsBackground = true
-                };
-                if (!isOffline)
-                {
-                    t2.Start();
-                }
-
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
+                });
             }
             else
             {
-
-                Thread t2 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     changeTitle("Updating Game Notes...");
                     SideloaderRCLONE.UpdateGameNotes(currentRemote);
-                });
 
-                Thread t3 = new Thread(() =>
-                {
                     changeTitle("Updating Game Thumbnails (This may take a minute or two)...");
                     SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                });
 
-                Thread t4 = new Thread(() =>
-                {
                     SideloaderRCLONE.UpdateNouns(currentRemote);
                     if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) ||
                         !Directory.Exists(SideloaderRCLONE.NotesFolder))
@@ -577,43 +516,9 @@ namespace AndroidSideloader
                             "It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                     }
                 });
-                t2.IsBackground = true;
-                t3.IsBackground = true;
-                t4.IsBackground = true;
-
-                if (!isOffline)
-                {
-                    t2.Start();
-                }
-
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
-
-                if (!isOffline)
-                {
-                    t3.Start();
-                }
-
-                while (t3.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
-
-                if (!isOffline)
-                {
-                    t4.Start();
-                }
-
-                while (t4.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
             }
 
             progressBar.Style = ProgressBarStyle.Marquee;
-
             changeTitle("Populating Game Update List, Almost There!");
 
             _ = await CheckForDevice();
@@ -621,11 +526,13 @@ namespace AndroidSideloader
             {
                 nodeviceonstart = true;
             }
+
             listAppsBtn();
             showAvailableSpace();
             downloadInstallGameButton.Enabled = true;
             isLoading = false;
             initListView();
+
             string[] files = Directory.GetFiles(Environment.CurrentDirectory);
             foreach (string file in files)
             {
@@ -642,6 +549,7 @@ namespace AndroidSideloader
                     }
                 }
             }
+
             searchTextBox.Enabled = true;
         }
 
