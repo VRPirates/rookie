@@ -266,10 +266,10 @@ namespace AndroidSideloader
             this.remotesList.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.remotesList.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.remotesList.FormattingEnabled = true;
-            this.remotesList.Location = new System.Drawing.Point(545, 40);
+            this.remotesList.Location = new System.Drawing.Point(531, 40);
             this.remotesList.Margin = new System.Windows.Forms.Padding(2);
             this.remotesList.Name = "remotesList";
-            this.remotesList.Size = new System.Drawing.Size(53, 26);
+            this.remotesList.Size = new System.Drawing.Size(67, 26);
             this.remotesList.TabIndex = 3;
             this.remotesList.SelectedIndexChanged += new System.EventHandler(this.remotesList_SelectedIndexChanged);
             // 
@@ -489,9 +489,9 @@ namespace AndroidSideloader
             this.lblMirror.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.lblMirror.Location = new System.Drawing.Point(475, 44);
             this.lblMirror.Name = "lblMirror";
-            this.lblMirror.Size = new System.Drawing.Size(65, 17);
+            this.lblMirror.Size = new System.Drawing.Size(51, 17);
             this.lblMirror.TabIndex = 90;
-            this.lblMirror.Text = "Mirror #";
+            this.lblMirror.Text = "Mirror";
             this.lblMirror.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // adbCmd_CommandBox

@@ -60,6 +60,7 @@ namespace AndroidSideloader
         public static bool noRcloneUpdating;
         public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
+        public static bool UsingPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
@@ -289,7 +290,8 @@ namespace AndroidSideloader
             if (settings.MainWindowLocationX == 0 && settings.MainWindowLocationY == 0)
             {
                 this.StartPosition = FormStartPosition.CenterScreen;
-            } else
+            }
+            else
             {
                 this.StartPosition = FormStartPosition.Manual;
                 this.Left = settings.MainWindowLocationX;
@@ -391,10 +393,10 @@ namespace AndroidSideloader
                 }
             }
 
+            remotesList.Items.Clear();
             if (hasPublicConfig)
             {
-                lblMirror.Text = " Public Mirror";
-                remotesList.Size = System.Drawing.Size.Empty;
+                UsingPublicConfig = true;
                 _ = Logger.Log($"Using Public Mirror");
             }
             if (isOffline)
@@ -430,7 +432,7 @@ namespace AndroidSideloader
                 // Wait for mirrors to initialize
                 await initMirrors();
 
-                if (!hasPublicConfig)
+                if (!UsingPublicConfig)
                 {
                     changeTitle("Grabbing the Games List...");
                     SideloaderRCLONE.initGames(currentRemote);
@@ -487,7 +489,7 @@ namespace AndroidSideloader
                 }
             });
 
-            if (hasPublicConfig)
+            if (UsingPublicConfig)
             {
                 await Task.Run(() =>
                 {
@@ -2295,6 +2297,12 @@ namespace AndroidSideloader
 
             _ = Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
+            if (hasPublicConfig)
+            {
+                _ = remotesList.Items.Add("Public");
+                itemsCount++;
+            }
+
             foreach (string mirror in mirrors)
             {
                 if (mirror.Contains("mirror"))
@@ -2313,7 +2321,14 @@ namespace AndroidSideloader
                 await Task.Run(() => remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = 0; // Set mirror to first item in array.
-                    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
+                    string selectedRemote = remotesList.SelectedItem.ToString();
+                    currentRemote = "";
+
+                    if (selectedRemote != "Public")
+                    {
+                        currentRemote = "VRP-mirror";
+                    }
+                    currentRemote = string.Concat(currentRemote, selectedRemote);
                 }));
             }
         }
@@ -2440,12 +2455,9 @@ namespace AndroidSideloader
 
         private async void listApkButton_Click(object sender, EventArgs e)
         {
-            changeTitle("Refreshing connected devices, installed apps and update list...");
-            if (isLoading)
-            {
-                return;
-            }
-
+            string titleMessage = "Refreshing connected devices, installed apps and update list...";
+            changeTitle(titleMessage);
+            if (isLoading) { return; }
             isLoading = true;
 
             progressBar.Style = ProgressBarStyle.Marquee;
@@ -2453,9 +2465,19 @@ namespace AndroidSideloader
 
             await initMirrors();
 
+            isLoading = false;
+            await refreshCurrentMirror(titleMessage);
+        }
+        private async Task refreshCurrentMirror(string titleMessage)
+        {
+            changeTitle(titleMessage);
+            if (isLoading) { return; }
+            isLoading = true;
+            progressBar.Style = ProgressBarStyle.Marquee;
+
             Thread t1 = new Thread(() =>
             {
-                if (!hasPublicConfig)
+                if (!UsingPublicConfig)
                 {
                     SideloaderRCLONE.initGames(currentRemote);
                 }
@@ -2666,7 +2688,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         bandwidthLimit = $"--bwlimit={settings.BandwidthLimit}M";
                     }
-                    if (hasPublicConfig)
+                    if (UsingPublicConfig)
                     {
                         bool doDownload = true;
                         bool skipRedownload = false;
@@ -2827,7 +2849,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (res == DialogResult.Yes)
                             {
                                 changeTitle("Deleting game files", false);
-                                if (hasPublicConfig)
+                                if (UsingPublicConfig)
                                 {
                                     if (Directory.Exists($"{settings.DownloadDir}\\{gameNameHash}"))
                                     {
@@ -2882,7 +2904,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             }
                         }
 
-                        if (hasPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
+                        if (UsingPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
                         {
 
                             Thread extractionThread = new Thread(() =>
@@ -3406,11 +3428,22 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             showAvailableSpace();
         }
 
-        private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
+        private async void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (remotesList.SelectedItem != null)
             {
-                remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
+                string selectedRemote = remotesList.SelectedItem.ToString();
+                if (selectedRemote == "Public")
+                {
+                    UsingPublicConfig = true;
+                }
+                else
+                {
+                    UsingPublicConfig = false;
+                    remotesList.Invoke(() => { currentRemote = "VRP-mirror" + selectedRemote; });
+                }
+
+                await refreshCurrentMirror("Refreshing App List...");
             }
         }
 
