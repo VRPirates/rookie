@@ -1,5 +1,7 @@
 RSL 2.32
 
+- Feature: Allow switching between Public and Private configs
+- Feature: Switch to Offline Mode when unable to connect
 - Feature: Save window position and column sizes
 - Fix: An issue that caused the VIP mirror to fail
 - Fix: Make video window flexible

@@ -500,7 +500,7 @@ namespace AndroidSideloader
                     SideloaderRCLONE.ProcessMetadataFromPublic();
                 });
             }
-            else
+            else if (!isOffline)
             {
                 await Task.Run(() =>
                 {
@@ -553,6 +553,13 @@ namespace AndroidSideloader
             }
 
             searchTextBox.Enabled = true;
+
+            if (isOffline)
+            {
+                lblMirror.Text = " Offline Mode";
+                remotesList.Size = System.Drawing.Size.Empty;
+                _ = Logger.Log($"Using Offline Mode");
+            }
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -1900,7 +1907,9 @@ namespace AndroidSideloader
             else if (!isOffline)
             {
                 SwitchMirrors();
-                initListView();
+                if (!isOffline){
+                    initListView();
+                }
             }
 
 
@@ -2509,12 +2518,13 @@ namespace AndroidSideloader
         public static bool skiponceafterremove = false;
 
 
-        public void SwitchMirrors()
+        public bool SwitchMirrors()
         {
+            bool success = true;
             try
             {
                 quotaTries++;
-                remotesList.Invoke(() =>
+                remotesList.Invoke((MethodInvoker)delegate
                 {
                     if (quotaTries > remotesList.Items.Count)
                     {
@@ -2522,10 +2532,13 @@ namespace AndroidSideloader
 
                         if (System.Windows.Forms.Application.MessageLoop)
                         {
-                            Process.GetCurrentProcess().Kill();
+                            // Process.GetCurrentProcess().Kill();
+                            isOffline = true;
+                            success = false;
+                            return;
                         }
-
                     }
+
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
                     {
                         reset = true;
@@ -2545,7 +2558,12 @@ namespace AndroidSideloader
                     }
                 });
             }
-            catch { }
+            catch
+            {
+                success = false;
+            }
+
+            return success;
         }
 
         private static void ShowError_QuotaExceeded()
