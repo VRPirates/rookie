@@ -7,3 +7,4 @@ RSL 2.32
 - Fix: Change Label position to avoid overlapping Queue/Notes windows
 - Chore: Bump aapt/aapt2/adb to latest
 - Chore: Bump 7z to 24.09
+- Chore: Add AddDefenderExceptions.ps1

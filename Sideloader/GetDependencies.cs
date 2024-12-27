@@ -94,6 +94,14 @@ namespace AndroidSideloader
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/CleanupInstall.cmd", "CleanupInstall.cmd");
                     _ = Logger.Log($"'CleanupInstall.cmd' download successful");
                 }
+
+                if (!File.Exists("AddDefenderExceptions.ps1"))
+                {
+                    currentAccessedWebsite = "github";
+                    _ = Logger.Log($"Missing 'AddDefenderExceptions.ps1'. Attempting to download from {currentAccessedWebsite}");
+                    client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/AddDefenderExceptions.ps1", "AddDefenderExceptions.ps1");
+                    _ = Logger.Log($"'AddDefenderExceptions.ps1' download successful");
+                }
             }
             catch (Exception ex)
             {

@@ -314,6 +314,9 @@
     <None Include="CleanupInstall.cmd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="AddDefenderExceptions.ps1">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="version" />
   </ItemGroup>
   <ItemGroup>
