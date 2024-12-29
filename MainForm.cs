@@ -60,6 +60,7 @@ namespace AndroidSideloader
         public static bool noRcloneUpdating;
         public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
+        public static bool UsingPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
@@ -218,6 +219,17 @@ namespace AndroidSideloader
             }
         }
 
+        private void LoadListViewColumnWidths(System.Windows.Forms.ListView listView, string listViewName)
+        {
+            if (settings.ListViewColumnWidths.TryGetValue(listViewName, out var columnWidths))
+            {
+                for (int i = 0; i < columnWidths.Length && i < listView.Columns.Count; i++)
+                {
+                    listView.Columns[i].Width = columnWidths[i]; // Apply saved width
+                }
+            }
+        }
+
         public static string donorApps = String.Empty;
         private string oldTitle = String.Empty;
         public static bool updatesNotified = false;
@@ -274,6 +286,19 @@ namespace AndroidSideloader
             speedLabel.Text = String.Empty;
             diskLabel.Text = String.Empty;
             verLabel.Text = Updater.LocalVersion;
+            LoadListViewColumnWidths(gamesListView, "gamesListView");
+            if (settings.MainWindowLocationX == 0 && settings.MainWindowLocationY == 0)
+            {
+                this.StartPosition = FormStartPosition.CenterScreen;
+            }
+            else
+            {
+                this.StartPosition = FormStartPosition.Manual;
+                this.Left = settings.MainWindowLocationX;
+                this.Top = settings.MainWindowLocationY;
+            }
+            this.Width = settings.MainWindowSizeWidth;
+            this.Height = settings.MainWindowSizeHeight;
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(settings.CurrentCrashPath))
@@ -368,10 +393,10 @@ namespace AndroidSideloader
                 }
             }
 
+            remotesList.Items.Clear();
             if (hasPublicConfig)
             {
-                lblMirror.Text = " Public Mirror";
-                remotesList.Size = System.Drawing.Size.Empty;
+                UsingPublicConfig = true;
                 _ = Logger.Log($"Using Public Mirror");
             }
             if (isOffline)
@@ -388,73 +413,39 @@ namespace AndroidSideloader
             SplashScreen.Close();
 
             progressBar.Style = ProgressBarStyle.Marquee;
-            Thread t1 = new Thread(async () =>
+
+            if (!debugMode && settings.CheckForUpdates && !isOffline)
             {
-                if (!debugMode && settings.CheckForUpdates)
-                {
-                    Updater.AppName = "AndroidSideloader";
-                    Updater.Repository = "VRPirates/rookie";
-                    await Updater.Update();
-                }
-                progressBar.Invoke(() => { progressBar.Style = ProgressBarStyle.Marquee; });
-
-                progressBar.Style = ProgressBarStyle.Marquee;
-                if (!isOffline)
-                {
-                    changeTitle("Getting Upload Config...");
-                    SideloaderRCLONE.updateUploadConfig();
-                }
-
-            });
-            t1.SetApartmentState(ApartmentState.STA);
-            t1.IsBackground = true;
+                Updater.AppName = "AndroidSideloader";
+                Updater.Repository = "VRPirates/rookie";
+                await Updater.Update();
+            }
 
             if (!isOffline)
             {
-                t1.Start();
-            }
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+                changeTitle("Getting Upload Config...");
+                SideloaderRCLONE.updateUploadConfig();
 
+                _ = Logger.Log("Initializing Servers");
+                changeTitle("Initializing Servers...");
 
-            Thread t6 = new Thread(async () =>
-            {
-                if (!isOffline)
+                // Wait for mirrors to initialize
+                await initMirrors();
+
+                if (!UsingPublicConfig)
                 {
-                    _ = Logger.Log("Initializing Servers");
-                    changeTitle("Initializing Servers...");
-                    await initMirrors();
-
-                    if (!hasPublicConfig)
-                    {
-                        changeTitle("Grabbing the Games List...");
-                        SideloaderRCLONE.initGames(currentRemote);
-                    }
+                    changeTitle("Grabbing the Games List...");
+                    SideloaderRCLONE.initGames(currentRemote);
                 }
-                else
-                {
-                    changeTitle("Offline mode enabled, no Rclone");
-                }
-
-            });
-            t6.SetApartmentState(ApartmentState.STA);
-            t6.IsBackground = false;
-
-            if (!isOffline)
-            {
-                t6.Start();
             }
-            while (t6.IsAlive)
+            else
             {
-                await Task.Delay(100);
+                changeTitle("Offline mode enabled, no Rclone");
             }
 
-
-            Thread t5 = new Thread(() =>
+            changeTitle("Connecting to your Quest...");
+            await Task.Run(() =>
             {
-                changeTitle("Connecting to your Quest...");
                 if (!string.IsNullOrEmpty(settings.IPAddress))
                 {
                     string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
@@ -496,56 +487,29 @@ namespace AndroidSideloader
                     settings.IPAddress = "";
                     settings.Save();
                 }
-            })
-            {
-                IsBackground = true
-            };
-            t5.Start();
-            while (t5.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
 
-            if (hasPublicConfig)
+            if (UsingPublicConfig)
             {
-                Thread t2 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     changeTitle("Updating Metadata...");
                     SideloaderRCLONE.UpdateMetadataFromPublic();
 
                     changeTitle("Processing Metadata...");
                     SideloaderRCLONE.ProcessMetadataFromPublic();
-                })
-                {
-                    IsBackground = true
-                };
-                if (!isOffline)
-                {
-                    t2.Start();
-                }
-
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
+                });
             }
-            else
+            else if (!isOffline)
             {
-
-                Thread t2 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     changeTitle("Updating Game Notes...");
                     SideloaderRCLONE.UpdateGameNotes(currentRemote);
-                });
 
-                Thread t3 = new Thread(() =>
-                {
                     changeTitle("Updating Game Thumbnails (This may take a minute or two)...");
                     SideloaderRCLONE.UpdateGamePhotos(currentRemote);
-                });
 
-                Thread t4 = new Thread(() =>
-                {
                     SideloaderRCLONE.UpdateNouns(currentRemote);
                     if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) ||
                         !Directory.Exists(SideloaderRCLONE.NotesFolder))
@@ -554,43 +518,9 @@ namespace AndroidSideloader
                             "It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                     }
                 });
-                t2.IsBackground = true;
-                t3.IsBackground = true;
-                t4.IsBackground = true;
-
-                if (!isOffline)
-                {
-                    t2.Start();
-                }
-
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
-
-                if (!isOffline)
-                {
-                    t3.Start();
-                }
-
-                while (t3.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
-
-                if (!isOffline)
-                {
-                    t4.Start();
-                }
-
-                while (t4.IsAlive)
-                {
-                    await Task.Delay(50);
-                }
             }
 
             progressBar.Style = ProgressBarStyle.Marquee;
-
             changeTitle("Populating Game Update List, Almost There!");
 
             _ = await CheckForDevice();
@@ -598,11 +528,13 @@ namespace AndroidSideloader
             {
                 nodeviceonstart = true;
             }
+
             listAppsBtn();
             showAvailableSpace();
             downloadInstallGameButton.Enabled = true;
             isLoading = false;
             initListView();
+
             string[] files = Directory.GetFiles(Environment.CurrentDirectory);
             foreach (string file in files)
             {
@@ -619,7 +551,15 @@ namespace AndroidSideloader
                     }
                 }
             }
+
             searchTextBox.Enabled = true;
+
+            if (isOffline)
+            {
+                lblMirror.Text = " Offline Mode";
+                remotesList.Size = System.Drawing.Size.Empty;
+                _ = Logger.Log($"Using Offline Mode");
+            }
         }
 
         private void timer_Tick(object sender, EventArgs e)
@@ -1967,7 +1907,9 @@ namespace AndroidSideloader
             else if (!isOffline)
             {
                 SwitchMirrors();
-                initListView();
+                if (!isOffline){
+                    initListView();
+                }
             }
 
 
@@ -2364,6 +2306,12 @@ namespace AndroidSideloader
 
             _ = Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
+            if (hasPublicConfig)
+            {
+                _ = remotesList.Items.Add("Public");
+                itemsCount++;
+            }
+
             foreach (string mirror in mirrors)
             {
                 if (mirror.Contains("mirror"))
@@ -2382,7 +2330,14 @@ namespace AndroidSideloader
                 await Task.Run(() => remotesList.Invoke(() =>
                 {
                     remotesList.SelectedIndex = 0; // Set mirror to first item in array.
-                    currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString();
+                    string selectedRemote = remotesList.SelectedItem.ToString();
+                    currentRemote = "";
+
+                    if (selectedRemote != "Public")
+                    {
+                        currentRemote = "VRP-mirror";
+                    }
+                    currentRemote = string.Concat(currentRemote, selectedRemote);
                 }));
             }
         }
@@ -2509,12 +2464,9 @@ namespace AndroidSideloader
 
         private async void listApkButton_Click(object sender, EventArgs e)
         {
-            changeTitle("Refreshing connected devices, installed apps and update list...");
-            if (isLoading)
-            {
-                return;
-            }
-
+            string titleMessage = "Refreshing connected devices, installed apps and update list...";
+            changeTitle(titleMessage);
+            if (isLoading) { return; }
             isLoading = true;
 
             progressBar.Style = ProgressBarStyle.Marquee;
@@ -2522,9 +2474,19 @@ namespace AndroidSideloader
 
             await initMirrors();
 
+            isLoading = false;
+            await refreshCurrentMirror(titleMessage);
+        }
+        private async Task refreshCurrentMirror(string titleMessage)
+        {
+            changeTitle(titleMessage);
+            if (isLoading) { return; }
+            isLoading = true;
+            progressBar.Style = ProgressBarStyle.Marquee;
+
             Thread t1 = new Thread(() =>
             {
-                if (!hasPublicConfig)
+                if (!UsingPublicConfig)
                 {
                     SideloaderRCLONE.initGames(currentRemote);
                 }
@@ -2556,12 +2518,13 @@ namespace AndroidSideloader
         public static bool skiponceafterremove = false;
 
 
-        public void SwitchMirrors()
+        public bool SwitchMirrors()
         {
+            bool success = true;
             try
             {
                 quotaTries++;
-                remotesList.Invoke(() =>
+                remotesList.Invoke((MethodInvoker)delegate
                 {
                     if (quotaTries > remotesList.Items.Count)
                     {
@@ -2569,10 +2532,13 @@ namespace AndroidSideloader
 
                         if (System.Windows.Forms.Application.MessageLoop)
                         {
-                            Process.GetCurrentProcess().Kill();
+                            // Process.GetCurrentProcess().Kill();
+                            isOffline = true;
+                            success = false;
+                            return;
                         }
-
                     }
+
                     if (remotesList.SelectedIndex + 1 == remotesList.Items.Count)
                     {
                         reset = true;
@@ -2592,7 +2558,12 @@ namespace AndroidSideloader
                     }
                 });
             }
-            catch { }
+            catch
+            {
+                success = false;
+            }
+
+            return success;
         }
 
         private static void ShowError_QuotaExceeded()
@@ -2735,7 +2706,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         bandwidthLimit = $"--bwlimit={settings.BandwidthLimit}M";
                     }
-                    if (hasPublicConfig)
+                    if (UsingPublicConfig)
                     {
                         bool doDownload = true;
                         bool skipRedownload = false;
@@ -2896,7 +2867,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (res == DialogResult.Yes)
                             {
                                 changeTitle("Deleting game files", false);
-                                if (hasPublicConfig)
+                                if (UsingPublicConfig)
                                 {
                                     if (Directory.Exists($"{settings.DownloadDir}\\{gameNameHash}"))
                                     {
@@ -2951,7 +2922,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             }
                         }
 
-                        if (hasPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
+                        if (UsingPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
                         {
 
                             Thread extractionThread = new Thread(() =>
@@ -3359,6 +3330,17 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
         }
 
+        private void SaveListViewColumnWidths(System.Windows.Forms.ListView listView, string listViewName)
+        {
+            var columnWidths = new int[listView.Columns.Count];
+            for (int i = 0; i < listView.Columns.Count; i++)
+            {
+                columnWidths[i] = listView.Columns[i].Width; // Get current width
+            }
+
+            settings.ListViewColumnWidths[listViewName] = columnWidths;
+            settings.Save(); // Save to settings file
+        }
 
         private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -3399,7 +3381,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 RCLONE.killRclone();
                 _ = ADB.RunAdbCommandToString("kill-server");
             }
-
+            SaveListViewColumnWidths(gamesListView, "gamesListView");
+            settings.MainWindowLocationX = this.Left;
+            settings.MainWindowLocationY = this.Top;
+            settings.MainWindowSizeHeight = this.Height;
+            settings.MainWindowSizeWidth = this.Width;
+            settings.Save();
         }
 
         private async void ADBWirelessDisable_Click(object sender, EventArgs e)
@@ -3459,11 +3446,22 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             showAvailableSpace();
         }
 
-        private void remotesList_SelectedIndexChanged(object sender, EventArgs e)
+        private async void remotesList_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (remotesList.SelectedItem != null)
             {
-                remotesList.Invoke(() => { currentRemote = "VRP-mirror" + remotesList.SelectedItem.ToString(); });
+                string selectedRemote = remotesList.SelectedItem.ToString();
+                if (selectedRemote == "Public")
+                {
+                    UsingPublicConfig = true;
+                }
+                else
+                {
+                    UsingPublicConfig = false;
+                    remotesList.Invoke(() => { currentRemote = "VRP-mirror" + selectedRemote; });
+                }
+
+                await refreshCurrentMirror("Refreshing App List...");
             }
         }
 

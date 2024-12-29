@@ -125,10 +125,10 @@ namespace AndroidSideloader
             this.leftNavContainer = new System.Windows.Forms.Panel();
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.webView21 = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this.adbCmd_btnSend = new AndroidSideloader.RoundButton();
             this.adbCmd_btnToggleUpdates = new AndroidSideloader.RoundButton();
             this.MountButton = new AndroidSideloader.RoundButton();
             this.btnNoDevice = new AndroidSideloader.RoundButton();
-            this.adbCmd_btnSend = new AndroidSideloader.RoundButton();
             ((System.ComponentModel.ISupportInitialize)(this.gamesPictureBox)).BeginInit();
             this.progressDLbtnContainer.SuspendLayout();
             this.bottomContainer.SuspendLayout();
@@ -266,10 +266,10 @@ namespace AndroidSideloader
             this.remotesList.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.remotesList.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.remotesList.FormattingEnabled = true;
-            this.remotesList.Location = new System.Drawing.Point(545, 40);
+            this.remotesList.Location = new System.Drawing.Point(531, 40);
             this.remotesList.Margin = new System.Windows.Forms.Padding(2);
             this.remotesList.Name = "remotesList";
-            this.remotesList.Size = new System.Drawing.Size(53, 26);
+            this.remotesList.Size = new System.Drawing.Size(67, 26);
             this.remotesList.TabIndex = 3;
             this.remotesList.SelectedIndexChanged += new System.EventHandler(this.remotesList_SelectedIndexChanged);
             // 
@@ -372,7 +372,7 @@ namespace AndroidSideloader
             this.gamesQueueLabel.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.gamesQueueLabel.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.gamesQueueLabel.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.gamesQueueLabel.Location = new System.Drawing.Point(599, 603);
+            this.gamesQueueLabel.Location = new System.Drawing.Point(971, 603);
             this.gamesQueueLabel.Name = "gamesQueueLabel";
             this.gamesQueueLabel.Size = new System.Drawing.Size(123, 18);
             this.gamesQueueLabel.TabIndex = 86;
@@ -432,7 +432,7 @@ namespace AndroidSideloader
             this.lblNotes.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.lblNotes.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
             this.lblNotes.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.lblNotes.Location = new System.Drawing.Point(597, 689);
+            this.lblNotes.Location = new System.Drawing.Point(988, 689);
             this.lblNotes.Name = "lblNotes";
             this.lblNotes.Size = new System.Drawing.Size(106, 18);
             this.lblNotes.TabIndex = 86;
@@ -489,9 +489,9 @@ namespace AndroidSideloader
             this.lblMirror.ForeColor = System.Drawing.SystemColors.ControlLightLight;
             this.lblMirror.Location = new System.Drawing.Point(475, 44);
             this.lblMirror.Name = "lblMirror";
-            this.lblMirror.Size = new System.Drawing.Size(65, 17);
+            this.lblMirror.Size = new System.Drawing.Size(51, 17);
             this.lblMirror.TabIndex = 90;
-            this.lblMirror.Text = "Mirror #";
+            this.lblMirror.Text = "Mirror";
             this.lblMirror.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // adbCmd_CommandBox
@@ -1330,6 +1330,7 @@ namespace AndroidSideloader
             // webView21
             // 
             this.webView21.AllowExternalDrop = true;
+            this.webView21.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.webView21.CreationProperties = null;
             this.webView21.DefaultBackgroundColor = System.Drawing.Color.White;
             this.webView21.Location = new System.Drawing.Point(224, 493);
@@ -1337,6 +1338,33 @@ namespace AndroidSideloader
             this.webView21.Size = new System.Drawing.Size(374, 214);
             this.webView21.TabIndex = 98;
             this.webView21.ZoomFactor = 1D;
+            // 
+            // adbCmd_btnSend
+            // 
+            this.adbCmd_btnSend.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.adbCmd_btnSend.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
+            this.adbCmd_btnSend.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.adbCmd_btnSend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
+            this.adbCmd_btnSend.Cursor = System.Windows.Forms.Cursors.Default;
+            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
+            this.adbCmd_btnSend.DialogResult = System.Windows.Forms.DialogResult.OK;
+            this.adbCmd_btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.adbCmd_btnSend.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
+            this.adbCmd_btnSend.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.adbCmd_btnSend.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.adbCmd_btnSend.Location = new System.Drawing.Point(478, 262);
+            this.adbCmd_btnSend.Name = "adbCmd_btnSend";
+            this.adbCmd_btnSend.Radius = 5;
+            this.adbCmd_btnSend.Size = new System.Drawing.Size(126, 28);
+            this.adbCmd_btnSend.Stroke = true;
+            this.adbCmd_btnSend.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
+            this.adbCmd_btnSend.TabIndex = 100;
+            this.adbCmd_btnSend.Text = "Send Command";
+            this.adbCmd_btnSend.Transparency = false;
+            this.adbCmd_btnSend.Visible = false;
+            this.adbCmd_btnSend.Click += new System.EventHandler(this.adbCmd_btnSend_Click);
             // 
             // adbCmd_btnToggleUpdates
             // 
@@ -1417,33 +1445,6 @@ namespace AndroidSideloader
             this.btnNoDevice.Text = "Disable Sideloading";
             this.btnNoDevice.Transparency = false;
             this.btnNoDevice.Click += new System.EventHandler(this.btnNoDevice_Click);
-            // 
-            // adbCmd_btnSend
-            // 
-            this.adbCmd_btnSend.Active1 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.adbCmd_btnSend.Active2 = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(40)))), ((int)(((byte)(40)))));
-            this.adbCmd_btnSend.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.adbCmd_btnSend.BackgroundImageLayout = System.Windows.Forms.ImageLayout.None;
-            this.adbCmd_btnSend.Cursor = System.Windows.Forms.Cursors.Default;
-            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("BackColor", global::AndroidSideloader.Properties.Settings.Default, "SubButtonColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("ForeColor", global::AndroidSideloader.Properties.Settings.Default, "FontColor", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.adbCmd_btnSend.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
-            this.adbCmd_btnSend.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.adbCmd_btnSend.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.adbCmd_btnSend.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
-            this.adbCmd_btnSend.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.adbCmd_btnSend.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.adbCmd_btnSend.Location = new System.Drawing.Point(478, 262);
-            this.adbCmd_btnSend.Name = "adbCmd_btnSend";
-            this.adbCmd_btnSend.Radius = 5;
-            this.adbCmd_btnSend.Size = new System.Drawing.Size(126, 28);
-            this.adbCmd_btnSend.Stroke = true;
-            this.adbCmd_btnSend.StrokeColor = System.Drawing.Color.FromArgb(((int)(((byte)(74)))), ((int)(((byte)(74)))), ((int)(((byte)(74)))));
-            this.adbCmd_btnSend.TabIndex = 100;
-            this.adbCmd_btnSend.Text = "Send Command";
-            this.adbCmd_btnSend.Transparency = false;
-            this.adbCmd_btnSend.Visible = false;
-            this.adbCmd_btnSend.Click += new System.EventHandler(this.adbCmd_btnSend_Click);
             // 
             // MainForm
             // 

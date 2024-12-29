@@ -113,7 +113,6 @@ namespace AndroidSideloader
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
-            rclone.StandardInput.Flush();
             rclone.StandardInput.Close();
 
             string output = rclone.StandardOutput.ReadToEnd();
@@ -136,16 +135,19 @@ namespace AndroidSideloader
             if (error.Contains("400 Bad Request") || error.Contains("cannot fetch token") || error.Contains("authError") || error.Contains("quota") || error.Contains("exceeded") || error.Contains("directory not found") || error.Contains("Failed to"))
             {
                 string oldRemote = MainForm.currentRemote;
+                bool retSM = false;
                 try
                 {
-                    Program.form.SwitchMirrors();
-
+                    retSM = Program.form.SwitchMirrors();
                 }
                 catch
                 {
                     return new ProcessOutput("All mirrors are on quota or down...", "All mirrors are on quota or down...");
                 }
-                prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote));
+                if (retSM)
+                {
+                    prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote));
+                }
             }
             else
             {

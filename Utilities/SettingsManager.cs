@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Windows.Forms;
 
 namespace AndroidSideloader.Utilities
 {
@@ -11,7 +13,7 @@ namespace AndroidSideloader.Utilities
     {
         private static readonly Lazy<SettingsManager> _instance = new Lazy<SettingsManager>(() => new SettingsManager());
         private static readonly string settingsFilePath = Path.Combine(
-            AppDomain.CurrentDomain.BaseDirectory,
+            Environment.CurrentDirectory,
             "settings.json");
 
         // Custom converters for special types
@@ -132,6 +134,11 @@ namespace AndroidSideloader.Utilities
         public bool UseDownloadedFiles { get; set; } = false;
         public float BandwidthLimit { get; set; } = 0f;
         public bool HideAdultContent { get; set; } = false;
+        public Dictionary<string, int[]> ListViewColumnWidths { get; set; } = new Dictionary<string, int[]>();
+        public int MainWindowLocationX { get; set; } = 0;
+        public int MainWindowLocationY { get; set; } = 0;
+        public int MainWindowSizeWidth { get; set; } = 0;
+        public int MainWindowSizeHeight { get; set; } = 0;
 
         private SettingsManager()
         {
@@ -253,6 +260,14 @@ namespace AndroidSideloader.Utilities
             UseDownloadedFiles = false;
             BandwidthLimit = 0f;
             HideAdultContent = false;
+            ListViewColumnWidths = new Dictionary<string, int[]>
+            {
+                { "gamesListView", new[] { 158, 244, 87, 75, 145, 66, 80 } }
+            };
+            MainWindowLocationX = 0;
+            MainWindowLocationY = 0;
+            MainWindowSizeWidth = 1120;
+            MainWindowSizeHeight = 786;
 
             Save();
             Debug.WriteLine("Default settings created.");
