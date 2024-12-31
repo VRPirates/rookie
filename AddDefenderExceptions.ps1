@@ -33,24 +33,41 @@ if ($WindowsPrincipal.IsInRole($AdminRole)) {
 	exit
 }
 
-write-host "Important: Run this script from the directory root with which Rookie will be run to exclude"
-Start-Sleep -s 5
+write-host "Run this script from the directory root with which Rookie will be run"
+start-sleep -s 5
 
+$paths = @(
+    "$PSScriptRoot",  # Replaces 'C:\RSL' with the script's root directory
+    "$PSScriptRoot\Rookie",
+    "$PSScriptRoot\Rookie\rclone",
+    "$PSScriptRoot\Rookie\Sideloader Launcher.exe",
+    "$PSScriptRoot\Rookie\AndroidSideloader*.exe",
+    "$PSScriptRoot\Rookie\rclone\rclone.exe"
+)
+
+foreach ($path in $paths) {
     try {
-        Add-MpPreference -ExclusionPath $PSScriptRoot -ErrorAction Stop
-        Write-Host "Successfully added exclusion for: $PSScriptRoot " -ForegroundColor Green
+        Add-MpPreference -ExclusionPath $Path -ErrorAction Stop
+        Write-Host "Successfully added exclusion for: $path" -ForegroundColor Green
     }
     catch {
-        Write-Host "Failed to add exclusion for: $PSScriptRoot " -ForegroundColor Red
+        Write-Host "Failed to add exclusion for: $path " -ForegroundColor Red
         Write-Host "Error: $_" -ForegroundColor Red
 	Start-Sleep -s 5
 	Pause
     }
-
+}
 
 # Verify the exclusions
 Write-Host "`nCurrent exclusions:" -ForegroundColor Cyan
-Get-MpPreference | Select-Object -ExpandProperty ExclusionPath | Where-Object { $_ -like $PSScriptRoot }
-
+$defenderPreferences = Get-MpPreference
+$paths | ForEach-Object {
+    if ($defenderPreferences.ExclusionPath -contains $_) {
+        Write-Host "$_ is already excluded from Defender."
+    } else {
+        Write-Host "$_ is NOT excluded from Defender."
+    }
+}
+pause
 
 Start-Sleep -s 5
