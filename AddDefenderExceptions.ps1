@@ -38,11 +38,10 @@ start-sleep -s 5
 
 $paths = @(
     "$PSScriptRoot",  # Replaces 'C:\RSL' with the script's root directory
-    "$PSScriptRoot\Rookie",
-    "$PSScriptRoot\Rookie\rclone",
-    "$PSScriptRoot\Rookie\Sideloader Launcher.exe",
-    "$PSScriptRoot\Rookie\AndroidSideloader*.exe",
-    "$PSScriptRoot\Rookie\rclone\rclone.exe"
+    "$PSScriptRoot\rclone",
+    "$PSScriptRoot\Sideloader Launcher.exe",
+    "$PSScriptRoot\AndroidSideloader*.exe",
+    "$PSScriptRoot\rclone\rclone.exe"
 )
 
 foreach ($path in $paths) {
@@ -68,6 +67,6 @@ $paths | ForEach-Object {
         Write-Host "$_ is NOT excluded from Defender."
     }
 }
-pause
+Pause
 
 Start-Sleep -s 5
