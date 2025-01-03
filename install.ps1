@@ -4,7 +4,7 @@ $apiUrl = "https://api.github.com/repos/VRPirates/rookie/releases/latest"
 
 # Installation check
 
-if (Test-Path -Path $rookiePath) {
+if (Test-Path -Path "$rookiePath\*") {
     Write-Host "Rookie directory already exists at '$rookiePath'"
     $response = Read-Host "Reinstall? [y/n] (this will remove the directory and all of its content)"
     
