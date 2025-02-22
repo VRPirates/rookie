@@ -219,17 +219,6 @@ namespace AndroidSideloader
             }
         }
 
-        private void LoadListViewColumnWidths(System.Windows.Forms.ListView listView, string listViewName)
-        {
-            if (settings.ListViewColumnWidths.TryGetValue(listViewName, out var columnWidths))
-            {
-                for (int i = 0; i < columnWidths.Length && i < listView.Columns.Count; i++)
-                {
-                    listView.Columns[i].Width = columnWidths[i]; // Apply saved width
-                }
-            }
-        }
-
         public static string donorApps = String.Empty;
         private string oldTitle = String.Empty;
         public static bool updatesNotified = false;
@@ -290,8 +279,7 @@ namespace AndroidSideloader
             if (settings.MainWindowLocationX == 0 && settings.MainWindowLocationY == 0)
             {
                 this.StartPosition = FormStartPosition.CenterScreen;
-            }
-            else
+            } else
             {
                 this.StartPosition = FormStartPosition.Manual;
                 this.Left = settings.MainWindowLocationX;
@@ -3330,17 +3318,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
         }
 
-        private void SaveListViewColumnWidths(System.Windows.Forms.ListView listView, string listViewName)
-        {
-            var columnWidths = new int[listView.Columns.Count];
-            for (int i = 0; i < listView.Columns.Count; i++)
-            {
-                columnWidths[i] = listView.Columns[i].Width; // Get current width
-            }
-
-            settings.ListViewColumnWidths[listViewName] = columnWidths;
-            settings.Save(); // Save to settings file
-        }
 
         private async void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -3381,12 +3358,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 RCLONE.killRclone();
                 _ = ADB.RunAdbCommandToString("kill-server");
             }
-            SaveListViewColumnWidths(gamesListView, "gamesListView");
-            settings.MainWindowLocationX = this.Left;
-            settings.MainWindowLocationY = this.Top;
-            settings.MainWindowSizeHeight = this.Height;
-            settings.MainWindowSizeWidth = this.Width;
-            settings.Save();
+
         }
 
         private async void ADBWirelessDisable_Click(object sender, EventArgs e)
