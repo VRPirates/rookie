@@ -275,18 +275,6 @@ namespace AndroidSideloader
             speedLabel.Text = String.Empty;
             diskLabel.Text = String.Empty;
             verLabel.Text = Updater.LocalVersion;
-            LoadListViewColumnWidths(gamesListView, "gamesListView");
-            if (settings.MainWindowLocationX == 0 && settings.MainWindowLocationY == 0)
-            {
-                this.StartPosition = FormStartPosition.CenterScreen;
-            } else
-            {
-                this.StartPosition = FormStartPosition.Manual;
-                this.Left = settings.MainWindowLocationX;
-                this.Top = settings.MainWindowLocationY;
-            }
-            this.Width = settings.MainWindowSizeWidth;
-            this.Height = settings.MainWindowSizeHeight;
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(settings.CurrentCrashPath))
