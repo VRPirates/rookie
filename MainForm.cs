@@ -918,6 +918,11 @@ namespace AndroidSideloader
             {
                 _ = Directory.CreateDirectory(backupFolder);
             }
+            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, $"Do you want to backup to {backupFolder}?", "Backup?", MessageBoxButtons.YesNo);
+            if (dialogResult1 == DialogResult.No)
+            {
+                return;
+            }
             ProcessOutput output = new ProcessOutput(String.Empty, String.Empty);
             Thread t1 = new Thread(() =>
             {
