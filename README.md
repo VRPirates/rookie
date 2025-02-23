@@ -5,6 +5,21 @@
 [![Downloads](https://img.shields.io/github/downloads/VRPirates/rookie/total.svg)](https://github.com/VRPirates/rookie/releases)
 ![Issues](https://img.shields.io/github/issues/VRPirates/rookie)
 
+## Installation
+
+Create the directory `C:\RSL\Rookie` and make an exclusion for it in Windows Defender.
+> [!WARNING]
+> Do not turn Windows Defender off as that will leave your system vulnerable to malware, and Rookie will still be removed after Windows Defender is turned back on, so it's not a solution.
+
+Run the following command in a non-administrator Powershell session:
+```powershell
+irm "https://raw.githubusercontent.com/VRPirates/rookie/refs/heads/master/install.ps1" | iex
+```
+
+The script will recognize if an exclusion has been properly created or not. If  Rookie has been removed, you will be prompted to watch a YouTube tutorial on how to create one.
+
+Once Rookie has been successfully installed, an Explorer window will appear where you will be able to launch Rookie.
+
 ## Disclaimer
 This application might get flagged as malware by some antivirus software; however, both the Sideloader and the Sideloader Launcher are open source.
 
