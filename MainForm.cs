@@ -3782,9 +3782,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
 
                 gamesPictureBox.BackgroundImage = File.Exists(ImagePath) ? Image.FromFile(ImagePath) : new Bitmap(367, 214);
-
-                string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
-                notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
             }
             else
             {
@@ -3841,6 +3838,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     Logger.Log(ex.Message);
                 }
             }
+            string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
+            notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
         }
 
         public void UpdateGamesButton_Click(object sender, EventArgs e)
