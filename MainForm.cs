@@ -509,7 +509,7 @@ namespace AndroidSideloader
             showAvailableSpace();
             downloadInstallGameButton.Enabled = true;
             isLoading = false;
-            initListView();
+            initListView(false);
 
             string[] files = Directory.GetFiles(Environment.CurrentDirectory);
             foreach (string file in files)
@@ -1326,7 +1326,7 @@ namespace AndroidSideloader
                 showAvailableSpace();
                 changeTitle("Device now detected... refreshing update list.");
                 listAppsBtn();
-                initListView();
+                initListView(false);
             }
 
             Program.form.changeTitle($"Processing dropped file. If Rookie freezes, please wait. Do not close Rookie!");
@@ -1730,7 +1730,7 @@ namespace AndroidSideloader
         private bool _allItemsInitialized = false;
 
 
-        private async void initListView()
+        private async void initListView(bool favoriteView)
         {
             int upToDateCount = 0;
             int updateAvailableCount = 0;
@@ -1870,6 +1870,13 @@ namespace AndroidSideloader
                                 GameList.Add(Game);
                             }
                         }
+                        if (favoriteView)
+                        {
+                            if (settings.FavoritedGames.Contains(Game.SubItems[1].Text))
+                            {
+                                GameList.Add(Game);
+                            }
+                        }
                         else
                         {
                             GameList.Add(Game);
@@ -1889,7 +1896,7 @@ namespace AndroidSideloader
             {
                 SwitchMirrors();
                 if (!isOffline){
-                    initListView();
+                    initListView(false);
                 }
             }
 
@@ -2482,7 +2489,7 @@ namespace AndroidSideloader
                 await Task.Delay(100);
             }
 
-            initListView();
+            initListView(false);
             isLoading = false;
 
             changeTitle(" \n\n");
@@ -3087,7 +3094,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     listAppsBtn();
                     if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !settings.NodeviceMode && !gamesQueueList.Any())
                     {
-                        initListView();
+                        initListView(false);
                     }
                     if (settings.EnableMessageBoxes)
                     {
@@ -3207,7 +3214,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
             if (!updateAvailableClicked && !upToDate_Clicked && !NeedsDonation_Clicked && !settings.NodeviceMode && !gamesQueueList.Any())
             {
-                initListView();
+                initListView(false);
             }
             if (settings.EnableMessageBoxes)
             {
@@ -3590,7 +3597,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 _ = GetDeviceID();
                 _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
                 listAppsBtn();
-                initListView();
+                initListView(false);
             }
             bool dialogIsUp = false;
             if (keyData == Keys.F1 && !dialogIsUp)
@@ -3668,7 +3675,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
             else
             {
-                initListView();
+                initListView(false);
             }
         }
 
@@ -3847,7 +3854,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             _ = GetDeviceID();
             _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
             listAppsBtn();
-            initListView();
+            initListView(false);
 
             if (SideloaderRCLONE.games.Count < 1)
             {
@@ -4036,7 +4043,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             else
             {
                 updateAvailableClicked = false;
-                initListView();
+                initListView(false);
             }
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
@@ -4377,7 +4384,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             else
             {
                 upToDate_Clicked = false;
-                initListView();
+                initListView(false);
             }
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
@@ -4528,7 +4535,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             else
             {
                 NeedsDonation_Clicked = false;
-                initListView();
+                initListView(false);
             }
             lblUpToDate.Click += lblUpToDate_Click;
             lblUpdateAvailable.Click += updateAvailable_Click;
@@ -4621,9 +4628,85 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             KeyPressEventArgs enterKeyPressArgs = new KeyPressEventArgs((char)Keys.Enter);
             ADBcommandbox_KeyPress(adbCmd_CommandBox, enterKeyPressArgs);
         }
+
+        private ListViewItem _rightClickedItem;
+        private void gamesListView_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                _rightClickedItem = gamesListView.GetItemAt(e.X, e.Y);
+                gamesListView.SelectedItems.Clear();
+                if (_rightClickedItem != null)
+                {
+                    _rightClickedItem.Selected = true;
+                }
+
+                // Get the name of the release of the right-clicked item
+                string packageName = _rightClickedItem.SubItems[1].Text;
+
+                // Check if the game is favorited and update the menu item text accordingly
+                ToolStripMenuItem favoriteMenuItem = favoriteGame.Items[0] as ToolStripMenuItem;
+                if (SettingsManager.Instance.FavoritedGames.Contains(packageName))
+                {
+                    favoriteButton.Text = "Unfavorite";  // If it's already favorited, show "Unfavorite"
+                }
+                else
+                {
+                    favoriteButton.Text = "Favorite";  // If it's not favorited, show "Favorite"
+                }
+
+                // Show the context menu at the mouse position
+                favoriteGame.Show(gamesListView, e.Location);
+            }
+        }
+
+        private void favoriteButton_Click(object sender, EventArgs e)
+        {
+            if (_rightClickedItem != null)
+            {
+                string packageName = _rightClickedItem.SubItems[1].Text;
+
+                // Check the menu item's text to decide whether to add or remove the game from favorites
+                if ((sender as ToolStripMenuItem).Text == "Favorite")
+                {
+                    // Add to favorites
+                    settings.AddFavoriteGame(packageName);
+                    Console.WriteLine($"{packageName} has been added to favorites.");
+                }
+                else if ((sender as ToolStripMenuItem).Text == "Unfavorite")
+                {
+                    // Remove from favorites
+                    settings.RemoveFavoriteGame(packageName);
+                    Console.WriteLine($"{packageName} has been removed from favorites.");
+                }
+
+                // After adding/removing, update the context menu text
+                ToolStripMenuItem favoriteMenuItem = sender as ToolStripMenuItem;
+                if (settings.FavoritedGames.Contains(packageName))
+                {
+                    favoriteMenuItem.Text = "Unfavorite";
+                }
+                else
+                {
+                    favoriteMenuItem.Text = "Favorite";
+                }
+            }
+        }
+
+        private void favoriteSwitcher_Click(object sender, EventArgs e)
+        {
+            if (favoriteSwitcher.Text == "Games List")
+            {
+                favoriteSwitcher.Text = "Favorited Games";
+                initListView(true);  
+            }
+            else
+            {
+                favoriteSwitcher.Text = "Games List";
+                initListView(false); 
+            }
+        }
     }
-
-
 
     public static class ControlExtensions
     {
