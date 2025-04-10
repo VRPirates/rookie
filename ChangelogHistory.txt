@@ -1,4 +1,10 @@
-﻿RSL 2.32
+﻿RSL 2.33
+
+- Feature: Allow users to cancel backups
+- QoL: Lower ADB Version 
+- QoL: Revert Add saving the ColumnWidths, Window Sizes/Position
+
+RSL 2.32
 
 - Feature: Allow switching between Public and Private configs
 - Feature: Switch to Offline Mode when unable to connect
