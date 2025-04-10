@@ -2561,7 +2561,7 @@ $@"Unable to connect to Remote Server. Rookie is unable to connect to our Server
 
 First time launching Rookie? Please relaunch and try again.
 
-Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.gg/DcfEpwVa4a) for Troubleshooting steps!
+Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.gg/tBKMZy7QDA) for Troubleshooting steps!
 ";
 
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
