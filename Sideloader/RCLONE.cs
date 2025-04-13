@@ -1,5 +1,4 @@
 ﻿using AndroidSideloader.Utilities;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,21 +18,22 @@ namespace AndroidSideloader
 
     internal class SideloaderRCLONE
     {
-        public static List<string> RemotesList = new List<string>();
+        public static readonly List<string> RemotesList = new List<string>();
 
-        public static string RcloneGamesFolder = "Quest Games";
+        public const string RCLONE_GAMES_FOLDER = "Quest Games";
 
-        //This shit sucks but i'll switch to programatically adding indexes from the gamelist txt sometimes maybe
+        //This shit sucks but I'll switch to programmatically adding indexes from the game list txt sometimes maybe
 
-        public static int GameNameIndex = 0;
-        public static int ReleaseNameIndex = 1;
-        public static int PackageNameIndex = 2;
-        public static int VersionCodeIndex = 3;
-        public static int ReleaseAPKPathIndex = 4;
-        public static int VersionNameIndex = 5;
-        public static int DownloadsIndex = 6;
+        public const int GameNameIndex = 0;
+        public const int ReleaseNameIndex = 1;
+        public const int PackageNameIndex = 2;
+        public const int VersionCodeIndex = 3;
+        public const int ReleaseAPKPathIndex = 4;
+        public const int VersionNameIndex = 5;
+        public const int DownloadsIndex = 6;
 
-        public static List<string> gameProperties = new List<string>();
+        public static List<string> GameProperties { get; set; } = new List<string>();
+
         /* Game Name
          * Release Name
          * Release APK Path
@@ -41,28 +41,28 @@ namespace AndroidSideloader
          * Version Code
          * Version Name
          */
-        public static List<string[]> games = new List<string[]>();
+        public static List<string[]> Games { get; set; } = new List<string[]>();
 
-        public static string Nouns = Path.Combine(Environment.CurrentDirectory, "nouns");
-        public static string ThumbnailsFolder = Path.Combine(Environment.CurrentDirectory, "thumbnails");
-        public static string NotesFolder = Path.Combine(Environment.CurrentDirectory, "notes");
+        public static readonly string Nouns = Path.Combine(Environment.CurrentDirectory, "nouns");
+        public static readonly string ThumbnailsFolder = Path.Combine(Environment.CurrentDirectory, "thumbnails");
+        public static readonly string NotesFolder = Path.Combine(Environment.CurrentDirectory, "notes");
 
         public static void UpdateNouns(string remote)
         {
             _ = Logger.Log($"Updating Nouns");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RCLONE_GAMES_FOLDER}/.meta/nouns\" \"{Nouns}\"");
         }
 
         public static void UpdateGamePhotos(string remote)
         {
             _ = Logger.Log($"Updating Thumbnails");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --transfers 10");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RCLONE_GAMES_FOLDER}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --transfers 10");
         }
 
         public static void UpdateGameNotes(string remote)
         {
             _ = Logger.Log($"Updating Game Notes");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RCLONE_GAMES_FOLDER}/.meta/notes\" \"{NotesFolder}\"");
         }
 
         public static void UpdateMetadataFromPublic()
@@ -78,7 +78,9 @@ namespace AndroidSideloader
             try
             {
                 _ = Logger.Log($"Extracting Metadata");
-                Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "meta.7z"), Path.Combine(Environment.CurrentDirectory, "meta"),
+
+                Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "meta.7z"), 
+                    Path.Combine(Environment.CurrentDirectory, "meta"),
                     MainForm.PublicConfigFile.Password);
 
                 _ = Logger.Log($"Updating Metadata");
@@ -106,14 +108,10 @@ namespace AndroidSideloader
                 string gameList = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "meta", "VRP-GameList.txt"));
 
                 string[] splitList = gameList.Split('\n');
-                splitList = splitList.Skip(1).ToArray();
-                foreach (string game in splitList)
+                foreach (string game in splitList.Skip(1).Where(g => g.Length > 1))
                 {
-                    if (game.Length > 1)
-                    {
-                        string[] splitGame = game.Split(';');
-                        games.Add(splitGame);
-                    }
+                    string[] splitGame = game.Split(';');
+                    Games.Add(splitGame);
                 }
 
                 Directory.Delete(Path.Combine(Environment.CurrentDirectory, "meta"), true);
@@ -150,24 +148,24 @@ namespace AndroidSideloader
         {
             _ = Logger.Log($"Initializing Games List");
 
-            gameProperties.Clear();
-            games.Clear();
-            string tempGameList = RCLONE.runRcloneCommand_DownloadConfig($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
+            GameProperties.Clear();
+            Games.Clear();
+            string tempGameList = RCLONE.runRcloneCommand_DownloadConfig($"cat \"{remote}:{RCLONE_GAMES_FOLDER}/VRP-GameList.txt\"").Output;
+
             if (MainForm.debugMode)
             {
                 File.WriteAllText("VRP-GamesList.txt", tempGameList);
             }
-            if (!tempGameList.Equals(""))
+
+            if (!string.IsNullOrEmpty(tempGameList))
             {
-                string[] gameListSplited = tempGameList.Split(new[] { '\n' });
+                string[] gameListSplited = tempGameList.Split('\n');
                 gameListSplited = gameListSplited.Skip(1).ToArray();
-                foreach (string game in gameListSplited)
+
+                foreach (string game in gameListSplited.Where(g => g.Length > 1))
                 {
-                    if (game.Length > 1)
-                    {
-                        string[] splitGame = game.Split(';');
-                        games.Add(splitGame);
-                    }
+                    string[] splitGame = game.Split(';');
+                    Games.Add(splitGame);
                 }
             }
         }
@@ -178,6 +176,7 @@ namespace AndroidSideloader
                                                  | SecurityProtocolType.Tls11
                                                  | SecurityProtocolType.Tls12
                                                  | SecurityProtocolType.Ssl3;
+
             _ = Logger.Log($"Attempting to Update Download Config");
 
             string downloadConfigFilename = "vrp.download.config";
@@ -241,19 +240,25 @@ namespace AndroidSideloader
                     }
                 }
             }
-            catch { }
+            catch
+            {
+                // Ignore
+            }
         }
 
         public static void updateUploadConfig()
         {
+            const string configUrl = "https://vrpirates.wiki/downloads/vrp.upload.config";
+
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls
                                                  | SecurityProtocolType.Tls11
                                                  | SecurityProtocolType.Tls12
-                                                 | SecurityProtocolType.Ssl3;
+                                                 | SecurityProtocolType
+                                                 .Ssl3;
             _ = Logger.Log($"Attempting to Update Upload Config");
+
             try
             {
-                string configUrl = "https://vrpirates.wiki/downloads/vrp.upload.config";
 
                 HttpWebRequest getUrl = (HttpWebRequest)WebRequest.Create(configUrl);
                 using (StreamReader responseReader = new StreamReader(getUrl.GetResponse().GetResponseStream()))

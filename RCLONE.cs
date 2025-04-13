@@ -12,6 +12,7 @@ namespace AndroidSideloader
     internal class RCLONE
     {
         private static readonly SettingsManager settings = SettingsManager.Instance;
+
         // Kill RCLONE Processes that were started from Rookie by looking for child processes.
         public static void killRclone()
         {
@@ -121,9 +122,9 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                Program.form.Invoke(() =>
+                Program.MainForm.Invoke(() =>
                 {
-                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {settings.DownloadDir} and try again.",
+                    _ = FlexibleMessageBox.Show(Program.MainForm, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 200MB more the game size available in {settings.DownloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);
@@ -138,7 +139,7 @@ namespace AndroidSideloader
                 bool retSM = false;
                 try
                 {
-                    retSM = Program.form.SwitchMirrors();
+                    retSM = Program.MainForm.SwitchMirrors();
                 }
                 catch
                 {
@@ -298,9 +299,9 @@ namespace AndroidSideloader
 
             if (error.Contains("There is not enough space"))
             {
-                Program.form.Invoke(() =>
+                Program.MainForm.Invoke(() =>
                 {
-                    _ = FlexibleMessageBox.Show(Program.form, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {settings.DownloadDir} and try again.",
+                    _ = FlexibleMessageBox.Show(Program.MainForm, $"There isn't enough disk space to download this game.\r\nPlease ensure you have at least 2x the game size available in {settings.DownloadDir} and try again.",
                                         "NOT ENOUGH SPACE",
                                         MessageBoxButtons.OK,
                                         MessageBoxIcon.Error);

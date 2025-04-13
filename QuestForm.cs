@@ -118,7 +118,7 @@ namespace AndroidSideloader
             }
 
             _ = MessageBox.Show("Please wait until you get the message that the transfer has finished.");
-            Program.form.changeTitle("Pulling files...");
+            Program.MainForm.changeTitle("Pulling files...");
             _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Oculus/Screenshots\" \"{path}\\Quest ScreenShots\"");
             if (delsh)
             {
@@ -130,7 +130,7 @@ namespace AndroidSideloader
                 }
             }
             _ = MessageBox.Show("Transfer finished! ScreenShots can be found in a folder named Quest Screenshots on your desktop!");
-            Program.form.changeTitle("Done!");
+            Program.MainForm.changeTitle("Done!");
         }
         private void questVids_Click(object sender, EventArgs e)
         {
@@ -141,7 +141,7 @@ namespace AndroidSideloader
             }
 
             _ = MessageBox.Show("Please wait until you get the message that the transfer has finished.");
-            Program.form.changeTitle("Pulling files...");
+            Program.MainForm.changeTitle("Pulling files...");
             _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Oculus/Videoshots\" \"{path}\\Quest Recordings\"");
             if (delsh)
             {
@@ -153,7 +153,7 @@ namespace AndroidSideloader
                 }
             }
             _ = MessageBox.Show("Transfer finished! Recordings can be found in a folder named Quest Recordings on your desktop!");
-            Program.form.changeTitle("Done!");
+            Program.MainForm.changeTitle("Done!");
         }
 
         private void btnApplyUsername_Click(object sender, EventArgs e)

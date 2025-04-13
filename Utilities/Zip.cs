@@ -100,9 +100,9 @@ namespace AndroidSideloader.Utilities
                         if (error.Contains("There is not enough space on the disk") && !errorMessageShown)
                         {
                             errorMessageShown = true;
-                            Program.form.Invoke(new Action(() =>
+                            Program.MainForm.Invoke(new Action(() =>
                             {
-                                _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least double the space of the game, then try again.",
+                                _ = FlexibleMessageBox.Show(Program.MainForm, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least double the space of the game, then try again.",
                                    "NOT ENOUGH SPACE",
                                    MessageBoxButtons.OK,
                                    MessageBoxIcon.Error);
