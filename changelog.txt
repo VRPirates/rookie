@@ -1,5 +1,3 @@
-RSL 2.34
+RSL 2.34.1
 
-- Feature: Allow users to favorite games (right click on game)
-- Fix: Release Notes not showing with trailers enabled
-- Fix: Correct Discord Invite link on connection error
+- Fix: Rookie crashing with "Cannto add or insert the item"

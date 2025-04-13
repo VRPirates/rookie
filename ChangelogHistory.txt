@@ -1,4 +1,10 @@
-﻿RSL 2.33
+﻿RSL 2.34
+
+- Feature: Allow users to favorite games (right click on game)
+- Fix: Release Notes not showing with trailers enabled
+- Fix: Correct Discord Invite link on connection error
+
+RSL 2.33
 
 - Feature: Allow users to cancel backups
 - QoL: Lower ADB Version 
