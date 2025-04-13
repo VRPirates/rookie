@@ -1863,23 +1863,33 @@ namespace AndroidSideloader
                                 }
                             }
                         }
-                        if (settings.HideAdultContent == true)
-                        {
-                            if (!Game.SubItems[1].Text.Contains("(18+)"))
-                            {
-                                GameList.Add(Game);
-                            }
-                        }
                         if (favoriteView)
                         {
                             if (settings.FavoritedGames.Contains(Game.SubItems[1].Text))
                             {
-                                GameList.Add(Game);
+                                if (settings.HideAdultContent == true && !Game.SubItems[1].Text.Contains("(18+)"))
+                                {
+                                    GameList.Add(Game);
+                                }
+                                else if (!settings.HideAdultContent)
+                                {
+                                    GameList.Add(Game);
+                                }
                             }
                         }
                         else
                         {
-                            GameList.Add(Game);
+                            if (settings.HideAdultContent == true)
+                            {
+                                if (!Game.SubItems[1].Text.Contains("(18+)"))
+                                {
+                                    GameList.Add(Game);
+                                }
+                            }
+                            else
+                            {
+                                GameList.Add(Game);
+                            }
                         }
                     }
                 })
