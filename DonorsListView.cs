@@ -93,11 +93,11 @@ namespace AndroidSideloader
                     ulong vcode = Convert.ToUInt64(DonorsListView.CheckedItems[i].SubItems[Donors.VersionCodeIndex].Text);
                     if (DonorsListView.CheckedItems[i].SubItems[Donors.UpdateOrNew].Text.Contains("Update"))
                     {
-                        await Program.form.extractAndPrepareGameToUploadAsync(DonorsListView.CheckedItems[i].SubItems[Donors.GameNameIndex].Text, DonorsListView.CheckedItems[i].SubItems[Donors.PackageNameIndex].Text, vcode, true);
+                        await Program.MainForm.extractAndPrepareGameToUploadAsync(DonorsListView.CheckedItems[i].SubItems[Donors.GameNameIndex].Text, DonorsListView.CheckedItems[i].SubItems[Donors.PackageNameIndex].Text, vcode, true);
                     }
                     else
                     {
-                        await Program.form.extractAndPrepareGameToUploadAsync(DonorsListView.CheckedItems[i].SubItems[Donors.GameNameIndex].Text, DonorsListView.CheckedItems[i].SubItems[Donors.PackageNameIndex].Text, vcode, false);
+                        await Program.MainForm.extractAndPrepareGameToUploadAsync(DonorsListView.CheckedItems[i].SubItems[Donors.GameNameIndex].Text, DonorsListView.CheckedItems[i].SubItems[Donors.PackageNameIndex].Text, vcode, false);
                     }
 
                     ifuploads = true;

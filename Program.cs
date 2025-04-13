@@ -21,11 +21,11 @@ namespace AndroidSideloader
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            form = new MainForm();
-            Application.Run(form);
+            MainForm = new MainForm();
+            Application.Run(MainForm);
             //form.Show();
         }
-        public static MainForm form;
+        public static MainForm MainForm;
 
         private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {

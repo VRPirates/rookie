@@ -1,13 +1,10 @@
 using AndroidSideloader.Models;
-using AndroidSideloader.Properties;
 using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms;
 using Newtonsoft.Json;
 using SergeUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,15 +13,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
@@ -262,6 +257,7 @@ namespace AndroidSideloader
                     File.Delete(logFilePath);
                 }
             }
+
             if (!isOffline)
             {
                 RCLONE.Init();
@@ -275,6 +271,7 @@ namespace AndroidSideloader
             speedLabel.Text = String.Empty;
             diskLabel.Text = String.Empty;
             verLabel.Text = Updater.LocalVersion;
+
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(settings.CurrentCrashPath))
@@ -282,7 +279,7 @@ namespace AndroidSideloader
                     File.Delete(settings.CurrentCrashPath);
                 }
 
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, $"Sideloader crashed during your last use.\nPress OK if you'd like to send us your crash log.\n\n NOTE: THIS CAN TAKE UP TO 30 SECONDS.", "Crash Detected", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.OK)
                 {
                     if (File.Exists(Path.Combine(Environment.CurrentDirectory, "crashlog.txt")))
@@ -295,7 +292,7 @@ namespace AndroidSideloader
 
                         Clipboard.SetText(UUID);
                         _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
-                        _ = FlexibleMessageBox.Show(Program.form, $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
+                        _ = FlexibleMessageBox.Show(Program.MainForm, $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
                         Clipboard.SetText(settings.CurrentCrashName);
                     }
                 }
@@ -339,19 +336,19 @@ namespace AndroidSideloader
                     await GetPublicConfigAsync();
                     if (!hasPublicConfig)
                     {
-                        _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                        _ = FlexibleMessageBox.Show(Program.MainForm, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
                 else if (settings.AutoUpdateConfig && settings.CreatePubMirrorFile)
                 {
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "Rookie has detected that you are missing the public config file, would you like to create it?", "Public Config Missing", MessageBoxButtons.YesNo);
                     if (dialogResult == DialogResult.Yes)
                     {
                         File.Create(configFilePath).Close(); // Ensure the file is closed after creation
                         await GetPublicConfigAsync();
                         if (!hasPublicConfig)
                         {
-                            _ = FlexibleMessageBox.Show(Program.form, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
+                            _ = FlexibleMessageBox.Show(Program.MainForm, "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.", "Config Update Failed", MessageBoxButtons.OK);
                         }
                     }
                     else
@@ -446,7 +443,7 @@ namespace AndroidSideloader
                     ProcessOutput IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
                     if (IPoutput.Output.Contains("attempt failed") || IPoutput.Output.Contains("refused"))
                     {
-                        _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
+                        _ = FlexibleMessageBox.Show(Program.MainForm, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
                         settings.IPAddress = "";
                         settings.Save();
                         try { File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")); }
@@ -490,7 +487,7 @@ namespace AndroidSideloader
                     if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) ||
                         !Directory.Exists(SideloaderRCLONE.NotesFolder))
                     {
-                        _ = FlexibleMessageBox.Show(Program.form,
+                        _ = FlexibleMessageBox.Show(Program.MainForm,
                             "It seems you are missing the thumbnails and/or notes database, the first start of the sideloader takes a bit more time, so dont worry if it looks stuck!");
                     }
                 });
@@ -647,7 +644,7 @@ namespace AndroidSideloader
             {
                 message += $"\nError: {prcout.Error}";
             }
-            _ = FlexibleMessageBox.Show(Program.form, message);
+            _ = FlexibleMessageBox.Show(Program.MainForm, message);
         }
 
         public List<string> Devices = new List<string>();
@@ -754,11 +751,11 @@ namespace AndroidSideloader
                 {
                     await Task.Delay(100);
                 }
-                Program.form.changeTitle("Done.");
+                Program.MainForm.changeTitle("Done.");
                 showAvailableSpace();
 
                 ShowPrcOutput(output);
-                Program.form.changeTitle(String.Empty);
+                Program.MainForm.changeTitle(String.Empty);
             }
         }
 
@@ -770,7 +767,7 @@ namespace AndroidSideloader
                 this.Invoke(() =>
                 {
                     Text = "Device Not Authorized";
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Please check inside your headset for ADB DEBUGGING prompt/notification, check the box \"Always allow from this computer.\" and hit OK.", "Not Authorized", MessageBoxButtons.RetryCancel);
+                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "Please check inside your headset for ADB DEBUGGING prompt/notification, check the box \"Always allow from this computer.\" and hit OK.", "Not Authorized", MessageBoxButtons.RetryCancel);
                     if (dialogResult == DialogResult.Retry)
                     {
                         devicesbutton.PerformClick();
@@ -794,7 +791,7 @@ namespace AndroidSideloader
                     Text = "No Device Connected";
                     if (!settings.NodeviceMode)
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "No device found. Please ensure the following: \n\n -Developer mode is enabled. \n -ADB drivers are installed. \n -ADB connection is enabled on your device (this can reset). \n -Your device is plugged in.\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
                             devicesbutton.PerformClick();
@@ -875,9 +872,9 @@ namespace AndroidSideloader
 
             string date_str = "ab." + DateTime.Today.ToString("yyyy.MM.dd");
             string CurrBackups = Path.Combine(backupFolder, date_str);
-            Program.form.Invoke(new Action(() =>
+            Program.MainForm.Invoke(new Action(() =>
             {
-                FlexibleMessageBox.Show(Program.form, $"Backing up Game Data to {backupFolder}\\{date_str}");
+                FlexibleMessageBox.Show(Program.MainForm, $"Backing up Game Data to {backupFolder}\\{date_str}");
             }));
             _ = Directory.CreateDirectory(CurrBackups);
 
@@ -886,7 +883,7 @@ namespace AndroidSideloader
             string InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packageName} | grep versionCode -F\"").Output;
 
             changeTitle("Running ADB Backup...");
-            _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Back Up My Data'");
+            _ = FlexibleMessageBox.Show(Program.MainForm, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Back Up My Data'");
             output = ADB.RunAdbCommandToString($"adb backup -f \"{CurrBackups}\\{packageName}.ab\" {packageName}").Output;
 
             changeTitle("                         \n\n");
@@ -906,7 +903,7 @@ namespace AndroidSideloader
             {
                 _ = Directory.CreateDirectory(backupFolder);
             }
-            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, $"Do you want to backup to {backupFolder}?", "Backup?", MessageBoxButtons.YesNo);
+            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.MainForm, $"Do you want to backup to {backupFolder}?", "Backup?", MessageBoxButtons.YesNo);
             if (dialogResult1 == DialogResult.No)
             {
                 return;
@@ -916,16 +913,16 @@ namespace AndroidSideloader
             {
                 string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(backupFolder, date_str);
-                Program.form.Invoke(new Action(() =>
+                Program.MainForm.Invoke(new Action(() =>
                 {
-                    FlexibleMessageBox.Show(Program.form, $"This may take up to a minute. Backing up gamesaves to {backupFolder}\\{date_str} (year.month.date)");
+                    FlexibleMessageBox.Show(Program.MainForm, $"This may take up to a minute. Backing up gamesaves to {backupFolder}\\{date_str} (year.month.date)");
                 }));
                 _ = Directory.CreateDirectory(CurrBackups);
                 output = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/data\" \"{CurrBackups}\"");
                 changeTitle("Backing up Game Data in SD/Android/data...");
                 try
                 {
-                    Directory.Move(ADB.adbFolderPath + "\\data", CurrBackups + "\\data");
+                    Directory.Move(ADB.AdbFolderPath + "\\data", CurrBackups + "\\data");
                 }
                 catch (Exception ex)
                 {
@@ -982,7 +979,7 @@ namespace AndroidSideloader
                 string selectedPath = fileDialog.FileName;
                 Logger.Log("Selected .ab file: " + selectedPath);
 
-                _ = FlexibleMessageBox.Show(Program.form, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Restore My Data'\r\nRookie will remain frozen until the process is completed.");
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Click OK on this Message...\r\nThen on your Quest, Unlock your device and confirm the backup operation by clicking on 'Restore My Data'\r\nRookie will remain frozen until the process is completed.");
                 output_abRestore = ADB.RunAdbCommandToString($"adb restore \"{selectedPath}\"").Output;
             }
             if (fileDialogResult != DialogResult.OK)
@@ -1023,7 +1020,7 @@ namespace AndroidSideloader
             }
             else if (fileDialogResult == DialogResult.OK)
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"{output_abRestore}");
+                _ = FlexibleMessageBox.Show(Program.MainForm, $"{output_abRestore}");
             }
         }
 
@@ -1049,7 +1046,7 @@ namespace AndroidSideloader
                 {
                     line[i] = line[i].Remove(0, 8);
                     line[i] = line[i].Remove(line[i].Length - 1);
-                    foreach (string[] game in SideloaderRCLONE.games)
+                    foreach (string[] game in SideloaderRCLONE.Games)
                     {
                         if (line[i].Length > 0 && game[2].Contains(line[i]))
                         {
@@ -1087,7 +1084,7 @@ namespace AndroidSideloader
                 notify("Please select an App from the Dropdown");
                 return;
             }
-            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, $"Do you want to upload {m_combo.SelectedItem} now?", "Upload app?", MessageBoxButtons.YesNo);
+            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.MainForm, $"Do you want to upload {m_combo.SelectedItem} now?", "Upload app?", MessageBoxButtons.YesNo);
             if (dialogResult1 == DialogResult.No)
             {
                 return;
@@ -1103,7 +1100,7 @@ namespace AndroidSideloader
             catch
             {
                 _ = Logger.Log("Unable to download Codenames file.");
-                FlexibleMessageBox.Show(Program.form, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
+                FlexibleMessageBox.Show(Program.MainForm, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
             }
 
             _ = Logger.Log($"Found Device Code Name: {deviceCodeName}");
@@ -1211,7 +1208,7 @@ namespace AndroidSideloader
                         File.Delete($"{settings.MainDir}\\{gameName}.txt");
                         File.Delete($"{settings.MainDir}\\{gameZipName}");
 
-                        this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
+                        this.Invoke(() => FlexibleMessageBox.Show(Program.MainForm, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
                         Directory.Delete($"{settings.MainDir}\\{packageName}", true);
                     })
                     {
@@ -1236,7 +1233,7 @@ namespace AndroidSideloader
             }
             else
             {
-                FlexibleMessageBox.Show(Program.form, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
+                FlexibleMessageBox.Show(Program.MainForm, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
             }
         }
 
@@ -1253,7 +1250,7 @@ namespace AndroidSideloader
             string packagename;
             if (m_combo.SelectedIndex == -1)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "Please select an app first");
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Please select an app first");
                 return;
             }
             string GameName = m_combo.SelectedItem.ToString();
@@ -1329,7 +1326,7 @@ namespace AndroidSideloader
                 initListView(false);
             }
 
-            Program.form.changeTitle($"Processing dropped file. If Rookie freezes, please wait. Do not close Rookie!");
+            Program.MainForm.changeTitle($"Processing dropped file. If Rookie freezes, please wait. Do not close Rookie!");
 
             DragDropLbl.Visible = false;
             ProcessOutput output = new ProcessOutput(String.Empty, String.Empty);
@@ -1358,7 +1355,7 @@ namespace AndroidSideloader
                     if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
                     {
                         _ = Logger.Log($"Copying {data} to device");
-                        Program.form.changeTitle($"Copying {data} to device...");
+                        Program.MainForm.changeTitle($"Copying {data} to device...");
 
                         Thread t2 = new Thread(() =>
 
@@ -1375,11 +1372,11 @@ namespace AndroidSideloader
                             await Task.Delay(100);
                         }
 
-                        Program.form.changeTitle(String.Empty);
+                        Program.MainForm.changeTitle(String.Empty);
                         settings.CurrPckg = dir;
                         settings.Save();
                     }
-                    Program.form.changeTitle(String.Empty);
+                    Program.MainForm.changeTitle(String.Empty);
                     string extension = Path.GetExtension(data);
                     string[] files = Directory.GetFiles(data);
                     foreach (string file2 in files)
@@ -1406,7 +1403,7 @@ namespace AndroidSideloader
                                 };
                                 t3.Tick += timer_Tick4;
                                 t3.Start();
-                                Program.form.changeTitle($"Sideloading apk ({filename})");
+                                Program.MainForm.changeTitle($"Sideloading apk ({filename})");
 
                                 Thread t2 = new Thread(() =>
                                 {
@@ -1425,7 +1422,7 @@ namespace AndroidSideloader
                                 if (Directory.Exists($"{pathname}\\{cmdout}"))
                                 {
                                     _ = Logger.Log($"Copying obb folder to device- {cmdout}");
-                                    Program.form.changeTitle($"Copying obb folder to device...");
+                                    Program.MainForm.changeTitle($"Copying obb folder to device...");
                                     Thread t1 = new Thread(() =>
                                     {
                                         if (!string.IsNullOrEmpty(cmdout))
@@ -1478,7 +1475,7 @@ namespace AndroidSideloader
                     foreach (string folder in folders)
                     {
                         _ = Logger.Log($"Copying {folder} to device");
-                        Program.form.changeTitle($"Copying {folder} to device...");
+                        Program.MainForm.changeTitle($"Copying {folder} to device...");
 
                         Thread t2 = new Thread(() =>
 
@@ -1495,7 +1492,7 @@ namespace AndroidSideloader
                             await Task.Delay(100);
                         }
 
-                        Program.form.changeTitle("");
+                        Program.MainForm.changeTitle("");
                         settings.CurrPckg = dir;
                         settings.Save();
                     }
@@ -1509,7 +1506,7 @@ namespace AndroidSideloader
                     {
                         if (File.Exists($"{dir}\\Install.txt"))
                         {
-                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
+                            DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "Special instructions have been found with this file, would you like to run them automatically?", "Special Instructions found!", MessageBoxButtons.OKCancel);
                             if (dialogResult == DialogResult.Cancel)
                             {
                                 return;
@@ -1578,7 +1575,7 @@ namespace AndroidSideloader
                             if (Directory.Exists($"{pathname}\\{cmdout}"))
                             {
                                 _ = Logger.Log($"Copying obb folder to device- {cmdout}");
-                                Program.form.changeTitle($"Copying obb folder to device...");
+                                Program.MainForm.changeTitle($"Copying obb folder to device...");
                                 Thread t2 = new Thread(() =>
                                 {
                                     if (!string.IsNullOrEmpty(cmdout))
@@ -1620,7 +1617,7 @@ namespace AndroidSideloader
                             IsBackground = true
                         };
                         _ = Logger.Log($"Copying obb folder to device- {path}");
-                        Program.form.changeTitle($"Copying obb folder to device ({filename})");
+                        Program.MainForm.changeTitle($"Copying obb folder to device ({filename})");
                         t1.Start();
 
                         while (t1.IsAlive)
@@ -1723,14 +1720,13 @@ namespace AndroidSideloader
         private bool errorOnList;
         public static bool updates = false;
         public static bool newapps = false;
-        public static int newint = 0;
-        public static int updint = 0;
+        public static int newCount = 0;
+        public static int updateCount = 0;
         public static bool nodeviceonstart = false;
         public static bool either = false;
         private bool _allItemsInitialized = false;
 
-
-        private async void initListView(bool favoriteView)
+        private async void initListView(bool forFavoriteView)
         {
             int upToDateCount = 0;
             int updateAvailableCount = 0;
@@ -1746,6 +1742,7 @@ namespace AndroidSideloader
             string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
             string[] blacklist = new string[] { };
             string[] whitelist = new string[] { };
+
             if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
             {
                 blacklist = File.ReadAllLines($"{settings.MainDir}\\nouns\\blacklist.txt");
@@ -1763,163 +1760,39 @@ namespace AndroidSideloader
             List<string> blacklistItems = blacklist.ToList();
             List<string> whitelistItems = whitelist.ToList();
             errorOnList = false;
+
             //This is for the black list, but temporarily will be the whitelist
             //This list contains games that we are actually going to upload
             newGamesToUploadList = whitelistItems.Intersect(installedGames, StringComparer.OrdinalIgnoreCase).ToList();
             progressBar.Style = ProgressBarStyle.Marquee;
-            if (SideloaderRCLONE.games.Count > 5)
+
+            if (SideloaderRCLONE.Games.Count > 5)
             {
-                Thread t1 = new Thread(() =>
+                await Task.Run(async () =>
                 {
-                    foreach (string[] release in SideloaderRCLONE.games)
-                    {
-                        rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
-                        if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
-                        {
-                            rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
-                        }
-
-                        ListViewItem Game = new ListViewItem(release);
-
-                        Color colorFont_installedGame = ColorTranslator.FromHtml("#3c91e6");
-                        lblUpToDate.ForeColor = colorFont_installedGame;
-                        Color colorFont_updateAvailable = ColorTranslator.FromHtml("#4daa57");
-                        lblUpdateAvailable.ForeColor = colorFont_updateAvailable;
-                        Color colorFont_donateGame = ColorTranslator.FromHtml("#cb9cf2");
-                        lblNeedsDonate.ForeColor = colorFont_donateGame;
-                        Color colorFont_error = ColorTranslator.FromHtml("#f52f57");
-
-                        foreach (string packagename in packageList)
-                        {
-                            if (string.Equals(release[SideloaderRCLONE.PackageNameIndex], packagename))
-                            {
-                                Game.ForeColor = colorFont_installedGame;
-                                string InstalledVersionCode;
-                                InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
-                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                                InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                                try
-                                {
-                                    ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                                    ulong cloudVersionInt = 0;
-                                    foreach (string[] releaseGame in SideloaderRCLONE.games)
-                                    {
-                                        if (string.Equals(releaseGame[SideloaderRCLONE.PackageNameIndex], packagename))
-                                        {
-                                            ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
-                                            if (releaseGameVersionCode > cloudVersionInt)
-                                            {
-                                                Logger.Log($"Updated cloudVersionInt for {packagename} from {cloudVersionInt} to {releaseGameVersionCode}");
-                                                cloudVersionInt = releaseGameVersionCode;
-                                            }
-                                        }
-                                    }
-                                    if (installedVersionInt == cloudVersionInt)
-                                    {
-                                        upToDateCount++;
-                                    }
-                                    //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
-
-                                    _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
-                                    if (installedVersionInt < cloudVersionInt)
-                                    {
-                                        Game.ForeColor = colorFont_updateAvailable;
-                                        updateAvailableCount++;
-                                    }
-
-                                    if (installedVersionInt > cloudVersionInt)
-                                    {
-                                        newerThanListCount++;
-                                        bool dontget = false;
-                                        if (blacklist.Contains(packagename))
-                                        {
-                                            dontget = true;
-                                        }
-
-                                        if (!dontget)
-                                        {
-                                            Game.ForeColor = colorFont_donateGame;
-                                        }
-
-                                        string RlsName = Sideloader.PackageNametoGameName(packagename);
-                                        string GameName = Sideloader.gameNameToSimpleName(RlsName);
-
-                                        if (!dontget && !updatesNotified && !isworking && updint < 6 && !settings.SubmittedUpdates.Contains(packagename))
-                                        {
-                                            either = true;
-                                            updates = true;
-                                            updint++;
-                                            UpdateGameData gameData = new UpdateGameData(GameName, packagename, installedVersionInt);
-                                            gamesToAskForUpdate.Add(gameData);
-                                        }
-                                    }
-                                }
-                                catch (Exception ex)
-                                {
-                                    Game.ForeColor = colorFont_error;
-                                    _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", LogLevel.ERROR);
-                                    _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
-                                    _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", LogLevel.ERROR);
-                                }
-                            }
-                        }
-                        if (favoriteView)
-                        {
-                            if (settings.FavoritedGames.Contains(Game.SubItems[1].Text))
-                            {
-                                if (settings.HideAdultContent == true && !Game.SubItems[1].Text.Contains("(18+)"))
-                                {
-                                    GameList.Add(Game);
-                                }
-                                else if (!settings.HideAdultContent)
-                                {
-                                    GameList.Add(Game);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if (settings.HideAdultContent == true)
-                            {
-                                if (!Game.SubItems[1].Text.Contains("(18+)"))
-                                {
-                                    GameList.Add(Game);
-                                }
-                            }
-                            else
-                            {
-                                GameList.Add(Game);
-                            }
-                        }
-                    }
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                    OrganizeListForViewAsync(forFavoriteView, ref upToDateCount, ref updateAvailableCount, ref newerThanListCount, packageList, blacklist, GameList, rookieList);
+                });
             }
             else if (!isOffline)
             {
                 SwitchMirrors();
-                if (!isOffline){
+                if (!isOffline)
+                {
                     initListView(false);
                 }
             }
-
 
             if (blacklistItems.Count == 0 && GameList.Count == 0 && !settings.NodeviceMode && !isOffline)
             {
                 //This means either the user does not have headset connected or the blacklist
                 //did not load, so we are just going to skip everything
                 errorOnList = true;
-                _ = FlexibleMessageBox.Show(Program.form, $"Rookie seems to have failed to load all resources. Please try restarting Rookie a few times.\nIf error still persists please disable any VPN or firewalls (rookie uses direct download so a VPN is not needed)\nIf this error still persists try a system reboot, reinstalling the program, and lastly posting the problem on telegram.", "Error loading blacklist or game list!");
+                _ = FlexibleMessageBox.Show(Program.MainForm, $"Rookie seems to have failed to load all resources. Please try restarting Rookie a few times.\nIf error still persists please disable any VPN or firewalls (rookie uses direct download so a VPN is not needed)\nIf this error still persists try a system reboot, reinstalling the program, and lastly posting the problem on telegram.", "Error loading blacklist or game list!");
             }
+
             newGamesList = installedGames.Except(rookieList, StringComparer.OrdinalIgnoreCase).Except(blacklistItems, StringComparer.OrdinalIgnoreCase).ToList();
             int topItemIndex = 0;
+
             try
             {
                 if (gamesListView.Items.Count > 1)
@@ -1929,7 +1802,7 @@ namespace AndroidSideloader
             }
             catch (Exception ex)
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"Error building game list: {ex.Message}");
+                _ = FlexibleMessageBox.Show(Program.MainForm, $"Error building game list: {ex.Message}");
             }
 
             try
@@ -1941,13 +1814,13 @@ namespace AndroidSideloader
             }
             catch (Exception ex)
             {
-                _ = FlexibleMessageBox.Show(Program.form, $"Error building game list: {ex.Message}");
+                _ = FlexibleMessageBox.Show(Program.MainForm, $"Error building game list: {ex.Message}");
             }
-            Thread t2 = new Thread(() =>
-            {
-                if (!errorOnList)
-                {
 
+            if (!errorOnList)
+            {
+                await Task.Run(() =>
+                {
                     //This is for games that we already have on rookie and user has an update
                     if (blacklistItems.Count > 100 && rookieList.Count > 100)
                     {
@@ -1955,138 +1828,58 @@ namespace AndroidSideloader
                         {
                             if (!updatesNotified && !settings.SubmittedUpdates.Contains(gameData.Packagename))
                             {
-                                either = true;
-                                updates = true;
-                                donorApps += gameData.GameName + ";" + gameData.Packagename + ";" + gameData.InstalledVersionInt + ";" + "Update" + "\n";
-                            }
-
-                        }
-                    }
-
-                    //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
-                    /* foreach (string newGamesToUpload in newGamesToUploadList)
-                       {
-                           string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-
-                           //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                           string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                           apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                           apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                           if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
-                               File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                           ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                           string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                           string workingpath = "C:\\RSL\\platform-tools\\aapt.exe";
-                           string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                           ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                           ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                           ReleaseName = ReleaseName.Replace("'", "");
-                           File.Delete($"C:\\RSL\\platform-tools\\base.apk");
-                           //end
-
-                           string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                           Logger.Log(newGamesToUpload);
-                           if (!updatesnotified)
-                           {
-                               DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"You have an in demand game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
-                               if (dialogResult == DialogResult.Yes)
-                               {
-                                   string InstalledVersionCode;
-                                   InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                                   InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                                   InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                                   ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                               }
-                               else
-                               {
-                                   return;
-                               }
-                           }
-                       }*/
-                    //This is for games that are not blacklisted and we dont have on rookie
-                    if (blacklistItems.Count > 100 && rookieList.Count > 100 && !noAppCheck)
-                    {
-                        foreach (string newGamesToUpload in newGamesList)
-                        {
-                            try
-                            {
-                                changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
-                                bool onapplist = false;
-                                string NewApp = settings.NonAppPackages + "\n" + settings.AppPackages;
-                                if (NewApp.Contains(newGamesToUpload))
-                                {
-                                    onapplist = true;
-                                    Logger.Log($"App '{newGamesToUpload}' found in app list.", LogLevel.INFO);
-                                }
-
-                                string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
-                                Logger.Log($"Release name obtained: {RlsName}", LogLevel.INFO);
-                                if (!updatesNotified && !onapplist && newint < 6)
-                                {
-                                    either = true;
-                                    newapps = true;
-                                    Logger.Log($"New app detected: {newGamesToUpload}, starting APK extraction and AAPT process.", LogLevel.INFO);
-                                    //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
-                                    string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
-                                    Logger.Log($"ADB command 'pm path' executed. Path: {apppath}", LogLevel.INFO);
-                                    apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
-                                    apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                                    if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
-                                    {
-                                        File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
-                                        Logger.Log("Old base.apk file deleted.", LogLevel.INFO);
-                                    }
-
-                                    Logger.Log($"Pulling APK from path: {apppath}", LogLevel.INFO);
-                                    _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                                    string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                                    string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
-                                    Logger.Log($"Running AAPT command: {cmd}", LogLevel.INFO);
-                                    string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
-                                    Logger.Log($"AAPT command output: {ReleaseName}", LogLevel.INFO);
-                                    ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
-                                    ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
-                                    ReleaseName = ReleaseName.Replace("'", "");
-                                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
-                                    Logger.Log("Base.apk deleted after extracting release name.", LogLevel.INFO);
-                                    if (ReleaseName.Contains("Microsoft Windows"))
-                                    {
-                                        ReleaseName = RlsName;
-                                        Logger.Log("Release name fallback to RlsName due to Microsoft Windows detection.", LogLevel.INFO);
-                                    }
-                                    Logger.Log($"Final Release Name: {ReleaseName}", LogLevel.INFO);
-                                    //end
-                                    string GameName = Sideloader.gameNameToSimpleName(RlsName);
-                                    //Logger.Log(newGamesToUpload);
-                                    Logger.Log($"Fetching version code for app: {newGamesToUpload}", LogLevel.INFO);
-                                    string InstalledVersionCode;
-                                    InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
-                                    Logger.Log($"Version code command output: {InstalledVersionCode}", LogLevel.INFO);
-                                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
-                                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
-                                    ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
-                                    Logger.Log($"Parsed installed version code: {installedVersionInt}", LogLevel.INFO);
-                                    donorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "New App" + "\n";
-                                    Logger.Log($"Donor app info updated: {ReleaseName}; {newGamesToUpload}; {installedVersionInt}", LogLevel.INFO);
-                                    newint++;
-                                }
-                            }
-                            catch (Exception ex)
-                            {
-                                Logger.Log($"Exception occured in initListView (Unrecognized App Found): {ex.Message}", LogLevel.ERROR);
+                                either = updates = true;
+                                donorApps = $"{donorApps}{gameData.GameName};{gameData.Packagename};{gameData.InstalledVersionInt};Update\n";
                             }
                         }
                     }
-                }
-            })
-            {
-                IsBackground = true
-            };
-            t2.Start();
-            while (t2.IsAlive)
-            {
-                await Task.Delay(100);
+
+                    CheckBlacklistGames(rookieList, blacklistItems);
+                });
             }
+
+            // S101: Not sure where to put this...
+            //This is for WhiteListed Games, they will be asked for first, if we don't get many bogus prompts we can remove this entire duplicate section.
+            /* foreach (string newGamesToUpload in newGamesToUploadList)
+               {
+                   string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+
+                   //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                   string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                   apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                   apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+                   if (File.Exists($"C:\\RSL\\platform-tools\\base.apk"))
+                       File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                   ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                   string cmd = $"\"C:\\RSL\\platform-tools\\aapt.exe\" dump badging \"C:\\RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                   string workingpath = "C:\\RSL\\platform-tools\\aapt.exe";
+                   string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                   ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                   ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                   ReleaseName = ReleaseName.Replace("'", "");
+                   File.Delete($"C:\\RSL\\platform-tools\\base.apk");
+                   //end
+
+                   string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                   Logger.Log(newGamesToUpload);
+                   if (!updatesnotified)
+                   {
+                       DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"You have an in demand game:\n\n{ReleaseName}\n\nRSL can AUTOMATICALLY UPLOAD the clean files to a shared drive in the background,\nthis is the only way to keep the apps up to date for everyone.\n\nNOTE: Rookie will only extract the APK/OBB which contain NO personal information whatsoever.", "CONTRIBUTE CLEAN FILES?", MessageBoxButtons.YesNo);
+                       if (dialogResult == DialogResult.Yes)
+                       {
+                           string InstalledVersionCode;
+                           InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                           InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                           InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                           ulong installedVersionInt = UInt64.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                       }
+                       else
+                       {
+                           return;
+                       }
+                   }
+               }*/
+
             progressBar.Style = ProgressBarStyle.Continuous;
 
             if (either && !updatesNotified && !noAppCheck)
@@ -2096,6 +1889,7 @@ namespace AndroidSideloader
                 _ = DonorForm.ShowDialog(this);
                 _ = Focus();
             }
+
             changeTitle("Populating update list...                               \n\n");
             lblUpToDate.Text = $"[{upToDateCount}] UP TO DATE";
             lblUpdateAvailable.Text = $"[{updateAvailableCount}] UPDATE AVAILABLE";
@@ -2106,6 +1900,7 @@ namespace AndroidSideloader
             gamesListView.Items.AddRange(arr);
             gamesListView.EndUpdate();
             changeTitle("                                                \n\n");
+
             if (!_allItemsInitialized)
             {
                 _allItems = gamesListView.Items.Cast<ListViewItem>().ToList();
@@ -2114,14 +1909,212 @@ namespace AndroidSideloader
             loaded = true;
         }
 
+        private void CheckBlacklistGames(List<global::System.String> rookieList, List<global::System.String> blacklistItems)
+        {
+            //This is for games that are not blacklisted and we dont have on rookie
+            if (blacklistItems.Count > 100 && rookieList.Count > 100 && !noAppCheck)
+            {
+                foreach (string newGamesToUpload in newGamesList)
+                {
+                    try
+                    {
+                        changeTitle("Unrecognized App Found. Downloading APK to take a closer look. (This may take a minute)");
+                        bool onapplist = false;
+                        string NewApp = settings.NonAppPackages + "\n" + settings.AppPackages;
+
+                        if (NewApp.Contains(newGamesToUpload))
+                        {
+                            onapplist = true;
+                            Logger.Log($"App '{newGamesToUpload}' found in app list.", LogLevel.INFO);
+                        }
+
+                        string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
+                        Logger.Log($"Release name obtained: {RlsName}", LogLevel.INFO);
+
+                        if (!updatesNotified && !onapplist && newCount < 6)
+                        {
+                            continue;
+                        }
+
+                        either = true;
+                        newapps = true;
+
+                        Logger.Log($"New app detected: {newGamesToUpload}, starting APK extraction and AAPT process.", LogLevel.INFO);
+                        //start of code to get official Release Name from APK by first extracting APK then running AAPT on it.
+                        string apppath = ADB.RunAdbCommandToString($"shell pm path {newGamesToUpload}").Output;
+                        Logger.Log($"ADB command 'pm path' executed. Path: {apppath}", LogLevel.INFO);
+                        apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
+                        apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
+
+                        if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
+                        {
+                            File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
+                            Logger.Log("Old base.apk file deleted.", LogLevel.INFO);
+                        }
+
+                        Logger.Log($"Pulling APK from path: {apppath}", LogLevel.INFO);
+                        _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
+                        string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
+                        string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
+                        Logger.Log($"Running AAPT command: {cmd}", LogLevel.INFO);
+                        string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                        Logger.Log($"AAPT command output: {ReleaseName}", LogLevel.INFO);
+                        ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
+                        ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
+                        ReleaseName = ReleaseName.Replace("'", "");
+                        File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
+                        Logger.Log("Base.apk deleted after extracting release name.", LogLevel.INFO);
+
+                        if (ReleaseName.Contains("Microsoft Windows"))
+                        {
+                            ReleaseName = RlsName;
+                            Logger.Log("Release name fallback to RlsName due to Microsoft Windows detection.", LogLevel.INFO);
+                        }
+
+                        Logger.Log($"Final Release Name: {ReleaseName}", LogLevel.INFO);
+                        //end
+                        string GameName = Sideloader.gameNameToSimpleName(RlsName);
+                        //Logger.Log(newGamesToUpload);
+                        Logger.Log($"Fetching version code for app: {newGamesToUpload}", LogLevel.INFO);
+                        string InstalledVersionCode;
+                        InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {newGamesToUpload} | grep versionCode -F\"").Output;
+                        Logger.Log($"Version code command output: {InstalledVersionCode}", LogLevel.INFO);
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                        InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+                        ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                        Logger.Log($"Parsed installed version code: {installedVersionInt}", LogLevel.INFO);
+                        donorApps += ReleaseName + ";" + newGamesToUpload + ";" + installedVersionInt + ";" + "New App" + "\n";
+                        Logger.Log($"Donor app info updated: {ReleaseName}; {newGamesToUpload}; {installedVersionInt}", LogLevel.INFO);
+                        newCount++;
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log($"Exception occured in initListView (Unrecognized App Found): {ex.Message}", LogLevel.ERROR);
+                    }
+                }
+            }
+        }
+
+        private void OrganizeListForViewAsync(global::System.Boolean forFavoriteView, ref global::System.Int32 upToDateCount, ref global::System.Int32 updateAvailableCount, ref global::System.Int32 newerThanListCount, global::System.String[] packageList, global::System.String[] blacklist, List<ListViewItem> GameList, List<global::System.String> rookieList)
+        {
+            Color colorFont_installedGame = ColorTranslator.FromHtml("#3c91e6");
+            lblUpToDate.ForeColor = colorFont_installedGame;
+            Color colorFont_updateAvailable = ColorTranslator.FromHtml("#4daa57");
+            lblUpdateAvailable.ForeColor = colorFont_updateAvailable;
+            Color colorFont_donateGame = ColorTranslator.FromHtml("#cb9cf2");
+            lblNeedsDonate.ForeColor = colorFont_donateGame;
+            Color colorFont_error = ColorTranslator.FromHtml("#f52f57");
+
+            foreach (string[] release in SideloaderRCLONE.Games)
+            {
+                rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
+                if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
+                {
+                    rookienamelist += release[SideloaderRCLONE.GameNameIndex].ToString() + "\n";
+                }
+
+                ListViewItem currentGame = new ListViewItem(release);
+
+                foreach (string packagename in packageList.Where(r => string.Equals(release[SideloaderRCLONE.PackageNameIndex], r)))
+                {
+                    currentGame.ForeColor = colorFont_installedGame;
+                    string InstalledVersionCode;
+                    InstalledVersionCode = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename} | grep versionCode -F\"").Output;
+                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingBeforeFirst(InstalledVersionCode, "versionCode=");
+                    InstalledVersionCode = Utilities.StringUtilities.RemoveEverythingAfterFirst(InstalledVersionCode, " ");
+
+                    try
+                    {
+                        ulong installedVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(InstalledVersionCode));
+                        ulong cloudVersionInt = 0;
+
+                        foreach (string[] releaseGame in SideloaderRCLONE.Games.Where(r => string.Equals(r[SideloaderRCLONE.PackageNameIndex], packagename)))
+                        {
+                            ulong releaseGameVersionCode = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(releaseGame[SideloaderRCLONE.VersionCodeIndex]));
+                            if (releaseGameVersionCode > cloudVersionInt)
+                            {
+                                Logger.Log($"Updated cloudVersionInt for {packagename} from {cloudVersionInt} to {releaseGameVersionCode}");
+                                cloudVersionInt = releaseGameVersionCode;
+                            }
+                        }
+
+                        if (installedVersionInt == cloudVersionInt)
+                        {
+                            upToDateCount++;
+                        }
+
+                        //ulong cloudVersionInt = ulong.Parse(Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex]));
+
+                        _ = Logger.Log($"Checked game {release[SideloaderRCLONE.GameNameIndex]}; cloudversion={cloudVersionInt} localversion={installedVersionInt}");
+                        if (installedVersionInt < cloudVersionInt)
+                        {
+                            currentGame.ForeColor = colorFont_updateAvailable;
+                            updateAvailableCount++;
+                        }
+
+                        if (installedVersionInt > cloudVersionInt)
+                        {
+                            newerThanListCount++;
+                            bool dontget = false;
+                            if (blacklist.Contains(packagename))
+                            {
+                                dontget = true;
+                            }
+
+                            if (!dontget)
+                            {
+                                currentGame.ForeColor = colorFont_donateGame;
+                            }
+
+                            string RlsName = Sideloader.PackageNametoGameName(packagename);
+                            string GameName = Sideloader.gameNameToSimpleName(RlsName);
+
+                            if (!dontget && !updatesNotified && !isworking && updateCount < 6 && !settings.SubmittedUpdates.Contains(packagename))
+                            {
+                                either = true;
+                                updates = true;
+                                updateCount++;
+                                UpdateGameData gameData = new UpdateGameData(GameName, packagename, installedVersionInt);
+                                gamesToAskForUpdate.Add(gameData);
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        currentGame.ForeColor = colorFont_error;
+                        _ = Logger.Log($"An error occured while rendering game {release[SideloaderRCLONE.GameNameIndex]} in ListView", LogLevel.ERROR);
+                        _ = ADB.RunAdbCommandToString($"shell \"dumpsys package {packagename}\"");
+                        _ = Logger.Log($"ExMsg: {ex.Message}Installed:\"{InstalledVersionCode}\" Cloud:\"{Utilities.StringUtilities.KeepOnlyNumbers(release[SideloaderRCLONE.VersionCodeIndex])}\"", LogLevel.ERROR);
+                    }
+                }
+
+                if (forFavoriteView && !settings.FavoritedGames.Contains(currentGame.SubItems[1].Text))
+                {
+                    continue;
+                }
+
+                string gameListing = currentGame.SubItems[1].Text;
+                if (!IgnoreGameListing(gameListing))
+                {
+                    GameList.Add(currentGame);
+                }
+            }
+
+            bool IgnoreGameListing(string gameName)
+            {
+                return settings.HideAdultContent && gameName.Contains("(18+)");
+            }
+        }
+
         private static readonly HttpClient HttpClient = new HttpClient();
         public static async void doUpload()
         {
-            Program.form.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
-            Program.form.ULLabel.Visible = true;
+            const string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
+
+            Program.MainForm.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
+            Program.MainForm.ULLabel.Visible = true;
             isworking = true;
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
-            string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
             bool codenameExists = false;
             try
             {
@@ -2130,12 +2123,12 @@ namespace AndroidSideloader
             catch
             {
                 _ = Logger.Log("Unable to download Codenames file.");
-                FlexibleMessageBox.Show(Program.form, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
+                FlexibleMessageBox.Show(Program.MainForm, $"Error downloading Codenames File from Github", "Verification Error", MessageBoxButtons.OK);
             }
 
             if (codenameExists)
             {
-                foreach (UploadGame game in Program.form.gamesToUpload)
+                foreach (UploadGame game in Program.MainForm.gamesToUpload)
                 {
 
                     Thread t3 = new Thread(() =>
@@ -2157,13 +2150,13 @@ namespace AndroidSideloader
 
                         string path = $"{settings.MainDir}\\7z.exe";
                         string cmd = $"7z a -mx1 \"{settings.MainDir}\\{gameZipName}\" .\\{game.Pckgcommand}\\*";
-                        Program.form.changeTitle("Zipping extracted application...");
+                        Program.MainForm.changeTitle("Zipping extracted application...");
                         _ = ADB.RunCommandToString(cmd, path);
                         if (Directory.Exists($"{settings.MainDir}\\{game.Pckgcommand}"))
                         {
                             Directory.Delete($"{settings.MainDir}\\{game.Pckgcommand}", true);
                         }
-                        Program.form.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
+                        Program.MainForm.changeTitle("Uploading to server, you may continue to use Rookie while it uploads.");
 
                         // Get size of pending zip upload and write to text file
                         long zipSize = new FileInfo($"{settings.MainDir}\\{gameZipName}").Length;
@@ -2201,15 +2194,15 @@ namespace AndroidSideloader
                     }
                 }
 
-                Program.form.gamesToUpload.Clear();
+                Program.MainForm.gamesToUpload.Clear();
                 isworking = false;
                 isuploading = false;
-                Program.form.ULLabel.Visible = false;
-                Program.form.changeTitle(" \n\n");
+                Program.MainForm.ULLabel.Visible = false;
+                Program.MainForm.changeTitle(" \n\n");
             }
             else
             {
-                FlexibleMessageBox.Show(Program.form, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
+                FlexibleMessageBox.Show(Program.MainForm, $"You are attempting to upload from an unknown device, please connect a Meta Quest device to upload", "Unknown Device", MessageBoxButtons.OK);
             }
         }
 
@@ -2374,7 +2367,7 @@ namespace AndroidSideloader
         private void settingsButton_Click(object sender, EventArgs e)
         {
             SettingsForm settingsForm = new SettingsForm();
-            settingsForm.Show(Program.form);
+            settingsForm.Show(Program.MainForm);
         }
 
         private void aboutBtn_Click(object sender, EventArgs e)
@@ -2394,13 +2387,13 @@ namespace AndroidSideloader
  - -- Mike Gold https://www.c-sharpcorner.com/members/mike-gold2
  ";
 
-            _ = FlexibleMessageBox.Show(Program.form, about);
+            _ = FlexibleMessageBox.Show(Program.MainForm, about);
         }
 
         private async void ADBWirelessEnable_Click(object sender, EventArgs e)
         {
             bool Manual;
-            DialogResult res = FlexibleMessageBox.Show(Program.form, "Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
+            DialogResult res = FlexibleMessageBox.Show(Program.MainForm, "Do you want Rookie to find the IP or enter it manually\nYes = Automatic\nNo = Manual", "Automatic/Manual", MessageBoxButtons.YesNo);
             Manual = res == DialogResult.No;
             if (Manual)
             {
@@ -2411,11 +2404,11 @@ namespace AndroidSideloader
                 adbCmd_background.Visible = true;
                 manualIP = true;
                 _ = adbCmd_CommandBox.Focus();
-                Program.form.changeTitle("Attempting manual connection...", false);
+                Program.MainForm.changeTitle("Attempting manual connection...", false);
             }
             else
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "Make sure your Quest is plugged in VIA USB then press OK, if you need a moment press Cancel and come back when you're ready.", "Connect Quest now.", MessageBoxButtons.OKCancel);
                 if (dialogResult == DialogResult.Cancel)
                 {
                     return;
@@ -2424,7 +2417,7 @@ namespace AndroidSideloader
                 _ = ADB.RunAdbCommandToString("devices");
                 _ = ADB.RunAdbCommandToString("tcpip 5555");
 
-                _ = FlexibleMessageBox.Show(Program.form, "Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Press OK to get your Quest's local IP address.", "Obtain local IP address", MessageBoxButtons.OKCancel);
                 await Task.Delay(1000);
                 string input = ADB.RunAdbCommandToString("shell ip route").Output;
 
@@ -2436,12 +2429,12 @@ namespace AndroidSideloader
                 {
                     string IPaddr = strArrayOne[8];
                     string IPcmnd = "connect " + IPaddr + ":5555";
-                    _ = FlexibleMessageBox.Show(Program.form, $"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
+                    _ = FlexibleMessageBox.Show(Program.MainForm, $"Your Quest's local IP address is: {IPaddr}\n\nPlease disconnect your Quest then wait 2 seconds.\nOnce it is disconnected hit OK", "", MessageBoxButtons.OK);
                     await Task.Delay(2000);
                     _ = ADB.RunAdbCommandToString(IPcmnd);
-                    _ = await Program.form.CheckForDevice();
-                    Program.form.changeTitlebarToDevice();
-                    Program.form.showAvailableSpace();
+                    _ = await Program.MainForm.CheckForDevice();
+                    Program.MainForm.changeTitlebarToDevice();
+                    Program.MainForm.showAvailableSpace();
                     settings.IPAddress = IPcmnd;
                     settings.Save();
                     try
@@ -2455,7 +2448,7 @@ namespace AndroidSideloader
                 }
                 else
                 {
-                    _ = FlexibleMessageBox.Show(Program.form, "No device connected! Connect quest via USB and start again!");
+                    _ = FlexibleMessageBox.Show(Program.MainForm, "No device connected! Connect quest via USB and start again!");
                 }
             }
         }
@@ -2567,14 +2560,14 @@ namespace AndroidSideloader
         private static void ShowError_QuotaExceeded()
         {
             string errorMessage =
-$@"Unable to connect to Remote Server. Rookie is unable to connect to our Servers.
+        $@"Unable to connect to Remote Server. Rookie is unable to connect to our Servers.
 
 First time launching Rookie? Please relaunch and try again.
 
 Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.gg/tBKMZy7QDA) for Troubleshooting steps!
 ";
 
-            _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
+            _ = FlexibleMessageBox.Show(Program.MainForm, errorMessage, "Unable to connect to Remote Server");
         }
 
         public async void cleanupActiveDownloadStatus()
@@ -2724,7 +2717,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             }
                             else
                             {
-                                DialogResult res = FlexibleMessageBox.Show(Program.form,
+                                DialogResult res = FlexibleMessageBox.Show(Program.MainForm,
                                     $"{gameName} exists in destination directory.\r\nWould you like to overwrite it?",
                                     "Download again?", MessageBoxButtons.YesNo);
 
@@ -2744,7 +2737,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         if (doDownload)
                         {
                             downloadDirectory = $"{settings.DownloadDir}\\{gameNameHash}";
-                            _ = Logger.Log($"rclone copy \"Public:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
+                            _ = Logger.Log($"rclone copy \"Public:{SideloaderRCLONE.RCLONE_GAMES_FOLDER}/{gameName}\"");
                             t1 = new Thread(() =>
                             {
                                 string rclonecommand =
@@ -2761,7 +2754,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     else
                     {
                         _ = Directory.CreateDirectory(gameDirectory);
-                        downloadDirectory = $"{SideloaderRCLONE.RcloneGamesFolder}/{gameName}";
+                        downloadDirectory = $"{SideloaderRCLONE.RCLONE_GAMES_FOLDER}/{gameName}";
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
                         t1 = new Thread(() =>
                         {
@@ -2885,7 +2878,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         }
                         catch (Exception ex)
                         {
-                            _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}");
+                            _ = FlexibleMessageBox.Show(Program.MainForm, $"Error deleting game files: {ex.Message}");
                         }
                         changeTitle("");
                         break;
@@ -2915,7 +2908,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 //Remove current game
                                 cleanupActiveDownloadStatus();
 
-                                _ = FlexibleMessageBox.Show(Program.form, $"Rclone error: {gameDownloadOutput.Error}");
+                                _ = FlexibleMessageBox.Show(Program.MainForm, $"Rclone error: {gameDownloadOutput.Error}");
                                 output += new ProcessOutput("", "Download Failed");
                             }
                         }
@@ -2936,7 +2929,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                 {
                                     changeTitle("Extracting " + gameName, false);
                                     Zip.ExtractFile($"{settings.DownloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{settings.DownloadDir}", PublicConfigFile.Password);
-                                    Program.form.changeTitle("");
+                                    Program.MainForm.changeTitle("");
                                 }
                                 catch (ExtractionException ex)
                                 {
@@ -2945,7 +2938,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         cleanupActiveDownloadStatus();
                                     }));
                                     otherError = true;
-                                    this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
+                                    this.Invoke(() => _ = FlexibleMessageBox.Show(Program.MainForm, $"7zip error: {ex.Message}"));
                                     output += new ProcessOutput("", "Extract Failed");
                                 }
                             })
@@ -3028,7 +3021,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         t.Start();
                                         Thread apkThread = new Thread(() =>
                                         {
-                                            Program.form.changeTitle($"Sideloading apk...");
+                                            Program.MainForm.changeTitle($"Sideloading apk...");
                                             output += ADB.Sideload(apkFile, packagename);
                                         })
                                         {
@@ -3050,7 +3043,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                                 changeTitle($"Copying {packagename} obb to device...");
                                                 ADB.RunAdbCommandToString($"shell mkdir \"/sdcard/Android/obb/{packagename}\"");
                                                 output += ADB.RunAdbCommandToString($"push \"{settings.DownloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
-                                                Program.form.changeTitle("");
+                                                Program.MainForm.changeTitle("");
                                             })
                                             {
                                                 IsBackground = true
@@ -3068,7 +3061,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                                     {
                                                         obbsMismatch = await compareOBBSizes(packagename, gameName, output);
                                                     }
-                                                    catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error comparing OBB sizes: {ex.Message}"); }
+                                                    catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.MainForm, $"Error comparing OBB sizes: {ex.Message}"); }
                                                 }
                                             }
                                         }
@@ -3083,7 +3076,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             if (settings.DeleteAllAfterInstall)
                             {
                                 changeTitle("Deleting game files", false);
-                                try { Directory.Delete(settings.DownloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.form, $"Error deleting game files: {ex.Message}"); }
+                                try { Directory.Delete(settings.DownloadDir + "\\" + gameName, true); } catch (Exception ex) { _ = FlexibleMessageBox.Show(Program.MainForm, $"Error deleting game files: {ex.Message}"); }
                             }
                             //Remove current game
                             cleanupActiveDownloadStatus();
@@ -3166,7 +3159,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
             catch (FormatException ex)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
+                _ = FlexibleMessageBox.Show(Program.MainForm, "The OBB Folder on the Quest seems to not exist or be empty\nPlease redownload the game or sideload the obb manually.", "OBB Size Undetectable!", MessageBoxButtons.OK);
                 Logger.Log($"Unable to compare obbs with the exception: {ex.Message}", LogLevel.ERROR);
                 FlexibleMessageBox.Show($"Error comparing OBB sizes: {ex.Message}");
                 return false;
@@ -3174,7 +3167,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             catch (Exception ex)
             {
                 Logger.Log($"Unexpected error occurred while comparing OBBs: {ex.Message}", LogLevel.ERROR);
-                FlexibleMessageBox.Show(Program.form, $"Unexpected error comparing OBB sizes: {ex.Message}");
+                FlexibleMessageBox.Show(Program.MainForm, $"Unexpected error comparing OBB sizes: {ex.Message}");
                 return false;
             }
         }
@@ -3188,7 +3181,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         // Logic to handle mismatches after comparison.
         private async Task<bool> handleObbSizeMismatchAsync(string packageName, string gameName, ProcessOutput output)
         {
-            var dialogResult = MessageBox.Show(Program.form, "Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(Program.MainForm, "Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
 
             if (dialogResult != DialogResult.Yes)
             {
@@ -3209,7 +3202,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 changeTitle($"Copying {packageName} obb to device...");
                 output += ADB.RunAdbCommandToString($"push \"{obbFolderPath}\" \"{OBBFolderPath}\"");
-                Program.form.changeTitle("");
+                Program.MainForm.changeTitle("");
             });
 
             return await compareOBBSizes(packageName, gameName, output);
@@ -3281,7 +3274,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 {
                     if (!settings.AutoReinstall)
                     {
-                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed." +
+                        DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "In place upgrade has failed." +
                             "\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to " +
                             "do this while retaining your savedata.\nWhile the vast majority of games can be backed up there " +
                             "are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want " +
@@ -3311,7 +3304,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
                 else
                 {
-                    DialogResult dialogResult2 = FlexibleMessageBox.Show(Program.form, "This install is taking an unusual amount of time, you can keep waiting or cancel the install.\n" +
+                    DialogResult dialogResult2 = FlexibleMessageBox.Show(Program.MainForm, "This install is taking an unusual amount of time, you can keep waiting or cancel the install.\n" +
                         "Would you like to cancel the installation?", "Cancel install?", MessageBoxButtons.YesNo);
                     if (dialogResult2 == DialogResult.Yes)
                     {
@@ -3333,7 +3326,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         {
             if (isinstalling)
             {
-                DialogResult res1 = FlexibleMessageBox.Show(Program.form, "There are downloads and/or installations in progress,\nif you exit now you'll have to start the entire process over again.\nAre you sure you want to exit?", "Still downloading/installing.",
+                DialogResult res1 = FlexibleMessageBox.Show(Program.MainForm, "There are downloads and/or installations in progress,\nif you exit now you'll have to start the entire process over again.\nAre you sure you want to exit?", "Still downloading/installing.",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
                 if (res1 != DialogResult.Yes)
                 {
@@ -3348,7 +3341,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
             else if (isuploading)
             {
-                DialogResult res = FlexibleMessageBox.Show(Program.form, "There is an upload still in progress, if you exit now\nyou'll have to start the entire process over again.\nAre you sure you want to exit?", "Still uploading.",
+                DialogResult res = FlexibleMessageBox.Show(Program.MainForm, "There is an upload still in progress, if you exit now\nyou'll have to start the entire process over again.\nAre you sure you want to exit?", "Still uploading.",
                 MessageBoxButtons.YesNo, MessageBoxIcon.Warning, MessageBoxDefaultButton.Button2);
                 if (res != DialogResult.Yes)
                 {
@@ -3373,16 +3366,16 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         private async void ADBWirelessDisable_Click(object sender, EventArgs e)
         {
-            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "Are you sure you want to delete your saved Quest IP address/command?", "Remove saved IP address?", MessageBoxButtons.YesNo);
             if (dialogResult == DialogResult.No)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "Saved IP data reset cancelled.");
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Saved IP data reset cancelled.");
                 return;
             }
             else
             {
                 ADB.wirelessadbON = false;
-                _ = FlexibleMessageBox.Show(Program.form, "Make sure your device is not connected to USB and press OK.");
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Make sure your device is not connected to USB and press OK.");
                 _ = ADB.RunAdbCommandToString("devices");
                 _ = ADB.RunAdbCommandToString("shell USB");
                 await Task.Delay(2000);
@@ -3393,9 +3386,9 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 _ = ADB.RunAdbCommandToString("start-server");
                 settings.IPAddress = String.Empty;
                 settings.Save();
-                _ = Program.form.GetDeviceID();
-                Program.form.changeTitlebarToDevice();
-                _ = FlexibleMessageBox.Show(Program.form, "Relaunch Rookie to complete the process and switch back to USB adb.");
+                _ = Program.MainForm.GetDeviceID();
+                Program.MainForm.changeTitlebarToDevice();
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Relaunch Rookie to complete the process and switch back to USB adb.");
                 if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
                 {
                     File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
@@ -3450,7 +3443,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         private void QuestOptionsButton_Click(object sender, EventArgs e)
         {
             QuestForm Form = new QuestForm();
-            Form.Show(Program.form);
+            Form.Show(Program.MainForm);
         }
 
         private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
@@ -3561,7 +3554,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 string HWID = SideloaderUtilities.UUID();
                 Clipboard.SetText(HWID);
-                _ = FlexibleMessageBox.Show(Program.form, $"Your unique HWID is:\n\n{HWID}\n\nThis has been automatically copied to your clipboard. Press CTRL+V in a message to send it.");
+                _ = FlexibleMessageBox.Show(Program.MainForm, $"Your unique HWID is:\n\n{HWID}\n\nThis has been automatically copied to your clipboard. Press CTRL+V in a message to send it.");
             }
             if (keyData == (Keys.Control | Keys.R))
             {
@@ -3590,7 +3583,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 if (Application.OpenForms.OfType<QuestForm>().Count() == 0)
                 {
                     QuestForm Form = new QuestForm();
-                    Form.Show(Program.form);
+                    Form.Show(Program.MainForm);
                 }
 
             }
@@ -3599,24 +3592,24 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 if (Application.OpenForms.OfType<SettingsForm>().Count() == 0)
                 {
                     SettingsForm Form = new SettingsForm();
-                    Form.Show(Program.form);
+                    Form.Show(Program.MainForm);
                 }
             }
             if (keyData == Keys.F5)
             {
                 _ = GetDeviceID();
-                _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+                _ = FlexibleMessageBox.Show(Program.MainForm, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
                 listAppsBtn();
                 initListView(false);
             }
             bool dialogIsUp = false;
             if (keyData == Keys.F1 && !dialogIsUp)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "Shortcuts:\nF1 -------- Shortcuts List\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie Sideloader.");
+                _ = FlexibleMessageBox.Show(Program.MainForm, "Shortcuts:\nF1 -------- Shortcuts List\nF3 -------- Quest Options\nF4 -------- Rookie Settings\nF5 -------- Refresh Gameslist\n\nCTRL+R - Run custom ADB command.\nCTRL+L - Copy entire list of Game Names to clipboard seperated by new lines.\nALT+L - Copy entire list of Game Names to clipboard seperated by commas(in a paragraph).CTRL+P - Copy packagename to clipboard on game select.\nCTRL + F4 - Instantly relaunch Rookie Sideloader.");
             }
             if (keyData == (Keys.Control | Keys.P))
             {
-                DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
+                DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, "Do you wish to copy Package Name of games selected from list to clipboard?", "Copy package to clipboard?", MessageBoxButtons.YesNo);
                 if (dialogResult == DialogResult.Yes)
                 {
                     settings.PackageNameToCB = true;
@@ -3816,8 +3809,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     }
                     catch (Exception ex)
                     {
-                        _ = FlexibleMessageBox.Show(Program.form, $"You are unable to access the wiki page with the Exception: {ex.Message}\n");
-                        _ = FlexibleMessageBox.Show(Program.form, "Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
+                        _ = FlexibleMessageBox.Show(Program.MainForm, $"You are unable to access the wiki page with the Exception: {ex.Message}\n");
+                        _ = FlexibleMessageBox.Show(Program.MainForm, "Required files for the Trailers were unable to be downloaded, please use Thumbnails instead");
                         enviromentCreated = true;
                         webView21.Hide();
                     }
@@ -3850,7 +3843,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 }
                 catch (Exception ex)
                 {
-                    Program.form.changeTitle($"Error loading Trailer: {ex.Message}");
+                    Program.MainForm.changeTitle($"Error loading Trailer: {ex.Message}");
                     Logger.Log("Error Loading Trailer");
                     Logger.Log(ex.Message);
                 }
@@ -3862,13 +3855,13 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
         public void UpdateGamesButton_Click(object sender, EventArgs e)
         {
             _ = GetDeviceID();
-            _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+            _ = FlexibleMessageBox.Show(Program.MainForm, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
             listAppsBtn();
             initListView(false);
 
-            if (SideloaderRCLONE.games.Count < 1)
+            if (SideloaderRCLONE.Games.Count < 1)
             {
-                _ = FlexibleMessageBox.Show(Program.form, "There are no games in rclone, please check your internet connection and check if the config is working properly");
+                _ = FlexibleMessageBox.Show(Program.MainForm, "There are no games in rclone, please check your internet connection and check if the config is working properly");
                 return;
             }
 
@@ -3963,11 +3956,11 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 errorOnList = false;
                 newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
-                if (SideloaderRCLONE.games.Count > 5)
+                if (SideloaderRCLONE.Games.Count > 5)
                 {
                     Thread t1 = new Thread(() =>
                     {
-                        foreach (string[] release in SideloaderRCLONE.games)
+                        foreach (string[] release in SideloaderRCLONE.Games)
                         {
                             rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString().ToLower());
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
@@ -4076,7 +4069,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     if (errorChecker.Contains("cannot resolve host") | errorChecker.Contains("cannot connect to"))
                     {
                         changeTitle(String.Empty);
-                        _ = FlexibleMessageBox.Show(Program.form, "Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
+                        _ = FlexibleMessageBox.Show(Program.MainForm, "Manual ADB over WiFi Connection failed\nExiting...", "Manual IP Connection Failed!", MessageBoxButtons.OK);
                         manualIP = false;
                         adbCmd_CommandBox.Visible = false;
                         adbCmd_btnToggleUpdates.Visible = false;
@@ -4088,8 +4081,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     }
                     else
                     {
-                        _ = await Program.form.CheckForDevice();
-                        Program.form.showAvailableSpace();
+                        _ = await Program.MainForm.CheckForDevice();
+                        Program.MainForm.showAvailableSpace();
                         settings.IPAddress = IPcmnd;
                         settings.Save();
                         try { File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd); }
@@ -4105,23 +4098,23 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         adbCmd_background.Visible = false;
                         adbCmd_Label.Text = "Type ADB Command";
                         changeTitle("");
-                        Program.form.changeTitlebarToDevice();
+                        Program.MainForm.changeTitlebarToDevice();
                         _ = gamesListView.Focus();
                     }
                 }
                 else
                 {
                     string sentCommand = adbCmd_CommandBox.Text.Replace("adb", "");
-                    Program.form.changeTitle($"Running adb command: ADB {sentCommand}");
+                    Program.MainForm.changeTitle($"Running adb command: ADB {sentCommand}");
                     string output = ADB.RunAdbCommandToString(adbCmd_CommandBox.Text).Output;
-                    _ = FlexibleMessageBox.Show(Program.form, $"Ran adb command: ADB {sentCommand}\r\nOutput:\r\n{output}");
+                    _ = FlexibleMessageBox.Show(Program.MainForm, $"Ran adb command: ADB {sentCommand}\r\nOutput:\r\n{output}");
                     adbCmd_CommandBox.Visible = false;
                     adbCmd_btnToggleUpdates.Visible = false;
                     adbCmd_btnSend.Visible = false;
                     adbCmd_Label.Visible = false;
                     adbCmd_background.Visible = false;
                     _ = gamesListView.Focus();
-                    Program.form.changeTitle(String.Empty);
+                    Program.MainForm.changeTitle(String.Empty);
                 }
             }
             if (e.KeyChar == (char)Keys.Escape)
@@ -4166,7 +4159,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 notify("Please select an App from the Dropdown");
                 return;
             }
-            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form, $"Do you want to extract {m_combo.SelectedItem}'s apk and obb to a folder on your desktop now?", "Extract app?", MessageBoxButtons.YesNo);
+            DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.MainForm, $"Do you want to extract {m_combo.SelectedItem}'s apk and obb to a folder on your desktop now?", "Extract app?", MessageBoxButtons.YesNo);
             if (dialogResult1 == DialogResult.No)
             {
                 return;
@@ -4229,7 +4222,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                 string path = $"{settings.MainDir}\\7z.exe";
                 string cmd = $"7z a -mx1 \"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
-                Program.form.changeTitle("Zipping extracted application...");
+                Program.MainForm.changeTitle("Zipping extracted application...");
                 Thread t3 = new Thread(() =>
                 {
                     _ = ADB.RunCommandToString(cmd, path);
@@ -4253,9 +4246,9 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 File.Delete($"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip");
                 Directory.Delete($"{settings.MainDir}\\{packageName}", true);
                 isworking = false;
-                Program.form.changeTitle("                                   \n\n");
+                Program.MainForm.changeTitle("                                   \n\n");
                 progressBar.Style = ProgressBarStyle.Continuous;
-                _ = FlexibleMessageBox.Show(Program.form, $"{GameName} pulled to:\n\n{GameName} v{VersionInt} {packageName}.zip\n\nOn your desktop!");
+                _ = FlexibleMessageBox.Show(Program.MainForm, $"{GameName} pulled to:\n\n{GameName} v{VersionInt} {packageName}.zip\n\nOn your desktop!");
             }
         }
 
@@ -4304,11 +4297,11 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 errorOnList = false;
                 newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
-                if (SideloaderRCLONE.games.Count > 5)
+                if (SideloaderRCLONE.Games.Count > 5)
                 {
                     Thread t1 = new Thread(() =>
                     {
-                        foreach (string[] release in SideloaderRCLONE.games)
+                        foreach (string[] release in SideloaderRCLONE.Games)
                         {
                             rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
@@ -4446,11 +4439,11 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 errorOnList = false;
                 newGamesToUploadList = whitelistItems.Intersect(installedGames, StringComparer.OrdinalIgnoreCase).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
-                if (SideloaderRCLONE.games.Count > 5)
+                if (SideloaderRCLONE.Games.Count > 5)
                 {
                     Thread t1 = new Thread(() =>
                     {
-                        foreach (string[] release in SideloaderRCLONE.games)
+                        foreach (string[] release in SideloaderRCLONE.Games)
                         {
                             rookieList.Add(release[SideloaderRCLONE.PackageNameIndex].ToString());
                             if (!rookienamelist.Contains(release[SideloaderRCLONE.GameNameIndex].ToString()))
@@ -4708,12 +4701,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             if (favoriteSwitcher.Text == "Games List")
             {
                 favoriteSwitcher.Text = "Favorited Games";
-                initListView(true);  
+                initListView(true);
             }
             else
             {
                 favoriteSwitcher.Text = "Games List";
-                initListView(false); 
+                initListView(false);
             }
         }
     }

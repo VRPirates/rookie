@@ -93,7 +93,7 @@ namespace AndroidSideloader
                         : $"{settings.ADBPath}";
                     Regex rgx = new Regex(pattern);
                     string result = rgx.Replace(cmd, replacement);
-                    Program.form.changeTitle($"Running {result}");
+                    Program.MainForm.changeTitle($"Running {result}");
                     _ = Logger.Log($"Logging command: {result} from file: {path}");
                     output += ADB.RunAdbCommandToStringWOADB(result, path);
                     if (output.Error.Contains("mkdir"))
@@ -159,7 +159,7 @@ namespace AndroidSideloader
         public static ProcessOutput UninstallGame(string packagename)
         {
             ProcessOutput output = ADB.UninstallPackage(packagename);
-            Program.form.changeTitle("");
+            Program.MainForm.changeTitle("");
             _ = Sideloader.RemoveFolder("/sdcard/Android/obb/" + packagename);
             _ = Sideloader.RemoveFolder("/sdcard/Android/data/" + packagename);
             return output;
@@ -179,7 +179,7 @@ namespace AndroidSideloader
             {
                 _ = Directory.CreateDirectory(MainForm.backupFolder);
             }
-            Program.form.changeTitle($"Attempting to backup any savedata to {MainForm.backupFolder}\\Rookie Backups...");
+            Program.MainForm.changeTitle($"Attempting to backup any savedata to {MainForm.backupFolder}\\Rookie Backups...");
             _ = new ProcessOutput("", "");
             string date_str = DateTime.Today.ToString("yyyy.MM.dd");
             string CurrBackups = Path.Combine(MainForm.backupFolder, date_str);
@@ -196,7 +196,7 @@ namespace AndroidSideloader
 
             string packageName = Sideloader.gameNameToPackageName(GameName);
 
-            DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, $"Are you sure you want to uninstall custom QU settings for {packageName}? this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
+            DialogResult dialogResult = FlexibleMessageBox.Show(Program.MainForm, $"Are you sure you want to uninstall custom QU settings for {packageName}? this CANNOT be undone!", "WARNING!", MessageBoxButtons.YesNo);
             if (dialogResult != DialogResult.Yes)
             {
                 return output;
@@ -246,7 +246,7 @@ namespace AndroidSideloader
 
         public static string gameNameToPackageName(string gameName)
         {
-            foreach (string[] game in SideloaderRCLONE.games)
+            foreach (string[] game in SideloaderRCLONE.Games)
             {
                 if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.PackageNameIndex];
@@ -256,7 +256,7 @@ namespace AndroidSideloader
 
         public static string gameNameToVersionCode(string gameName)
         {
-            foreach (string[] game in SideloaderRCLONE.games)
+            foreach (string[] game in SideloaderRCLONE.Games)
             {
                 if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.VersionCodeIndex];
@@ -266,7 +266,7 @@ namespace AndroidSideloader
 
         public static string PackageNametoGameName(string packageName)
         {
-            foreach (string[] game in SideloaderRCLONE.games)
+            foreach (string[] game in SideloaderRCLONE.Games)
             {
                 if (packageName.Equals(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.ReleaseNameIndex];
@@ -276,7 +276,7 @@ namespace AndroidSideloader
 
         public static string gameNameToSimpleName(string gameName)
         {
-            foreach (string[] game in SideloaderRCLONE.games)
+            foreach (string[] game in SideloaderRCLONE.Games)
             {
                 if (gameName.Equals(game[SideloaderRCLONE.GameNameIndex]) || gameName.Equals(game[SideloaderRCLONE.ReleaseNameIndex]))
                     return game[SideloaderRCLONE.GameNameIndex];
@@ -286,7 +286,7 @@ namespace AndroidSideloader
 
         public static string PackageNameToSimpleName(string packageName)
         {
-            foreach (string[] game in SideloaderRCLONE.games)
+            foreach (string[] game in SideloaderRCLONE.Games)
             {
                 if (packageName.Contains(game[SideloaderRCLONE.PackageNameIndex]))
                     return game[SideloaderRCLONE.GameNameIndex];
