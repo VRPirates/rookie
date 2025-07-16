@@ -1037,41 +1037,45 @@ namespace AndroidSideloader
         {
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
-            string[] line = listApps().Split('\n');
+            string[] packages = listApps()
+                .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.StartsWith("package:") ? p.Substring(8).Trim() : p.Trim())
+                .ToArray();
 
-            string forsettings = string.Join(String.Empty, line);
-            settings.InstalledApps = forsettings;
+            // Save the full string for settings
+            settings.InstalledApps = string.Join("\n", packages);
             settings.Save();
 
-            for (int i = 0; i < line.Length; i++)
+            List<string> displayNames = new List<string>();
+
+            foreach (string pkg in packages)
             {
-                if (line[i].Length > 9)
+                string name = pkg;
+
+                foreach (string[] game in SideloaderRCLONE.games)
                 {
-                    line[i] = line[i].Remove(0, 8);
-                    line[i] = line[i].Remove(line[i].Length - 1);
-                    foreach (string[] game in SideloaderRCLONE.games)
+                    if (game.Length > 2 && game[2].Equals(pkg, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (line[i].Length > 0 && game[2].Contains(line[i]))
-                        {
-                            line[i] = game[0];
-                        }
+                        name = game[0]; // Friendly game name
+                        break;
                     }
                 }
+
+                displayNames.Add(name);
             }
 
-
-            Array.Sort(line);
-
-            foreach (string game in line)
+            // Sort and populate combo
+            foreach (string name in displayNames.OrderBy(n => n))
             {
-                if (game.Length > 0)
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    m_combo.Invoke(() => { _ = m_combo.Items.Add(game); });
+                    m_combo.Invoke(() => { _ = m_combo.Items.Add(name); });
                 }
             }
 
             m_combo.Invoke(() => { m_combo.MatchingMethod = StringMatchingMethod.NoWildcards; });
         }
+
         public static bool isuploading = false;
         public static bool isworking = false;
         private async void getApkButton_Click(object sender, EventArgs e)
@@ -1737,13 +1741,8 @@ namespace AndroidSideloader
             int newerThanListCount = 0;
             rookienamelist = String.Empty;
             loaded = false;
-            string lines = settings.InstalledApps;
-            string pattern = "package:";
-            string replacement = String.Empty;
-            Regex rgx = new Regex(pattern);
-            string result = rgx.Replace(lines, replacement);
-            char[] delims = new[] { '\r', '\n' };
-            string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+            string installedApps = settings.InstalledApps;
+            string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string[] blacklist = new string[] { };
             string[] whitelist = new string[] { };
             if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -3936,13 +3935,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 updateAvailableClicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = settings.InstalledApps;
-                string pattern = "package:";
-                string replacement = String.Empty;
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                string installedApps = settings.InstalledApps;
+                string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
                 if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -4277,13 +4271,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 upToDate_Clicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = settings.InstalledApps;
-                string pattern = "package:";
-                string replacement = String.Empty;
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                string installedApps = settings.InstalledApps;
+                string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
                 if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -4419,13 +4408,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 NeedsDonation_Clicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = settings.InstalledApps;
-                string pattern = "package:";
-                string replacement = String.Empty;
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                string installedApps = settings.InstalledApps;
+                string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
                 if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
