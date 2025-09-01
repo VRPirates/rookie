@@ -181,70 +181,70 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ADB.cs" />
-    <Compile Include="RoundButton.cs">
+    <Compile Include="Controls\RoundButton.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="ColumnSort.cs" />
     <Compile Include="Donors.cs" />
-    <Compile Include="DonorsListView.cs">
+    <Compile Include="Forms\DonorsListView.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="DonorsListView.Designer.cs">
+    <Compile Include="Forms\DonorsListView.Designer.cs">
       <DependentUpon>DonorsListView.cs</DependentUpon>
     </Compile>
     <Compile Include="FlexibleMessageBox.cs" />
-    <Compile Include="RoundedRectangleF.cs" />
+    <Compile Include="Controls\RoundedRectangleF.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Sideloader\GetDependencies.cs" />
-    <Compile Include="Splash.cs">
+    <Compile Include="Forms\Splash.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Splash.Designer.cs">
+    <Compile Include="Forms\Splash.Designer.cs">
       <DependentUpon>Splash.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\PublicConfig.cs" />
-    <Compile Include="NewApps.cs">
+    <Compile Include="Forms\NewApps.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="NewApps.Designer.cs">
+    <Compile Include="Forms\NewApps.Designer.cs">
       <DependentUpon>NewApps.cs</DependentUpon>
     </Compile>
     <Compile Include="Transparenter.cs" />
-    <Compile Include="UpdateForm.cs">
+    <Compile Include="Forms\UpdateForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UpdateForm.Designer.cs">
+    <Compile Include="Forms\UpdateForm.Designer.cs">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MainForm.cs">
+    <Compile Include="Forms\MainForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="MainForm.Designer.cs">
+    <Compile Include="Forms\MainForm.Designer.cs">
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Sideloader\ProcessOutput.cs" />
     <Compile Include="Sideloader\RCLONE.cs" />
     <Compile Include="Sideloader\Utilities.cs" />
     <Compile Include="Utilities\Logger.cs" />
-    <Compile Include="QuestForm.cs">
+    <Compile Include="Forms\QuestForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="QuestForm.Designer.cs">
+    <Compile Include="Forms\QuestForm.Designer.cs">
       <DependentUpon>QuestForm.cs</DependentUpon>
     </Compile>
     <Compile Include="RCLONE.cs" />
-    <Compile Include="SettingsForm.cs">
+    <Compile Include="Forms\SettingsForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="SettingsForm.Designer.cs">
+    <Compile Include="Forms\SettingsForm.Designer.cs">
       <DependentUpon>SettingsForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Sideloader.cs" />
     <Compile Include="Updater.cs" />
-    <Compile Include="UsernameForm.cs">
+    <Compile Include="Forms\UsernameForm.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="UsernameForm.Designer.cs">
+    <Compile Include="Forms\UsernameForm.Designer.cs">
       <DependentUpon>UsernameForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -257,19 +257,19 @@
     <Compile Include="Utilities\UploadGame.cs" />
     <Compile Include="Utilities\Zip.cs" />
     <Compile Include="Utilities\Metrics.cs" />
-    <EmbeddedResource Include="DonorsListView.resx">
+    <EmbeddedResource Include="Forms\DonorsListView.resx">
       <DependentUpon>DonorsListView.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Splash.resx">
+    <EmbeddedResource Include="Forms\Splash.resx">
       <DependentUpon>Splash.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="NewApps.resx">
+    <EmbeddedResource Include="Forms\NewApps.resx">
       <DependentUpon>NewApps.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="UpdateForm.resx">
+    <EmbeddedResource Include="Forms\UpdateForm.resx">
       <DependentUpon>UpdateForm.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
+    <EmbeddedResource Include="Forms\MainForm.resx">
       <DependentUpon>MainForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
@@ -283,19 +283,19 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="QuestForm.resx">
+    <EmbeddedResource Include="Forms\QuestForm.resx">
       <DependentUpon>QuestForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="SettingsForm.resx">
+    <EmbeddedResource Include="Forms\SettingsForm.resx">
       <DependentUpon>SettingsForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="UsernameForm.resx">
+    <EmbeddedResource Include="Forms\UsernameForm.resx">
       <DependentUpon>UsernameForm.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <None Include="codenames" />
+    <None Include="../codenames" />
     <None Include="packages.config" />
     <None Include="Properties\DataSources\AndroidSideloader.Properties.Resources.datasource" />
     <None Include="Properties\DataSources\AndroidSideloader.Properties.Settings.datasource" />
@@ -308,24 +308,29 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="Rookie Offline.cmd">
+    <None Include="../Rookie Offline.cmd">
+      <Link>Rookie Offline.cmd</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="CleanupInstall.cmd">
+    <None Include="../CleanupInstall.cmd">
+      <Link>CleanupInstall.cmd</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="AddDefenderExceptions.ps1">
+    <None Include="../AddDefenderExceptions.ps1">
+      <Link>AddDefenderExceptions.ps1</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="version" />
+    <None Include="../version" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="changelog.txt" />
+    <Content Include="../changelog.txt">
+      <Link>changelog.txt</Link>
+    </Content>
+    <Content Include="../ChangelogHistory.txt" />
     <Content Include="icon.ico" />
-    <Content Include="ChangelogHistory.txt" />
     <Content Include="Resources\pattern_cubes.png" />
     <Content Include="Resources\pattern_herringbone.png" />
     <Content Include="Resources\splashimage.png" />
