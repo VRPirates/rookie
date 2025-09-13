@@ -132,7 +132,6 @@ namespace AndroidSideloader.Utilities
         public bool CreatePubMirrorFile { get; set; } = true;
         public bool UseDownloadedFiles { get; set; } = false;
         public float BandwidthLimit { get; set; } = 0f;
-        public bool HideAdultContent { get; set; } = false;
         public string[] FavoritedGames { get; set; } = new string[0];
 
         private SettingsManager()
@@ -254,7 +253,6 @@ namespace AndroidSideloader.Utilities
             CreatePubMirrorFile = true;
             UseDownloadedFiles = false;
             BandwidthLimit = 0f;
-            HideAdultContent = false;
             FavoritedGames = new string[0];
 
         Save();
