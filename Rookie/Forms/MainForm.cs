@@ -3747,6 +3747,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
         }
 
+        private static CancellationTokenSource VideoDownloadTokenSource { get; set; }
         public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (gamesListView.SelectedItems.Count < 1)
@@ -3823,19 +3824,27 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                 try
                 {
-                    string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
-                    string encodedQuery = WebUtility.UrlEncode(query);
-                    string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+                    if (VideoDownloadTokenSource != null)
+                    {
+                        Debug.WriteLine("Cancelling and/or disposing trailer download request.");
 
-                    string videoUrl;
-                    using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
-                    {
-                        videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
+                        // Just race condition protection
+                        VideoDownloadTokenSource?.Cancel();
+                        VideoDownloadTokenSource?.Dispose();
+                        VideoDownloadTokenSource = null;
                     }
-                    if (videoUrl == "")
+
+                    VideoDownloadTokenSource = new CancellationTokenSource();
+                    using (VideoDownloadTokenSource)
                     {
-                        MessageBox.Show("No video URL found in search results.");
-                        return;
+                        Debug.WriteLine("Creating trailer download request.");
+
+                        CancellationToken token = VideoDownloadTokenSource.Token;
+                        bool flowControl = await FetchVideoUrl(token);
+                        if (!flowControl)
+                        {
+                            return;
+                        }
                     }
 
                     await WebView_CoreWebView2ReadyAsync(videoUrl);
@@ -3846,9 +3855,33 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     Logger.Log("Error Loading Trailer");
                     Logger.Log(ex.Message);
                 }
+                finally
+                {
+                    VideoDownloadTokenSource = null;
+                }
             }
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
+
+            async Task<bool> FetchVideoUrl(CancellationToken token)
+            {
+                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
+                string encodedQuery = WebUtility.UrlEncode(query);
+                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+
+                var response = await client.GetAsync(url, token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.Log($"Failed to download HTML document {response.StatusCode}, {response.ReasonPhrase}", LogLevel.ERROR);
+                    return false;
+                }
+
+                string htmlDocument = await response.Content.ReadAsStringAsync();
+                string videoUrl = ExtractVideoUrl(htmlDocument);
+
+                await WebView_CoreWebView2ReadyAsync(videoUrl);
+                return true;
+            }
         }
 
         public void UpdateGamesButton_Click(object sender, EventArgs e)
