@@ -108,19 +108,22 @@ namespace AndroidSideloader
                 _ = FlexibleMessageBox.Show($"You are unable to access raw.githubusercontent.com with the Exception:\n{ex.Message}\n\nSome files may be missing (Offline/Cleanup Script, Launcher)");
             }
 
+            string adbPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "adb.exe");
+            string platformToolsDir = Path.Combine(Environment.CurrentDirectory, "platform-tools");
+
             try
             {
-                if (!File.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe")) //if adb is not updated, download and auto extract
+                if (!File.Exists(adbPath)) //if adb is not updated, download and auto extract
                 {
-                    if (!Directory.Exists($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools"))
+                    if (!Directory.Exists(platformToolsDir))
                     {
-                        _ = Directory.CreateDirectory($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
+                        _ = Directory.CreateDirectory(platformToolsDir);
                     }
 
                     currentAccessedWebsite = "github";
-                    _ = Logger.Log($"Missing adb within {Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools. Attempting to download from {currentAccessedWebsite}");
+                    _ = Logger.Log($"Missing adb within {platformToolsDir}. Attempting to download from {currentAccessedWebsite}");
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/dependencies.7z", "dependencies.7z");
-                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "dependencies.7z"), $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools");
+                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "dependencies.7z"), platformToolsDir);
                     File.Delete("dependencies.7z");
                     _ = Logger.Log($"adb download successful");
                 }
