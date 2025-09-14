@@ -1,10 +1,13 @@
 using AndroidSideloader.Models;
+using AndroidSideloader.Properties;
 using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Microsoft.Web.WebView2.Core;
+using Microsoft.Web.WebView2.WinForms;
 using Newtonsoft.Json;
 using SergeUtils;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -13,35 +16,46 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Forms;
-
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
     {
-        private static readonly SettingsManager settings = SettingsManager.Instance;
         private readonly ListViewColumnSorter lvwColumnSorter;
-        private bool isLoading = true;
-        private bool manualIP;
-        private System.Windows.Forms.Timer _debounceTimer;
-        private CancellationTokenSource _cts;
-
-        private readonly List<UploadGame> gamesToUpload = new List<UploadGame>();
-        private List<ListViewItem> _allItems;
-
+        private static readonly SettingsManager settings = SettingsManager.Instance;
+#if DEBUG
+        public static bool debugMode = true;
         public bool DeviceConnected;
         public bool keyheld;
         public bool keyheld2;
-
-        public static bool debugMode = true;
         public static string CurrAPK;
         public static string CurrPCKG;
+        List<UploadGame> gamesToUpload = new List<UploadGame>();
+
+
         public static string currremotesimple = String.Empty;
+#else
+        public bool keyheld;
+        public static string CurrAPK;
+        public static string CurrPCKG;
+        private readonly List<UploadGame> gamesToUpload = new List<UploadGame>();
+        public static bool debugMode = false;
+        public bool DeviceConnected = false;
+
+
+        public static string currremotesimple = "";
+
+#endif
+
+        private bool isLoading = true;
         public static bool isOffline = false;
         public static bool noRcloneUpdating;
         public static bool noAppCheck = false;
@@ -51,18 +65,17 @@ namespace AndroidSideloader
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
         public static Splash SplashScreen;
-
-        static MainForm()
-        {
-            SplashScreen = new Splash();
-        }
-
+        private bool manualIP;
+        private System.Windows.Forms.Timer _debounceTimer;
+        private CancellationTokenSource _cts;
+        private List<ListViewItem> _allItems;
         public MainForm()
         {
             InitializeComponent();
             Logger.Initialize();
             InitializeTimeReferences();
 
+            SplashScreen = new Splash();
             SplashScreen.Show();
 
             // Check for Offline Mode or No RCLONE Updating
@@ -74,7 +87,6 @@ namespace AndroidSideloader
                 Interval = 1000, // 1 second delay
                 Enabled = false
             };
-
             _debounceTimer.Tick += async (sender, e) => await RunSearch();
 
             // Set data source for games queue list
@@ -96,24 +108,22 @@ namespace AndroidSideloader
             }
         }
 
-        private static void CheckCommandLineArguments()
+        private void CheckCommandLineArguments()
         {
             string[] args = Environment.GetCommandLineArgs();
             foreach (string arg in args)
             {
-                switch (arg)
+                if (arg == "--offline")
                 {
-                    case "--offline":
-                        isOffline = true;
-                        continue;
-
-                    case "--no-rclone-update":
-                        noRcloneUpdating = true;
-                        continue;
-
-                    case "--disable-app-check":
-                        noAppCheck = true;
-                        continue;
+                    isOffline = true;
+                }
+                if (arg == "--no-rclone-update")
+                {
+                    noRcloneUpdating = true;
+                }
+                if (arg == "--disable-app-check")
+                {
+                    noAppCheck = true;
                 }
             }
         }
@@ -136,7 +146,6 @@ namespace AndroidSideloader
             {
                 ResetPropertiesAfterTimePassed();
             }
-
             if (comparison2 > newDayReference2)
             {
                 ResetProperties2AfterTimePassed();
@@ -1896,8 +1905,7 @@ namespace AndroidSideloader
             else if (!isOffline)
             {
                 SwitchMirrors();
-                if (!isOffline)
-                {
+                if (!isOffline){
                     initListView(false);
                 }
             }
@@ -4700,12 +4708,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             if (favoriteSwitcher.Text == "Games List")
             {
                 favoriteSwitcher.Text = "Favorited Games";
-                initListView(true);
+                initListView(true);  
             }
             else
             {
                 favoriteSwitcher.Text = "Games List";
-                initListView(false);
+                initListView(false); 
             }
         }
     }
