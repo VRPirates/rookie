@@ -3846,6 +3846,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             return;
                         }
                     }
+
+                    await WebView_CoreWebView2ReadyAsync(videoUrl);
                 }
                 catch (Exception ex)
                 {
