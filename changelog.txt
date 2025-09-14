@@ -1,3 +1,11 @@
-RSL 2.34.1
+RSL 2.35
 
-- Fix: Rookie crashing with "Cannto add or insert the item"
+- Feature: Restructure and project file organization
+- Feature: Renamed 'ADB' to 'AdbManager'
+- Fix: Remove hideAdultContent toggle (no longer needed)
+- Fix: WebView2 "too many automatic redirections" error
+- Fix: Donor window only displays unique entries
+- Fix: Cleanup packages listing
+- Chore: Changed C:\RSL\platform-tools path to platform-tools in working dir
+- Chore: Minor Main file organization
+- Chore: Minor MainForm field cleanup
