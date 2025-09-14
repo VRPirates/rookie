@@ -3725,6 +3725,15 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 {
                     this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
                 };
+
+                webView21.CoreWebView2.NavigationCompleted += (obj, args) => 
+                {
+                    if (!args.IsSuccess)
+                    {
+                        CoreWebView2 wv2 = (CoreWebView2)obj;
+                        Logger.Log($"Failed to navigate to '{wv2.Source}': {args.WebErrorStatus}");
+                    }
+                };
             }
             catch (Exception ex)
             {
@@ -3861,12 +3870,18 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                 string htmlDocument = await response.Content.ReadAsStringAsync();
 
-                if (string.IsNullOrEmpty(htmlDocument))
+                if (string.IsNullOrWhiteSpace(htmlDocument))
                 {
+                    Logger.Log($"Fetched search document was empty, but fetch request returned {response.StatusCode}", LogLevel.ERROR);
                     return false;
                 }
 
                 string videoUrl = ExtractVideoUrl(htmlDocument);
+                if (string.IsNullOrWhiteSpace(videoUrl))
+                {
+                    Logger.Log($"No trailer search results found for '{CurrentGameName}'.");
+                    return false;
+                }
 
                 await WebView_CoreWebView2ReadyAsync(videoUrl);
                 return true;
