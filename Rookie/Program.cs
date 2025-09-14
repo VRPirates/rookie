@@ -8,10 +8,7 @@ namespace AndroidSideloader
 {
     internal static class Program
     {
-        public static MainForm form;
-
         private static readonly SettingsManager settings = SettingsManager.Instance;
-
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
@@ -19,13 +16,16 @@ namespace AndroidSideloader
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         private static void Main()
         {
+
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             form = new MainForm();
             Application.Run(form);
+            //form.Show();
         }
+        public static MainForm form;
 
         private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {
