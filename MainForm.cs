@@ -3710,6 +3710,22 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         private async Task CreateEnvironment()
         {
+            webView21.CoreWebView2InitializationCompleted += (sender, e) => {
+                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+                {
+                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+                };
+
+                webView21.CoreWebView2.NavigationCompleted += (obj, args) =>
+                {
+                    if (!args.IsSuccess)
+                    {
+                        CoreWebView2 wv2 = (CoreWebView2)obj;
+                        Logger.Log($"Failed to navigate to '{wv2.Source}': {args.WebErrorStatus}");
+                    }
+                };
+            };
+
             string appDataLocation = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL");
             var webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: appDataLocation);
             await webView21.EnsureCoreWebView2Async(webView2Environment);
@@ -3721,10 +3737,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 // Load the video URL in the web browser control
                 webView21.CoreWebView2.Navigate(videoUrl);
-                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
-                {
-                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
-                };
             }
             catch (Exception ex)
             {
@@ -3732,6 +3744,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
         }
 
+        private static CancellationTokenSource VideoDownloadTokenSource { get; set; }
         public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (gamesListView.SelectedItems.Count < 1)
@@ -3808,22 +3821,27 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                 try
                 {
-                    string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
-                    string encodedQuery = WebUtility.UrlEncode(query);
-                    string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+                    if (VideoDownloadTokenSource != null)
+                    {
+                        Debug.WriteLine("Cancelling and/or disposing trailer download request.");
 
-                    string videoUrl;
-                    using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
-                    {
-                        videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
-                    }
-                    if (videoUrl == "")
-                    {
-                        MessageBox.Show("No video URL found in search results.");
-                        return;
+                        // Just race condition protection
+                        VideoDownloadTokenSource?.Cancel();
+                        VideoDownloadTokenSource?.Dispose();
+                        VideoDownloadTokenSource = null;
                     }
 
-                    await WebView_CoreWebView2ReadyAsync(videoUrl);
+                    VideoDownloadTokenSource = new CancellationTokenSource();
+                    using (VideoDownloadTokenSource)
+                    {
+                        Debug.WriteLine("Creating trailer download request.");
+
+                        CancellationToken token = VideoDownloadTokenSource.Token;
+                        if (!await FetchAndDisplayVideoUrl(token))
+                        {
+                            return;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -3831,9 +3849,46 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     Logger.Log("Error Loading Trailer");
                     Logger.Log(ex.Message);
                 }
+                finally
+                {
+                    VideoDownloadTokenSource = null;
+                }
             }
+
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
+
+            async Task<bool> FetchAndDisplayVideoUrl(CancellationToken token)
+            {
+                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
+                string encodedQuery = WebUtility.UrlEncode(query);
+                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+
+                var response = await client.GetAsync(url, token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.Log($"Failed to download HTML document {response.StatusCode}, {response.ReasonPhrase}", LogLevel.ERROR);
+                    return false;
+                }
+
+                string htmlDocument = await response.Content.ReadAsStringAsync();
+
+                if (string.IsNullOrWhiteSpace(htmlDocument))
+                {
+                    Logger.Log($"Fetched search document was empty, but fetch request returned {response.StatusCode}", LogLevel.ERROR);
+                    return false;
+                }
+
+                string videoUrl = ExtractVideoUrl(htmlDocument);
+                if (string.IsNullOrWhiteSpace(videoUrl))
+                {
+                    Logger.Log($"No trailer search results found for '{CurrentGameName}'.");
+                    return false;
+                }
+
+                await WebView_CoreWebView2ReadyAsync(videoUrl);
+                return true;
+            }
         }
 
         public void UpdateGamesButton_Click(object sender, EventArgs e)
