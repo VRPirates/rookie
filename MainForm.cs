@@ -3710,6 +3710,22 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         private async Task CreateEnvironment()
         {
+            webView21.CoreWebView2InitializationCompleted += (sender, e) => {
+                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+                {
+                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+                };
+
+                webView21.CoreWebView2.NavigationCompleted += (obj, args) =>
+                {
+                    if (!args.IsSuccess)
+                    {
+                        CoreWebView2 wv2 = (CoreWebView2)obj;
+                        Logger.Log($"Failed to navigate to '{wv2.Source}': {args.WebErrorStatus}");
+                    }
+                };
+            };
+
             string appDataLocation = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL");
             var webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: appDataLocation);
             await webView21.EnsureCoreWebView2Async(webView2Environment);
@@ -3721,19 +3737,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 // Load the video URL in the web browser control
                 webView21.CoreWebView2.Navigate(videoUrl);
-                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
-                {
-                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
-                };
-
-                webView21.CoreWebView2.NavigationCompleted += (obj, args) => 
-                {
-                    if (!args.IsSuccess)
-                    {
-                        CoreWebView2 wv2 = (CoreWebView2)obj;
-                        Logger.Log($"Failed to navigate to '{wv2.Source}': {args.WebErrorStatus}");
-                    }
-                };
             }
             catch (Exception ex)
             {
