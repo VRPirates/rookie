@@ -134,6 +134,9 @@ namespace AndroidSideloader.Utilities
         public float BandwidthLimit { get; set; } = 0f;
         public bool HideAdultContent { get; set; } = false;
         public string[] FavoritedGames { get; set; } = new string[0];
+        public bool IsProxyEnabled { get; set; } = false;
+        public string ProxyAddress { get; set; } = string.Empty;
+        public string ProxyPort { get; set; } = string.Empty;
 
         private SettingsManager()
         {
@@ -256,6 +259,9 @@ namespace AndroidSideloader.Utilities
             BandwidthLimit = 0f;
             HideAdultContent = false;
             FavoritedGames = new string[0];
+            IsProxyEnabled = false;
+            ProxyAddress = string.Empty;
+            ProxyPort = string.Empty;
 
         Save();
             Debug.WriteLine("Default settings created.");

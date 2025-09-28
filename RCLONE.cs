@@ -105,6 +105,13 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
+
+            if (settings.IsProxyEnabled)
+            {
+                rclone.StartInfo.Environment.Add("HTTP_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+                rclone.StartInfo.Environment.Add("HTTPS_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+            }
+
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
             {
@@ -204,6 +211,13 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
+
+            if (settings.IsProxyEnabled)
+            {
+                rclone.StartInfo.Environment.Add("HTTP_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+                rclone.StartInfo.Environment.Add("HTTPS_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+            }
+
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
             {
@@ -281,6 +295,13 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
+
+            if (settings.IsProxyEnabled)
+            {
+                rclone.StartInfo.Environment.Add("HTTP_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+                rclone.StartInfo.Environment.Add("HTTPS_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+            }
+
             // Display RCLONE Window if the binary is being run in Debug Mode.
             if (MainForm.debugMode)
             {
