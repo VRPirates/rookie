@@ -93,6 +93,7 @@ namespace AndroidSideloader
 
         private void applyButton_Click(object sender, EventArgs e)
         {
+            //parsing bandwidth value
             var bandwidthInput = bandwidthLimitTextBox.Text;
             Regex regex = new Regex(@"^\d+(\.\d+)?$");
 
@@ -108,7 +109,17 @@ namespace AndroidSideloader
                 MessageBox.Show("Please enter a valid number for the bandwidth limit.");
             }
 
+            //parsing proxy address
             var proxyAddressInput = proxyAddressTextBox.Text;
+
+            if (proxyAddressInput.StartsWith("http://"))
+            {
+                proxyAddressInput = proxyAddressInput.Substring("http://".Length);
+            }
+            else if (proxyAddressInput.StartsWith("https://"))
+            {
+                proxyAddressInput = proxyAddressInput.Substring("https://".Length);
+            }
 
             if (proxyAddressInput.Equals("localhost", StringComparison.OrdinalIgnoreCase) ||
                 IPAddress.TryParse(proxyAddressInput, out _))
@@ -121,6 +132,7 @@ namespace AndroidSideloader
                 MessageBox.Show("Please enter a valid address for the proxy.");
             }
 
+            //parsing proxy port
             var proxyPortInput = proxyPortTextBox.Text;
 
             if (ushort.TryParse(proxyPortInput, out _))

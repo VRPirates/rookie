@@ -307,9 +307,9 @@ namespace AndroidSideloader
             this.isProxyEnabledCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
             this.isProxyEnabledCheckbox.Location = new System.Drawing.Point(25, 200);
             this.isProxyEnabledCheckbox.Name = "isProxyEnabledCheckbox";
-            this.isProxyEnabledCheckbox.Size = new System.Drawing.Size(274, 22);
+            this.isProxyEnabledCheckbox.Size = new System.Drawing.Size(390, 22);
             this.isProxyEnabledCheckbox.TabIndex = 34;
-            this.isProxyEnabledCheckbox.Text = "Use proxy (restart app after changing)";
+            this.isProxyEnabledCheckbox.Text = "Use HTTP proxy for Rclone (restart app after changing)";
             this.isProxyEnabledCheckbox.UseVisualStyleBackColor = true;
             this.isProxyEnabledCheckbox.CheckedChanged += new System.EventHandler(this.isProxyEnabledCheckbox_CheckedChanged);
             // 
