@@ -56,7 +56,12 @@ namespace AndroidSideloader
             this.chkUseDownloadedFiles = new System.Windows.Forms.CheckBox();
             this.bandwidthLabel = new System.Windows.Forms.Label();
             this.bandwidthLimitTextBox = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.bandwidthTextBox = new System.Windows.Forms.Label();
+            this.isProxyEnabledCheckbox = new System.Windows.Forms.CheckBox();
+            this.proxyAddressTextBox = new System.Windows.Forms.TextBox();
+            this.proxyPortTextBox = new System.Windows.Forms.TextBox();
+            this.proxyAddressLabel = new System.Windows.Forms.Label();
+            this.proxyPortLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // checkForUpdatesCheckBox
@@ -65,7 +70,7 @@ namespace AndroidSideloader
             this.checkForUpdatesCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.checkForUpdatesCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.checkForUpdatesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(13, 11);
+            this.checkForUpdatesCheckBox.Location = new System.Drawing.Point(16, 22);
             this.checkForUpdatesCheckBox.Name = "checkForUpdatesCheckBox";
             this.checkForUpdatesCheckBox.Size = new System.Drawing.Size(226, 22);
             this.checkForUpdatesCheckBox.TabIndex = 0;
@@ -79,7 +84,7 @@ namespace AndroidSideloader
             this.enableMessageBoxesCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.enableMessageBoxesCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.enableMessageBoxesCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(13, 227);
+            this.enableMessageBoxesCheckBox.Location = new System.Drawing.Point(372, 75);
             this.enableMessageBoxesCheckBox.Name = "enableMessageBoxesCheckBox";
             this.enableMessageBoxesCheckBox.Size = new System.Drawing.Size(309, 22);
             this.enableMessageBoxesCheckBox.TabIndex = 1;
@@ -93,7 +98,7 @@ namespace AndroidSideloader
             this.deleteAfterInstallCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.deleteAfterInstallCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.deleteAfterInstallCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(13, 92);
+            this.deleteAfterInstallCheckBox.Location = new System.Drawing.Point(16, 102);
             this.deleteAfterInstallCheckBox.Name = "deleteAfterInstallCheckBox";
             this.deleteAfterInstallCheckBox.Size = new System.Drawing.Size(288, 22);
             this.deleteAfterInstallCheckBox.TabIndex = 3;
@@ -107,7 +112,7 @@ namespace AndroidSideloader
             this.updateConfigCheckBox.BackColor = System.Drawing.Color.Transparent;
             this.updateConfigCheckBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.updateConfigCheckBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.updateConfigCheckBox.Location = new System.Drawing.Point(13, 38);
+            this.updateConfigCheckBox.Location = new System.Drawing.Point(16, 48);
             this.updateConfigCheckBox.Name = "updateConfigCheckBox";
             this.updateConfigCheckBox.Size = new System.Drawing.Size(256, 22);
             this.updateConfigCheckBox.TabIndex = 6;
@@ -121,7 +126,7 @@ namespace AndroidSideloader
             this.userJsonOnGameInstall.BackColor = System.Drawing.Color.Transparent;
             this.userJsonOnGameInstall.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.userJsonOnGameInstall.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.userJsonOnGameInstall.Location = new System.Drawing.Point(13, 254);
+            this.userJsonOnGameInstall.Location = new System.Drawing.Point(372, 102);
             this.userJsonOnGameInstall.Name = "userJsonOnGameInstall";
             this.userJsonOnGameInstall.Size = new System.Drawing.Size(243, 22);
             this.userJsonOnGameInstall.TabIndex = 9;
@@ -144,7 +149,7 @@ namespace AndroidSideloader
             this.nodevicemodeBox.BackColor = System.Drawing.Color.Transparent;
             this.nodevicemodeBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.nodevicemodeBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.nodevicemodeBox.Location = new System.Drawing.Point(13, 65);
+            this.nodevicemodeBox.Location = new System.Drawing.Point(16, 75);
             this.nodevicemodeBox.Name = "nodevicemodeBox";
             this.nodevicemodeBox.Size = new System.Drawing.Size(226, 22);
             this.nodevicemodeBox.TabIndex = 9;
@@ -158,7 +163,7 @@ namespace AndroidSideloader
             this.bmbfBox.BackColor = System.Drawing.Color.Transparent;
             this.bmbfBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.bmbfBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.bmbfBox.Location = new System.Drawing.Point(13, 281);
+            this.bmbfBox.Location = new System.Drawing.Point(372, 129);
             this.bmbfBox.Name = "bmbfBox";
             this.bmbfBox.Size = new System.Drawing.Size(281, 22);
             this.bmbfBox.TabIndex = 9;
@@ -172,7 +177,7 @@ namespace AndroidSideloader
             this.AutoReinstBox.BackColor = System.Drawing.Color.Transparent;
             this.AutoReinstBox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.AutoReinstBox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.AutoReinstBox.Location = new System.Drawing.Point(13, 200);
+            this.AutoReinstBox.Location = new System.Drawing.Point(372, 48);
             this.AutoReinstBox.Name = "AutoReinstBox";
             this.AutoReinstBox.Size = new System.Drawing.Size(280, 22);
             this.AutoReinstBox.TabIndex = 9;
@@ -187,7 +192,7 @@ namespace AndroidSideloader
             this.trailersOn.BackColor = System.Drawing.Color.Transparent;
             this.trailersOn.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.trailersOn.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.trailersOn.Location = new System.Drawing.Point(13, 119);
+            this.trailersOn.Location = new System.Drawing.Point(16, 129);
             this.trailersOn.Name = "trailersOn";
             this.trailersOn.Size = new System.Drawing.Size(255, 22);
             this.trailersOn.TabIndex = 23;
@@ -209,7 +214,7 @@ namespace AndroidSideloader
             this.chkSingleThread.BackColor = System.Drawing.Color.Transparent;
             this.chkSingleThread.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.chkSingleThread.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.chkSingleThread.Location = new System.Drawing.Point(13, 146);
+            this.chkSingleThread.Location = new System.Drawing.Point(16, 156);
             this.chkSingleThread.Name = "chkSingleThread";
             this.chkSingleThread.Size = new System.Drawing.Size(186, 22);
             this.chkSingleThread.TabIndex = 25;
@@ -227,7 +232,7 @@ namespace AndroidSideloader
             this.setBackupDirectory.ForeColor = System.Drawing.Color.White;
             this.setBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setBackupDirectory.Location = new System.Drawing.Point(26, 598);
+            this.setBackupDirectory.Location = new System.Drawing.Point(352, 392);
             this.setBackupDirectory.Name = "setBackupDirectory";
             this.setBackupDirectory.Radius = 5;
             this.setBackupDirectory.Size = new System.Drawing.Size(285, 31);
@@ -248,7 +253,7 @@ namespace AndroidSideloader
             this.setDownloadDirectory.ForeColor = System.Drawing.Color.White;
             this.setDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.setDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.setDownloadDirectory.Location = new System.Drawing.Point(26, 561);
+            this.setDownloadDirectory.Location = new System.Drawing.Point(352, 355);
             this.setDownloadDirectory.Name = "setDownloadDirectory";
             this.setDownloadDirectory.Radius = 5;
             this.setDownloadDirectory.Size = new System.Drawing.Size(285, 31);
@@ -269,7 +274,7 @@ namespace AndroidSideloader
             this.btnOpenDebug.ForeColor = System.Drawing.Color.White;
             this.btnOpenDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnOpenDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnOpenDebug.Location = new System.Drawing.Point(25, 434);
+            this.btnOpenDebug.Location = new System.Drawing.Point(48, 355);
             this.btnOpenDebug.Name = "btnOpenDebug";
             this.btnOpenDebug.Radius = 5;
             this.btnOpenDebug.Size = new System.Drawing.Size(285, 31);
@@ -290,7 +295,7 @@ namespace AndroidSideloader
             this.btnResetDebug.ForeColor = System.Drawing.Color.White;
             this.btnResetDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnResetDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnResetDebug.Location = new System.Drawing.Point(25, 471);
+            this.btnResetDebug.Location = new System.Drawing.Point(48, 392);
             this.btnResetDebug.Name = "btnResetDebug";
             this.btnResetDebug.Radius = 5;
             this.btnResetDebug.Size = new System.Drawing.Size(285, 31);
@@ -311,7 +316,7 @@ namespace AndroidSideloader
             this.btnUploadDebug.ForeColor = System.Drawing.Color.White;
             this.btnUploadDebug.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.btnUploadDebug.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.btnUploadDebug.Location = new System.Drawing.Point(25, 508);
+            this.btnUploadDebug.Location = new System.Drawing.Point(48, 429);
             this.btnUploadDebug.Name = "btnUploadDebug";
             this.btnUploadDebug.Radius = 5;
             this.btnUploadDebug.Size = new System.Drawing.Size(285, 31);
@@ -332,7 +337,7 @@ namespace AndroidSideloader
             this.resetSettingsButton.ForeColor = System.Drawing.Color.White;
             this.resetSettingsButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.resetSettingsButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.resetSettingsButton.Location = new System.Drawing.Point(178, 381);
+            this.resetSettingsButton.Location = new System.Drawing.Point(352, 522);
             this.resetSettingsButton.Name = "resetSettingsButton";
             this.resetSettingsButton.Radius = 5;
             this.resetSettingsButton.Size = new System.Drawing.Size(133, 31);
@@ -356,7 +361,7 @@ namespace AndroidSideloader
             this.applyButton.ForeColor = global::AndroidSideloader.Properties.Settings.Default.FontColor;
             this.applyButton.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.applyButton.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.applyButton.Location = new System.Drawing.Point(26, 381);
+            this.applyButton.Location = new System.Drawing.Point(200, 522);
             this.applyButton.Name = "applyButton";
             this.applyButton.Radius = 5;
             this.applyButton.Size = new System.Drawing.Size(133, 31);
@@ -373,7 +378,7 @@ namespace AndroidSideloader
             this.virtualFilesystemCompatibilityCheckbox.BackColor = System.Drawing.Color.Transparent;
             this.virtualFilesystemCompatibilityCheckbox.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.virtualFilesystemCompatibilityCheckbox.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.virtualFilesystemCompatibilityCheckbox.Location = new System.Drawing.Point(13, 308);
+            this.virtualFilesystemCompatibilityCheckbox.Location = new System.Drawing.Point(372, 156);
             this.virtualFilesystemCompatibilityCheckbox.Name = "virtualFilesystemCompatibilityCheckbox";
             this.virtualFilesystemCompatibilityCheckbox.Size = new System.Drawing.Size(279, 22);
             this.virtualFilesystemCompatibilityCheckbox.TabIndex = 26;
@@ -391,7 +396,7 @@ namespace AndroidSideloader
             this.openBackupDirectory.ForeColor = System.Drawing.Color.White;
             this.openBackupDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.openBackupDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.openBackupDirectory.Location = new System.Drawing.Point(26, 672);
+            this.openBackupDirectory.Location = new System.Drawing.Point(352, 466);
             this.openBackupDirectory.Name = "openBackupDirectory";
             this.openBackupDirectory.Radius = 5;
             this.openBackupDirectory.Size = new System.Drawing.Size(285, 31);
@@ -412,7 +417,7 @@ namespace AndroidSideloader
             this.openDownloadDirectory.ForeColor = System.Drawing.Color.White;
             this.openDownloadDirectory.Inactive1 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
             this.openDownloadDirectory.Inactive2 = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
-            this.openDownloadDirectory.Location = new System.Drawing.Point(26, 635);
+            this.openDownloadDirectory.Location = new System.Drawing.Point(352, 429);
             this.openDownloadDirectory.Name = "openDownloadDirectory";
             this.openDownloadDirectory.Radius = 5;
             this.openDownloadDirectory.Size = new System.Drawing.Size(285, 31);
@@ -429,7 +434,7 @@ namespace AndroidSideloader
             this.chkUseDownloadedFiles.BackColor = System.Drawing.Color.Transparent;
             this.chkUseDownloadedFiles.DataBindings.Add(new System.Windows.Forms.Binding("Font", global::AndroidSideloader.Properties.Settings.Default, "FontStyle", true, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged));
             this.chkUseDownloadedFiles.Font = global::AndroidSideloader.Properties.Settings.Default.FontStyle;
-            this.chkUseDownloadedFiles.Location = new System.Drawing.Point(13, 173);
+            this.chkUseDownloadedFiles.Location = new System.Drawing.Point(372, 22);
             this.chkUseDownloadedFiles.Name = "chkUseDownloadedFiles";
             this.chkUseDownloadedFiles.Size = new System.Drawing.Size(227, 22);
             this.chkUseDownloadedFiles.TabIndex = 29;
@@ -442,7 +447,7 @@ namespace AndroidSideloader
             this.bandwidthLabel.AutoSize = true;
             this.bandwidthLabel.BackColor = System.Drawing.Color.Transparent;
             this.bandwidthLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.bandwidthLabel.Location = new System.Drawing.Point(8, 340);
+            this.bandwidthLabel.Location = new System.Drawing.Point(14, 308);
             this.bandwidthLabel.Name = "bandwidthLabel";
             this.bandwidthLabel.Size = new System.Drawing.Size(115, 18);
             this.bandwidthLabel.TabIndex = 30;
@@ -455,23 +460,75 @@ namespace AndroidSideloader
             this.bandwidthLimitTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.bandwidthLimitTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.bandwidthLimitTextBox.ForeColor = System.Drawing.Color.White;
-            this.bandwidthLimitTextBox.Location = new System.Drawing.Point(129, 338);
+            this.bandwidthLimitTextBox.Location = new System.Drawing.Point(135, 305);
             this.bandwidthLimitTextBox.Name = "bandwidthLimitTextBox";
             this.bandwidthLimitTextBox.Size = new System.Drawing.Size(46, 21);
             this.bandwidthLimitTextBox.TabIndex = 31;
             this.bandwidthLimitTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.bandwidthLimitTextBox.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.bandwidthLimitTextBox_KeyPress);
             // 
-            // label1
+            // bandwidthTextBox
             // 
-            this.label1.AutoSize = true;
-            this.label1.BackColor = System.Drawing.Color.Transparent;
-            this.label1.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
-            this.label1.Location = new System.Drawing.Point(181, 340);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(43, 18);
-            this.label1.TabIndex = 32;
-            this.label1.Text = "MB/s";
+            this.bandwidthTextBox.AutoSize = true;
+            this.bandwidthTextBox.BackColor = System.Drawing.Color.Transparent;
+            this.bandwidthTextBox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.bandwidthTextBox.Location = new System.Drawing.Point(187, 308);
+            this.bandwidthTextBox.Name = "bandwidthTextBox";
+            this.bandwidthTextBox.Size = new System.Drawing.Size(43, 18);
+            this.bandwidthTextBox.TabIndex = 32;
+            this.bandwidthTextBox.Text = "MB/s";
+            // 
+            // isProxyEnabledCheckbox
+            // 
+            this.isProxyEnabledCheckbox.AutoSize = true;
+            this.isProxyEnabledCheckbox.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.isProxyEnabledCheckbox.Location = new System.Drawing.Point(16, 199);
+            this.isProxyEnabledCheckbox.Name = "isProxyEnabledCheckbox";
+            this.isProxyEnabledCheckbox.Size = new System.Drawing.Size(390, 22);
+            this.isProxyEnabledCheckbox.TabIndex = 34;
+            this.isProxyEnabledCheckbox.Text = "Use HTTP proxy for Rclone (restart app after changing)";
+            this.isProxyEnabledCheckbox.UseVisualStyleBackColor = true;
+            this.isProxyEnabledCheckbox.CheckedChanged += new System.EventHandler(this.isProxyEnabledCheckbox_CheckedChanged);
+            // 
+            // proxyAddressTextBox
+            // 
+            this.proxyAddressTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.proxyAddressTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.proxyAddressTextBox.ForeColor = System.Drawing.Color.White;
+            this.proxyAddressTextBox.Location = new System.Drawing.Point(135, 230);
+            this.proxyAddressTextBox.Name = "proxyAddressTextBox";
+            this.proxyAddressTextBox.Size = new System.Drawing.Size(170, 20);
+            this.proxyAddressTextBox.TabIndex = 35;
+            // 
+            // proxyPortTextBox
+            // 
+            this.proxyPortTextBox.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(25)))), ((int)(((byte)(25)))), ((int)(((byte)(25)))));
+            this.proxyPortTextBox.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.proxyPortTextBox.ForeColor = System.Drawing.Color.White;
+            this.proxyPortTextBox.Location = new System.Drawing.Point(135, 259);
+            this.proxyPortTextBox.Name = "proxyPortTextBox";
+            this.proxyPortTextBox.Size = new System.Drawing.Size(101, 20);
+            this.proxyPortTextBox.TabIndex = 36;
+            // 
+            // proxyAddressLabel
+            // 
+            this.proxyAddressLabel.AutoSize = true;
+            this.proxyAddressLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.proxyAddressLabel.Location = new System.Drawing.Point(14, 232);
+            this.proxyAddressLabel.Name = "proxyAddressLabel";
+            this.proxyAddressLabel.Size = new System.Drawing.Size(108, 18);
+            this.proxyAddressLabel.TabIndex = 37;
+            this.proxyAddressLabel.Text = "Proxy Address:";
+            // 
+            // proxyPortLabel
+            // 
+            this.proxyPortLabel.AutoSize = true;
+            this.proxyPortLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 11.25F);
+            this.proxyPortLabel.Location = new System.Drawing.Point(14, 261);
+            this.proxyPortLabel.Name = "proxyPortLabel";
+            this.proxyPortLabel.Size = new System.Drawing.Size(82, 18);
+            this.proxyPortLabel.TabIndex = 38;
+            this.proxyPortLabel.Text = "Proxy Port:";
             // 
             // SettingsForm
             // 
@@ -479,8 +536,13 @@ namespace AndroidSideloader
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = global::AndroidSideloader.Properties.Settings.Default.BackColor;
             this.BackgroundImage = ((System.Drawing.Image)(resources.GetObject("$this.BackgroundImage")));
-            this.ClientSize = new System.Drawing.Size(339, 716);
-            this.Controls.Add(this.label1);
+            this.ClientSize = new System.Drawing.Size(697, 585);
+            this.Controls.Add(this.proxyPortLabel);
+            this.Controls.Add(this.proxyAddressLabel);
+            this.Controls.Add(this.proxyPortTextBox);
+            this.Controls.Add(this.proxyAddressTextBox);
+            this.Controls.Add(this.isProxyEnabledCheckbox);
+            this.Controls.Add(this.bandwidthTextBox);
             this.Controls.Add(this.bandwidthLimitTextBox);
             this.Controls.Add(this.bandwidthLabel);
             this.Controls.Add(this.chkUseDownloadedFiles);
@@ -550,6 +612,11 @@ namespace AndroidSideloader
         private System.Windows.Forms.CheckBox chkUseDownloadedFiles;
         private System.Windows.Forms.Label bandwidthLabel;
         private System.Windows.Forms.TextBox bandwidthLimitTextBox;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label bandwidthTextBox;
+        private System.Windows.Forms.CheckBox isProxyEnabledCheckbox;
+        private System.Windows.Forms.TextBox proxyAddressTextBox;
+        private System.Windows.Forms.TextBox proxyPortTextBox;
+        private System.Windows.Forms.Label proxyAddressLabel;
+        private System.Windows.Forms.Label proxyPortLabel;
     }
 }

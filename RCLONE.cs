@@ -105,6 +105,13 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
+
+            if (settings.IsProxyEnabled)
+            {
+                rclone.StartInfo.Environment.Add("HTTP_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+                rclone.StartInfo.Environment.Add("HTTPS_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+            }
+
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -199,6 +206,13 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
+
+            if (settings.IsProxyEnabled)
+            {
+                rclone.StartInfo.Environment.Add("HTTP_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+                rclone.StartInfo.Environment.Add("HTTPS_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+            }
+
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -271,6 +285,13 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
+
+            if (settings.IsProxyEnabled)
+            {
+                rclone.StartInfo.Environment.Add("HTTP_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+                rclone.StartInfo.Environment.Add("HTTPS_PROXY", $"http://{settings.ProxyAddress}:{settings.ProxyPort}");
+            }
+
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
