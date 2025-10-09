@@ -47,6 +47,7 @@ namespace AndroidSideloader
 
         private void initToolTips()
         {
+#pragma warning disable IDISP001 // Dispose created
             ToolTip checkForUpdatesToolTip = new ToolTip();
             checkForUpdatesToolTip.SetToolTip(checkForUpdatesCheckBox, "If this is checked, the software will check for available updates");
             ToolTip enableMessageBoxesToolTip = new ToolTip();
@@ -55,6 +56,7 @@ namespace AndroidSideloader
             deleteAfterInstallToolTip.SetToolTip(deleteAfterInstallCheckBox, "If this is checked, the software will delete all game files after downloading and installing a game from a remote server");
             ToolTip chkUseDownloadedFilesTooltip = new ToolTip();
             chkUseDownloadedFilesTooltip.SetToolTip(chkUseDownloadedFiles, "If this is checked, Rookie will always install Downloaded files without Re-Downloading or Asking to Re-Download");
+#pragma warning restore IDISP001 // Dispose created
         }
 
         public void btnUploadDebug_click(object sender, EventArgs e)
@@ -247,7 +249,9 @@ namespace AndroidSideloader
         {
             if (File.Exists($"{Environment.CurrentDirectory}\\debuglog.txt"))
             {
-                _ = Process.Start($"{Environment.CurrentDirectory}\\debuglog.txt");
+                using (Process.Start($"{Environment.CurrentDirectory}\\debuglog.txt"))
+                {
+                }
             }
         }
 

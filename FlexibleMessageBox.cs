@@ -269,10 +269,17 @@ namespace JR.Utils.GUI.Forms
             /// <param name="disposing">True, wenn verwaltete Ressourcen gelöscht werden sollen; andernfalls False.</param>
             protected override void Dispose(bool disposing)
             {
-                if (disposing && (components != null))
+                if (disposing)
                 {
-                    components.Dispose();
-                }
+                    components?.Dispose();
+                    button1?.Dispose();
+                    FlexibleMessageBoxFormBindingSource?.Dispose();
+                    richTextBoxMessage?.Dispose();
+                    panel1?.Dispose();
+                    pictureBoxForIcon?.Dispose();
+                    button2?.Dispose();
+                    button3?.Dispose();
+        }
                 base.Dispose(disposing);
             }
 
@@ -282,6 +289,7 @@ namespace JR.Utils.GUI.Forms
             /// </summary>
             private void InitializeComponent()
             {
+#pragma warning disable IDISP003 // Dispose previous before re-assigning
                 components = new System.ComponentModel.Container();
                 button1 = new System.Windows.Forms.Button();
                 richTextBoxMessage = new System.Windows.Forms.RichTextBox();
@@ -290,6 +298,8 @@ namespace JR.Utils.GUI.Forms
                 pictureBoxForIcon = new System.Windows.Forms.PictureBox();
                 button2 = new System.Windows.Forms.Button();
                 button3 = new System.Windows.Forms.Button();
+#pragma warning restore IDISP003 // Dispose previous before re-assigning
+
                 ((System.ComponentModel.ISupportInitialize)FlexibleMessageBoxFormBindingSource).BeginInit();
                 panel1.SuspendLayout();
                 ((System.ComponentModel.ISupportInitialize)pictureBoxForIcon).BeginInit();
@@ -756,7 +766,9 @@ namespace JR.Utils.GUI.Forms
                 try
                 {
                     Cursor.Current = Cursors.WaitCursor;
-                    _ = Process.Start(e.LinkText);
+                    using (Process.Start(e.LinkText))
+                    {
+                    }
                 }
                 catch (Exception)
                 {
@@ -829,34 +841,40 @@ namespace JR.Utils.GUI.Forms
             public static DialogResult Show(IWin32Window owner, string text, string caption, MessageBoxButtons buttons, MessageBoxIcon icon, MessageBoxDefaultButton defaultButton)
             {
                 //Create a new instance of the FlexibleMessageBox form
-                FlexibleMessageBoxForm flexibleMessageBoxForm = new FlexibleMessageBoxForm
+                DialogResult result = DialogResult.None;
+
+                using (var flexibleMessageBoxForm = new FlexibleMessageBoxForm
                 {
                     ShowInTaskbar = false,
 
                     //Bind the caption and the message text
                     CaptionText = caption,
                     MessageText = text
-                };
-                flexibleMessageBoxForm.FlexibleMessageBoxFormBindingSource.DataSource = flexibleMessageBoxForm;
+                })
+                {
+                    flexibleMessageBoxForm.FlexibleMessageBoxFormBindingSource.DataSource = flexibleMessageBoxForm;
 
-                //Set the buttons visibilities and texts. Also set a default button.
-                SetDialogButtons(flexibleMessageBoxForm, buttons, defaultButton);
+                    //Set the buttons visibilities and texts. Also set a default button.
+                    SetDialogButtons(flexibleMessageBoxForm, buttons, defaultButton);
 
-                //Set the dialogs icon. When no icon is used: Correct placement and width of rich text box.
-                SetDialogIcon(flexibleMessageBoxForm, icon);
+                    //Set the dialogs icon. When no icon is used: Correct placement and width of rich text box.
+                    SetDialogIcon(flexibleMessageBoxForm, icon);
 
-                //Set the font for all controls
-                flexibleMessageBoxForm.Font = FONT;
-                flexibleMessageBoxForm.richTextBoxMessage.Font = FONT;
+                    //Set the font for all controls
+                    flexibleMessageBoxForm.Font = FONT;
+                    flexibleMessageBoxForm.richTextBoxMessage.Font = FONT;
 
-                //Calculate the dialogs start size (Try to auto-size width to show longest text row). Also set the maximum dialog size.
-                SetDialogSizes(flexibleMessageBoxForm, text, caption);
+                    //Calculate the dialogs start size (Try to auto-size width to show longest text row). Also set the maximum dialog size.
+                    SetDialogSizes(flexibleMessageBoxForm, text, caption);
 
-                //Set the dialogs start position when given. Otherwise center the dialog on the current screen.
-                SetDialogStartPosition(flexibleMessageBoxForm, owner);
+                    //Set the dialogs start position when given. Otherwise center the dialog on the current screen.
+                    SetDialogStartPosition(flexibleMessageBoxForm, owner);
 
-                //Show the dialog
-                return flexibleMessageBoxForm.ShowDialog(owner);
+                    //Show the dialog
+                    result = flexibleMessageBoxForm.ShowDialog(owner);
+                }
+
+                return result;
             }
 
             #endregion

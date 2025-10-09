@@ -42,7 +42,9 @@ namespace AndroidSideloader
         {
             if (await IsUpdateAvailableAsync())
             {
+#pragma warning disable IDISP001 // Dispose created
                 UpdateForm upForm = new UpdateForm();
+#pragma warning restore IDISP001 // Dispose created
                 _ = upForm.ShowDialog();
             }
         }
@@ -63,7 +65,10 @@ namespace AndroidSideloader
                     fileClient.DownloadFile($"{GitHubUrl}/releases/download/v{currentVersion}/{AppName}.exe", $"{AppName} v{currentVersion}.exe");
 
                     Logger.Log($"Starting {AppName} v{currentVersion}.exe");
-                    Process.Start($"{AppName} v{currentVersion}.exe");
+
+                    using (Process.Start($"{AppName} v{currentVersion}.exe"))
+                    {
+                    }
                 }
 
                 // Delete current version

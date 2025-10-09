@@ -48,19 +48,21 @@ namespace AndroidSideloader
 
         private static ShowDialogResult ShowXpDialog(IntPtr ownerHandle, string initialDirectory, string title)
         {
-            FolderBrowserDialog folderBrowserDialog = new FolderBrowserDialog
+            using (var folderBrowserDialog = new FolderBrowserDialog
             {
                 Description = title,
                 SelectedPath = initialDirectory,
                 ShowNewFolderButton = false
-            };
-            ShowDialogResult dialogResult = new ShowDialogResult();
-            if (folderBrowserDialog.ShowDialog(new WindowWrapper(ownerHandle)) == DialogResult.OK)
+            })
             {
-                dialogResult.Result = true;
-                dialogResult.FileName = folderBrowserDialog.SelectedPath;
+                ShowDialogResult dialogResult = new ShowDialogResult();
+                if (folderBrowserDialog.ShowDialog(new WindowWrapper(ownerHandle)) == DialogResult.OK)
+                {
+                    dialogResult.Result = true;
+                    dialogResult.FileName = folderBrowserDialog.SelectedPath;
+                }
+                return dialogResult;
             }
-            return dialogResult;
         }
 
         private static class VistaDialog
@@ -87,7 +89,7 @@ namespace AndroidSideloader
 
             public static ShowDialogResult Show(IntPtr ownerHandle, string initialDirectory, string title)
             {
-                OpenFileDialog openFileDialog = new OpenFileDialog
+                using (var openFileDialog = new OpenFileDialog
                 {
                     AddExtension = false,
                     CheckFileExists = false,
@@ -96,26 +98,27 @@ namespace AndroidSideloader
                     InitialDirectory = initialDirectory,
                     Multiselect = false,
                     Title = title
-                };
-
-                object iFileDialog = s_createVistaDialogMethodInfo.Invoke(openFileDialog, new object[] { });
-                _ = s_onBeforeVistaDialogMethodInfo.Invoke(openFileDialog, new[] { iFileDialog });
-                _ = s_setOptionsMethodInfo.Invoke(iFileDialog, new object[] { (uint)s_getOptionsMethodInfo.Invoke(openFileDialog, new object[] { }) | s_fosPickFoldersBitFlag });
-                object[] adviseParametersWithOutputConnectionToken = new[] { s_vistaDialogEventsConstructorInfo.Invoke(new object[] { openFileDialog }), 0U };
-                _ = s_adviseMethodInfo.Invoke(iFileDialog, adviseParametersWithOutputConnectionToken);
-
-                try
+                })
                 {
-                    int retVal = (int)s_showMethodInfo.Invoke(iFileDialog, new object[] { ownerHandle });
-                    return new ShowDialogResult
+                    object iFileDialog = s_createVistaDialogMethodInfo.Invoke(openFileDialog, new object[] { });
+                    _ = s_onBeforeVistaDialogMethodInfo.Invoke(openFileDialog, new[] { iFileDialog });
+                    _ = s_setOptionsMethodInfo.Invoke(iFileDialog, new object[] { (uint)s_getOptionsMethodInfo.Invoke(openFileDialog, new object[] { }) | s_fosPickFoldersBitFlag });
+                    object[] adviseParametersWithOutputConnectionToken = new[] { s_vistaDialogEventsConstructorInfo.Invoke(new object[] { openFileDialog }), 0U };
+                    _ = s_adviseMethodInfo.Invoke(iFileDialog, adviseParametersWithOutputConnectionToken);
+
+                    try
                     {
-                        Result = retVal == 0,
-                        FileName = openFileDialog.FileName
-                    };
-                }
-                finally
-                {
-                    _ = s_unAdviseMethodInfo.Invoke(iFileDialog, new[] { adviseParametersWithOutputConnectionToken[1] });
+                        int retVal = (int)s_showMethodInfo.Invoke(iFileDialog, new object[] { ownerHandle });
+                        return new ShowDialogResult
+                        {
+                            Result = retVal == 0,
+                            FileName = openFileDialog.FileName
+                        };
+                    }
+                    finally
+                    {
+                        _ = s_unAdviseMethodInfo.Invoke(iFileDialog, new[] { adviseParametersWithOutputConnectionToken[1] });
+                    }
                 }
             }
         }
