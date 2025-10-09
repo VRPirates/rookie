@@ -30,23 +30,13 @@ namespace AndroidSideloader
                 return;
             }
 
-            Thread t1 = new Thread(() =>
+            await Task.Run(() =>
             {
                 createUserJson(textBox1.Text);
 
-            })
-            {
-                IsBackground = true
-            };
-            t1.Start();
-
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
 
             MainForm.notify("Done");
-
         }
 
         public static List<string> userJsons = new List<string>(new string[] { "user.json", "vrmoo.cn.json", "qq1091481055.json", "dollarvr.com.json" });

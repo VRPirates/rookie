@@ -21,6 +21,7 @@ using JR.Utils.GUI.Forms;
 using Microsoft.Web.WebView2.Core;
 using Newtonsoft.Json;
 using SergeUtils;
+using Timer = System.Windows.Forms.Timer;
 
 namespace AndroidSideloader
 {
@@ -65,7 +66,7 @@ namespace AndroidSideloader
         public static string storedIpPath;
         public static string aaptPath;
         private bool manualIP;
-        private System.Windows.Forms.Timer _debounceTimer;
+        private Timer _debounceTimer;
         private CancellationTokenSource _cts;
         private List<ListViewItem> _allItems;
         public MainForm()
@@ -83,7 +84,7 @@ namespace AndroidSideloader
             CheckCommandLineArguments();
 
             // Initialize debounce timer for search
-            _debounceTimer = new System.Windows.Forms.Timer
+            _debounceTimer = new Timer
             {
                 Interval = 1000, // 1 second delay
                 Enabled = false
@@ -180,19 +181,19 @@ namespace AndroidSideloader
         private void StartTimers()
         {
             // Start timers
-            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
+            Timer wakeupTimer = new Timer
             {
                 Interval = 840000 // 14 mins between wakeup commands
             };
-            t.Tick += new EventHandler(timer_Tick);
-            t.Start();
+            wakeupTimer.Tick += new EventHandler(SendWakeupKeyword);
+            wakeupTimer.Start();
 
-            System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer
+            Timer keyHeldTimer = new Timer
             {
                 Interval = 300 // 30ms
             };
-            t2.Tick += new EventHandler(timer_Tick2);
-            t2.Start();
+            keyHeldTimer.Tick += new EventHandler(KeyHeldTimer);
+            keyHeldTimer.Start();
         }
 
         private async Task GetPublicConfigAsync()
@@ -354,18 +355,16 @@ The app will now close.",
         private async void Form1_Shown(object sender, EventArgs e)
         {
             searchTextBox.Enabled = false;
-            new Thread(() =>
+            _ = Task.Run(async () =>
             {
-                Thread.Sleep(10000);
-                freeDisclaimer.Invoke(() =>
-                {
-                    freeDisclaimer.Dispose();
-                });
+                await Task.Delay(10000);
+
                 freeDisclaimer.Invoke(() =>
                 {
                     freeDisclaimer.Enabled = false;
+                    freeDisclaimer.Dispose();
                 });
-            }).Start();
+            });
 
             if (!isOffline)
             {
@@ -574,12 +573,12 @@ The app will now close.",
             }
         }
 
-        private void timer_Tick(object sender, EventArgs e)
+        private void SendWakeupKeyword(object sender, EventArgs e)
         {
             _ = ADB.RunAdbCommandToString("shell input keyevent KEYCODE_WAKEUP");
         }
 
-        private void timer_Tick2(object sender, EventArgs e)
+        private void KeyHeldTimer(object sender, EventArgs e)
         {
             keyheld = false;
         }
@@ -657,19 +656,10 @@ The app will now close.",
             }
             ADB.DeviceID = GetDeviceID();
 
-            Thread t1 = new Thread(() =>
+            await Task.Run(() =>
             {
                 output += ADB.Sideload(path);
-            })
-            {
-                IsBackground = true
-            };
-            t1.Start();
-
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
 
             showAvailableSpace();
 
@@ -690,24 +680,16 @@ The app will now close.",
 
         public async Task<int> CheckForDevice()
         {
-
             Devices.Clear();
             string output = string.Empty;
             string error = string.Empty;
             string battery = string.Empty;
             ADB.DeviceID = GetDeviceID();
-            Thread t1 = new Thread(() =>
+
+            await Task.Run(() =>
             {
                 output = ADB.RunAdbCommandToString("devices").Output;
             });
-
-
-            t1.Start();
-
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
 
             string[] line = output.Split('\n');
 
@@ -777,19 +759,12 @@ The app will now close.",
                 progressBar.Style = ProgressBarStyle.Marquee;
                 string path = dialog.FileName;
                 changeTitle($"Copying {path} obb to device...");
-                Thread t1 = new Thread(() =>
+
+                await Task.Run(() =>
                 {
                     output += output += ADB.CopyOBB(path);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
+                });
 
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
                 Program.form.changeTitle("Done.");
                 showAvailableSpace();
 
@@ -852,16 +827,11 @@ The app will now close.",
                 try
                 {
                     ADB.DeviceID = GetDeviceID();
-                    Thread t1 = new Thread(() =>
+
+                    await Task.Run(() =>
                     {
                         AvailableSpace = ADB.GetAvailableSpace();
                     });
-                    t1.Start();
-
-                    while (t1.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
 
                     diskLabel.Invoke(() => { diskLabel.Text = AvailableSpace; });
                 }
@@ -948,7 +918,8 @@ The app will now close.",
                 return;
             }
             ProcessOutput output = new ProcessOutput(String.Empty, String.Empty);
-            Thread t1 = new Thread(() =>
+
+            await Task.Run(() =>
             {
                 string date_str = DateTime.Today.ToString("yyyy.MM.dd");
                 string CurrBackups = Path.Combine(backupFolder, date_str);
@@ -967,17 +938,8 @@ The app will now close.",
                 {
                     _ = Logger.Log($"Exception on backup: {ex}", LogLevel.ERROR);
                 }
-            })
-            {
-                IsBackground = true
-            };
-            t1.Start();
+            });
 
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-                changeTitle("Backing up Game Data in SD/Android/data...");
-            }
             ShowPrcOutput(output);
             changeTitle("                         \n\n");
         }
@@ -1031,7 +993,7 @@ The app will now close.",
                 string selectedFolder = folderDialog.SelectedPath;
                 Logger.Log("Selected folder: " + selectedFolder);
 
-                Thread t1 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     if (selectedFolder.Contains("data"))
                     {
@@ -1041,16 +1003,7 @@ The app will now close.",
                     {
                         output += ADB.RunAdbCommandToString($"push \"{selectedFolder}\" /sdcard/Android/data/");
                     }
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
-
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
             }
 
             if (folderDialogResult == DialogResult.OK)
@@ -1182,34 +1135,17 @@ The app will now close.",
 
                     _ = Directory.CreateDirectory($"{settings.MainDir}\\{packageName}");
 
-                    Thread t1 = new Thread(() =>
+                    await Task.Run(() =>
                     {
                         output = Sideloader.getApk(GameName);
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t1.Start();
-
-                    while (t1.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
 
                     changeTitle("Extracting obb if it exists....");
-                    Thread t2 = new Thread(() =>
+
+                    await Task.Run(() =>
                     {
                         output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{settings.MainDir}\\{packageName}\"");
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t2.Start();
-
-                    while (t2.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
 
                     File.WriteAllText($"{settings.MainDir}\\{packageName}\\HWID.txt", HWID);
                     File.WriteAllText($"{settings.MainDir}\\{packageName}\\uploadMethod.txt", "manual");
@@ -1217,24 +1153,18 @@ The app will now close.",
                     string cmd = $"7z a -mx1 \"{gameZipName}\" .\\{packageName}\\*";
                     string path = $"{settings.MainDir}\\7z.exe";
                     progressBar.Style = ProgressBarStyle.Continuous;
-                    Thread t4 = new Thread(() =>
+
+                    await Task.Run(() =>
                     {
                         _ = ADB.RunCommandToString(cmd, path);
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t4.Start();
-                    while (t4.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
 
                     changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
                     ULLabel.Visible = true;
                     isworking = false;
                     isuploading = true;
-                    Thread t3 = new Thread(() =>
+
+                    await Task.Run(() =>
                     {
                         string currentlyUploading = GameName;
                         changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
@@ -1253,17 +1183,7 @@ The app will now close.",
 
                         this.Invoke(() => FlexibleMessageBox.Show(Program.form, $"Upload of {currentlyUploading} is complete! Thank you for your contribution!"));
                         Directory.Delete($"{settings.MainDir}\\{packageName}", true);
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t3.Start();
-                    isuploading = true;
-
-                    while (t3.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
 
                     changeTitle("                         \n\n");
                     isuploading = false;
@@ -1310,16 +1230,11 @@ The app will now close.",
             }
             ProcessOutput output = new ProcessOutput("", "");
             progressBar.Style = ProgressBarStyle.Marquee;
-            Thread t1 = new Thread(() =>
+
+            await Task.Run(() =>
             {
                 output += Sideloader.UninstallGame(packagename);
             });
-            t1.Start();
-            t1.IsBackground = true;
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
 
             ShowPrcOutput(output);
             showAvailableSpace();
@@ -1336,22 +1251,13 @@ The app will now close.",
             };
             if (dialog.Show(Handle))
             {
-                Thread t1 = new Thread(() =>
+                showAvailableSpace();
+
+                await Task.Run(() =>
                 {
                     Sideloader.RecursiveOutput = new ProcessOutput(String.Empty, String.Empty);
                     Sideloader.RecursiveCopyOBB(dialog.FileName);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
-
-                showAvailableSpace();
-
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
 
                 ShowPrcOutput(Sideloader.RecursiveOutput);
             }
@@ -1400,20 +1306,10 @@ The app will now close.",
                         _ = Logger.Log($"Copying {data} to device");
                         Program.form.changeTitle($"Copying {data} to device...");
 
-                        Thread t2 = new Thread(() =>
-
+                        await Task.Run(() =>
                         {
                             output += ADB.CopyOBB(data);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t2.Start();
-
-                        while (t2.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        });
 
                         Program.form.changeTitle(String.Empty);
                         settings.CurrPckg = dir;
@@ -1435,54 +1331,42 @@ The app will now close.",
 
                                 _ = Logger.Log($"Running adb command-{cmd}");
                                 string cmdout = ADB.RunCommandToString(cmd, file2).Output;
-                                cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
-                                cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
+                                cmdout = StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
+                                cmdout = StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
                                 cmdout = cmdout.Replace("'", String.Empty);
                                 cmdout = cmdout.Replace("=", String.Empty);
                                 CurrPCKG = cmdout;
                                 CurrAPK = file2;
-                                System.Windows.Forms.Timer t3 = new System.Windows.Forms.Timer
+
+                                Timer timeoutTimer = new Timer
                                 {
                                     Interval = 150000 // 150 seconds to fail
                                 };
-                                t3.Tick += timer_Tick4;
-                                t3.Start();
+                                timeoutTimer.Tick += SideloadTimoutTimer;
+                                timeoutTimer.Start();
+
                                 Program.form.changeTitle($"Sideloading apk ({filename})");
 
-                                Thread t2 = new Thread(() =>
+                                await Task.Run(() =>
                                 {
                                     output += ADB.Sideload(file2);
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
+                                });
 
-                                t3.Stop();
+                                timeoutTimer.Stop();
+
                                 if (Directory.Exists($"{pathname}\\{cmdout}"))
                                 {
                                     _ = Logger.Log($"Copying obb folder to device- {cmdout}");
                                     Program.form.changeTitle($"Copying obb folder to device...");
-                                    Thread t1 = new Thread(() =>
+
+                                    await Task.Run(() =>
                                     {
                                         if (!string.IsNullOrEmpty(cmdout))
                                         {
                                             _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
                                         }
                                         _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
-                                    })
-                                    {
-                                        IsBackground = true
-                                    };
-                                    t1.Start();
-                                    while (t1.IsAlive)
-                                    {
-                                        await Task.Delay(100);
-                                    }
+                                    });
                                 }
                             }
 
@@ -1491,25 +1375,15 @@ The app will now close.",
                                 string datazip = file2;
                                 string zippath = Path.GetDirectoryName(data);
                                 datazip = datazip.Replace(zippath, "");
-                                datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
+                                datazip = StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
                                 datazip = datazip.Replace(".", "");
                                 string command2 = $"\"{settings.MainDir}\\7z.exe\" e \"{file2}\" -o\"{zippath}\\{datazip}\\\"";
 
-                                Thread t2 = new Thread(() =>
-
+                                await Task.Run(() =>
                                 {
                                     _ = ADB.RunCommandToString(command2, file2);
                                     output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" \"/sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/\"");
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
+                                });
 
                                 Directory.Delete($"{zippath}\\{datazip}", true);
                             }
@@ -1521,20 +1395,10 @@ The app will now close.",
                         _ = Logger.Log($"Copying {folder} to device");
                         Program.form.changeTitle($"Copying {folder} to device...");
 
-                        Thread t2 = new Thread(() =>
-
+                        await Task.Run(() =>
                         {
                             output += ADB.CopyOBB(folder);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t2.Start();
-
-                        while (t2.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        });
 
                         Program.form.changeTitle("");
                         settings.CurrPckg = dir;
@@ -1560,20 +1424,10 @@ The app will now close.",
                                 _ = Logger.Log($"Sideloading custom install.txt");
                                 changeTitle("Sideloading custom install.txt automatically.");
 
-                                Thread t1 = new Thread(() =>
-
+                                await Task.Run(() =>
                                 {
                                     output += Sideloader.RunADBCommandsFromFile(path);
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t1.Start();
-
-                                while (t1.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
+                                });
 
                                 changeTitle(" \n\n");
 
@@ -1586,33 +1440,26 @@ The app will now close.",
                             string cmd = $"\"{aaptPath}\" dump badging \"{data}\" | findstr -i \"package: name\"";
                             _ = Logger.Log($"Running adb command-{cmd}");
                             string cmdout = ADB.RunCommandToString(cmd, data).Output;
-                            cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
-                            cmdout = Utilities.StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
+                            cmdout = StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
+                            cmdout = StringUtilities.RemoveEverythingAfterFirst(cmdout, " ");
                             cmdout = cmdout.Replace("'", "");
                             cmdout = cmdout.Replace("=", "");
                             CurrPCKG = cmdout;
                             CurrAPK = data;
-                            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer
+
+                            Timer timer = new Timer
                             {
                                 Interval = 150000 // 150 seconds to fail
                             };
-                            timer.Tick += timer_Tick4;
+                            timer.Tick += SideloadTimoutTimer;
                             timer.Start();
 
                             changeTitle($"Installing {dataname}...");
 
-                            Thread t1 = new Thread(() =>
+                            await Task.Run(() =>
                             {
                                 output += ADB.Sideload(data);
-                            })
-                            {
-                                IsBackground = true
-                            };
-                            t1.Start();
-                            while (t1.IsAlive)
-                            {
-                                await Task.Delay(100);
-                            }
+                            });
 
                             timer.Stop();
 
@@ -1620,22 +1467,15 @@ The app will now close.",
                             {
                                 _ = Logger.Log($"Copying obb folder to device- {cmdout}");
                                 Program.form.changeTitle($"Copying obb folder to device...");
-                                Thread t2 = new Thread(() =>
+
+                                await Task.Run(() =>
                                 {
                                     if (!string.IsNullOrEmpty(cmdout))
                                     {
                                         _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
                                     }
                                     _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
+                                });
 
                                 changeTitle(" \n\n");
                             }
@@ -1653,21 +1493,13 @@ The app will now close.",
                         File.Copy(data, Path.Combine(foldername, filename));
                         path = foldername;
 
-                        Thread t1 = new Thread(() =>
-                        {
-                            output += ADB.CopyOBB(path);
-                        })
-                        {
-                            IsBackground = true
-                        };
                         _ = Logger.Log($"Copying obb folder to device- {path}");
                         Program.form.changeTitle($"Copying obb folder to device ({filename})");
-                        t1.Start();
 
-                        while (t1.IsAlive)
+                        await Task.Run(() =>
                         {
-                            await Task.Delay(100);
-                        }
+                            output += ADB.CopyOBB(path);
+                        });
 
                         Directory.Delete(foldername, true);
                         changeTitle(" \n\n");
@@ -1678,26 +1510,16 @@ The app will now close.",
                         string datazip = data;
                         string zippath = Path.GetDirectoryName(data);
                         datazip = datazip.Replace(zippath, "");
-                        datazip = Utilities.StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
+                        datazip = StringUtilities.RemoveEverythingAfterFirst(datazip, ".");
                         datazip = datazip.Replace(".", "");
 
                         string command = $"\"{settings.MainDir}\\7z.exe\" e \"{data}\" -o\"{zippath}\\{datazip}\\\"";
 
-                        Thread t1 = new Thread(() =>
-
+                        await Task.Run(() =>
                         {
                             _ = ADB.RunCommandToString(command, data);
                             output += ADB.RunAdbCommandToString($"push \"{zippath}\\{datazip}\" \"/sdcard/ModData/com.beatgames.beatsaber/Mods/SongLoader/CustomLevels/\"");
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t1.Start();
-
-                        while (t1.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        });
 
                         Directory.Delete($"{zippath}\\{datazip}", true);
                     }
@@ -1705,20 +1527,10 @@ The app will now close.",
                     {
                         changeTitle("Sideloading custom install.txt automatically.");
 
-                        Thread t1 = new Thread(() =>
-
+                        await Task.Run(() =>
                         {
                             output += Sideloader.RunADBCommandsFromFile(path);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t1.Start();
-
-                        while (t1.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        });
 
                         changeTitle(" \n\n");
                     }
@@ -1805,7 +1617,7 @@ The app will now close.",
             progressBar.Style = ProgressBarStyle.Marquee;
             if (SideloaderRCLONE.games.Count > 5)
             {
-                Thread t1 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     foreach (string[] release in SideloaderRCLONE.games)
                     {
@@ -1911,15 +1723,7 @@ The app will now close.",
                             GameList.Add(Game);
                         }
                     }
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
             }
             else if (!isOffline)
             {
@@ -1963,7 +1767,8 @@ The app will now close.",
             {
                 _ = FlexibleMessageBox.Show(Program.form, $"Error building game list: {ex.Message}");
             }
-            Thread t2 = new Thread(() =>
+
+            await Task.Run(() =>
             {
                 if (!errorOnList)
                 {
@@ -2098,15 +1903,8 @@ The app will now close.",
                         }
                     }
                 }
-            })
-            {
-                IsBackground = true
-            };
-            t2.Start();
-            while (t2.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
+
             progressBar.Style = ProgressBarStyle.Continuous;
 
             if (either && !updatesNotified && !noAppCheck)
@@ -2155,11 +1953,12 @@ The app will now close.",
 
             if (codenameExists)
             {
-                foreach (UploadGame game in Program.form.gamesToUpload)
+                await Task.Run(() =>
                 {
-
-                    Thread t3 = new Thread(() =>
+                    foreach (UploadGame game in Program.form.gamesToUpload)
                     {
+                        isuploading = true;
+
                         string packagename = game.Pckgcommand;
                         string gameName = $"{game.Uploadgamename} v{game.Uploadversion} {game.Pckgcommand} {SideloaderUtilities.UUID().Substring(0, 1)} {deviceCodeName}";
                         string gameZipName = $"{gameName}.zip";
@@ -2208,18 +2007,8 @@ The app will now close.",
                         {
                             File.Delete($"{settings.MainDir}\\{gameZipName}");
                         }
-
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t3.Start();
-                    while (t3.IsAlive)
-                    {
-                        isuploading = true;
-                        await Task.Delay(100);
                     }
-                }
+                });
 
                 Program.form.gamesToUpload.Clear();
                 isworking = false;
@@ -2243,20 +2032,11 @@ The app will now close.",
                 File.WriteAllText($"{settings.MainDir}\\FreeOrNonVR{y}.txt", settings.NonAppPackages);
                 string path = $"{settings.MainDir}\\rclone\\rclone.exe";
 
-                Thread t1 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     _ = ADB.RunCommandToString($"\"{settings.MainDir}\\rclone\\rclone.exe\" copy \"{settings.MainDir}\\FreeOrNonVR{y}.txt\" VRP-debuglogs:InstalledGamesList", path);
                     File.Delete($"{settings.MainDir}\\FreeOrNonVR{y}.txt");
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
-
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
 
                 settings.ListUpped = true;
                 settings.Save();
@@ -2268,34 +2048,19 @@ The app will now close.",
         public async Task extractAndPrepareGameToUploadAsync(string GameName, string packagename, ulong installedVersionInt, bool isupdate)
         {
             progressBar.Style = ProgressBarStyle.Marquee;
+            changeTitle("Extracting APK file....");
 
-            Thread t1 = new Thread(() =>
+            await Task.Run(() =>
             {
                 _ = Sideloader.getApk(packagename);
             });
-            changeTitle("Extracting APK file....");
-            t1.IsBackground = true;
-            t1.Start();
-
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
 
             changeTitle("Extracting obb if it exists....");
-            Thread t2 = new Thread(() =>
+
+            await Task.Run(() =>
             {
                 _ = ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packagename}\" \"{settings.MainDir}\\{packagename}\"");
-            })
-            {
-                IsBackground = true
-            };
-            t2.Start();
-
-            while (t2.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
 
             string HWID = SideloaderUtilities.UUID();
             File.WriteAllText($"{settings.MainDir}\\{packagename}\\HWID.txt", HWID);
@@ -2495,6 +2260,7 @@ The app will now close.",
             isLoading = false;
             await refreshCurrentMirror(titleMessage);
         }
+
         private async Task refreshCurrentMirror(string titleMessage)
         {
             changeTitle(titleMessage);
@@ -2502,22 +2268,14 @@ The app will now close.",
             isLoading = true;
             progressBar.Style = ProgressBarStyle.Marquee;
 
-            Thread t1 = new Thread(() =>
+            await Task.Run(() =>
             {
                 if (!UsingPublicConfig)
                 {
                     SideloaderRCLONE.initGames(currentRemote);
                 }
                 listAppsBtn();
-            })
-            {
-                IsBackground = false
-            };
-            t1.Start();
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            });
 
             initListView(false);
             isLoading = false;
@@ -2591,7 +2349,7 @@ $@"Unable to connect to Remote Server. Rookie is unable to connect to our Server
 
 First time launching Rookie? Please relaunch and try again.
 
-Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.gg/tBKMZy7QDA) for Troubleshooting steps!
+Please visit our Telegram (https://wakeupTimer.me/VRPirates) or Discord (https://discord.gg/tBKMZy7QDA) for Troubleshooting steps!
 ";
 
             _ = FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to Remote Server");
@@ -2674,12 +2432,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 //Do user json on firsttime
                 if (settings.UserJsonOnGameInstall)
                 {
-                    Thread userJsonThread = new Thread(() => { changeTitle("Pushing user.json"); Sideloader.PushUserJsons(); })
-                    {
-                        IsBackground = true
-                    };
-                    userJsonThread.Start();
-
+                    _ = Task.Run(() => { changeTitle("Pushing user.json"); Sideloader.PushUserJsons(); });
                 }
 
                 ProcessOutput output = new ProcessOutput("", "");
@@ -2713,7 +2466,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                     _ = Logger.Log($"Starting Game Download");
 
-                    Thread t1;
+                    Task t1;
                     string extraArgs = string.Empty;
                     if (settings.SingleThreadMode)
                     {
@@ -2765,7 +2518,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         {
                             downloadDirectory = $"{settings.DownloadDir}\\{gameNameHash}";
                             _ = Logger.Log($"rclone copy \"Public:{SideloaderRCLONE.RcloneGamesFolder}/{gameName}\"");
-                            t1 = new Thread(() =>
+
+                            t1 = new Task(() =>
                             {
                                 string rclonecommand =
                                 $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc {bandwidthLimit}";
@@ -2775,7 +2529,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         }
                         else
                         {
-                            t1 = new Thread(() => { gameDownloadOutput = new ProcessOutput("Download skipped."); });
+                            t1 = new Task(() => { gameDownloadOutput = new ProcessOutput("Download skipped."); });
                         }
                     }
                     else
@@ -2783,7 +2537,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         _ = Directory.CreateDirectory(gameDirectory);
                         downloadDirectory = $"{SideloaderRCLONE.RcloneGamesFolder}/{gameName}";
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
-                        t1 = new Thread(() =>
+                        t1 = new Task(() =>
                         {
                             gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{settings.DownloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first {bandwidthLimit}");
                         });
@@ -2800,7 +2554,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         }
                     }
 
-                    t1.IsBackground = true;
                     t1.Start();
 
                     changeTitle("Downloading game " + gameName, false);
@@ -2808,7 +2561,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     etaLabel.Text = "Please wait...";
 
                     //Download
-                    while (t1.IsAlive)
+                    while (!t1.IsCompleted)
                     {
                         try
                         {
@@ -2943,59 +2696,49 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         if (UsingPublicConfig && otherError == false && gameDownloadOutput.Output != "Download skipped.")
                         {
 
-                            Thread extractionThread = new Thread(() =>
+                            Invoke(new Action(() =>
                             {
+                                speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
+                                progressBar.Style = ProgressBarStyle.Continuous;
+                                progressBar.Value = 0;
+                                isInDownloadExtract = true;
+                            }));
+
+                            changeTitle("Extracting " + gameName, false);
+
+                            var unpackResult = await new Archiver().ExtractArchiveAsync($"{settings.DownloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{settings.DownloadDir}", PublicConfigFile.Password);
+                            
+                            changeTitle("");
+
+                            if (!unpackResult.IsSuccess)
+                            {
+                                if (unpackResult.Status == ResultEnum.NotEnoughSpace)
+                                {
+                                    _ = FlexibleMessageBox.Show(
+                                        Program.form,
+                                        $@"Not enough space to extract archive.
+Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpackResult.Message} available.",
+                                        "NOT ENOUGH SPACE",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                }
+
+                                if (unpackResult.Status == ResultEnum.GeneralFailure)
+                                {
+                                    _ = FlexibleMessageBox.Show(
+                                        Program.form,
+                                        $@"Unable to unpack ""{gameNameHash}.7z"".",
+                                        "Archive unpacking error",
+                                        MessageBoxButtons.OK,
+                                        MessageBoxIcon.Error);
+                                }
+
                                 Invoke(new Action(() =>
                                 {
-                                    speedLabel.Text = "Extracting..."; etaLabel.Text = "Please wait...";
-                                    progressBar.Style = ProgressBarStyle.Continuous;
-                                    progressBar.Value = 0;
-                                    isInDownloadExtract = true;
+                                    cleanupActiveDownloadStatus();
                                 }));
-
-                                changeTitle("Extracting " + gameName, false);
-                                var unpackResult = new Archiver().ExtractArchive($"{settings.DownloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{settings.DownloadDir}", PublicConfigFile.Password);
-                                Program.form.changeTitle("");
-
-                                if (!unpackResult.IsSuccess)
-                                {
-                                    if (unpackResult.Status == ResultEnum.NotEnoughSpace)
-                                    {
-                                        _ = FlexibleMessageBox.Show(
-                                            Program.form,
-                                            $@"Not enough space to extract archive.
-Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpackResult.Message} available.",
-                                            "NOT ENOUGH SPACE",
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Error);
-                                    }
-
-                                    if (unpackResult.Status == ResultEnum.GeneralFailure)
-                                    {
-                                        _ = FlexibleMessageBox.Show(
-                                            Program.form,
-                                            $@"Unable to unpack ""{gameNameHash}.7z"".",
-                                            "Archive unpacking error",
-                                            MessageBoxButtons.OK,
-                                            MessageBoxIcon.Error);
-                                    }
-
-                                    Invoke(new Action(() =>
-                                    {
-                                        cleanupActiveDownloadStatus();
-                                    }));
-                                    otherError = true;
-                                    output += new ProcessOutput("", "Extract Failed");
-                                }
-                            })
-                            {
-                                IsBackground = true
-                            };
-                            extractionThread.Start();
-
-                            while (extractionThread.IsAlive)
-                            {
-                                await Task.Delay(100);
+                                otherError = true;
+                                output += new ProcessOutput("", "Extract Failed");
                             }
 
                             if (Directory.Exists($"{settings.DownloadDir}\\{gameNameHash}"))
@@ -3032,16 +2775,11 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
                             {
                                 if (!settings.NodeviceMode || !nodeviceonstart && DeviceConnected)
                                 {
-                                    Thread installtxtThread = new Thread(() =>
+                                    await Task.Run(() =>
                                     {
                                         output += Sideloader.RunADBCommandsFromFile(installTxtPath);
                                         changeTitle(" \n\n");
                                     });
-                                    installtxtThread.Start();
-                                    while (installtxtThread.IsAlive)
-                                    {
-                                        await Task.Delay(100);
-                                    }
                                 }
                                 else
                                 {
@@ -3059,46 +2797,35 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
                                     {
                                         CurrAPK = apkFile;
                                         CurrPCKG = packagename;
-                                        System.Windows.Forms.Timer t = new System.Windows.Forms.Timer
+                                        
+                                        Timer timoutTimer = new Timer
                                         {
                                             Interval = 150000 // 150 seconds to fail
                                         };
-                                        t.Tick += new EventHandler(timer_Tick4);
-                                        t.Start();
-                                        Thread apkThread = new Thread(() =>
+                                        timoutTimer.Tick += new EventHandler(SideloadTimoutTimer);
+                                        timoutTimer.Start();
+
+                                        await Task.Run(() =>
                                         {
                                             Program.form.changeTitle($"Sideloading apk...");
                                             output += ADB.Sideload(apkFile, packagename);
-                                        })
-                                        {
-                                            IsBackground = true
-                                        };
-                                        apkThread.Start();
-                                        while (apkThread.IsAlive)
-                                        {
-                                            await Task.Delay(100);
-                                        }
-                                        t.Stop();
+                                        });
+
+                                        timoutTimer.Stop();
 
                                         Debug.WriteLine(wrDelimiter);
                                         if (Directory.Exists($"{settings.DownloadDir}\\{gameName}\\{packagename}"))
                                         {
                                             deleteOBB(packagename);
-                                            Thread obbThread = new Thread(() =>
+
+                                            await Task.Run(() =>
                                             {
                                                 changeTitle($"Copying {packagename} obb to device...");
                                                 ADB.RunAdbCommandToString($"shell mkdir \"/sdcard/Android/obb/{packagename}\"");
                                                 output += ADB.RunAdbCommandToString($"push \"{settings.DownloadDir}\\{gameName}\\{packagename}\" \"/sdcard/Android/obb\"");
                                                 Program.form.changeTitle("");
-                                            })
-                                            {
-                                                IsBackground = true
-                                            };
-                                            obbThread.Start();
-                                            while (obbThread.IsAlive)
-                                            {
-                                                await Task.Delay(100);
-                                            }
+                                            });
+
                                             if (!nodeviceonstart | DeviceConnected)
                                             {
                                                 if (!output.Output.Contains("offline"))
@@ -3227,7 +2954,7 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
         // Logic to handle mismatches after comparison.
         private async Task<bool> handleObbSizeMismatchAsync(string packageName, string gameName, ProcessOutput output)
         {
-            var dialogResult = MessageBox.Show(Program.form, "Warning! It seems like the OBB wasn't pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
+            var dialogResult = MessageBox.Show(Program.form, "Warning! It seems like the OBB wasn'wakeupTimer pushed correctly, this means that the game may not launch correctly.\n Do you want to retry the push?", "OBB Size Mismatch!", MessageBoxButtons.YesNo);
 
             if (dialogResult != DialogResult.Yes)
             {
@@ -3305,7 +3032,7 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
             return totalLocalFolderSize;
         }
 
-        private void timer_Tick4(object sender, EventArgs e)
+        private void SideloadTimoutTimer(object sender, EventArgs e)
         {
             _ = new ProcessOutput("", "");
             if (!timerticked)
@@ -3323,7 +3050,7 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
                         DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "In place upgrade has failed." +
                             "\n\nThis means the app must be uninstalled first before updating.\nRookie can attempt to " +
                             "do this while retaining your savedata.\nWhile the vast majority of games can be backed up there " +
-                            "are some exceptions\n(we don't know which apps can't be backed up as there is no list online)\n\nDo you want " +
+                            "are some exceptions\n(we don'wakeupTimer know which apps can'wakeupTimer be backed up as there is no list online)\n\nDo you want " +
                             "Rookie to uninstall and reinstall the app automatically?", "In place upgrade failed", MessageBoxButtons.OKCancel);
                         if (dialogResult == DialogResult.Cancel)
                         {
@@ -3644,7 +3371,7 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
             if (keyData == Keys.F5)
             {
                 _ = GetDeviceID();
-                _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+                _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won'wakeupTimer work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
                 listAppsBtn();
                 initListView(false);
             }
@@ -3762,7 +3489,8 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
 
         private async Task CreateEnvironment()
         {
-            webView21.CoreWebView2InitializationCompleted += (sender, e) => {
+            webView21.CoreWebView2InitializationCompleted += (sender, e) =>
+            {
                 webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
                 {
                     this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
@@ -3853,7 +3581,9 @@ Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpa
                     try
                     {
                         client.DownloadFile("https://vrpirates.wiki/downloads/runtimes.7z", "runtimes.7z");
-                        var unpackResult = new Archiver().ExtractArchive(Path.Combine(Environment.CurrentDirectory, "runtimes.7z"), Environment.CurrentDirectory);
+
+                        var unpackResult = await new Archiver().ExtractArchiveAsync(Path.Combine(Environment.CurrentDirectory, "runtimes.7z"), Environment.CurrentDirectory);
+                        
                         File.Delete("runtimes.7z");
 
                         if (!unpackResult.IsSuccess)
@@ -3976,7 +3706,7 @@ The app will now close.",
         public void UpdateGamesButton_Click(object sender, EventArgs e)
         {
             _ = GetDeviceID();
-            _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won't work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
+            _ = FlexibleMessageBox.Show(Program.form, "If your device is not Connected, hit reconnect first or it won'wakeupTimer work!\nNOTE: THIS MAY TAKE UP TO 60 SECONDS.\nThere will be a Popup text window with all updates available when it is done!", "Is device connected?", MessageBoxButtons.OKCancel);
             listAppsBtn();
             initListView(false);
 
@@ -4072,9 +3802,10 @@ The app will now close.",
                 errorOnList = false;
                 newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
+
                 if (SideloaderRCLONE.games.Count > 5)
                 {
-                    Thread t1 = new Thread(() =>
+                    await Task.Run(() =>
                     {
                         foreach (string[] release in SideloaderRCLONE.games)
                         {
@@ -4130,16 +3861,9 @@ The app will now close.",
                                 }
                             }
                         }
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t1.Start();
-                    while (t1.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
                 }
+
                 progressBar.Style = ProgressBarStyle.Continuous;
                 ListViewItem[] arr = GameList.ToArray();
                 gamesListView.BeginUpdate();
@@ -4292,34 +4016,17 @@ The app will now close.",
 
                 _ = Directory.CreateDirectory($"{settings.MainDir}\\{packageName}");
 
-                Thread t1 = new Thread(() =>
+                await Task.Run(() =>
                 {
                     output = Sideloader.getApk(GameName);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
-
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
 
                 changeTitle("Extracting obb if it exists....");
-                Thread t2 = new Thread(() =>
+
+                await Task.Run(() =>
                 {
                     output += ADB.RunAdbCommandToString($"pull \"/sdcard/Android/obb/{packageName}\" \"{settings.MainDir}\\{packageName}\"");
-                })
-                {
-                    IsBackground = true
-                };
-                t2.Start();
-
-                while (t2.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
 
                 if (File.Exists($"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip"))
                 {
@@ -4329,19 +4036,11 @@ The app will now close.",
                 string path = $"{settings.MainDir}\\7z.exe";
                 string cmd = $"7z a -mx1 \"{settings.MainDir}\\{GameName} v{VersionInt} {packageName}.zip\" .\\{packageName}\\*";
                 Program.form.changeTitle("Zipping extracted application...");
-                Thread t3 = new Thread(() =>
+
+                await Task.Run(() =>
                 {
                     _ = ADB.RunCommandToString(cmd, path);
-                })
-                {
-                    IsBackground = true
-                };
-                t3.Start();
-
-                while (t3.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
+                });
 
                 if (File.Exists($"{Environment.GetFolderPath(Environment.SpecialFolder.Desktop)}\\{GameName} v{VersionInt} {packageName}.zip"))
                 {
@@ -4398,9 +4097,10 @@ The app will now close.",
                 errorOnList = false;
                 newGamesToUploadList = whitelistItems.Intersect(installedGames).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
+
                 if (SideloaderRCLONE.games.Count > 5)
                 {
-                    Thread t1 = new Thread(() =>
+                    await Task.Run(() =>
                     {
                         foreach (string[] release in SideloaderRCLONE.games)
                         {
@@ -4456,16 +4156,9 @@ The app will now close.",
                                 }
                             }
                         }
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t1.Start();
-                    while (t1.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
                 }
+
                 progressBar.Style = ProgressBarStyle.Continuous;
                 ListViewItem[] arr = GameList.ToArray();
                 gamesListView.BeginUpdate();
@@ -4525,9 +4218,10 @@ The app will now close.",
                 errorOnList = false;
                 newGamesToUploadList = whitelistItems.Intersect(installedGames, StringComparer.OrdinalIgnoreCase).ToList();
                 progressBar.Style = ProgressBarStyle.Marquee;
+
                 if (SideloaderRCLONE.games.Count > 5)
                 {
-                    Thread t1 = new Thread(() =>
+                    await Task.Run(() =>
                     {
                         foreach (string[] release in SideloaderRCLONE.games)
                         {
@@ -4592,16 +4286,9 @@ The app will now close.",
                                 }
                             }
                         }
-                    })
-                    {
-                        IsBackground = true
-                    };
-                    t1.Start();
-                    while (t1.IsAlive)
-                    {
-                        await Task.Delay(100);
-                    }
+                    });
                 }
+
                 progressBar.Style = ProgressBarStyle.Continuous;
                 ListViewItem[] arr = GameList.ToArray();
                 gamesListView.BeginUpdate();
