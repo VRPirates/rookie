@@ -105,11 +105,6 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
-            // Display RCLONE Window if the binary is being run in Debug Mode.
-            if (MainForm.debugMode)
-            {
-                rclone.StartInfo.CreateNoWindow = false;
-            }
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -204,11 +199,6 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
-            // Display RCLONE Window if the binary is being run in Debug Mode.
-            if (MainForm.debugMode)
-            {
-                rclone.StartInfo.CreateNoWindow = false;
-            }
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);
@@ -281,11 +271,6 @@ namespace AndroidSideloader
             rclone.StartInfo.RedirectStandardOutput = true;
             rclone.StartInfo.WorkingDirectory = Path.Combine(Environment.CurrentDirectory, "rclone");
             rclone.StartInfo.CreateNoWindow = true;
-            // Display RCLONE Window if the binary is being run in Debug Mode.
-            if (MainForm.debugMode)
-            {
-                rclone.StartInfo.CreateNoWindow = false;
-            }
             rclone.StartInfo.UseShellExecute = false;
             _ = rclone.Start();
             rclone.StandardInput.WriteLine(command);

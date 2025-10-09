@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Drawing;
 using System.Windows.Forms;
 using AndroidSideloader.Utilities;
+using Backend.Wrappers;
 
 namespace AndroidSideloader
 {
@@ -78,10 +79,20 @@ namespace AndroidSideloader
             string[] commands = File.ReadAllLines(path);
             string currfolder = Path.GetDirectoryName(path);
             string[] zipz = Directory.GetFiles(currfolder, "*.7z", SearchOption.AllDirectories);
+
+            var archiver = new Archiver();
+
             foreach (string zip in zipz)
             {
-                Utilities.Zip.ExtractFile($"{zip}", currfolder);
+                var unpackResult = archiver.ExtractArchive($"{zip}", currfolder);
+
+                if (!unpackResult.IsSuccess)
+                {
+                    output.Output += $"Error while unpacking {zip}";
+                    return output;
+                }
             }
+
             foreach (string cmd in commands)
             {
                 if (cmd.StartsWith("adb"))
