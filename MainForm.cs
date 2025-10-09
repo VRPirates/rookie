@@ -243,6 +243,8 @@ namespace AndroidSideloader
                 {
                     if (unpackResult.Status == ResultEnum.NotEnoughSpace)
                     {
+                        SplashScreen.Close();
+
                         _ = FlexibleMessageBox.Show(
                             Program.form,
                             $@"Not enough space to extract archive.
@@ -257,6 +259,8 @@ The app will now close.",
 
                     if (unpackResult.Status == ResultEnum.GeneralFailure)
                     {
+                        SplashScreen.Close();
+
                         _ = FlexibleMessageBox.Show(
                             Program.form,
                             $@"Unable to unpack ""dependencies.7z"".
