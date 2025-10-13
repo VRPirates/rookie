@@ -6,7 +6,6 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace AndroidSideloader.Utilities
@@ -16,7 +15,7 @@ namespace AndroidSideloader.Utilities
         public ExtractionException(string message) : base(message) { }
     }
 
-    internal class Zip
+    public static class Zip
     {
         private static readonly SettingsManager settings = SettingsManager.Instance;
         public static void ExtractFile(string sourceArchive, string destination)
@@ -31,7 +30,6 @@ namespace AndroidSideloader.Utilities
             DoExtract(args);
         }
 
-        private static string extractionError = null;
         private static bool errorMessageShown = false;
         private static void DoExtract(string args)
         {
@@ -92,27 +90,30 @@ namespace AndroidSideloader.Utilities
                     };
                 }
 
+                StringBuilder errorBuilder = new StringBuilder();
+
                 x.ErrorDataReceived += (sender, e) =>
                 {
-                    if (e.Data != null)
+                    if (e.Data is null)
                     {
-                        var error = e.Data;
-                        if (error.Contains("There is not enough space on the disk") && !errorMessageShown)
-                        {
-                            errorMessageShown = true;
-                            Program.form.Invoke(new Action(() =>
-                            {
-                                _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least double the space of the game, then try again.",
-                                   "NOT ENOUGH SPACE",
-                                   MessageBoxButtons.OK,
-                                   MessageBoxIcon.Error);
-                                return;
-                            }));
-                        }
-                        _ = Logger.Log(error, LogLevel.ERROR);
-                        extractionError = $"Extracting failed: {error}"; // Store the error message directly
                         return;
                     }
+
+                    var error = e.Data;
+                    if (error.Contains("There is not enough space on the disk") && !errorMessageShown)
+                    {
+                        errorMessageShown = true;
+                        Program.form.Invoke(new Action(() =>
+                        {
+                            _ = FlexibleMessageBox.Show(Program.form, $"Not enough space to extract archive.\r\nMake sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least double the space of the game, then try again.",
+                               "NOT ENOUGH SPACE",
+                               MessageBoxButtons.OK,
+                               MessageBoxIcon.Error);
+                        }));
+                    }
+
+                    _ = Logger.Log(error, LogLevel.ERROR);
+                    errorBuilder.Append("Extracting failed: ").AppendLine(error);
                 };
 
                 x.Start();
@@ -121,13 +122,10 @@ namespace AndroidSideloader.Utilities
                 x.WaitForExit();
                 errorMessageShown = false;
 
-                if (!string.IsNullOrEmpty(extractionError))
+                if (errorBuilder.Length != 0)
                 {
-                    string errorMessage = extractionError;
-                    extractionError = null; // Reset the error message
-                    throw new ExtractionException(errorMessage);
+                    throw new ExtractionException(errorBuilder.ToString());
                 }
-
             }
         }
     }
