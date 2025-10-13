@@ -33,7 +33,7 @@ namespace AndroidSideloader
 
                 // Create directory if it doesn't exist
                 string logDirectory = Path.GetDirectoryName(logFilePath);
-                if (!string.IsNullOrEmpty(logDirectory) && !Directory.Exists(logDirectory))
+                if (!string.IsNullOrEmpty(logDirectory))
                 {
                     Directory.CreateDirectory(logDirectory);
                 }
@@ -41,10 +41,7 @@ namespace AndroidSideloader
                 // Create log file if it doesn't exist
                 if (!File.Exists(logFilePath))
                 {
-                    using (FileStream fs = File.Create(logFilePath))
-                    {
-                        // Create empty file
-                    }
+                    File.Create(logFilePath).Dispose();
                 }
 
                 // Update settings with log path
