@@ -59,9 +59,9 @@ namespace AndroidSideloader
         private static readonly Process rclone = new Process();
 
         // Run an RCLONE Command that accesses the Download Config.
-        public static ProcessOutput runRcloneCommand_DownloadConfig(string command)
+        public static ProcessOutput runRcloneCommand_DownloadConfig(string command, bool isOffline)
         {
-            if (MainForm.isOffline)
+            if (isOffline)
             {
                 return new ProcessOutput("", "No internet");
             }
@@ -146,7 +146,7 @@ namespace AndroidSideloader
                 }
                 if (retSM)
                 {
-                    prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote));
+                    prcoutput = runRcloneCommand_DownloadConfig(originalCommand.Replace(oldRemote, MainForm.currentRemote), isOffline);
                 }
             }
             else
@@ -246,9 +246,9 @@ namespace AndroidSideloader
             return prcoutput;
         }
 
-        public static ProcessOutput runRcloneCommand_PublicConfig(string command)
+        public static ProcessOutput runRcloneCommand_PublicConfig(string command, bool isOffline)
         {
-            if (MainForm.isOffline)
+            if (isOffline)
             {
                 return new ProcessOutput("", "No internet");
             }
