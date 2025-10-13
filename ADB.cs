@@ -217,6 +217,12 @@ namespace AndroidSideloader
             }
         }
 
+        public static async Task<ProcessOutput> RunAdbCommandToStringAsync(string command)
+        {
+            // TODO: This is horrible on the thread pool. It's best to change all ADB methods to async.
+            return await Task.Run(() => RunCommandToString(command));
+        }
+
         public static void ADBDebugWarning()
         {
             Program.form.Invoke(() =>
