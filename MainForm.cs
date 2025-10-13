@@ -294,8 +294,8 @@ namespace AndroidSideloader
             _ = Logger.Log("Attempting to Initalize ADB Server");
             if (File.Exists(Path.Combine(Environment.CurrentDirectory, "platform-tools", "adb.exe")))
             {
-                _ = ADB.RunAdbCommandToString("kill-server");
-                _ = ADB.RunAdbCommandToString("start-server");
+                _ = await ADB.RunAdbCommandToStringAsync("kill-server");
+                _ = await ADB.RunAdbCommandToStringAsync("start-server");
             }
 
             //this.Form1_Shown(sender, e);
