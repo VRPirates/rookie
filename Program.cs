@@ -8,7 +8,12 @@ namespace AndroidSideloader
 {
     internal static class Program
     {
+        public static MainForm form;
+
         private static readonly SettingsManager settings = SettingsManager.Instance;
+
+        private static readonly HttpClient SharedHttpClient = new HttpClient();
+
         /// <summary>
         /// The main entry point for the application.
         /// </summary>

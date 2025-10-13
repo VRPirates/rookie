@@ -31,6 +31,10 @@ namespace AndroidSideloader
     {
         private readonly ListViewColumnSorter lvwColumnSorter;
         private static readonly SettingsManager settings = SettingsManager.Instance;
+
+        private readonly StartupOptions _startupOptions;
+        private readonly HttpClient _httpClient;
+
 #if DEBUG
         public static bool debugMode = true;
         public bool DeviceConnected;
@@ -55,8 +59,6 @@ namespace AndroidSideloader
 
 #endif
 
-        public static readonly HttpClient SharedHttpClient = new HttpClient();
-
         private bool isLoading = true;
         public static bool isOffline = false;
         public static bool noRcloneUpdating;
@@ -73,7 +75,8 @@ namespace AndroidSideloader
         private System.Windows.Forms.Timer _debounceTimer;
         private CancellationTokenSource _cts;
         private List<ListViewItem> _allItems;
-        public MainForm()
+
+        public MainForm(StartupOptions startupOptions, HttpClient httpClient)
         {
             storedIpPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "StoredIP.txt");
             aaptPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "aapt.exe");
@@ -81,8 +84,8 @@ namespace AndroidSideloader
             Logger.Initialize();
             InitializeTimeReferences();
 
-            SplashScreen = new Splash();
-            SplashScreen.Show();
+            _startupOptions = startupOptions;
+            _httpClient = httpClient;
 
             // Initialize debounce timer for search
             _debounceTimer = new System.Windows.Forms.Timer
