@@ -55,6 +55,8 @@ namespace AndroidSideloader
 
 #endif
 
+        public static readonly HttpClient SharedHttpClient = new HttpClient();
+
         private bool isLoading = true;
         public static bool isOffline = false;
         public static bool noRcloneUpdating;
@@ -316,7 +318,7 @@ namespace AndroidSideloader
                 _ = ADB.RunAdbCommandToString("start-server");
             }
 
-            this.Form1_Shown(sender, e);
+            //this.Form1_Shown(sender, e);
         }
 
         private async void Form1_Shown(object sender, EventArgs e)
@@ -1106,7 +1108,7 @@ namespace AndroidSideloader
             bool codenameExists = false;
             try
             {
-                codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+                codenameExists = SharedHttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
             }
             catch
             {
@@ -2101,7 +2103,6 @@ namespace AndroidSideloader
             loaded = true;
         }
 
-        private static readonly HttpClient HttpClient = new HttpClient();
         public static async void doUpload()
         {
             Program.form.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
@@ -2112,7 +2113,7 @@ namespace AndroidSideloader
             bool codenameExists = false;
             try
             {
-                codenameExists = HttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+                codenameExists = SharedHttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
             }
             catch
             {
@@ -2492,7 +2493,6 @@ namespace AndroidSideloader
             changeTitle(" \n\n");
         }
 
-        private static readonly HttpClient client = new HttpClient();
         public static bool reset = false;
         public static bool updatedConfig = false;
         public static int steps = 0;
@@ -2779,7 +2779,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         try
                         {
-                            HttpResponseMessage response = await client.PostAsync("http://127.0.0.1:5572/core/stats", null);
+                            HttpResponseMessage response = await SharedHttpClient.PostAsync("http://127.0.0.1:5572/core/stats", null);
                             string foo = await response.Content.ReadAsStringAsync();
                             //Debug.WriteLine("RESP CONTENT " + foo);
                             dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
@@ -3864,7 +3864,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 string encodedQuery = WebUtility.UrlEncode(query);
                 string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                var response = await client.GetAsync(url, token);
+                var response = await SharedHttpClient.GetAsync(url, token);
                 if (!response.IsSuccessStatusCode)
                 {
                     Logger.Log($"Failed to download HTML document {response.StatusCode}, {response.ReasonPhrase}", LogLevel.ERROR);
