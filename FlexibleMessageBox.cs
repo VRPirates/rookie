@@ -246,6 +246,18 @@ namespace JR.Utils.GUI.Forms
             return FlexibleMessageBoxForm.Show(owner, text, caption, buttons, icon, defaultButton);
         }
 
+        // I'll make more overloads if they're needed...
+
+        /// <summary>
+        /// Shows the specified message box via a Dispatcher invokation.
+        /// </summary>
+        /// <param name="text"></param>
+        /// <returns></returns>
+        public static async Task<DialogResult> InvokeShowAsync(string text)
+        {
+            return await Dispatcher.CurrentDispatcher.InvokeAsync(() => Show(text));
+        }
+
         #endregion
 
         #region Internal form class
