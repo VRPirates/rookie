@@ -21,11 +21,9 @@ namespace AndroidSideloader
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            form = new MainForm();
-            Application.Run(form);
-            //form.Show();
-        }
-        public static MainForm form;
+
+            // Check for Offline Mode or No RCLONE Updating
+            StartupOptions options = CheckCommandLineArguments(args);
 
         private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
         {
@@ -41,6 +39,23 @@ namespace AndroidSideloader
             {
                 File.AppendAllText(Sideloader.CrashLogPath, File.ReadAllText($"{settings.CurrentLogPath}"));
             }
+        }
+
+        private static StartupOptions CheckCommandLineArguments(string[] args)
+        {
+            StartupOptions options = new StartupOptions();
+
+            foreach (string arg in args)
+            {
+                switch (arg)
+                {
+                    case "--offline": options.OfflineMode = true; break;
+                    case "--no-rclone-update": options.RcloneUpdatesDisabled = true; break;
+                    case "--disable-app-check": options.NoAppCheck = true; break;
+                }
+            }
+
+            return options;
         }
     }
 }

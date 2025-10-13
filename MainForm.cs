@@ -84,9 +84,6 @@ namespace AndroidSideloader
             SplashScreen = new Splash();
             SplashScreen.Show();
 
-            // Check for Offline Mode or No RCLONE Updating
-            CheckCommandLineArguments();
-
             // Initialize debounce timer for search
             _debounceTimer = new System.Windows.Forms.Timer
             {
@@ -111,26 +108,6 @@ namespace AndroidSideloader
             if (searchTextBox.Visible)
             {
                 _ = searchTextBox.Focus();
-            }
-        }
-
-        private void CheckCommandLineArguments()
-        {
-            string[] args = Environment.GetCommandLineArgs();
-            foreach (string arg in args)
-            {
-                if (arg == "--offline")
-                {
-                    isOffline = true;
-                }
-                if (arg == "--no-rclone-update")
-                {
-                    noRcloneUpdating = true;
-                }
-                if (arg == "--disable-app-check")
-                {
-                    noAppCheck = true;
-                }
             }
         }
 
