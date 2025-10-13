@@ -1,13 +1,10 @@
 using AndroidSideloader.Models;
-using AndroidSideloader.Properties;
 using AndroidSideloader.Utilities;
 using JR.Utils.GUI.Forms;
 using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms;
 using Newtonsoft.Json;
 using SergeUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,15 +13,13 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using System.Windows.Threading;
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
@@ -43,8 +38,6 @@ namespace AndroidSideloader
         public static string CurrAPK;
         public static string CurrPCKG;
         List<UploadGame> gamesToUpload = new List<UploadGame>();
-
-
         public static string currremotesimple = String.Empty;
 #else
         public bool keyheld;
@@ -53,22 +46,15 @@ namespace AndroidSideloader
         private readonly List<UploadGame> gamesToUpload = new List<UploadGame>();
         public static bool debugMode = false;
         public bool DeviceConnected = false;
-
-
         public static string currremotesimple = "";
-
 #endif
 
         private bool isLoading = true;
-        public static bool isOffline = false;
-        public static bool noRcloneUpdating;
-        public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
         public static bool UsingPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
-        public static Splash SplashScreen;
         public static string storedIpPath;
         public static string aaptPath;
         private bool manualIP;
@@ -174,7 +160,7 @@ namespace AndroidSideloader
 
             System.Windows.Forms.Timer t2 = new System.Windows.Forms.Timer
             {
-                Interval = 300 // 30ms
+                Interval = 300 // 0.3 seconds
             };
             t2.Tick += new EventHandler(timer_Tick2);
             t2.Start();
@@ -214,18 +200,12 @@ namespace AndroidSideloader
         {
             _ = Logger.Log("Starting AndroidSideloader Application");
 
-            if (isOffline)
-            {
-                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_offline);
-                changeTitle("Starting in Offline Mode...");
-            }
-            else
-            {
-                // download dependencies
-                GetDependencies.downloadFiles();
-                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
-            }
+            await PreloadUtilities();
+            await InitializeView();
+        }
 
+        private async Task PreloadUtilities()
+        {
             settings.MainDir = Environment.CurrentDirectory;
             settings.Save();
 
@@ -262,6 +242,7 @@ namespace AndroidSideloader
             speedLabel.Text = String.Empty;
             diskLabel.Text = String.Empty;
             verLabel.Text = Updater.LocalVersion;
+
             if (File.Exists("crashlog.txt"))
             {
                 if (File.Exists(settings.CurrentCrashPath))
@@ -298,27 +279,27 @@ namespace AndroidSideloader
                 _ = await ADB.RunAdbCommandToStringAsync("kill-server");
                 _ = await ADB.RunAdbCommandToStringAsync("start-server");
             }
-
-            //this.Form1_Shown(sender, e);
         }
 
-        private async void Form1_Shown(object sender, EventArgs e)
+        private async Task InitializeView()
         {
             searchTextBox.Enabled = false;
-            new Thread(() =>
+            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer
             {
-                Thread.Sleep(10000);
-                freeDisclaimer.Invoke(() =>
-                {
-                    freeDisclaimer.Dispose();
-                });
-                freeDisclaimer.Invoke(() =>
-                {
-                    freeDisclaimer.Enabled = false;
-                });
-            }).Start();
+                Interval = 10000
+            };
 
-            if (!isOffline)
+            timer.Tick += (_sender, _e) =>
+            {
+                timer.Stop();
+                timer.Dispose();
+
+                freeDisclaimer.Dispose();
+                freeDisclaimer.Enabled = false;
+            };
+
+            timer.Start();
+
             if (!_startupOptions.OfflineMode)
             {
                 string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
@@ -374,8 +355,6 @@ namespace AndroidSideloader
                 btnNoDevice.Text = "Enable Sideloading";
             }
 
-            SplashScreen.Close();
-
             progressBar.Style = ProgressBarStyle.Marquee;
 
             if (!debugMode && settings.CheckForUpdates && !_startupOptions.OfflineMode)
@@ -387,27 +366,27 @@ namespace AndroidSideloader
 
             if (!_startupOptions.OfflineMode)
             {
-                changeTitle("Getting Upload Config...");
+                await changeTitle("Getting Upload Config...");
                 SideloaderRCLONE.updateUploadConfig();
 
                 _ = Logger.Log("Initializing Servers");
-                changeTitle("Initializing Servers...");
+                await changeTitle("Initializing Servers...");
 
                 // Wait for mirrors to initialize
                 await initMirrors();
 
                 if (!UsingPublicConfig)
                 {
-                    changeTitle("Grabbing the Games List...");
+                    await changeTitle("Grabbing the Games List...");
                     SideloaderRCLONE.initGames(currentRemote, _startupOptions.OfflineMode);
                 }
             }
             else
             {
-                changeTitle("Offline mode enabled, no Rclone");
+                await changeTitle("Offline mode enabled, no Rclone");
             }
 
-            changeTitle("Connecting to your Quest...");
+            await changeTitle("Connecting to your Quest...");
             await Task.Run(() =>
             {
                 if (!string.IsNullOrEmpty(settings.IPAddress))
@@ -536,7 +515,7 @@ namespace AndroidSideloader
             keyheld = false;
         }
 
-        public async void changeTitle(string txt, bool reset = true)
+        public async Task changeTitle(string txt, bool reset = true)
         {
             try
             {
@@ -545,32 +524,38 @@ namespace AndroidSideloader
                     return;
                 }
 
-                this.Invoke(() => { oldTitle = txt; Text = "Rookie Sideloader v" + Updater.LocalVersion + " | " + txt; });
-                ProgressText.Invoke(() =>
+                await Dispatcher.CurrentDispatcher.InvokeAsync(() =>
                 {
+                    oldTitle = txt;
+                    Text = "Rookie Sideloader v" + Updater.LocalVersion + " | " + txt;
+
                     if (!ProgressText.IsDisposed)
                     {
                         var states = new[] { "Sideloading", "Installing", "Copying", "Comparing", "Deleting" };
+
                         if (ProgressText.ForeColor == Color.LimeGreen)
                         {
                             ProgressText.ForeColor = Color.White;
                         }
-                        if (states.Any(txt.Contains))
+
+                        if (Array.Exists(states, txt.Contains))
                         {
                             ProgressText.ForeColor = Color.LimeGreen;
                         }
+
                         ProgressText.Text = txt;
                     }
                 });
+
                 if (!reset)
                 {
                     return;
                 }
 
                 await Task.Delay(TimeSpan.FromSeconds(5));
-                this.Invoke(() => { Text = "Rookie Sideloader v" + Updater.LocalVersion + " | " + oldTitle; });
-                ProgressText.Invoke(() =>
+                await Dispatcher.CurrentDispatcher.InvokeAsync(() =>
                 {
+                    Text = "Rookie Sideloader v" + Updater.LocalVersion + " | " + oldTitle;
                     if (!ProgressText.IsDisposed)
                     {
                         ProgressText.Text = oldTitle;
@@ -2086,7 +2071,7 @@ namespace AndroidSideloader
             loaded = true;
         }
 
-        public static async void doUpload()
+        public async void doUpload()
         {
             Program.form.changeTitle("Uploading to server, you can continue to use Rookie while it uploads in the background.");
             Program.form.ULLabel.Visible = true;
@@ -2094,6 +2079,7 @@ namespace AndroidSideloader
             string deviceCodeName = ADB.RunAdbCommandToString("shell getprop ro.product.device").Output.ToLower().Trim();
             string codeNamesLink = "https://raw.githubusercontent.com/VRPirates/rookie/master/codenames";
             bool codenameExists = false;
+
             try
             {
                 codenameExists = _httpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
@@ -2735,7 +2721,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         _ = Logger.Log($"rclone copy \"{currentRemote}:{downloadDirectory}\"");
                         t1 = new Thread(() =>
                         {
-                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{settings.DownloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first {bandwidthLimit}");
+                            gameDownloadOutput = RCLONE.runRcloneCommand_DownloadConfig($"copy \"{currentRemote}:{downloadDirectory}\" \"{settings.DownloadDir}\\{gameName}\" {extraArgs} --progress --rc --retries 2 --low-level-retries 1 --check-first {bandwidthLimit}", _startupOptions.OfflineMode);
                         });
                         Utilities.Metrics.CountDownload(packagename, versioncode);
                     }
@@ -3693,7 +3679,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         private async Task CreateEnvironment()
         {
-            webView21.CoreWebView2InitializationCompleted += (sender, e) => {
+            webView21.CoreWebView2InitializationCompleted += (sender, e) =>
+            {
                 webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
                 {
                     this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
@@ -4678,12 +4665,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             if (favoriteSwitcher.Text == "Games List")
             {
                 favoriteSwitcher.Text = "Favorited Games";
-                initListView(true);  
+                initListView(true);
             }
             else
             {
                 favoriteSwitcher.Text = "Games List";
-                initListView(false); 
+                initListView(false);
             }
         }
     }
