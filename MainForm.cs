@@ -248,7 +248,8 @@ namespace AndroidSideloader
                     File.Delete(logFilePath);
                 }
             }
-            if (!isOffline)
+
+            if (!_startupOptions.OfflineMode)
             {
                 RCLONE.Init();
             }
@@ -318,6 +319,7 @@ namespace AndroidSideloader
             }).Start();
 
             if (!isOffline)
+            if (!_startupOptions.OfflineMode)
             {
                 string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
                 if (File.Exists(configFilePath))
@@ -361,7 +363,7 @@ namespace AndroidSideloader
                 UsingPublicConfig = true;
                 _ = Logger.Log($"Using Public Mirror");
             }
-            if (isOffline)
+            if (_startupOptions.OfflineMode)
             {
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = System.Drawing.Size.Empty;
@@ -376,14 +378,14 @@ namespace AndroidSideloader
 
             progressBar.Style = ProgressBarStyle.Marquee;
 
-            if (!debugMode && settings.CheckForUpdates && !isOffline)
+            if (!debugMode && settings.CheckForUpdates && !_startupOptions.OfflineMode)
             {
                 Updater.AppName = "AndroidSideloader";
                 Updater.Repository = "VRPirates/rookie";
                 await Updater.Update();
             }
 
-            if (!isOffline)
+            if (!_startupOptions.OfflineMode)
             {
                 changeTitle("Getting Upload Config...");
                 SideloaderRCLONE.updateUploadConfig();
@@ -397,7 +399,7 @@ namespace AndroidSideloader
                 if (!UsingPublicConfig)
                 {
                     changeTitle("Grabbing the Games List...");
-                    SideloaderRCLONE.initGames(currentRemote);
+                    SideloaderRCLONE.initGames(currentRemote, _startupOptions.OfflineMode);
                 }
             }
             else
@@ -456,23 +458,23 @@ namespace AndroidSideloader
                 await Task.Run(() =>
                 {
                     changeTitle("Updating Metadata...");
-                    SideloaderRCLONE.UpdateMetadataFromPublic();
+                    SideloaderRCLONE.UpdateMetadataFromPublic(_startupOptions.OfflineMode);
 
                     changeTitle("Processing Metadata...");
                     SideloaderRCLONE.ProcessMetadataFromPublic();
                 });
             }
-            else if (!isOffline)
+            else if (!_startupOptions.OfflineMode)
             {
                 await Task.Run(() =>
                 {
                     changeTitle("Updating Game Notes...");
-                    SideloaderRCLONE.UpdateGameNotes(currentRemote);
+                    SideloaderRCLONE.UpdateGameNotes(currentRemote, _startupOptions.OfflineMode);
 
                     changeTitle("Updating Game Thumbnails (This may take a minute or two)...");
-                    SideloaderRCLONE.UpdateGamePhotos(currentRemote);
+                    SideloaderRCLONE.UpdateGamePhotos(currentRemote, _startupOptions.OfflineMode);
 
-                    SideloaderRCLONE.UpdateNouns(currentRemote);
+                    SideloaderRCLONE.UpdateNouns(currentRemote, _startupOptions.OfflineMode);
                     if (!Directory.Exists(SideloaderRCLONE.ThumbnailsFolder) ||
                         !Directory.Exists(SideloaderRCLONE.NotesFolder))
                     {
@@ -516,7 +518,7 @@ namespace AndroidSideloader
 
             searchTextBox.Enabled = true;
 
-            if (isOffline)
+            if (_startupOptions.OfflineMode)
             {
                 lblMirror.Text = " Offline Mode";
                 remotesList.Size = System.Drawing.Size.Empty;
@@ -1066,7 +1068,7 @@ namespace AndroidSideloader
         public static bool isworking = false;
         private async void getApkButton_Click(object sender, EventArgs e)
         {
-            if (isOffline)
+            if (_startupOptions.OfflineMode)
             {
                 notify("You are not connected to the Internet!");
                 return;
@@ -1871,16 +1873,17 @@ namespace AndroidSideloader
                     await Task.Delay(100);
                 }
             }
-            else if (!isOffline)
+            else if (!_startupOptions.OfflineMode)
             {
                 SwitchMirrors();
-                if (!isOffline){
+                if (!_startupOptions.OfflineMode)
+                {
                     initListView(false);
                 }
             }
 
 
-            if (blacklistItems.Count == 0 && GameList.Count == 0 && !settings.NodeviceMode && !isOffline)
+            if (blacklistItems.Count == 0 && GameList.Count == 0 && !settings.NodeviceMode && !_startupOptions.OfflineMode)
             {
                 //This means either the user does not have headset connected or the blacklist
                 //did not load, so we are just going to skip everything
@@ -1974,7 +1977,7 @@ namespace AndroidSideloader
                        }*/
                     //This is for games that are not blacklisted and we dont have on rookie
                     string baseApkPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "base.apk");
-                    if (blacklistItems.Count > 100 && rookieList.Count > 100 && !noAppCheck)
+                    if (blacklistItems.Count > 100 && rookieList.Count > 100 && !_startupOptions.NoAppCheck)
                     {
                         foreach (string newGamesToUpload in newGamesList)
                         {
@@ -2058,7 +2061,7 @@ namespace AndroidSideloader
             }
             progressBar.Style = ProgressBarStyle.Continuous;
 
-            if (either && !updatesNotified && !noAppCheck)
+            if (either && !updatesNotified && !_startupOptions.NoAppCheck)
             {
                 changeTitle("                                                \n\n");
                 DonorsListViewForm DonorForm = new DonorsListViewForm();
@@ -2268,7 +2271,7 @@ namespace AndroidSideloader
                 remotesList.Items.Clear();
             }));
 
-            string[] mirrors = await Task.Run(() => RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n'));
+            string[] mirrors = await Task.Run(() => RCLONE.runRcloneCommand_DownloadConfig("listremotes", _startupOptions.OfflineMode).Output.Split('\n'));
 
             _ = Logger.Log("Loaded following mirrors: ");
             int itemsCount = 0;
@@ -2454,7 +2457,7 @@ namespace AndroidSideloader
             {
                 if (!UsingPublicConfig)
                 {
-                    SideloaderRCLONE.initGames(currentRemote);
+                    SideloaderRCLONE.initGames(currentRemote, _startupOptions.OfflineMode);
                 }
                 listAppsBtn();
             })
@@ -2498,7 +2501,7 @@ namespace AndroidSideloader
                         if (System.Windows.Forms.Application.MessageLoop)
                         {
                             // Process.GetCurrentProcess().Kill();
-                            isOffline = true;
+                            _startupOptions.OfflineMode = true;
                             success = false;
                             return;
                         }
@@ -2716,7 +2719,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                             {
                                 string rclonecommand =
                                 $"copy \":http:/{gameNameHash}/\" \"{downloadDirectory}\" {extraArgs} --progress --rc {bandwidthLimit}";
-                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
+                                gameDownloadOutput = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, _startupOptions.OfflineMode);
                             });
                             Utilities.Metrics.CountDownload(packagename, versioncode);
                         }
@@ -2863,7 +2866,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         string installTxtPath = null;
                         bool quotaError = false;
                         bool otherError = false;
-                        if (gameDownloadOutput.Error.Length > 0 && !isOffline)
+                        if (gameDownloadOutput.Error.Length > 0 && !_startupOptions.OfflineMode)
                         {
                             string err = gameDownloadOutput.Error.ToLower();
                             err += gameDownloadOutput.Output.ToLower();
