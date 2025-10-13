@@ -47,30 +47,30 @@ namespace AndroidSideloader
         public static string ThumbnailsFolder = Path.Combine(Environment.CurrentDirectory, "thumbnails");
         public static string NotesFolder = Path.Combine(Environment.CurrentDirectory, "notes");
 
-        public static void UpdateNouns(string remote)
+        public static void UpdateNouns(string remote, bool offline)
         {
             _ = Logger.Log($"Updating Nouns");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/nouns\" \"{Nouns}\"", offline);
         }
 
-        public static void UpdateGamePhotos(string remote)
+        public static void UpdateGamePhotos(string remote, bool offline)
         {
             _ = Logger.Log($"Updating Thumbnails");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --transfers 10");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/thumbnails\" \"{ThumbnailsFolder}\" --transfers 10", offline);
         }
 
-        public static void UpdateGameNotes(string remote)
+        public static void UpdateGameNotes(string remote, bool offline)
         {
             _ = Logger.Log($"Updating Game Notes");
-            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"");
+            _ = RCLONE.runRcloneCommand_DownloadConfig($"sync \"{remote}:{RcloneGamesFolder}/.meta/notes\" \"{NotesFolder}\"", offline);
         }
 
-        public static void UpdateMetadataFromPublic()
+        public static void UpdateMetadataFromPublic(bool offline)
         {
             _ = Logger.Log($"Downloading Metadata");
             string rclonecommand =
                 $"sync \":http:/meta.7z\" \"{Environment.CurrentDirectory}\"";
-            _ = RCLONE.runRcloneCommand_PublicConfig(rclonecommand);
+            _ = RCLONE.runRcloneCommand_PublicConfig(rclonecommand, offline);
         }
 
         public static void ProcessMetadataFromPublic()
@@ -125,11 +125,11 @@ namespace AndroidSideloader
             }
         }
 
-        public static void RefreshRemotes()
+        public static void RefreshRemotes(bool offline)
         {
             _ = Logger.Log($"Refresh / List Remotes");
             RemotesList.Clear();
-            string[] remotes = RCLONE.runRcloneCommand_DownloadConfig("listremotes").Output.Split('\n');
+            string[] remotes = RCLONE.runRcloneCommand_DownloadConfig("listremotes", offline).Output.Split('\n');
 
             _ = Logger.Log("Loaded following remotes: ");
             foreach (string r in remotes)
@@ -146,13 +146,13 @@ namespace AndroidSideloader
             }
         }
 
-        public static void initGames(string remote)
+        public static void initGames(string remote, bool offline)
         {
             _ = Logger.Log($"Initializing Games List");
 
             gameProperties.Clear();
             games.Clear();
-            string tempGameList = RCLONE.runRcloneCommand_DownloadConfig($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"").Output;
+            string tempGameList = RCLONE.runRcloneCommand_DownloadConfig($"cat \"{remote}:{RcloneGamesFolder}/VRP-GameList.txt\"", offline).Output;
             if (MainForm.debugMode)
             {
                 File.WriteAllText("VRP-GamesList.txt", tempGameList);
