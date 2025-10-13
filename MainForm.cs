@@ -1090,7 +1090,7 @@ namespace AndroidSideloader
             bool codenameExists = false;
             try
             {
-                codenameExists = SharedHttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+                codenameExists = _httpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
             }
             catch
             {
@@ -2096,7 +2096,7 @@ namespace AndroidSideloader
             bool codenameExists = false;
             try
             {
-                codenameExists = SharedHttpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
+                codenameExists = _httpClient.GetStringAsync(codeNamesLink).Result.Contains(deviceCodeName);
             }
             catch
             {
@@ -2762,7 +2762,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     {
                         try
                         {
-                            HttpResponseMessage response = await SharedHttpClient.PostAsync("http://127.0.0.1:5572/core/stats", null);
+                            HttpResponseMessage response = await _httpClient.PostAsync("http://127.0.0.1:5572/core/stats", null);
                             string foo = await response.Content.ReadAsStringAsync();
                             //Debug.WriteLine("RESP CONTENT " + foo);
                             dynamic results = JsonConvert.DeserializeObject<dynamic>(foo);
@@ -3847,7 +3847,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 string encodedQuery = WebUtility.UrlEncode(query);
                 string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
 
-                var response = await SharedHttpClient.GetAsync(url, token);
+                var response = await _httpClient.GetAsync(url, token);
                 if (!response.IsSuccessStatusCode)
                 {
                     Logger.Log($"Failed to download HTML document {response.StatusCode}, {response.ReasonPhrase}", LogLevel.ERROR);
