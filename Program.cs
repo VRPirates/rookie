@@ -14,7 +14,7 @@ namespace AndroidSideloader
         /// </summary>
         [STAThread]
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
-        private static void Main()
+        private static void Main(string[] args)
         {
 
             AppDomain currentDomain = AppDomain.CurrentDomain;
