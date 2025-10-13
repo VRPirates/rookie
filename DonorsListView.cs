@@ -114,8 +114,9 @@ namespace AndroidSideloader
 
             if (ifuploads)
             {
-                MainForm.doUpload();
+                Program.form.doUpload();
             }
+
             Close();
         }
 
