@@ -1,6 +1,7 @@
 ﻿using AndroidSideloader.Utilities;
 using System;
 using System.IO;
+using System.Net.Http;
 using System.Security.Permissions;
 using System.Windows.Forms;
 
@@ -21,9 +22,9 @@ namespace AndroidSideloader
         [SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
         private static void Main(string[] args)
         {
-
             AppDomain currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += new UnhandledExceptionEventHandler(CrashHandler);
+
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 

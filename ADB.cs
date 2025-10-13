@@ -3,6 +3,7 @@ using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace AndroidSideloader
