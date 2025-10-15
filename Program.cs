@@ -34,10 +34,10 @@ namespace AndroidSideloader
             using (Splash splash = new Splash(options, SharedHttpClient))
             {
                 _ = splash.ShowDialog();
-
-                form = new MainForm(options, SharedHttpClient);
-                Application.Run(form);
             }
+
+            form = new MainForm(options, SharedHttpClient);
+            Application.Run(form);
         }
 
         private static void CrashHandler(object sender, UnhandledExceptionEventArgs args)
