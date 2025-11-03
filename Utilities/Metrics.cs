@@ -36,45 +36,48 @@ namespace AndroidSideloader.Utilities
 
             using (var client = new HttpClient())
             {
-                var request = new HttpRequestMessage();
-
-                // Set the HTTP method
-                request.Method = type.ToLower() == "post" ? HttpMethod.Post : HttpMethod.Get;
-
-                // For GET requests with parameters, append them to the URL
-                if (request.Method == HttpMethod.Get && !string.IsNullOrEmpty(requestBody))
+                using (var request = new HttpRequestMessage())
                 {
-                    var uriBuilder = new UriBuilder(apiUrl);
-                    uriBuilder.Query = requestBody;
-                    request.RequestUri = uriBuilder.Uri;
-                }
-                else
-                {
-                    request.RequestUri = new Uri(apiUrl);
-                }
+                    // Set the HTTP method
+                    request.Method = type.ToLower() == "post" ? HttpMethod.Post : HttpMethod.Get;
 
-                // For POST requests, set the content
-                if (request.Method == HttpMethod.Post && !string.IsNullOrEmpty(requestBody))
-                {
-                    request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
-                }
+                    // For GET requests with parameters, append them to the URL
+                    if (request.Method == HttpMethod.Get && !string.IsNullOrEmpty(requestBody))
+                    {
+                        var uriBuilder = new UriBuilder(apiUrl);
+                        uriBuilder.Query = requestBody;
+                        request.RequestUri = uriBuilder.Uri;
+                    }
+                    else
+                    {
+                        request.RequestUri = new Uri(apiUrl);
+                    }
 
-                // Add headers to the request
-                request.Headers.Add("Authorization", token);
-                request.Headers.Add("Origin", "rookie");
+                    // For POST requests, set the content
+                    if (request.Method == HttpMethod.Post && !string.IsNullOrEmpty(requestBody))
+                    {
+                        request.Content = new StringContent(requestBody, Encoding.UTF8, "application/json");
+                    }
 
-                string responseContent = "";
-                try
-                {
-                    HttpResponseMessage response = await client.SendAsync(request);
-                    responseContent = await response.Content.ReadAsStringAsync();
-                }
-                catch (Exception ex)
-                {
-                    Logger.Log($"Unable to get Metrics Data: {ex.Message}", LogLevel.WARNING);
-                }
+                    // Add headers to the request
+                    request.Headers.Add("Authorization", token);
+                    request.Headers.Add("Origin", "rookie");
 
-                return responseContent;
+                    string responseContent = "";
+                    try
+                    {
+                        using (var response = await client.SendAsync(request))
+                        {
+                            responseContent = await response.Content.ReadAsStringAsync();
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Logger.Log($"Unable to get Metrics Data: {ex.Message}", LogLevel.WARNING);
+                    }
+
+                    return responseContent;
+                }
             }
         }
     }

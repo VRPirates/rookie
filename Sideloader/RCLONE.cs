@@ -208,45 +208,49 @@ namespace AndroidSideloader
                         File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"));
                     }
 
-                    File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")).Close();
-                    File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"), resultString);
-
-                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")))
+                    using (File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")))
                     {
-                        File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")).Close();
-                    }
+                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"), resultString);
 
-                    string newConfig = CalculateMD5(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"));
-                    string oldConfig = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"));
-
-                    if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}")))
-                    {
-                        oldConfig = "Config Doesnt Exist!";
-                    }
-
-                    _ = Logger.Log($"Online Config Hash: {newConfig}; Local Config Hash: {oldConfig}");
-
-                    if (newConfig != oldConfig)
-                    {
-                        _ = Logger.Log($"Updated Config Hash is different than the current Config. Updating Configuration File.");
-
-                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}")))
+                        if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")))
                         {
-                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}"));
+                            using (File.Create(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt")))
+                            {
+                            }
                         }
 
-                        File.Move(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"), Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}"));
+                        string newConfig = CalculateMD5(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"));
+                        string oldConfig = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"));
 
-                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), string.Empty);
-                        File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), newConfig);
-                    }
-                    else
-                    {
-                        _ = Logger.Log($"Updated Config Hash matches last download. Not updating.");
-
-                        if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")))
+                        if (!File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}")))
                         {
-                            File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}g_new"));
+                            oldConfig = "Config Doesnt Exist!";
+                        }
+
+                        _ = Logger.Log($"Online Config Hash: {newConfig}; Local Config Hash: {oldConfig}");
+
+                        if (newConfig != oldConfig)
+                        {
+                            _ = Logger.Log($"Updated Config Hash is different than the current Config. Updating Configuration File.");
+
+                            if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}")))
+                            {
+                                File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}"));
+                            }
+
+                            File.Move(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new"), Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}"));
+
+                            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), string.Empty);
+                            File.WriteAllText(Path.Combine(Environment.CurrentDirectory, "rclone", "hash.txt"), newConfig);
+                        }
+                        else
+                        {
+                            _ = Logger.Log($"Updated Config Hash matches last download. Not updating.");
+
+                            if (File.Exists(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}_new")))
+                            {
+                                File.Delete(Path.Combine(Environment.CurrentDirectory, "rclone", $"{downloadConfigFilename}g_new"));
+                            }
                         }
                     }
                 }

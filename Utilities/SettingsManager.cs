@@ -8,7 +8,7 @@ using System.Linq;
 
 namespace AndroidSideloader.Utilities
 {
-    public class SettingsManager : IDisposable
+    public sealed class SettingsManager : IDisposable
     {
         private static readonly Lazy<SettingsManager> _instance = new Lazy<SettingsManager>(() => new SettingsManager());
         private static readonly string settingsFilePath = Path.Combine(
@@ -196,8 +196,10 @@ namespace AndroidSideloader.Utilities
 
         private void CreateDefaultSettings()
         {
+#pragma warning disable IDISP003 // Dispose previous before re-assigning
             FontStyle = new Font("Microsoft Sans Serif", 11.25f);
             BigFontStyle = new Font("Microsoft Sans Serif", 14f);
+#pragma warning restore IDISP003 // Dispose previous before re-assigning
             FontColor = Color.White;
             ComboBoxColor = Color.FromArgb(25, 25, 25);
             SubButtonColor = Color.FromArgb(25, 25, 25);

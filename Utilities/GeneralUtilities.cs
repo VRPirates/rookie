@@ -32,30 +32,36 @@ namespace AndroidSideloader.Utilities
                 RedirectStandardOutput = true
             };
 
-            Process process = Process.Start(processInfo);
+            using (var process = Process.Start(processInfo))
+            {
+                process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+                    CommandOutput += e.Data;
+                process.BeginOutputReadLine();
 
-            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-                CommandOutput += e.Data;
-            process.BeginOutputReadLine();
+                process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+                    CommandError += e.Data;
+                process.BeginErrorReadLine();
 
-            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
-                CommandError += e.Data;
-            process.BeginErrorReadLine();
+                process.WaitForExit();
 
-            process.WaitForExit();
-
-            process.Close();
+                process.Close();
+            }
         }
 
         public static void Melt()
         {
-            _ = Process.Start(new ProcessStartInfo()
+            var psi = new ProcessStartInfo()
             {
                 Arguments = "/C choice /C Y /N /D Y /T 5 & Del \"" + Application.ExecutablePath + "\"",
                 WindowStyle = ProcessWindowStyle.Hidden,
                 CreateNoWindow = true,
                 FileName = "cmd.exe"
-            });
+            };
+
+            using (Process.Start(psi))
+            {
+            }
+
             Environment.Exit(0);
         }
 
@@ -74,28 +80,29 @@ namespace AndroidSideloader.Utilities
             return res.ToString();
         }
 
-        public static ProcessOutput startProcess(string process, string path, string command)
+        public static ProcessOutput StartProcess(string process, string path, string command)
         {
             _ = Logger.Log($"Ran process {process} with command {command} in path {path}");
-            Process cmd = new Process();
-            cmd.StartInfo.FileName = "cmd.exe";
-            cmd.StartInfo.RedirectStandardInput = true;
-            cmd.StartInfo.RedirectStandardOutput = true;
-            cmd.StartInfo.RedirectStandardError = true;
-            cmd.StartInfo.WorkingDirectory = path;
-            cmd.StartInfo.CreateNoWindow = true;
-            cmd.StartInfo.UseShellExecute = false;
-            _ = cmd.Start();
-            cmd.StandardInput.WriteLine(command);
-            cmd.StandardInput.Flush();
-            cmd.StandardInput.Close();
-            cmd.WaitForExit();
-            string error = cmd.StandardError.ReadToEnd();
-            string output = cmd.StandardOutput.ReadToEnd();
-            _ = Logger.Log($"Output: {output}");
-            _ = Logger.Log($"Error: {error}", LogLevel.ERROR);
-            return new ProcessOutput(output, error);
+            using (Process cmd = new Process())
+            {
+                cmd.StartInfo.FileName = "cmd.exe";
+                cmd.StartInfo.RedirectStandardInput = true;
+                cmd.StartInfo.RedirectStandardOutput = true;
+                cmd.StartInfo.RedirectStandardError = true;
+                cmd.StartInfo.WorkingDirectory = path;
+                cmd.StartInfo.CreateNoWindow = true;
+                cmd.StartInfo.UseShellExecute = false;
+                _ = cmd.Start();
+                cmd.StandardInput.WriteLine(command);
+                cmd.StandardInput.Flush();
+                cmd.StandardInput.Close();
+                cmd.WaitForExit();
+                string error = cmd.StandardError.ReadToEnd();
+                string output = cmd.StandardOutput.ReadToEnd();
+                _ = Logger.Log($"Output: {output}");
+                _ = Logger.Log($"Error: {error}", LogLevel.ERROR);
+                return new ProcessOutput(output, error);
+            }
         }
-
     }
 }

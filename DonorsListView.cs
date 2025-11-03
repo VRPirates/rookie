@@ -85,10 +85,11 @@ namespace AndroidSideloader
                 }
                 if (uncheckednewapps)
                 {
-
-                    NewApps NewAppForm = new NewApps();
-                    _ = NewAppForm.ShowDialog();
-                    Hide();
+                    using (var newAppForm = new NewApps())
+                    {
+                        _ = newAppForm.ShowDialog();
+                        Hide();
+                    }
                 }
                 else
                 {
@@ -141,8 +142,11 @@ namespace AndroidSideloader
             }
             if (uncheckednewapps)
             {
-                NewApps NewAppForm = new NewApps();
-                _ = NewAppForm.ShowDialog();
+                using (NewApps newAppForm = new NewApps())
+                {
+                    _ = newAppForm.ShowDialog();
+                    Hide();
+                }
             }
             Close();
         }
