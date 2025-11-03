@@ -36,7 +36,6 @@ namespace AndroidSideloader
             trailersOn.Checked = _settings.TrailersOn;
             chkSingleThread.Checked = _settings.SingleThreadMode;
             virtualFilesystemCompatibilityCheckbox.Checked = _settings.VirtualFilesystemCompatibility;
-            hideAdultContentCheckBox.Checked = _settings.HideAdultContent;
             bandwidthLimitTextBox.Text = _settings.BandwidthLimit.ToString();
             if (nodevicemodeBox.Checked)
             {
@@ -310,12 +309,6 @@ namespace AndroidSideloader
             {
                 e.Handled = true;
             }
-        }
-
-        private void hideAdultContentCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            _settings.HideAdultContent = hideAdultContentCheckBox.Checked;
-            _settings.Save();
         }
     }
 }

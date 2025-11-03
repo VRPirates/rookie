@@ -65,12 +65,16 @@ namespace AndroidSideloader
         public static PublicConfig PublicConfigFile;
         public static string PublicMirrorExtraArgs = " --tpslimit 1.0 --tpslimit-burst 3";
         public static Splash SplashScreen;
+        public static string storedIpPath;
+        public static string aaptPath;
         private bool manualIP;
         private System.Windows.Forms.Timer _debounceTimer;
         private CancellationTokenSource _cts;
         private List<ListViewItem> _allItems;
         public MainForm()
         {
+            storedIpPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "StoredIP.txt");
+            aaptPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "aapt.exe");
             InitializeComponent();
             Logger.Initialize();
             InitializeTimeReferences();
@@ -306,7 +310,7 @@ namespace AndroidSideloader
             }
 
             _ = Logger.Log("Attempting to Initalize ADB Server");
-            if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe")))
+            if (File.Exists(Path.Combine(Environment.CurrentDirectory, "platform-tools", "adb.exe")))
             {
                 _ = ADB.RunAdbCommandToString("kill-server");
                 _ = ADB.RunAdbCommandToString("start-server");
@@ -424,8 +428,8 @@ namespace AndroidSideloader
             {
                 if (!string.IsNullOrEmpty(settings.IPAddress))
                 {
-                    string path = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "adb.exe");
-                    ProcessOutput wakeywakey = ADB.RunCommandToString($"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\adb.exe shell input keyevent KEYCODE_WAKEUP", path);
+                    string path = Path.Combine(Environment.CurrentDirectory, "platform-tools", "adb.exe");
+                    ProcessOutput wakeywakey = ADB.RunCommandToString($"\"{path}\" shell input keyevent KEYCODE_WAKEUP", path);
                     if (wakeywakey.Output.Contains("more than one"))
                     {
                         settings.Wired = true;
@@ -438,9 +442,9 @@ namespace AndroidSideloader
                     }
                 }
 
-                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")) && !settings.Wired)
+                if (File.Exists(storedIpPath) && !settings.Wired)
                 {
-                    string IPcmndfromtxt = File.ReadAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
+                    string IPcmndfromtxt = File.ReadAllText(storedIpPath);
                     settings.IPAddress = IPcmndfromtxt;
                     settings.Save();
                     ProcessOutput IPoutput = ADB.RunAdbCommandToString(IPcmndfromtxt);
@@ -449,7 +453,7 @@ namespace AndroidSideloader
                         _ = FlexibleMessageBox.Show(Program.form, "Attempt to connect to saved IP has failed. This is usually due to rebooting the device or not having a STATIC IP set in your router.\nYou must enable Wireless ADB again!");
                         settings.IPAddress = "";
                         settings.Save();
-                        try { File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")); }
+                        try { File.Delete(storedIpPath); }
                         catch (Exception ex) { Logger.Log($"Unable to delete StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     }
                     else
@@ -458,7 +462,7 @@ namespace AndroidSideloader
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_enabled 1");
                     }
                 }
-                else if (!File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
+                else if (!File.Exists(storedIpPath))
                 {
                     settings.IPAddress = "";
                     settings.Save();
@@ -1037,41 +1041,45 @@ namespace AndroidSideloader
         {
             m_combo.Invoke(() => { m_combo.Items.Clear(); });
 
-            string[] line = listApps().Split('\n');
+            string[] packages = listApps()
+                .Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(p => p.StartsWith("package:") ? p.Substring(8).Trim() : p.Trim())
+                .ToArray();
 
-            string forsettings = string.Join(String.Empty, line);
-            settings.InstalledApps = forsettings;
+            // Save the full string for settings
+            settings.InstalledApps = string.Join("\n", packages);
             settings.Save();
 
-            for (int i = 0; i < line.Length; i++)
+            List<string> displayNames = new List<string>();
+
+            foreach (string pkg in packages)
             {
-                if (line[i].Length > 9)
+                string name = pkg;
+
+                foreach (string[] game in SideloaderRCLONE.games)
                 {
-                    line[i] = line[i].Remove(0, 8);
-                    line[i] = line[i].Remove(line[i].Length - 1);
-                    foreach (string[] game in SideloaderRCLONE.games)
+                    if (game.Length > 2 && game[2].Equals(pkg, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (line[i].Length > 0 && game[2].Contains(line[i]))
-                        {
-                            line[i] = game[0];
-                        }
+                        name = game[0]; // Friendly game name
+                        break;
                     }
                 }
+
+                displayNames.Add(name);
             }
 
-
-            Array.Sort(line);
-
-            foreach (string game in line)
+            // Sort and populate combo
+            foreach (string name in displayNames.OrderBy(n => n))
             {
-                if (game.Length > 0)
+                if (!string.IsNullOrWhiteSpace(name))
                 {
-                    m_combo.Invoke(() => { _ = m_combo.Items.Add(game); });
+                    m_combo.Invoke(() => { _ = m_combo.Items.Add(name); });
                 }
             }
 
             m_combo.Invoke(() => { m_combo.MatchingMethod = StringMatchingMethod.NoWildcards; });
         }
+
         public static bool isuploading = false;
         public static bool isworking = false;
         private async void getApkButton_Click(object sender, EventArgs e)
@@ -1391,7 +1399,8 @@ namespace AndroidSideloader
                                 string pathname = Path.GetDirectoryName(file2);
                                 string filename = file2.Replace($"{pathname}\\", String.Empty);
 
-                                string cmd = $"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{file2}\" | findstr -i \"package: name\"";
+                                string cmd = $"\"{aaptPath}\" dump badging \"{file2}\" | findstr -i \"package: name\"";
+
                                 _ = Logger.Log($"Running adb command-{cmd}");
                                 string cmdout = ADB.RunCommandToString(cmd, file2).Output;
                                 cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
@@ -1542,7 +1551,7 @@ namespace AndroidSideloader
                         {
                             string pathname = Path.GetDirectoryName(data);
                             string dataname = data.Replace($"{pathname}\\", "");
-                            string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{data}\" | findstr -i \"package: name\"";
+                            string cmd = $"\"{aaptPath}\" dump badging \"{data}\" | findstr -i \"package: name\"";
                             _ = Logger.Log($"Running adb command-{cmd}");
                             string cmdout = ADB.RunCommandToString(cmd, data).Output;
                             cmdout = Utilities.StringUtilities.RemoveEverythingBeforeFirst(cmdout, "=");
@@ -1737,13 +1746,8 @@ namespace AndroidSideloader
             int newerThanListCount = 0;
             rookienamelist = String.Empty;
             loaded = false;
-            string lines = settings.InstalledApps;
-            string pattern = "package:";
-            string replacement = String.Empty;
-            Regex rgx = new Regex(pattern);
-            string result = rgx.Replace(lines, replacement);
-            char[] delims = new[] { '\r', '\n' };
-            string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+            string installedApps = settings.InstalledApps;
+            string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
             string[] blacklist = new string[] { };
             string[] whitelist = new string[] { };
             if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -1867,29 +1871,12 @@ namespace AndroidSideloader
                         {
                             if (settings.FavoritedGames.Contains(Game.SubItems[1].Text))
                             {
-                                if (settings.HideAdultContent == true && !Game.SubItems[1].Text.Contains("(18+)"))
-                                {
-                                    GameList.Add(Game);
-                                }
-                                else if (!settings.HideAdultContent)
-                                {
-                                    GameList.Add(Game);
-                                }
+                                GameList.Add(Game);
                             }
                         }
                         else
                         {
-                            if (settings.HideAdultContent == true)
-                            {
-                                if (!Game.SubItems[1].Text.Contains("(18+)"))
-                                {
-                                    GameList.Add(Game);
-                                }
-                            }
-                            else
-                            {
-                                GameList.Add(Game);
-                            }
+                            GameList.Add(Game);
                         }
                     }
                 })
@@ -2004,6 +1991,7 @@ namespace AndroidSideloader
                            }
                        }*/
                     //This is for games that are not blacklisted and we dont have on rookie
+                    string baseApkPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "base.apk");
                     if (blacklistItems.Count > 100 && rookieList.Count > 100 && !noAppCheck)
                     {
                         foreach (string newGamesToUpload in newGamesList)
@@ -2031,23 +2019,22 @@ namespace AndroidSideloader
                                     Logger.Log($"ADB command 'pm path' executed. Path: {apppath}", LogLevel.INFO);
                                     apppath = Utilities.StringUtilities.RemoveEverythingBeforeFirst(apppath, "/");
                                     apppath = Utilities.StringUtilities.RemoveEverythingAfterFirst(apppath, "\r\n");
-                                    if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk")))
+                                    if (File.Exists(baseApkPath))
                                     {
-                                        File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
+                                        File.Delete(baseApkPath);
                                         Logger.Log("Old base.apk file deleted.", LogLevel.INFO);
                                     }
 
                                     Logger.Log($"Pulling APK from path: {apppath}", LogLevel.INFO);
                                     _ = ADB.RunAdbCommandToString($"pull \"{apppath}\"");
-                                    string cmd = $"\"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\aapt.exe\" dump badging \"{Path.GetPathRoot(Environment.SystemDirectory)}RSL\\platform-tools\\base.apk\" | findstr -i \"application-label\"";
-                                    string workingpath = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "aapt.exe");
+                                    string cmd = $"\"{aaptPath}\" dump badging \"{baseApkPath}\" | findstr -i \"application-label\"";
                                     Logger.Log($"Running AAPT command: {cmd}", LogLevel.INFO);
-                                    string ReleaseName = ADB.RunCommandToString(cmd, workingpath).Output;
+                                    string ReleaseName = ADB.RunCommandToString(cmd, aaptPath).Output;
                                     Logger.Log($"AAPT command output: {ReleaseName}", LogLevel.INFO);
                                     ReleaseName = Utilities.StringUtilities.RemoveEverythingBeforeFirst(ReleaseName, "'");
                                     ReleaseName = Utilities.StringUtilities.RemoveEverythingAfterFirst(ReleaseName, "\r\n");
                                     ReleaseName = ReleaseName.Replace("'", "");
-                                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "base.apk"));
+                                    File.Delete(baseApkPath);
                                     Logger.Log("Base.apk deleted after extracting release name.", LogLevel.INFO);
                                     if (ReleaseName.Contains("Microsoft Windows"))
                                     {
@@ -2446,7 +2433,7 @@ namespace AndroidSideloader
                     settings.Save();
                     try
                     {
-                        File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd);
+                        File.WriteAllText(storedIpPath, IPcmnd);
                     }
                     catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                     ADB.wirelessadbON = true;
@@ -3396,9 +3383,9 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 _ = Program.form.GetDeviceID();
                 Program.form.changeTitlebarToDevice();
                 _ = FlexibleMessageBox.Show(Program.form, "Relaunch Rookie to complete the process and switch back to USB adb.");
-                if (File.Exists(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt")))
+                if (File.Exists(storedIpPath))
                 {
-                    File.Delete(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"));
+                    File.Delete(storedIpPath);
                 }
             }
         }
@@ -3663,17 +3650,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     gamesListView.Items.Clear();
                     foreach (var match in matches)
                     {
-                        if (settings.HideAdultContent == true)
-                        {
-                            if (!match.SubItems[1].Text.Contains("(18+)"))
-                            {
-                                gamesListView.Items.Add(match);
-                            }
-                        }
-                        else
-                        {
-                            gamesListView.Items.Add(match);
-                        }
+                        gamesListView.Items.Add(match);
                     }
 
                     gamesListView.EndUpdate(); // End the update to refresh the UI
@@ -3733,6 +3710,22 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
         private async Task CreateEnvironment()
         {
+            webView21.CoreWebView2InitializationCompleted += (sender, e) => {
+                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
+                {
+                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
+                };
+
+                webView21.CoreWebView2.NavigationCompleted += (obj, args) =>
+                {
+                    if (!args.IsSuccess)
+                    {
+                        CoreWebView2 wv2 = (CoreWebView2)obj;
+                        Logger.Log($"Failed to navigate to '{wv2.Source}': {args.WebErrorStatus}");
+                    }
+                };
+            };
+
             string appDataLocation = Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL");
             var webView2Environment = await CoreWebView2Environment.CreateAsync(userDataFolder: appDataLocation);
             await webView21.EnsureCoreWebView2Async(webView2Environment);
@@ -3744,10 +3737,6 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             {
                 // Load the video URL in the web browser control
                 webView21.CoreWebView2.Navigate(videoUrl);
-                webView21.CoreWebView2.ContainsFullScreenElementChanged += (obj, args) =>
-                {
-                    this.FullScreen = webView21.CoreWebView2.ContainsFullScreenElement;
-                };
             }
             catch (Exception ex)
             {
@@ -3755,6 +3744,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             }
         }
 
+        private static CancellationTokenSource VideoDownloadTokenSource { get; set; }
         public async void gamesListView_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (gamesListView.SelectedItems.Count < 1)
@@ -3831,22 +3821,27 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
 
                 try
                 {
-                    string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
-                    string encodedQuery = WebUtility.UrlEncode(query);
-                    string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+                    if (VideoDownloadTokenSource != null)
+                    {
+                        Debug.WriteLine("Cancelling and/or disposing trailer download request.");
 
-                    string videoUrl;
-                    using (var client = new WebClient()) // Create a WebClient to download the search results page HTML
-                    {
-                        videoUrl = ExtractVideoUrl(client.DownloadString(url)); // Download the HTML and extract the first video URL
-                    }
-                    if (videoUrl == "")
-                    {
-                        MessageBox.Show("No video URL found in search results.");
-                        return;
+                        // Just race condition protection
+                        VideoDownloadTokenSource?.Cancel();
+                        VideoDownloadTokenSource?.Dispose();
+                        VideoDownloadTokenSource = null;
                     }
 
-                    await WebView_CoreWebView2ReadyAsync(videoUrl);
+                    VideoDownloadTokenSource = new CancellationTokenSource();
+                    using (VideoDownloadTokenSource)
+                    {
+                        Debug.WriteLine("Creating trailer download request.");
+
+                        CancellationToken token = VideoDownloadTokenSource.Token;
+                        if (!await FetchAndDisplayVideoUrl(token))
+                        {
+                            return;
+                        }
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -3854,9 +3849,46 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     Logger.Log("Error Loading Trailer");
                     Logger.Log(ex.Message);
                 }
+                finally
+                {
+                    VideoDownloadTokenSource = null;
+                }
             }
+
             string NotePath = $"{SideloaderRCLONE.NotesFolder}\\{CurrentReleaseName}.txt";
             notesRichTextBox.Text = File.Exists(NotePath) ? File.ReadAllText(NotePath) : "";
+
+            async Task<bool> FetchAndDisplayVideoUrl(CancellationToken token)
+            {
+                string query = $"{CurrentGameName} VR trailer"; // Create the search query by appending " VR trailer" to the current game name
+                string encodedQuery = WebUtility.UrlEncode(query);
+                string url = $"https://www.youtube.com/results?search_query={encodedQuery}";
+
+                var response = await client.GetAsync(url, token);
+                if (!response.IsSuccessStatusCode)
+                {
+                    Logger.Log($"Failed to download HTML document {response.StatusCode}, {response.ReasonPhrase}", LogLevel.ERROR);
+                    return false;
+                }
+
+                string htmlDocument = await response.Content.ReadAsStringAsync();
+
+                if (string.IsNullOrWhiteSpace(htmlDocument))
+                {
+                    Logger.Log($"Fetched search document was empty, but fetch request returned {response.StatusCode}", LogLevel.ERROR);
+                    return false;
+                }
+
+                string videoUrl = ExtractVideoUrl(htmlDocument);
+                if (string.IsNullOrWhiteSpace(videoUrl))
+                {
+                    Logger.Log($"No trailer search results found for '{CurrentGameName}'.");
+                    return false;
+                }
+
+                await WebView_CoreWebView2ReadyAsync(videoUrl);
+                return true;
+            }
         }
 
         public void UpdateGamesButton_Click(object sender, EventArgs e)
@@ -3936,13 +3968,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 updateAvailableClicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = settings.InstalledApps;
-                string pattern = "package:";
-                string replacement = String.Empty;
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                string installedApps = settings.InstalledApps;
+                string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
                 if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -4004,17 +4031,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         if (installedVersionInt < cloudVersionInt)
                                         {
                                             Game.ForeColor = colorFont_updateAvailable;
-                                            if (settings.HideAdultContent == true)
-                                            {
-                                                if (!Game.SubItems[1].Text.Contains("(18+)"))
-                                                {
-                                                    GameList.Add(Game);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                GameList.Add(Game);
-                                            }
+                                            GameList.Add(Game);
                                         }
                                         else
                                         {
@@ -4092,7 +4109,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                         Program.form.showAvailableSpace();
                         settings.IPAddress = IPcmnd;
                         settings.Save();
-                        try { File.WriteAllText(Path.Combine(Path.GetPathRoot(Environment.SystemDirectory), "RSL", "platform-tools", "StoredIP.txt"), IPcmnd); }
+                        try { File.WriteAllText(storedIpPath, IPcmnd); }
                         catch (Exception ex) { Logger.Log($"Unable to write to StoredIP.txt due to {ex.Message}", LogLevel.ERROR); }
                         ADB.wirelessadbON = true;
                         _ = ADB.RunAdbCommandToString("shell settings put global wifi_wakeup_available 1");
@@ -4277,13 +4294,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 upToDate_Clicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = settings.InstalledApps;
-                string pattern = "package:";
-                string replacement = String.Empty;
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                string installedApps = settings.InstalledApps;
+                string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
                 if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -4345,17 +4357,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                         if (installedVersionInt == cloudVersionInt)
                                         {
                                             Game.ForeColor = colorFont_installedGame;
-                                            if (settings.HideAdultContent == true)
-                                            {
-                                                if (!Game.SubItems[1].Text.Contains("(18+)"))
-                                                {
-                                                    GameList.Add(Game);
-                                                }
-                                            }
-                                            else
-                                            {
-                                                GameList.Add(Game);
-                                            }
+                                            GameList.Add(Game);
                                         }
                                         else
                                         {
@@ -4419,13 +4421,8 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                 NeedsDonation_Clicked = true;
                 rookienamelist = String.Empty;
                 loaded = false;
-                string lines = settings.InstalledApps;
-                string pattern = "package:";
-                string replacement = String.Empty;
-                Regex rgx = new Regex(pattern);
-                string result = rgx.Replace(lines, replacement);
-                char[] delims = new[] { '\r', '\n' };
-                string[] packageList = result.Split(delims, StringSplitOptions.RemoveEmptyEntries);
+                string installedApps = settings.InstalledApps;
+                string[] packageList = installedApps.Split(new[] { '\n' }, StringSplitOptions.RemoveEmptyEntries);
                 string[] blacklist = new string[] { };
                 string[] whitelist = new string[] { };
                 if (File.Exists($"{settings.MainDir}\\nouns\\blacklist.txt"))
@@ -4495,17 +4492,7 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                             if (!dontget)
                                             {
                                                 Game.ForeColor = colorFont_donateGame;
-                                                if (settings.HideAdultContent == true)
-                                                {
-                                                    if (!Game.SubItems[1].Text.Contains("(18+)"))
-                                                    {
-                                                        GameList.Add(Game);
-                                                    }
-                                                }
-                                                else
-                                                {
-                                                    GameList.Add(Game);
-                                                }
+                                                GameList.Add(Game);
                                             }
                                         }
                                         else

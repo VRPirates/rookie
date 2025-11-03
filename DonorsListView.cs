@@ -15,12 +15,20 @@ namespace AndroidSideloader
         {
             InitializeComponent();
             Donors.initDonorGames();
-            List<ListViewItem> DGameList = new List<ListViewItem>();
+
+            var seen = new HashSet<string>();
+            var DGameList = new List<ListViewItem>();
+
             foreach (string[] release in Donors.donorGames)
             {
-                ListViewItem DGame = new ListViewItem(release);
-                DGameList.Add(DGame);
+                if (release.Length == 0) continue;
+                string key = release[0];
+                if (seen.Add(key))
+                {
+                    DGameList.Add(new ListViewItem(release));
+                }
             }
+
             ListViewItem[] arr = DGameList.ToArray();
             DonorsListView.BeginUpdate();
             DonorsListView.Items.Clear();
