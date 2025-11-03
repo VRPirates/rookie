@@ -5,4 +5,5 @@ AndroidSideloader.csproj.user
 
 .vs/
 bin/
+obj/
 packages/

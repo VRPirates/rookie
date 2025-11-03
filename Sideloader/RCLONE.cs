@@ -1,11 +1,11 @@
-﻿using AndroidSideloader.Utilities;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Security.Cryptography;
+using AndroidSideloader.Utilities;
+using Backend.Wrappers;
 
 namespace AndroidSideloader
 {
@@ -78,8 +78,18 @@ namespace AndroidSideloader
             try
             {
                 _ = Logger.Log($"Extracting Metadata");
-                Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "meta.7z"), Path.Combine(Environment.CurrentDirectory, "meta"),
-                    MainForm.PublicConfigFile.Password);
+
+                var unpackResult = new Archiver().ExtractArchive(
+                    Path.Combine(Environment.CurrentDirectory, "meta.7z"),
+                    Path.Combine(Environment.CurrentDirectory, "meta"),
+                    MainForm.PublicConfigFile.Password
+                    );
+
+                if (!unpackResult.IsSuccess)
+                {
+                    _ = Logger.Log($"Error while unpacking \"meta.7z\"");
+                    return;
+                }
 
                 _ = Logger.Log($"Updating Metadata");
 

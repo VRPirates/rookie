@@ -1,13 +1,10 @@
-﻿using JR.Utils.GUI.Forms;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
+using Backend;
+using Backend.Wrappers;
+using JR.Utils.GUI.Forms;
 
 namespace AndroidSideloader
 {
@@ -61,10 +58,10 @@ namespace AndroidSideloader
         }
 
         // Download required dependencies.
-        public static void downloadFiles()
+        public static Result DownloadFiles()
         {
             MainForm.SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_deps);
-            
+
             WebClient client = new WebClient();
             ServicePointManager.Expect100Continue = true;
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -106,6 +103,8 @@ namespace AndroidSideloader
             catch (Exception ex)
             {
                 _ = FlexibleMessageBox.Show($"You are unable to access raw.githubusercontent.com with the Exception:\n{ex.Message}\n\nSome files may be missing (Offline/Cleanup Script, Launcher)");
+
+                return new Result(ResultEnum.GeneralFailure, ex);
             }
 
             string adbPath = Path.Combine(Environment.CurrentDirectory, "platform-tools", "adb.exe");
@@ -123,8 +122,18 @@ namespace AndroidSideloader
                     currentAccessedWebsite = "github";
                     _ = Logger.Log($"Missing adb within {platformToolsDir}. Attempting to download from {currentAccessedWebsite}");
                     client.DownloadFile("https://github.com/VRPirates/rookie/raw/master/dependencies.7z", "dependencies.7z");
-                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "dependencies.7z"), platformToolsDir);
+
+                    var unpackResult = new Archiver().ExtractArchive(
+                        Path.Combine(Environment.CurrentDirectory, "dependencies.7z"),
+                        platformToolsDir);
+
                     File.Delete("dependencies.7z");
+
+                    if (!unpackResult.IsSuccess)
+                    {
+                        return unpackResult;
+                    }
+
                     _ = Logger.Log($"adb download successful");
                 }
             }
@@ -132,25 +141,29 @@ namespace AndroidSideloader
             {
                 _ = FlexibleMessageBox.Show($"You are unable to access raw.githubusercontent.com page with the Exception:\n{ex.Message}\n\nSome files may be missing (ADB)");
                 _ = FlexibleMessageBox.Show("ADB was unable to be downloaded\nRookie will now close.");
-                Application.Exit();
+
+                return new Result(ResultEnum.GeneralFailure, ex);
             }
 
             string wantedRcloneVersion = "1.68.2";
-            bool rcloneSuccess = false;
 
-            rcloneSuccess = downloadRclone(wantedRcloneVersion, false);
-            if (!rcloneSuccess) {
-                rcloneSuccess = downloadRclone(wantedRcloneVersion, true);
+            var rcloneSuccess = DownloadRclone(wantedRcloneVersion, false);
+            if (!rcloneSuccess.IsSuccess)
+            {
+                rcloneSuccess = DownloadRclone(wantedRcloneVersion, true);
             }
-            if (!rcloneSuccess) {
+            if (!rcloneSuccess.IsSuccess)
+            {
                 _ = Logger.Log($"Unable to download rclone", LogLevel.ERROR);
-                _ = FlexibleMessageBox.Show("Rclone was unable to be downloaded\nRookie will now close, please use Offline Mode for manual sideloading if needed");
-                Application.Exit();
+
+                return new Result(ResultEnum.GeneralFailure);
             }
+
+            return new Result(ResultEnum.Success);
         }
 
 
-        public static bool downloadRclone(string wantedRcloneVersion, bool useFallback = false)
+        public static Result DownloadRclone(string wantedRcloneVersion, bool useFallback = false)
         {
             try
             {
@@ -177,12 +190,15 @@ namespace AndroidSideloader
                             _ = Logger.Log($"RCLONE Version does not match ({currentRcloneVersion})! Downloading required version ({wantedRcloneVersion})");
                         }
                     }
-                } else {
+                }
+                else
+                {
                     updateRclone = true;
                     _ = Logger.Log($"RCLONE exe does not exist, attempting to download");
                 }
 
-                if (!Directory.Exists(dirRclone)) {
+                if (!Directory.Exists(dirRclone))
+                {
                     updateRclone = true;
                     _ = Logger.Log($"Missing RCLONE Folder, attempting to download");
 
@@ -207,7 +223,8 @@ namespace AndroidSideloader
 
                     string architecture = Environment.Is64BitOperatingSystem ? "amd64" : "386";
                     string url = $"https://downloads.rclone.org/v{wantedRcloneVersion}/rclone-v{wantedRcloneVersion}-windows-{architecture}.zip";
-                    if (useFallback == true) {
+                    if (useFallback == true)
+                    {
                         _ = Logger.Log($"Using git fallback for rclone download");
                         url = $"https://raw.githubusercontent.com/VRPirates/rookie/master/dep/rclone-v{wantedRcloneVersion}-windows-{architecture}.zip";
                     }
@@ -218,7 +235,16 @@ namespace AndroidSideloader
                     _ = Logger.Log("Complete download rclone");
 
                     _ = Logger.Log($"Extract {Environment.CurrentDirectory}\\rclone.zip");
-                    Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "rclone.zip"), Environment.CurrentDirectory);
+
+                    var unpackResult = new Archiver().ExtractArchive(
+                        Path.Combine(Environment.CurrentDirectory, "rclone.zip"),
+                        Environment.CurrentDirectory);
+
+                    if (!unpackResult.IsSuccess)
+                    {
+                        return unpackResult;
+                    }
+
                     string dirExtractedRclone = Path.Combine(Environment.CurrentDirectory, $"rclone-v{wantedRcloneVersion}-windows-{architecture}");
                     File.Delete("rclone.zip");
                     _ = Logger.Log("rclone extracted. Moving files");
@@ -245,12 +271,13 @@ namespace AndroidSideloader
                     _ = Logger.Log($"rclone download successful");
                 }
 
-                return true;
+                return new Result(ResultEnum.Success);
             }
             catch (Exception ex)
             {
                 _ = Logger.Log($"Unable to download rclone: {ex}", LogLevel.ERROR);
-                return false;
+
+                return new Result(ResultEnum.GeneralFailure, ex);
             }
         }
     }

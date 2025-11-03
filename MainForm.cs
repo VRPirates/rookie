@@ -1,13 +1,4 @@
-using AndroidSideloader.Models;
-using AndroidSideloader.Properties;
-using AndroidSideloader.Utilities;
-using JR.Utils.GUI.Forms;
-using Microsoft.Web.WebView2.Core;
-using Microsoft.Web.WebView2.WinForms;
-using Newtonsoft.Json;
-using SergeUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -16,15 +7,21 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
-using System.Net.NetworkInformation;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
+using AndroidSideloader.Models;
+using AndroidSideloader.Utilities;
+using Backend;
+using Backend.Wrappers;
+using JR.Utils.GUI.Forms;
+using Microsoft.Web.WebView2.Core;
+using Newtonsoft.Json;
+using SergeUtils;
+
 namespace AndroidSideloader
 {
     public partial class MainForm : Form
@@ -234,14 +231,49 @@ namespace AndroidSideloader
 
             if (isOffline)
             {
-                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage_offline);
+                SplashScreen.UpdateBackgroundImage(Properties.Resources.splashimage_offline);
                 changeTitle("Starting in Offline Mode...");
             }
             else
             {
                 // download dependencies
-                GetDependencies.downloadFiles();
-                SplashScreen.UpdateBackgroundImage(AndroidSideloader.Properties.Resources.splashimage);
+                var unpackResult = GetDependencies.DownloadFiles();
+
+                if (!unpackResult.IsSuccess)
+                {
+                    if (unpackResult.Status == ResultEnum.NotEnoughSpace)
+                    {
+                        SplashScreen.Close();
+
+                        _ = FlexibleMessageBox.Show(
+                            Program.form,
+                            $@"Not enough space to extract archive.
+Make sure your {Path.GetPathRoot(Environment.CurrentDirectory)} drive has at least {unpackResult.Message} available.
+The app will now close.",
+                            "NOT ENOUGH SPACE",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+
+                        Application.Exit();
+                    }
+
+                    if (unpackResult.Status == ResultEnum.GeneralFailure)
+                    {
+                        SplashScreen.Close();
+
+                        _ = FlexibleMessageBox.Show(
+                            Program.form,
+                            $@"Unable to unpack ""dependencies.7z"".
+The app will now close.",
+                            "Archive unpacking error",
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+
+                        Application.Exit();
+                    }
+                }
+
+                SplashScreen.UpdateBackgroundImage(Properties.Resources.splashimage);
             }
 
             settings.MainDir = Environment.CurrentDirectory;
@@ -1892,7 +1924,8 @@ namespace AndroidSideloader
             else if (!isOffline)
             {
                 SwitchMirrors();
-                if (!isOffline){
+                if (!isOffline)
+                {
                     initListView(false);
                 }
             }
@@ -2919,20 +2952,39 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                                     progressBar.Value = 0;
                                     isInDownloadExtract = true;
                                 }));
-                                try
+
+                                changeTitle("Extracting " + gameName, false);
+                                var unpackResult = new Archiver().ExtractArchive($"{settings.DownloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{settings.DownloadDir}", PublicConfigFile.Password);
+                                Program.form.changeTitle("");
+
+                                if (!unpackResult.IsSuccess)
                                 {
-                                    changeTitle("Extracting " + gameName, false);
-                                    Zip.ExtractFile($"{settings.DownloadDir}\\{gameNameHash}\\{gameNameHash}.7z.001", $"{settings.DownloadDir}", PublicConfigFile.Password);
-                                    Program.form.changeTitle("");
-                                }
-                                catch (ExtractionException ex)
-                                {
+                                    if (unpackResult.Status == ResultEnum.NotEnoughSpace)
+                                    {
+                                        _ = FlexibleMessageBox.Show(
+                                            Program.form,
+                                            $@"Not enough space to extract archive.
+Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpackResult.Message} available.",
+                                            "NOT ENOUGH SPACE",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error);
+                                    }
+
+                                    if (unpackResult.Status == ResultEnum.GeneralFailure)
+                                    {
+                                        _ = FlexibleMessageBox.Show(
+                                            Program.form,
+                                            $@"Unable to unpack ""{gameNameHash}.7z"".",
+                                            "Archive unpacking error",
+                                            MessageBoxButtons.OK,
+                                            MessageBoxIcon.Error);
+                                    }
+
                                     Invoke(new Action(() =>
                                     {
                                         cleanupActiveDownloadStatus();
                                     }));
                                     otherError = true;
-                                    this.Invoke(() => _ = FlexibleMessageBox.Show(Program.form, $"7zip error: {ex.Message}"));
                                     output += new ProcessOutput("", "Extract Failed");
                                 }
                             })
@@ -3801,8 +3853,38 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
                     try
                     {
                         client.DownloadFile("https://vrpirates.wiki/downloads/runtimes.7z", "runtimes.7z");
-                        Utilities.Zip.ExtractFile(Path.Combine(Environment.CurrentDirectory, "runtimes.7z"), Environment.CurrentDirectory);
+                        var unpackResult = new Archiver().ExtractArchive(Path.Combine(Environment.CurrentDirectory, "runtimes.7z"), Environment.CurrentDirectory);
                         File.Delete("runtimes.7z");
+
+                        if (!unpackResult.IsSuccess)
+                        {
+                            if (unpackResult.Status == ResultEnum.NotEnoughSpace)
+                            {
+                                _ = FlexibleMessageBox.Show(
+                                    Program.form,
+                                    $@"Not enough space to extract archive.
+Make sure your {Path.GetPathRoot(settings.DownloadDir)} drive has at least {unpackResult.Message} available.
+The app will now close.",
+                                    "NOT ENOUGH SPACE",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                            }
+
+                            if (unpackResult.Status == ResultEnum.GeneralFailure)
+                            {
+                                _ = FlexibleMessageBox.Show(
+                                    Program.form,
+                                    $@"Unable to unpack ""runtimes.7z"".
+The app will now close.",
+                                    "Archive unpacking error",
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Error);
+                            }
+
+                            enviromentCreated = true;
+                            webView21.Hide();
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -4695,12 +4777,12 @@ Please visit our Telegram (https://t.me/VRPirates) or Discord (https://discord.g
             if (favoriteSwitcher.Text == "Games List")
             {
                 favoriteSwitcher.Text = "Favorited Games";
-                initListView(true);  
+                initListView(true);
             }
             else
             {
                 favoriteSwitcher.Text = "Games List";
-                initListView(false); 
+                initListView(false);
             }
         }
     }

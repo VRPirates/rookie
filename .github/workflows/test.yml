@@ -1,0 +1,26 @@
+name: Build
+
+on:
+  push:
+
+jobs:
+
+  buld-windows:
+
+    runs-on: windows-latest 
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup MSBuild
+      uses: microsoft/setup-msbuild@v2
+
+    - name: Setup NuGet
+      uses: NuGet/setup-nuget@v2
+
+    - name: Restore Packages
+      run: nuget restore AndroidSideloader.sln 
+
+    - name: Build Solution
+      run: |
+        msbuild.exe AndroidSideloader.sln /nologo /nr:false /p:Configuration=Release /p:Platform="Any CPU"
