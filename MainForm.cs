@@ -2321,7 +2321,7 @@ namespace AndroidSideloader
                     string packagename = release[SideloaderRCLONE.PackageNameIndex];
 
                     // Parse popularity score from column 6
-                    if (release.Length > 6 && double.TryParse(release[6], out double score))
+                    if (release.Length > 6 && StringUtilities.TryParseDouble(release[6], out double score))
                     {
                         // Track the highest score per package
                         if (popularityScores.TryGetValue(packagename, out var existing))
@@ -2387,7 +2387,7 @@ namespace AndroidSideloader
 
                         // Check if this is a 0 MB entry that should be excluded
                         bool shouldSkip = false;
-                        if (release.Length > 5 && double.TryParse(release[5], out double sizeInMB))
+                        if (release.Length > 5 && StringUtilities.TryParseDouble(release[6], out double sizeInMB))
                         {
                             // If size is 0 MB and this is not already an MR-Fix version
                             if (sizeInMB == 0 && gameName.IndexOf("(MR-Fix)", StringComparison.OrdinalIgnoreCase) < 0)
@@ -2470,7 +2470,7 @@ namespace AndroidSideloader
                         item.SubItems[4].Text = item.SubItems[4].Text.Replace(" UTC", "");
 
                         // Convert size to GB or MB
-                        if (double.TryParse(item.SubItems[5].Text, out double itemSizeInMB))
+                        if (StringUtilities.TryParseDouble(item.SubItems[5].Text, out double itemSizeInMB))
                         {
                             if (itemSizeInMB >= 1024)
                             {
@@ -3443,7 +3443,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                         {
                             double sizeMB = 0;
                             if (gameData.Length > 5)
-                                double.TryParse(gameData[5], out sizeMB);
+                                StringUtilities.TryParseDouble(gameData[5], out sizeMB);
                             _queueEffectiveSizes[releaseName] = sizeMB;
                             _effectiveQueueSizeMB += sizeMB;
                             _totalQueueSizeMB += sizeMB;
@@ -3483,7 +3483,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                     if (gameData.Length > SideloaderRCLONE.ReleaseNameIndex &&
                         gameData[SideloaderRCLONE.ReleaseNameIndex].Equals(queuedGame, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (gameData.Length > 5 && double.TryParse(gameData[5], out double sizeMB))
+                        if (gameData.Length > 5 && StringUtilities.TryParseDouble(gameData[5], out double sizeMB))
                             maxQueuedGameSizeMB = Math.Max(maxQueuedGameSizeMB, sizeMB);
                         break;
                     }
@@ -3510,7 +3510,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                         gameData[SideloaderRCLONE.ReleaseNameIndex].Equals(releaseName, StringComparison.OrdinalIgnoreCase))
                     {
                         if (gameData.Length > 5)
-                            double.TryParse(gameData[5], out gameSizeMB);
+                            StringUtilities.TryParseDouble(gameData[5], out gameSizeMB);
                         if (gameData.Length > SideloaderRCLONE.PackageNameIndex)
                             packagename = gameData[SideloaderRCLONE.PackageNameIndex];
                         break;
@@ -3704,7 +3704,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                         gameData[SideloaderRCLONE.ReleaseNameIndex].Equals(gameName, StringComparison.OrdinalIgnoreCase))
                     {
                         if (gameData.Length > 5)
-                            double.TryParse(gameData[5], out currentGameSizeMB);
+                            StringUtilities.TryParseDouble(gameData[5], out currentGameSizeMB);
                         break;
                     }
                 }
@@ -7979,7 +7979,7 @@ function onYouTubeIframeAPIReady() {
                     if (game.Length > SideloaderRCLONE.ReleaseNameIndex &&
                         game[SideloaderRCLONE.ReleaseNameIndex].Equals(releaseName, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (game.Length > 5 && double.TryParse(game[5], out double sizeMB))
+                        if (game.Length > 5 && StringUtilities.TryParseDouble(game[5], out double sizeMB))
                         {
                             _totalQueueSizeMB += sizeMB;
                         }
