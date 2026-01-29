@@ -7055,6 +7055,7 @@ function onYouTubeIframeAPIReady() {
             _fastGallery.TileDoubleClicked += FastGallery_TileDoubleClicked;
             _fastGallery.TileDeleteClicked += FastGallery_TileDeleteClicked;
             _fastGallery.SortChanged += FastGallery_SortChanged;
+            _fastGallery.TileHovered += FastGallery_TileHovered;
 
             // Apply current shared sort state to gallery
             _fastGallery.SetSortState(_sharedSortField, _sharedSortDirection);
@@ -7086,6 +7087,14 @@ function onYouTubeIframeAPIReady() {
 
             // Save sort state
             SaveWindowState();
+        }
+
+        private void FastGallery_TileHovered(object sender, string releaseName)
+        {
+            if (string.IsNullOrEmpty(releaseName)) return;
+
+            string notePath = Path.Combine(SideloaderRCLONE.NotesFolder, $"{releaseName}.txt");
+            UpdateReleaseNotes(notePath);
         }
 
         private void GamesGalleryView_Resize(object sender, EventArgs e)
