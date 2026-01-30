@@ -577,28 +577,17 @@ namespace AndroidSideloader
                             "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
-                else if (settings.AutoUpdateConfig && settings.CreatePubMirrorFile)
+                else if (settings.AutoUpdateConfig)
                 {
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form,
-                        "Rookie has detected that you are missing the public config file, would you like to create it?",
-                        "Public Config Missing", MessageBoxButtons.YesNo);
-
-                    if (dialogResult == DialogResult.Yes)
+                    // Auto-create the public config file if it doesn't exist
+                    Logger.Log("Public config file missing, creating automatically...");
+                    File.Create(configFilePath).Close();
+                    await GetPublicConfigAsync();
+                    if (!hasPublicConfig)
                     {
-                        File.Create(configFilePath).Close();
-                        await GetPublicConfigAsync();
-                        if (!hasPublicConfig)
-                        {
-                            _ = FlexibleMessageBox.Show(Program.form,
-                                "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.",
-                                "Config Update Failed", MessageBoxButtons.OK);
-                        }
-                    }
-                    else
-                    {
-                        settings.CreatePubMirrorFile = false;
-                        settings.AutoUpdateConfig = false;
-                        settings.Save();
+                        _ = FlexibleMessageBox.Show(Program.form,
+                            "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.",
+                            "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
 
