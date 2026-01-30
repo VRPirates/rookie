@@ -6541,6 +6541,29 @@ function onYouTubeIframeAPIReady() {
                 settings.AddFavoriteGame(packageName);
 
             UpdateFavoriteMenuItemText();
+
+            // If currently viewing favorites, refresh the list to reflect the change
+            bool isViewingFavorites = favoriteSwitcher.Text == "ALL";
+            if (isViewingFavorites)
+            {
+                var favSet = new HashSet<string>(settings.FavoritedGames, StringComparer.OrdinalIgnoreCase);
+
+                var favoriteItems = _allItems
+                    .Where(item => item.SubItems.Count > 1 && favSet.Contains(item.SubItems[1].Text))
+                    .ToList();
+
+                gamesListView.BeginUpdate();
+                gamesListView.Items.Clear();
+                gamesListView.Items.AddRange(favoriteItems.ToArray());
+                gamesListView.EndUpdate();
+
+                _galleryDataSource = favoriteItems;
+                if (isGalleryView && _fastGallery != null)
+                {
+                    _fastGallery.RefreshFavoritesCache();
+                    _fastGallery.UpdateItems(favoriteItems);
+                }
+            }
         }
 
         private void UpdateFavoriteMenuItemText()
