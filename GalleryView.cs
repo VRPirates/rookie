@@ -1661,13 +1661,53 @@ public class FastGalleryPanel : Control
         {
             settings.RemoveFavoriteGame(packageName);
             _favoritesCache.Remove(packageName);
+
+            // Check if in favorites-only view (= this item is now the only non-favorite)
+            bool isFavoritesView = _items.All(item =>
+                item == targetItem || _favoritesCache.Contains(item.SubItems.Count > 1 ? item.SubItems[1].Text : ""));
+
+            if (isFavoritesView)
+                RemoveVersionFromDisplay(tile, targetItem, _rightClickedIndex);
         }
         else
         {
             settings.AddFavoriteGame(packageName);
             _favoritesCache.Add(packageName);
         }
+
         Invalidate();
+    }
+
+    private void RemoveVersionFromDisplay(GroupedTile tile, ListViewItem item, int tileIndex)
+    {
+        _items.Remove(item);
+        _originalItems.Remove(item);
+        tile.Versions.Remove(item);
+
+        if (tile.Versions.Count == 0)
+        {
+            _displayTiles.RemoveAt(tileIndex);
+            CloseOverlay();
+            if (_selectedIndex == tileIndex) { _selectedIndex = -1; _selectedItem = null; }
+            else if (_selectedIndex > tileIndex) _selectedIndex--;
+        }
+        else
+        {
+            tile.BaseGameName = GetBaseGameName(tile.Versions);
+            tile.GameName = tile.Versions[0].Text;
+
+            if (tile.Versions.Count == 1)
+                CloseOverlay();
+            else if (_overlayHoveredVersion >= tile.Versions.Count)
+                _overlayHoveredVersion = tile.Versions.Count - 1;
+        }
+
+        // Rebuild tile states
+        _tileStates.Clear();
+        for (int i = 0; i < _displayTiles.Count; i++)
+            _tileStates[i] = new TileAnimationState();
+
+        RecalculateLayout();
     }
 
     public void RefreshFavoritesCache()
