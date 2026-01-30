@@ -5835,18 +5835,17 @@ function onYouTubeIframeAPIReady() {
                 return simpleMatch.Success ? simpleMatch.Groups[1].Value : string.Empty;
             }
 
-            // Prepare game name words for matching
-            string lowerGameName = cleanedGameName.ToLowerInvariant();
+            // Normalize: remove apostrophes and convert to lowercase
+            string lowerGameName = cleanedGameName.ToLowerInvariant().Replace("'", "");
             var gameWords = lowerGameName
                 .Split(new[] { ' ', '-', ':', '&' }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
 
-            int requiredMatches = Math.Max(1, gameWords.Count / 2);
+            int requiredMatches = gameWords.Count;
             string bestVideoId = null;
             int bestScore = 0;
             int position = 0;
 
-            // Score each match
             foreach (Match match in videoMatches)
             {
                 string videoId = match.Groups[1].Value;
@@ -5855,18 +5854,20 @@ function onYouTubeIframeAPIReady() {
                 title = UnicodeEscapeRegex.Replace(title, m =>
                     ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString());
 
-                // Entry must match at least half the game name
-                int matchedWords = gameWords.Count(w => title.Contains(w));
-                if (matchedWords < requiredMatches)
+                // Normalize title: remove apostrophes for matching
+                string normalizedTitle = title.Replace("'", "");
+
+                // All game words must be present
+                if (!gameWords.All(w => normalizedTitle.Contains(w)))
                     continue;
 
                 position++;
 
-                // Only process first 5 matches
-                if (position > 5)
+                // Only process first 10 matches
+                if (position > 10)
                     break;
 
-                int score = matchedWords * 10;
+                int score = 0;
 
                 // Position bonus
                 if (position == 1) score += 30;
@@ -5874,9 +5875,10 @@ function onYouTubeIframeAPIReady() {
                 else if (position == 3) score += 10;
 
                 // Word bonus
-                if (title.Contains("trailer")) score += 20;
-                if (title.Contains("official") || title.Contains("launch") || title.Contains("release")) score += 15;
-                if (title.Contains("announce")) score += 12; // also includes "announcement"
+                if (title.Contains("trailer") || title.Contains("teaser")) score += 25;
+                if (title.Contains("official")) score += 20;
+                if (title.Contains("launch") || title.Contains("release")) score += 15;
+                if (title.Contains("announce") || title.Contains("reveal")) score += 12; // also includes "announcement"
                 if (title.Contains("gameplay") || title.Contains("vr")) score += 5;
 
                 // Noise penalty for extra words
@@ -5889,6 +5891,9 @@ function onYouTubeIframeAPIReady() {
                 if (title.Contains("review") ||
                     title.Contains("tutorial") ||
                     title.Contains("how to") ||
+                    title.Contains("install") ||
+                    title.Contains("guide") ||
+                    title.Contains("setup") ||
                     title.Contains("reaction"))
                     score -= 30;
 
