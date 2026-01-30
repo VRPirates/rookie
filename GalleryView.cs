@@ -222,6 +222,9 @@ public class FastGalleryPanel : Control
     {
         if (versions == null || versions.Count == 0) return "";
 
+        // If only one version, use actual name
+        if (versions.Count == 1) return versions[0].Text;
+
         // Get base name without (...) - except (MR-Fix)
         string name = versions.OrderBy(v => v.Text.Length).First().Text;
         bool hasMrFix = name.IndexOf("(MR-Fix)", StringComparison.OrdinalIgnoreCase) >= 0;
