@@ -225,13 +225,16 @@ public class FastGalleryPanel : Control
         // If only one version, use actual name
         if (versions.Count == 1) return versions[0].Text;
 
-        // Get base name without (...) - except (MR-Fix)
-        string name = versions.OrderBy(v => v.Text.Length).First().Text;
-        bool hasMrFix = name.IndexOf("(MR-Fix)", StringComparison.OrdinalIgnoreCase) >= 0;
+        // Strip parentheses (...) from all names - except (MR-Fix), then use the shortest result
+        var strippedNames = versions.Select(v =>
+        {
+            string name = v.Text;
+            bool hasMrFix = name.IndexOf("(MR-Fix)", StringComparison.OrdinalIgnoreCase) >= 0;
+            name = System.Text.RegularExpressions.Regex.Replace(name, @"\s*\([^)]*\)", "").Trim();
+            return hasMrFix ? name + " (MR-Fix)" : name;
+        });
 
-        name = System.Text.RegularExpressions.Regex.Replace(name, @"\s*\([^)]*\)", "").Trim();
-
-        return hasMrFix ? name + " (MR-Fix)" : name;
+        return strippedNames.OrderBy(n => n.Length).First();
     }
 
     private void BuildGroupedTiles()
