@@ -2376,7 +2376,7 @@ namespace AndroidSideloader
 
                         // Check if this is a 0 MB entry that should be excluded
                         bool shouldSkip = false;
-                        if (release.Length > 5 && StringUtilities.TryParseDouble(release[6], out double sizeInMB))
+                        if (release.Length > 5 && StringUtilities.TryParseDouble(release[5], out double sizeInMB))
                         {
                             // If size is 0 MB and this is not already an MR-Fix version
                             if (sizeInMB == 0 && gameName.IndexOf("(MR-Fix)", StringComparison.OrdinalIgnoreCase) < 0)
