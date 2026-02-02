@@ -1037,6 +1037,9 @@ namespace AndroidSideloader
                     Text = "No Device Connected";
                     if (!settings.NodeviceMode)
                     {
+                        // Explicitly update sideloading UI when the dialog is shown
+                        UpdateSideloadingUI(true);
+
                         DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following:\n\n - Developer mode is enabled\n - ADB drivers are installed\n - ADB connection is enabled on your device (this can reset)\n - Your device is plugged in\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
@@ -8512,7 +8515,7 @@ function onYouTubeIframeAPIReady() {
             UpdateSideloadingUI();
         }
 
-        public void UpdateSideloadingUI()
+        public void UpdateSideloadingUI(bool isNoDeviceDialogShown = false)
         {
             // Update the sideload button text
             if (settings.NodeviceMode)
@@ -8529,11 +8532,19 @@ function onYouTubeIframeAPIReady() {
             {
                 sideloadingStatusLabel.Text = "Sideloading: Disabled";
                 sideloadingStatusLabel.ForeColor = Color.FromArgb(255, 100, 100); // Red-ish for disabled
+                downloadInstallGameButton.Text = "DOWNLOAD";
+            }
+            else if (isNoDeviceDialogShown || (!DeviceConnected && !isLoading))
+            {
+                sideloadingStatusLabel.Text = "Sideloading: No Device Connected";
+                sideloadingStatusLabel.ForeColor = Color.FromArgb(240, 150, 50); // Orange for no device
+                downloadInstallGameButton.Text = "DOWNLOAD";
             }
             else
             {
                 sideloadingStatusLabel.Text = "Sideloading: Enabled";
                 sideloadingStatusLabel.ForeColor = Color.FromArgb(93, 203, 173); // Accent green for enabled
+                downloadInstallGameButton.Text = "DOWNLOAD AND INSTALL";
             }
         }
 
