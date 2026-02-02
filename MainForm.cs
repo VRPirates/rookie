@@ -74,6 +74,7 @@ namespace AndroidSideloader
         private static readonly Color ColorError = ColorTranslator.FromHtml("#f52f57");
         private Panel _listViewUninstallButton;
         private bool _listViewUninstallButtonHovered = false;
+        private ListViewItem _hoveredItemForDeleteBtn;
         private bool isGalleryView;  // Will be set from settings in constructor
         private List<ListViewItem> _galleryDataSource;
         private FastGalleryPanel _fastGallery;
@@ -171,12 +172,10 @@ namespace AndroidSideloader
                 if (_listViewUninstallButton == null)
                     return;
 
-                // Check if we have a tagged item to track
-                if (!(_listViewUninstallButton.Tag is ListViewItem item))
-                    return;
+                var item = _hoveredItemForDeleteBtn;
 
-                // Verify item is still valid and selected
-                if (!gamesListView.Items.Contains(item) || !item.Selected)
+                // Hide if no item is hovered
+                if (item == null || !gamesListView.Items.Contains(item))
                 {
                     _listViewUninstallButton.Visible = false;
                     return;
@@ -213,6 +212,7 @@ namespace AndroidSideloader
                 if (isVisible)
                 {
                     _listViewUninstallButton.Location = new Point(buttonX, buttonY);
+                    _listViewUninstallButton.Tag = item; // Store reference for click handler
                     if (!_listViewUninstallButton.Visible)
                     {
                         _listViewUninstallButton.Visible = true;
@@ -225,12 +225,19 @@ namespace AndroidSideloader
             };
             uninstallButtonTimer.Start();
 
-            // Hide button when selection changes
-            gamesListView.ItemSelectionChanged += (s, ev) =>
+            gamesListView.MouseMove += (s, ev) =>
             {
-                if (!ev.IsSelected && _listViewUninstallButton != null)
+                var hitTest = gamesListView.HitTest(ev.Location);
+                _hoveredItemForDeleteBtn = hitTest.Item;
+            };
+
+            gamesListView.MouseLeave += (s, ev) =>
+            {
+                // Clear hover if mouse left the ListView bounds
+                Point clientPoint = gamesListView.PointToClient(Control.MousePosition);
+                if (!gamesListView.ClientRectangle.Contains(clientPoint))
                 {
-                    _listViewUninstallButton.Visible = false;
+                    _hoveredItemForDeleteBtn = null;
                 }
             };
 
@@ -5934,27 +5941,6 @@ function onYouTubeIframeAPIReady() {
 
             // Update the selected game label in the sidebar
             selectedGameLabel.Text = CurrentGameName;
-
-            // Show uninstall button only for installed games
-            bool isInstalled = selectedItem.ForeColor.ToArgb() == ColorInstalled.ToArgb() ||
-                               selectedItem.ForeColor.ToArgb() == ColorUpdateAvailable.ToArgb() ||
-                               selectedItem.ForeColor.ToArgb() == ColorDonateGame.ToArgb();
-
-            if (isInstalled && _listViewUninstallButton != null)
-            {
-                // Position the button at the right side of the selected item
-                Rectangle itemBounds = selectedItem.Bounds;
-                int buttonX = gamesListView.ClientSize.Width - _listViewUninstallButton.Width - 5;
-                int buttonY = itemBounds.Top + (itemBounds.Height - _listViewUninstallButton.Height) / 2;
-
-                // Ensure the button stays within visible bounds
-                if (buttonY >= 0 && buttonY + _listViewUninstallButton.Height <= gamesListView.ClientSize.Height)
-                {
-                    _listViewUninstallButton.Location = new Point(buttonX, buttonY);
-                    _listViewUninstallButton.Tag = selectedItem; // Store reference to the item
-                    _listViewUninstallButton.Visible = true;
-                }
-            }
 
             // Thumbnail
             if (!keyheld)
