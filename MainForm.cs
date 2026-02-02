@@ -1183,8 +1183,8 @@ namespace AndroidSideloader
             string CurrBackups = Path.Combine(backupFolder, date_str);
 
             DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form,
-                $"Do you want to backup all gamesaves to:\n{CurrBackups}\\",
-                "Backup Gamesaves",
+                $"Do you want to attempt to backup all gamesaves to:\n{CurrBackups}\\",
+                "Backup All Gamesaves",
                 MessageBoxButtons.YesNo);
 
             if (dialogResult1 == DialogResult.No || dialogResult1 == DialogResult.Cancel) return;
@@ -1274,7 +1274,10 @@ namespace AndroidSideloader
                     summary.AppendLine($" • {failed}");
             }
 
-            FlexibleMessageBox.Show(Program.form, summary.ToString(), "Backup Complete");
+            summary.AppendLine("\nNote: Some games may not support bulk backup as they require special permissions.");
+            summary.AppendLine("In this case, use 'BACKUP GAMESAVE WITH ADB' to backup the game individually.");
+
+            FlexibleMessageBox.Show(Program.form, summary.ToString(), "Bulk Backup Complete");
         }
 
         private async void restorebutton_Click(object sender, EventArgs e)

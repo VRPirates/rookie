@@ -457,7 +457,7 @@ namespace AndroidSideloader
             this.backupadbbutton.Padding = new System.Windows.Forms.Padding(30, 0, 0, 0);
             this.backupadbbutton.Size = new System.Drawing.Size(233, 28);
             this.backupadbbutton.TabIndex = 1;
-            this.backupadbbutton.Text = "BACKUP WITH ADB";
+            this.backupadbbutton.Text = "BACKUP GAMESAVE WITH ADB";
             this.backupadbbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.backupadbbutton_Tooltip.SetToolTip(this.backupadbbutton, "Save game data via ADB-Backup");
             this.backupadbbutton.UseVisualStyleBackColor = false;
@@ -477,7 +477,7 @@ namespace AndroidSideloader
             this.backupbutton.Padding = new System.Windows.Forms.Padding(30, 0, 0, 0);
             this.backupbutton.Size = new System.Drawing.Size(233, 28);
             this.backupbutton.TabIndex = 1;
-            this.backupbutton.Text = "BACKUP GAMESAVES";
+            this.backupbutton.Text = "BACKUP ALL GAMESAVES";
             this.backupbutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.backupbutton_Tooltip.SetToolTip(this.backupbutton, "Save game and apps data to the backup folder (Does not save APKs or OBBs)");
             this.backupbutton.UseVisualStyleBackColor = false;
@@ -499,7 +499,7 @@ namespace AndroidSideloader
             this.restorebutton.TabIndex = 0;
             this.restorebutton.Text = "RESTORE GAMESAVES";
             this.restorebutton.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            this.restorebutton_Tooltip.SetToolTip(this.restorebutton, "Restore game and apps data to the device (Use BACKUP GAMESAVES first)");
+            this.restorebutton_Tooltip.SetToolTip(this.restorebutton, "Restore game and apps data to the device");
             this.restorebutton.UseVisualStyleBackColor = false;
             this.restorebutton.Click += new System.EventHandler(this.restorebutton_Click);
             // 
