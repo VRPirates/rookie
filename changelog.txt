@@ -3,5 +3,10 @@ RSL 3.0.1
 - Fixed popularity ranking not working on some systems
 - Fixed favorites not updating immediately when removing items
 - Improved YouTube trailer matching accuracy
-- Public config file is now created automatically without prompt
+- Implemented real-time progress updates for drag and drop operations
+- Refined backup button labels and dialogs
 - Gallery View: Added grouped tiles for games with multiple versions (e.g. Beat Saber)
+- ListView: Uninstall button now shows on hover instead of click
+- Public config file is now created automatically without prompt
+- Sideloading status label now shows device connection state
+- Download button text now reflects sideloading status
