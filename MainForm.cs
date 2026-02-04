@@ -872,22 +872,52 @@ namespace AndroidSideloader
             }
             ADB.DeviceID = GetDeviceID();
 
-            Thread t1 = new Thread(() =>
-            {
-                output += ADB.Sideload(path);
-            })
-            {
-                IsBackground = true
-            };
-            t1.Start();
+            string filename = Path.GetFileName(path);
+            changeTitle($"Installing {filename}...");
+            progressBar.IsIndeterminate = false;
+            progressBar.OperationType = "Installing";
+            progressBar.Value = 0;
+            progressBar.StatusText = "Preparing...";
 
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            output = await ADB.SideloadWithProgressAsync(
+                path,
+                (percent, eta) => this.Invoke(() =>
+                {
+                    if (percent == 0)
+                    {
+                        progressBar.IsIndeterminate = true;
+                        progressBar.OperationType = "Installing";
+                    }
+                    else
+                    {
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = percent;
+                    }
+                    UpdateProgressStatus("Installing", percent: (int)Math.Round(percent), eta: eta);
+                    progressBar.StatusText = $"Installing · {percent:0.0}%";
+                }),
+                status => this.Invoke(() =>
+                {
+                    if (!string.IsNullOrEmpty(status))
+                    {
+                        if (status.Contains("Completing Installation"))
+                        {
+                            speedLabel.Text = status;
+                        }
+                        progressBar.StatusText = status;
+                    }
+                }),
+                "",
+                filename);
+
+            // Reset UI on completion
+            progressBar.Value = 0;
+            progressBar.StatusText = "";
+            progressBar.IsIndeterminate = false;
+            speedLabel.Text = "";
+            changeTitle("");
 
             showAvailableSpace();
-
             ShowPrcOutput(output);
         }
 
@@ -980,31 +1010,45 @@ namespace AndroidSideloader
                 progressBar.IsIndeterminate = false;
                 progressBar.Value = 0;
                 progressBar.OperationType = "Copying OBB";
+                progressBar.StatusText = "Preparing...";
+
+                string currentStatusBase = string.Empty;
 
                 output = await ADB.CopyOBBWithProgressAsync(
                     path,
-                    (progress, eta) => this.Invoke(() =>
+                    (percent, eta) => this.Invoke(() =>
                     {
-                        progressBar.Value = progress;
-                        string etaStr = eta.HasValue && eta.Value.TotalSeconds > 0
-                            ? $" · ETA: {eta.Value:mm\\:ss}"
-                            : "";
-                        speedLabel.Text = $"Progress: {progress}%{etaStr}";
+                        progressBar.Value = percent;
+                        UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                        if (!string.IsNullOrEmpty(currentStatusBase))
+                        {
+                            progressBar.StatusText = $"{currentStatusBase} · {percent:0.0}%";
+                        }
+                        else
+                        {
+                            progressBar.StatusText = $"Copying · {percent:0.0}%";
+                        }
                     }),
                     status => this.Invoke(() =>
                     {
-                        progressBar.StatusText = status;
+                        currentStatusBase = status ?? string.Empty;
+                        if (!string.IsNullOrEmpty(status))
+                        {
+                            progressBar.StatusText = status;
+                        }
                     }),
                     folderName);
 
-                progressBar.Value = 100;
+                // Reset UI on completion
+                progressBar.Value = 0;
                 progressBar.StatusText = "";
-                changeTitle("Done.");
-                showAvailableSpace();
-
-                ShowPrcOutput(output);
-                changeTitle("");
+                progressBar.IsIndeterminate = false;
                 speedLabel.Text = "";
+                changeTitle("");
+
+                showAvailableSpace();
+                ShowPrcOutput(output);
             }
         }
 
@@ -1717,23 +1761,49 @@ namespace AndroidSideloader
             };
             if (dialog.Show(Handle))
             {
-                Thread t1 = new Thread(() =>
-                {
-                    Sideloader.RecursiveOutput = new ProcessOutput(String.Empty, String.Empty);
-                    Sideloader.RecursiveCopyOBB(dialog.FileName);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
+                changeTitle("Copying OBB folders to device...");
+                progressBar.IsIndeterminate = false;
+                progressBar.Value = 0;
+                progressBar.OperationType = "Copying OBB";
+                progressBar.StatusText = "Preparing...";
+
+                Sideloader.RecursiveOutput = new ProcessOutput(String.Empty, String.Empty);
+
+                string currentStatusBase = string.Empty;
+
+                await Sideloader.RecursiveCopyOBBAsync(
+                    dialog.FileName,
+                    (percent, eta) => this.Invoke(() =>
+                    {
+                        progressBar.Value = percent;
+                        UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                        if (!string.IsNullOrEmpty(currentStatusBase))
+                        {
+                            progressBar.StatusText = $"{currentStatusBase} · {percent:0.0}%";
+                        }
+                        else
+                        {
+                            progressBar.StatusText = $"Copying · {percent:0.0}%";
+                        }
+                    }),
+                    status => this.Invoke(() =>
+                    {
+                        currentStatusBase = status ?? string.Empty;
+                        if (!string.IsNullOrEmpty(status))
+                        {
+                            changeTitle($"Copying: {status}");
+                        }
+                    }));
+
+                // Reset UI on completion
+                progressBar.Value = 0;
+                progressBar.StatusText = "";
+                progressBar.IsIndeterminate = false;
+                speedLabel.Text = "";
+                changeTitle("");
 
                 showAvailableSpace();
-
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
-
                 ShowPrcOutput(Sideloader.RecursiveOutput);
             }
         }
@@ -1778,23 +1848,45 @@ namespace AndroidSideloader
                     if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
                     {
                         _ = Logger.Log($"Copying {data} to device");
-                        changeTitle($"Copying {data} to device...");
+                        string folderName = Path.GetFileName(data);
+                        changeTitle($"Copying {folderName} to device...");
 
-                        Thread t2 = new Thread(() =>
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.OperationType = "Copying OBB";
+                        progressBar.StatusText = "Preparing...";
 
-                        {
-                            output += ADB.CopyOBB(data);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t2.Start();
+                        string currentStatusBase = string.Empty;
 
-                        while (t2.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        output += await ADB.CopyOBBWithProgressAsync(
+                            data,
+                            (percent, eta) => this.Invoke(() =>
+                            {
+                                progressBar.Value = percent;
+                                UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
 
+                                if (!string.IsNullOrEmpty(currentStatusBase))
+                                {
+                                    progressBar.StatusText = $"{currentStatusBase} · {percent:0.0}%";
+                                }
+                                else
+                                {
+                                    progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                }
+                            }),
+                            status => this.Invoke(() =>
+                            {
+                                currentStatusBase = status ?? string.Empty;
+                                if (!string.IsNullOrEmpty(status))
+                                {
+                                    changeTitle($"Copying: {status}");
+                                }
+                            }),
+                            folderName);
+
+                        // Reset UI after this operation
+                        progressBar.StatusText = "";
+                        speedLabel.Text = "";
                         changeTitle("");
                         settings.CurrPckg = dir;
                         settings.Save();
@@ -1829,42 +1921,88 @@ namespace AndroidSideloader
                                 };
                                 t3.Tick += timer_Tick4;
                                 t3.Start();
-                                changeTitle($"Sideloading APK ({filename})");
 
-                                Thread t2 = new Thread(() =>
-                                {
-                                    output += ADB.Sideload(file2);
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
+                                changeTitle($"Sideloading APK ({filename})");
+                                progressBar.IsIndeterminate = false;
+                                progressBar.Value = 0;
+                                progressBar.OperationType = "Installing";
+                                progressBar.StatusText = "Preparing...";
+
+                                output += await ADB.SideloadWithProgressAsync(
+                                    file2,
+                                    (percent, eta) => this.Invoke(() =>
+                                    {
+                                        if (percent == 0)
+                                        {
+                                            progressBar.IsIndeterminate = true;
+                                            progressBar.OperationType = "Installing";
+                                        }
+                                        else
+                                        {
+                                            progressBar.IsIndeterminate = false;
+                                            progressBar.Value = percent;
+                                        }
+                                        UpdateProgressStatus("Installing", percent: (int)Math.Round(percent), eta: eta);
+                                        progressBar.StatusText = $"Installing · {percent:0.0}%";
+                                    }),
+                                    status => this.Invoke(() =>
+                                    {
+                                        if (!string.IsNullOrEmpty(status))
+                                        {
+                                            if (status.Contains("Completing Installation"))
+                                            {
+                                                speedLabel.Text = status;
+                                            }
+                                            progressBar.StatusText = status;
+                                        }
+                                    }),
+                                    cmdout,
+                                    filename);
 
                                 t3.Stop();
+
+                                // Reset after APK install
+                                progressBar.StatusText = "";
+                                speedLabel.Text = "";
+
                                 if (Directory.Exists($"{pathname}\\{cmdout}"))
                                 {
                                     _ = Logger.Log($"Copying OBB folder to device- {cmdout}");
                                     changeTitle($"Copying OBB folder to device...");
-                                    Thread t1 = new Thread(() =>
-                                    {
-                                        if (!string.IsNullOrEmpty(cmdout))
+
+                                    progressBar.IsIndeterminate = false;
+                                    progressBar.Value = 0;
+                                    progressBar.OperationType = "Copying OBB";
+                                    progressBar.StatusText = "Preparing...";
+
+                                    string obbStatusBase = string.Empty;
+
+                                    output += await ADB.CopyOBBWithProgressAsync(
+                                        $"{pathname}\\{cmdout}",
+                                        (percent, eta) => this.Invoke(() =>
                                         {
-                                            _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
-                                        }
-                                        _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
-                                    })
-                                    {
-                                        IsBackground = true
-                                    };
-                                    t1.Start();
-                                    while (t1.IsAlive)
-                                    {
-                                        await Task.Delay(100);
-                                    }
+                                            progressBar.Value = percent;
+                                            UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                                            if (!string.IsNullOrEmpty(obbStatusBase))
+                                            {
+                                                progressBar.StatusText = $"{obbStatusBase} · {percent:0.0}%";
+                                            }
+                                            else
+                                            {
+                                                progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                            }
+                                        }),
+                                        status => this.Invoke(() =>
+                                        {
+                                            obbStatusBase = status ?? string.Empty;
+                                        }),
+                                        cmdout);
+
+                                    // Reset after OBB copy
+                                    progressBar.StatusText = "";
+                                    speedLabel.Text = "";
+                                    changeTitle("");
                                 }
                             }
 
@@ -1900,24 +2038,46 @@ namespace AndroidSideloader
                     string[] folders = Directory.GetDirectories(data);
                     foreach (string folder in folders)
                     {
+                        string folderName = Path.GetFileName(folder);
                         _ = Logger.Log($"Copying {folder} to device");
-                        changeTitle($"Copying {folder} to device...");
+                        changeTitle($"Copying {folderName} to device...");
 
-                        Thread t2 = new Thread(() =>
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.OperationType = "Copying OBB";
+                        progressBar.StatusText = "Preparing...";
 
-                        {
-                            output += ADB.CopyOBB(folder);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t2.Start();
+                        string folderStatusBase = string.Empty;
 
-                        while (t2.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        output += await ADB.CopyOBBWithProgressAsync(
+                            folder,
+                            (percent, eta) => this.Invoke(() =>
+                            {
+                                progressBar.Value = percent;
+                                UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
 
+                                if (!string.IsNullOrEmpty(folderStatusBase))
+                                {
+                                    progressBar.StatusText = $"{folderStatusBase} · {percent:0.0}%";
+                                }
+                                else
+                                {
+                                    progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                }
+                            }),
+                            status => this.Invoke(() =>
+                            {
+                                folderStatusBase = status ?? string.Empty;
+                                if (!string.IsNullOrEmpty(status))
+                                {
+                                    changeTitle($"Copying: {status}");
+                                }
+                            }),
+                            folderName);
+
+                        // Reset after folder copy
+                        progressBar.StatusText = "";
+                        speedLabel.Text = "";
                         changeTitle("");
                         settings.CurrPckg = dir;
                         settings.Save();
@@ -1981,43 +2141,85 @@ namespace AndroidSideloader
                             timer.Start();
 
                             changeTitle($"Installing {dataname}...");
+                            progressBar.IsIndeterminate = false;
+                            progressBar.Value = 0;
+                            progressBar.OperationType = "Installing";
+                            progressBar.StatusText = "Preparing...";
 
-                            Thread t1 = new Thread(() =>
-                            {
-                                output += ADB.Sideload(data);
-                            })
-                            {
-                                IsBackground = true
-                            };
-                            t1.Start();
-                            while (t1.IsAlive)
-                            {
-                                await Task.Delay(100);
-                            }
+                            output += await ADB.SideloadWithProgressAsync(
+                                data,
+                                (percent, eta) => this.Invoke(() =>
+                                {
+                                    if (percent == 0)
+                                    {
+                                        progressBar.IsIndeterminate = true;
+                                        progressBar.OperationType = "Installing";
+                                    }
+                                    else
+                                    {
+                                        progressBar.IsIndeterminate = false;
+                                        progressBar.Value = percent;
+                                    }
+                                    UpdateProgressStatus("Installing", percent: (int)Math.Round(percent), eta: eta);
+                                    progressBar.StatusText = $"Installing · {percent:0.0}%";
+                                }),
+                                status => this.Invoke(() =>
+                                {
+                                    if (!string.IsNullOrEmpty(status))
+                                    {
+                                        if (status.Contains("Completing Installation"))
+                                        {
+                                            speedLabel.Text = status;
+                                        }
+                                        progressBar.StatusText = status;
+                                    }
+                                }),
+                                cmdout,
+                                dataname);
 
                             timer.Stop();
+
+                            // Reset after APK install
+                            progressBar.StatusText = "";
+                            speedLabel.Text = "";
 
                             if (Directory.Exists($"{pathname}\\{cmdout}"))
                             {
                                 _ = Logger.Log($"Copying OBB folder to device- {cmdout}");
                                 changeTitle($"Copying OBB folder to device...");
-                                Thread t2 = new Thread(() =>
-                                {
-                                    if (!string.IsNullOrEmpty(cmdout))
-                                    {
-                                        _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
-                                    }
-                                    _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
 
+                                progressBar.IsIndeterminate = false;
+                                progressBar.Value = 0;
+                                progressBar.OperationType = "Copying OBB";
+                                progressBar.StatusText = "Preparing...";
+
+                                string obbStatusBase = string.Empty;
+
+                                output += await ADB.CopyOBBWithProgressAsync(
+                                    $"{pathname}\\{cmdout}",
+                                    (percent, eta) => this.Invoke(() =>
+                                    {
+                                        progressBar.Value = percent;
+                                        UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                                        if (!string.IsNullOrEmpty(obbStatusBase))
+                                        {
+                                            progressBar.StatusText = $"{obbStatusBase} · {percent:0.0}%";
+                                        }
+                                        else
+                                        {
+                                            progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                        }
+                                    }),
+                                    status => this.Invoke(() =>
+                                    {
+                                        obbStatusBase = status ?? string.Empty;
+                                    }),
+                                    cmdout);
+
+                                // Reset after OBB copy
+                                progressBar.StatusText = "";
+                                speedLabel.Text = "";
                                 changeTitle("");
                             }
                         }
@@ -2034,21 +2236,41 @@ namespace AndroidSideloader
                         File.Copy(data, Path.Combine(foldername, filename));
                         path = foldername;
 
-                        Thread t1 = new Thread(() =>
-                        {
-                            output += ADB.CopyOBB(path);
-                        })
-                        {
-                            IsBackground = true
-                        };
                         _ = Logger.Log($"Copying OBB folder to device- {path}");
                         changeTitle($"Copying OBB folder to device ({filename})");
-                        t1.Start();
 
-                        while (t1.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.OperationType = "Copying OBB";
+                        progressBar.StatusText = "Preparing...";
+
+                        string obbStatusBase = string.Empty;
+
+                        output += await ADB.CopyOBBWithProgressAsync(
+                            path,
+                            (percent, eta) => this.Invoke(() =>
+                            {
+                                progressBar.Value = percent;
+                                UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                                if (!string.IsNullOrEmpty(obbStatusBase))
+                                {
+                                    progressBar.StatusText = $"{obbStatusBase} · {percent:0.0}%";
+                                }
+                                else
+                                {
+                                    progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                }
+                            }),
+                            status => this.Invoke(() =>
+                            {
+                                obbStatusBase = status ?? string.Empty;
+                            }),
+                            filename);
+
+                        // Reset after OBB copy
+                        progressBar.StatusText = "";
+                        speedLabel.Text = "";
 
                         FileSystemUtilities.TryDeleteDirectory(foldername);
                         changeTitle("");
@@ -2106,7 +2328,11 @@ namespace AndroidSideloader
                 }
             }
 
+            // Final reset of all UI elements
+            progressBar.Value = 0;
+            progressBar.StatusText = "";
             progressBar.IsIndeterminate = false;
+            speedLabel.Text = "";
 
             showAvailableSpace();
             ShowPrcOutput(output);
@@ -6000,7 +6226,7 @@ function onYouTubeIframeAPIReady() {
                     var videoId = await ResolveVideoIdAsync(CurrentGameName);
                     if (string.IsNullOrEmpty(videoId))
                     {
-                        changeTitle("No Trailer found");
+                        changeTitle("No Trailer found", true);
                         ShowVideoPlaceholder();
                     }
                     else
