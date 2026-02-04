@@ -349,6 +349,7 @@ namespace AndroidSideloader
             this.notesRichTextBox.ShowSelectionMargin = true;
             this.notesRichTextBox.Size = new System.Drawing.Size(265, 192);
             this.notesRichTextBox.TabIndex = 10;
+            this.notesRichTextBox.SelectionAlignment = System.Windows.Forms.HorizontalAlignment.Center;
             this.notesRichTextBox.Text = "\n\n\n\n\nTip: Press F1 to see all shortcuts\n\nDrag and drop APKs or folders to install" +
     "";
             this.notesRichTextBox.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(this.notesRichTextBox_LinkClicked);
