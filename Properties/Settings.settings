@@ -193,5 +193,6 @@
     </Setting>
     <Setting Name="selectedMirror" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

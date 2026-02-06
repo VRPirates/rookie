@@ -13,7 +13,7 @@ namespace AndroidSideloader
         private static readonly string RawGitHubUrl = "https://raw.githubusercontent.com/VRPirates/rookie";
         public static readonly string GitHubUrl = "https://github.com/VRPirates/rookie";
 
-        public static readonly string LocalVersion = "3.0";
+        public static readonly string LocalVersion = "3.0.1";
         public static string currentVersion = string.Empty;
         public static string changelog = string.Empty;
 
