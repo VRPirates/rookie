@@ -74,6 +74,7 @@ namespace AndroidSideloader
         private static readonly Color ColorError = ColorTranslator.FromHtml("#f52f57");
         private Panel _listViewUninstallButton;
         private bool _listViewUninstallButtonHovered = false;
+        private ListViewItem _hoveredItemForDeleteBtn;
         private bool isGalleryView;  // Will be set from settings in constructor
         private List<ListViewItem> _galleryDataSource;
         private FastGalleryPanel _fastGallery;
@@ -91,6 +92,7 @@ namespace AndroidSideloader
         public static bool noRcloneUpdating;
         public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
+        public static bool hasUploadConfig = false;
         public static bool UsingPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
@@ -171,12 +173,10 @@ namespace AndroidSideloader
                 if (_listViewUninstallButton == null)
                     return;
 
-                // Check if we have a tagged item to track
-                if (!(_listViewUninstallButton.Tag is ListViewItem item))
-                    return;
+                var item = _hoveredItemForDeleteBtn;
 
-                // Verify item is still valid and selected
-                if (!gamesListView.Items.Contains(item) || !item.Selected)
+                // Hide if no item is hovered
+                if (item == null || !gamesListView.Items.Contains(item))
                 {
                     _listViewUninstallButton.Visible = false;
                     return;
@@ -213,6 +213,7 @@ namespace AndroidSideloader
                 if (isVisible)
                 {
                     _listViewUninstallButton.Location = new Point(buttonX, buttonY);
+                    _listViewUninstallButton.Tag = item; // Store reference for click handler
                     if (!_listViewUninstallButton.Visible)
                     {
                         _listViewUninstallButton.Visible = true;
@@ -225,12 +226,19 @@ namespace AndroidSideloader
             };
             uninstallButtonTimer.Start();
 
-            // Hide button when selection changes
-            gamesListView.ItemSelectionChanged += (s, ev) =>
+            gamesListView.MouseMove += (s, ev) =>
             {
-                if (!ev.IsSelected && _listViewUninstallButton != null)
+                var hitTest = gamesListView.HitTest(ev.Location);
+                _hoveredItemForDeleteBtn = hitTest.Item;
+            };
+
+            gamesListView.MouseLeave += (s, ev) =>
+            {
+                // Clear hover if mouse left the ListView bounds
+                Point clientPoint = gamesListView.PointToClient(Control.MousePosition);
+                if (!gamesListView.ClientRectangle.Contains(clientPoint))
                 {
-                    _listViewUninstallButton.Visible = false;
+                    _hoveredItemForDeleteBtn = null;
                 }
             };
 
@@ -522,13 +530,15 @@ namespace AndroidSideloader
                         // Upload in background
                         _ = Task.Run(() =>
                         {
-                            _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
-                            this.Invoke(() =>
-                            {
-                                _ = FlexibleMessageBox.Show(Program.form,
-                                    $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
-                                Clipboard.SetText(settings.CurrentCrashName);
-                            });
+                            if (hasUploadConfig) {
+                                _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
+                                this.Invoke(() =>
+                                {
+                                    _ = FlexibleMessageBox.Show(Program.form,
+                                        $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
+                                    Clipboard.SetText(settings.CurrentCrashName);
+                                });
+                            }
                         });
                     }
                 }
@@ -567,7 +577,7 @@ namespace AndroidSideloader
                 string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
 
                 // Public config check
-                if (File.Exists(configFilePath))
+                if (File.Exists(configFilePath) && settings.AutoUpdateConfig)
                 {
                     await GetPublicConfigAsync();
                     if (!hasPublicConfig)
@@ -577,28 +587,17 @@ namespace AndroidSideloader
                             "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
-                else if (settings.AutoUpdateConfig && settings.CreatePubMirrorFile)
+                else if (settings.AutoUpdateConfig)
                 {
-                    DialogResult dialogResult = FlexibleMessageBox.Show(Program.form,
-                        "Rookie has detected that you are missing the public config file, would you like to create it?",
-                        "Public Config Missing", MessageBoxButtons.YesNo);
-
-                    if (dialogResult == DialogResult.Yes)
+                    // Auto-create the public config file if it doesn't exist
+                    Logger.Log("Public config file missing, creating automatically...");
+                    File.Create(configFilePath).Close();
+                    await GetPublicConfigAsync();
+                    if (!hasPublicConfig)
                     {
-                        File.Create(configFilePath).Close();
-                        await GetPublicConfigAsync();
-                        if (!hasPublicConfig)
-                        {
-                            _ = FlexibleMessageBox.Show(Program.form,
-                                "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.",
-                                "Config Update Failed", MessageBoxButtons.OK);
-                        }
-                    }
-                    else
-                    {
-                        settings.CreatePubMirrorFile = false;
-                        settings.AutoUpdateConfig = false;
-                        settings.Save();
+                        _ = FlexibleMessageBox.Show(Program.form,
+                            "Failed to fetch public mirror config, and the current one is unreadable.\r\nPlease ensure you can access https://vrpirates.wiki/ in your browser.",
+                            "Config Update Failed", MessageBoxButtons.OK);
                     }
                 }
 
@@ -642,6 +641,12 @@ namespace AndroidSideloader
             {
                 changeTitle("Getting Upload Config...");
                 await Task.Run(() => SideloaderRCLONE.updateUploadConfig());
+
+                string uploadConfigPath = Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.upload.config");
+                if (File.Exists(uploadConfigPath))
+                {
+                    hasUploadConfig = true;
+                }
 
                 _ = Logger.Log("Initializing Servers");
                 changeTitle("Initializing Servers...");
@@ -876,22 +881,52 @@ namespace AndroidSideloader
             }
             ADB.DeviceID = GetDeviceID();
 
-            Thread t1 = new Thread(() =>
-            {
-                output += ADB.Sideload(path);
-            })
-            {
-                IsBackground = true
-            };
-            t1.Start();
+            string filename = Path.GetFileName(path);
+            changeTitle($"Installing {filename}...");
+            progressBar.IsIndeterminate = false;
+            progressBar.OperationType = "Installing";
+            progressBar.Value = 0;
+            progressBar.StatusText = "Preparing...";
 
-            while (t1.IsAlive)
-            {
-                await Task.Delay(100);
-            }
+            output = await ADB.SideloadWithProgressAsync(
+                path,
+                (percent, eta) => this.Invoke(() =>
+                {
+                    if (percent == 0)
+                    {
+                        progressBar.IsIndeterminate = true;
+                        progressBar.OperationType = "Installing";
+                    }
+                    else
+                    {
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = percent;
+                    }
+                    UpdateProgressStatus("Installing", percent: (int)Math.Round(percent), eta: eta);
+                    progressBar.StatusText = $"Installing · {percent:0.0}%";
+                }),
+                status => this.Invoke(() =>
+                {
+                    if (!string.IsNullOrEmpty(status))
+                    {
+                        if (status.Contains("Completing Installation"))
+                        {
+                            speedLabel.Text = status;
+                        }
+                        progressBar.StatusText = status;
+                    }
+                }),
+                "",
+                filename);
+
+            // Reset UI on completion
+            progressBar.Value = 0;
+            progressBar.StatusText = "";
+            progressBar.IsIndeterminate = false;
+            speedLabel.Text = "";
+            changeTitle("");
 
             showAvailableSpace();
-
             ShowPrcOutput(output);
         }
 
@@ -984,31 +1019,45 @@ namespace AndroidSideloader
                 progressBar.IsIndeterminate = false;
                 progressBar.Value = 0;
                 progressBar.OperationType = "Copying OBB";
+                progressBar.StatusText = "Preparing...";
+
+                string currentStatusBase = string.Empty;
 
                 output = await ADB.CopyOBBWithProgressAsync(
                     path,
-                    (progress, eta) => this.Invoke(() =>
+                    (percent, eta) => this.Invoke(() =>
                     {
-                        progressBar.Value = progress;
-                        string etaStr = eta.HasValue && eta.Value.TotalSeconds > 0
-                            ? $" · ETA: {eta.Value:mm\\:ss}"
-                            : "";
-                        speedLabel.Text = $"Progress: {progress}%{etaStr}";
+                        progressBar.Value = percent;
+                        UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                        if (!string.IsNullOrEmpty(currentStatusBase))
+                        {
+                            progressBar.StatusText = $"{currentStatusBase} · {percent:0.0}%";
+                        }
+                        else
+                        {
+                            progressBar.StatusText = $"Copying · {percent:0.0}%";
+                        }
                     }),
                     status => this.Invoke(() =>
                     {
-                        progressBar.StatusText = status;
+                        currentStatusBase = status ?? string.Empty;
+                        if (!string.IsNullOrEmpty(status))
+                        {
+                            progressBar.StatusText = status;
+                        }
                     }),
                     folderName);
 
-                progressBar.Value = 100;
+                // Reset UI on completion
+                progressBar.Value = 0;
                 progressBar.StatusText = "";
-                changeTitle("Done.");
-                showAvailableSpace();
-
-                ShowPrcOutput(output);
-                changeTitle("");
+                progressBar.IsIndeterminate = false;
                 speedLabel.Text = "";
+                changeTitle("");
+
+                showAvailableSpace();
+                ShowPrcOutput(output);
             }
         }
 
@@ -1041,6 +1090,9 @@ namespace AndroidSideloader
                     Text = "No Device Connected";
                     if (!settings.NodeviceMode)
                     {
+                        // Explicitly update sideloading UI when the dialog is shown
+                        UpdateSideloadingUI(true);
+
                         DialogResult dialogResult = FlexibleMessageBox.Show(Program.form, "No device found. Please ensure the following:\n\n - Developer mode is enabled\n - ADB drivers are installed\n - ADB connection is enabled on your device (this can reset)\n - Your device is plugged in\n\nThen press \"Retry\"", "No device found.", MessageBoxButtons.RetryCancel);
                         if (dialogResult == DialogResult.Retry)
                         {
@@ -1184,8 +1236,8 @@ namespace AndroidSideloader
             string CurrBackups = Path.Combine(backupFolder, date_str);
 
             DialogResult dialogResult1 = FlexibleMessageBox.Show(Program.form,
-                $"Do you want to backup all gamesaves to:\n{CurrBackups}\\",
-                "Backup Gamesaves",
+                $"Do you want to attempt to backup all gamesaves to:\n{CurrBackups}\\",
+                "Backup All Gamesaves",
                 MessageBoxButtons.YesNo);
 
             if (dialogResult1 == DialogResult.No || dialogResult1 == DialogResult.Cancel) return;
@@ -1275,7 +1327,10 @@ namespace AndroidSideloader
                     summary.AppendLine($" • {failed}");
             }
 
-            FlexibleMessageBox.Show(Program.form, summary.ToString(), "Backup Complete");
+            summary.AppendLine("\nNote: Some games may not support bulk backup as they require special permissions.");
+            summary.AppendLine("In this case, use 'BACKUP GAMESAVE WITH ADB' to backup the game individually.");
+
+            FlexibleMessageBox.Show(Program.form, summary.ToString(), "Bulk Backup Complete");
         }
 
         private async void restorebutton_Click(object sender, EventArgs e)
@@ -1715,23 +1770,49 @@ namespace AndroidSideloader
             };
             if (dialog.Show(Handle))
             {
-                Thread t1 = new Thread(() =>
-                {
-                    Sideloader.RecursiveOutput = new ProcessOutput(String.Empty, String.Empty);
-                    Sideloader.RecursiveCopyOBB(dialog.FileName);
-                })
-                {
-                    IsBackground = true
-                };
-                t1.Start();
+                changeTitle("Copying OBB folders to device...");
+                progressBar.IsIndeterminate = false;
+                progressBar.Value = 0;
+                progressBar.OperationType = "Copying OBB";
+                progressBar.StatusText = "Preparing...";
+
+                Sideloader.RecursiveOutput = new ProcessOutput(String.Empty, String.Empty);
+
+                string currentStatusBase = string.Empty;
+
+                await Sideloader.RecursiveCopyOBBAsync(
+                    dialog.FileName,
+                    (percent, eta) => this.Invoke(() =>
+                    {
+                        progressBar.Value = percent;
+                        UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                        if (!string.IsNullOrEmpty(currentStatusBase))
+                        {
+                            progressBar.StatusText = $"{currentStatusBase} · {percent:0.0}%";
+                        }
+                        else
+                        {
+                            progressBar.StatusText = $"Copying · {percent:0.0}%";
+                        }
+                    }),
+                    status => this.Invoke(() =>
+                    {
+                        currentStatusBase = status ?? string.Empty;
+                        if (!string.IsNullOrEmpty(status))
+                        {
+                            changeTitle($"Copying: {status}");
+                        }
+                    }));
+
+                // Reset UI on completion
+                progressBar.Value = 0;
+                progressBar.StatusText = "";
+                progressBar.IsIndeterminate = false;
+                speedLabel.Text = "";
+                changeTitle("");
 
                 showAvailableSpace();
-
-                while (t1.IsAlive)
-                {
-                    await Task.Delay(100);
-                }
-
                 ShowPrcOutput(Sideloader.RecursiveOutput);
             }
         }
@@ -1776,23 +1857,45 @@ namespace AndroidSideloader
                     if (!data.Contains("+") && !data.Contains("_") && data.Contains("."))
                     {
                         _ = Logger.Log($"Copying {data} to device");
-                        changeTitle($"Copying {data} to device...");
+                        string folderName = Path.GetFileName(data);
+                        changeTitle($"Copying {folderName} to device...");
 
-                        Thread t2 = new Thread(() =>
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.OperationType = "Copying OBB";
+                        progressBar.StatusText = "Preparing...";
 
-                        {
-                            output += ADB.CopyOBB(data);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t2.Start();
+                        string currentStatusBase = string.Empty;
 
-                        while (t2.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        output += await ADB.CopyOBBWithProgressAsync(
+                            data,
+                            (percent, eta) => this.Invoke(() =>
+                            {
+                                progressBar.Value = percent;
+                                UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
 
+                                if (!string.IsNullOrEmpty(currentStatusBase))
+                                {
+                                    progressBar.StatusText = $"{currentStatusBase} · {percent:0.0}%";
+                                }
+                                else
+                                {
+                                    progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                }
+                            }),
+                            status => this.Invoke(() =>
+                            {
+                                currentStatusBase = status ?? string.Empty;
+                                if (!string.IsNullOrEmpty(status))
+                                {
+                                    changeTitle($"Copying: {status}");
+                                }
+                            }),
+                            folderName);
+
+                        // Reset UI after this operation
+                        progressBar.StatusText = "";
+                        speedLabel.Text = "";
                         changeTitle("");
                         settings.CurrPckg = dir;
                         settings.Save();
@@ -1827,42 +1930,88 @@ namespace AndroidSideloader
                                 };
                                 t3.Tick += timer_Tick4;
                                 t3.Start();
-                                changeTitle($"Sideloading APK ({filename})");
 
-                                Thread t2 = new Thread(() =>
-                                {
-                                    output += ADB.Sideload(file2);
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
+                                changeTitle($"Sideloading APK ({filename})");
+                                progressBar.IsIndeterminate = false;
+                                progressBar.Value = 0;
+                                progressBar.OperationType = "Installing";
+                                progressBar.StatusText = "Preparing...";
+
+                                output += await ADB.SideloadWithProgressAsync(
+                                    file2,
+                                    (percent, eta) => this.Invoke(() =>
+                                    {
+                                        if (percent == 0)
+                                        {
+                                            progressBar.IsIndeterminate = true;
+                                            progressBar.OperationType = "Installing";
+                                        }
+                                        else
+                                        {
+                                            progressBar.IsIndeterminate = false;
+                                            progressBar.Value = percent;
+                                        }
+                                        UpdateProgressStatus("Installing", percent: (int)Math.Round(percent), eta: eta);
+                                        progressBar.StatusText = $"Installing · {percent:0.0}%";
+                                    }),
+                                    status => this.Invoke(() =>
+                                    {
+                                        if (!string.IsNullOrEmpty(status))
+                                        {
+                                            if (status.Contains("Completing Installation"))
+                                            {
+                                                speedLabel.Text = status;
+                                            }
+                                            progressBar.StatusText = status;
+                                        }
+                                    }),
+                                    cmdout,
+                                    filename);
 
                                 t3.Stop();
+
+                                // Reset after APK install
+                                progressBar.StatusText = "";
+                                speedLabel.Text = "";
+
                                 if (Directory.Exists($"{pathname}\\{cmdout}"))
                                 {
                                     _ = Logger.Log($"Copying OBB folder to device- {cmdout}");
                                     changeTitle($"Copying OBB folder to device...");
-                                    Thread t1 = new Thread(() =>
-                                    {
-                                        if (!string.IsNullOrEmpty(cmdout))
+
+                                    progressBar.IsIndeterminate = false;
+                                    progressBar.Value = 0;
+                                    progressBar.OperationType = "Copying OBB";
+                                    progressBar.StatusText = "Preparing...";
+
+                                    string obbStatusBase = string.Empty;
+
+                                    output += await ADB.CopyOBBWithProgressAsync(
+                                        $"{pathname}\\{cmdout}",
+                                        (percent, eta) => this.Invoke(() =>
                                         {
-                                            _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
-                                        }
-                                        _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
-                                    })
-                                    {
-                                        IsBackground = true
-                                    };
-                                    t1.Start();
-                                    while (t1.IsAlive)
-                                    {
-                                        await Task.Delay(100);
-                                    }
+                                            progressBar.Value = percent;
+                                            UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                                            if (!string.IsNullOrEmpty(obbStatusBase))
+                                            {
+                                                progressBar.StatusText = $"{obbStatusBase} · {percent:0.0}%";
+                                            }
+                                            else
+                                            {
+                                                progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                            }
+                                        }),
+                                        status => this.Invoke(() =>
+                                        {
+                                            obbStatusBase = status ?? string.Empty;
+                                        }),
+                                        cmdout);
+
+                                    // Reset after OBB copy
+                                    progressBar.StatusText = "";
+                                    speedLabel.Text = "";
+                                    changeTitle("");
                                 }
                             }
 
@@ -1898,24 +2047,46 @@ namespace AndroidSideloader
                     string[] folders = Directory.GetDirectories(data);
                     foreach (string folder in folders)
                     {
+                        string folderName = Path.GetFileName(folder);
                         _ = Logger.Log($"Copying {folder} to device");
-                        changeTitle($"Copying {folder} to device...");
+                        changeTitle($"Copying {folderName} to device...");
 
-                        Thread t2 = new Thread(() =>
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.OperationType = "Copying OBB";
+                        progressBar.StatusText = "Preparing...";
 
-                        {
-                            output += ADB.CopyOBB(folder);
-                        })
-                        {
-                            IsBackground = true
-                        };
-                        t2.Start();
+                        string folderStatusBase = string.Empty;
 
-                        while (t2.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        output += await ADB.CopyOBBWithProgressAsync(
+                            folder,
+                            (percent, eta) => this.Invoke(() =>
+                            {
+                                progressBar.Value = percent;
+                                UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
 
+                                if (!string.IsNullOrEmpty(folderStatusBase))
+                                {
+                                    progressBar.StatusText = $"{folderStatusBase} · {percent:0.0}%";
+                                }
+                                else
+                                {
+                                    progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                }
+                            }),
+                            status => this.Invoke(() =>
+                            {
+                                folderStatusBase = status ?? string.Empty;
+                                if (!string.IsNullOrEmpty(status))
+                                {
+                                    changeTitle($"Copying: {status}");
+                                }
+                            }),
+                            folderName);
+
+                        // Reset after folder copy
+                        progressBar.StatusText = "";
+                        speedLabel.Text = "";
                         changeTitle("");
                         settings.CurrPckg = dir;
                         settings.Save();
@@ -1979,43 +2150,85 @@ namespace AndroidSideloader
                             timer.Start();
 
                             changeTitle($"Installing {dataname}...");
+                            progressBar.IsIndeterminate = false;
+                            progressBar.Value = 0;
+                            progressBar.OperationType = "Installing";
+                            progressBar.StatusText = "Preparing...";
 
-                            Thread t1 = new Thread(() =>
-                            {
-                                output += ADB.Sideload(data);
-                            })
-                            {
-                                IsBackground = true
-                            };
-                            t1.Start();
-                            while (t1.IsAlive)
-                            {
-                                await Task.Delay(100);
-                            }
+                            output += await ADB.SideloadWithProgressAsync(
+                                data,
+                                (percent, eta) => this.Invoke(() =>
+                                {
+                                    if (percent == 0)
+                                    {
+                                        progressBar.IsIndeterminate = true;
+                                        progressBar.OperationType = "Installing";
+                                    }
+                                    else
+                                    {
+                                        progressBar.IsIndeterminate = false;
+                                        progressBar.Value = percent;
+                                    }
+                                    UpdateProgressStatus("Installing", percent: (int)Math.Round(percent), eta: eta);
+                                    progressBar.StatusText = $"Installing · {percent:0.0}%";
+                                }),
+                                status => this.Invoke(() =>
+                                {
+                                    if (!string.IsNullOrEmpty(status))
+                                    {
+                                        if (status.Contains("Completing Installation"))
+                                        {
+                                            speedLabel.Text = status;
+                                        }
+                                        progressBar.StatusText = status;
+                                    }
+                                }),
+                                cmdout,
+                                dataname);
 
                             timer.Stop();
+
+                            // Reset after APK install
+                            progressBar.StatusText = "";
+                            speedLabel.Text = "";
 
                             if (Directory.Exists($"{pathname}\\{cmdout}"))
                             {
                                 _ = Logger.Log($"Copying OBB folder to device- {cmdout}");
                                 changeTitle($"Copying OBB folder to device...");
-                                Thread t2 = new Thread(() =>
-                                {
-                                    if (!string.IsNullOrEmpty(cmdout))
-                                    {
-                                        _ = ADB.RunAdbCommandToString($"shell rm -rf \"/sdcard/Android/obb/{cmdout}\" && mkdir \"/sdcard/Android/obb/{cmdout}\"");
-                                    }
-                                    _ = ADB.RunAdbCommandToString($"push \"{pathname}\\{cmdout}\" /sdcard/Android/obb/");
-                                })
-                                {
-                                    IsBackground = true
-                                };
-                                t2.Start();
-                                while (t2.IsAlive)
-                                {
-                                    await Task.Delay(100);
-                                }
 
+                                progressBar.IsIndeterminate = false;
+                                progressBar.Value = 0;
+                                progressBar.OperationType = "Copying OBB";
+                                progressBar.StatusText = "Preparing...";
+
+                                string obbStatusBase = string.Empty;
+
+                                output += await ADB.CopyOBBWithProgressAsync(
+                                    $"{pathname}\\{cmdout}",
+                                    (percent, eta) => this.Invoke(() =>
+                                    {
+                                        progressBar.Value = percent;
+                                        UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                                        if (!string.IsNullOrEmpty(obbStatusBase))
+                                        {
+                                            progressBar.StatusText = $"{obbStatusBase} · {percent:0.0}%";
+                                        }
+                                        else
+                                        {
+                                            progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                        }
+                                    }),
+                                    status => this.Invoke(() =>
+                                    {
+                                        obbStatusBase = status ?? string.Empty;
+                                    }),
+                                    cmdout);
+
+                                // Reset after OBB copy
+                                progressBar.StatusText = "";
+                                speedLabel.Text = "";
                                 changeTitle("");
                             }
                         }
@@ -2032,21 +2245,41 @@ namespace AndroidSideloader
                         File.Copy(data, Path.Combine(foldername, filename));
                         path = foldername;
 
-                        Thread t1 = new Thread(() =>
-                        {
-                            output += ADB.CopyOBB(path);
-                        })
-                        {
-                            IsBackground = true
-                        };
                         _ = Logger.Log($"Copying OBB folder to device- {path}");
                         changeTitle($"Copying OBB folder to device ({filename})");
-                        t1.Start();
 
-                        while (t1.IsAlive)
-                        {
-                            await Task.Delay(100);
-                        }
+                        progressBar.IsIndeterminate = false;
+                        progressBar.Value = 0;
+                        progressBar.OperationType = "Copying OBB";
+                        progressBar.StatusText = "Preparing...";
+
+                        string obbStatusBase = string.Empty;
+
+                        output += await ADB.CopyOBBWithProgressAsync(
+                            path,
+                            (percent, eta) => this.Invoke(() =>
+                            {
+                                progressBar.Value = percent;
+                                UpdateProgressStatus("Copying OBB", percent: (int)Math.Round(percent), eta: eta);
+
+                                if (!string.IsNullOrEmpty(obbStatusBase))
+                                {
+                                    progressBar.StatusText = $"{obbStatusBase} · {percent:0.0}%";
+                                }
+                                else
+                                {
+                                    progressBar.StatusText = $"Copying · {percent:0.0}%";
+                                }
+                            }),
+                            status => this.Invoke(() =>
+                            {
+                                obbStatusBase = status ?? string.Empty;
+                            }),
+                            filename);
+
+                        // Reset after OBB copy
+                        progressBar.StatusText = "";
+                        speedLabel.Text = "";
 
                         FileSystemUtilities.TryDeleteDirectory(foldername);
                         changeTitle("");
@@ -2104,7 +2337,11 @@ namespace AndroidSideloader
                 }
             }
 
+            // Final reset of all UI elements
+            progressBar.Value = 0;
+            progressBar.StatusText = "";
             progressBar.IsIndeterminate = false;
+            speedLabel.Text = "";
 
             showAvailableSpace();
             ShowPrcOutput(output);
@@ -2321,7 +2558,7 @@ namespace AndroidSideloader
                     string packagename = release[SideloaderRCLONE.PackageNameIndex];
 
                     // Parse popularity score from column 6
-                    if (release.Length > 6 && double.TryParse(release[6], out double score))
+                    if (release.Length > 6 && StringUtilities.TryParseDouble(release[6], out double score))
                     {
                         // Track the highest score per package
                         if (popularityScores.TryGetValue(packagename, out var existing))
@@ -2387,7 +2624,7 @@ namespace AndroidSideloader
 
                         // Check if this is a 0 MB entry that should be excluded
                         bool shouldSkip = false;
-                        if (release.Length > 5 && double.TryParse(release[5], out double sizeInMB))
+                        if (release.Length > 5 && StringUtilities.TryParseDouble(release[5], out double sizeInMB))
                         {
                             // If size is 0 MB and this is not already an MR-Fix version
                             if (sizeInMB == 0 && gameName.IndexOf("(MR-Fix)", StringComparison.OrdinalIgnoreCase) < 0)
@@ -2470,7 +2707,7 @@ namespace AndroidSideloader
                         item.SubItems[4].Text = item.SubItems[4].Text.Replace(" UTC", "");
 
                         // Convert size to GB or MB
-                        if (double.TryParse(item.SubItems[5].Text, out double itemSizeInMB))
+                        if (StringUtilities.TryParseDouble(item.SubItems[5].Text, out double itemSizeInMB))
                         {
                             if (itemSizeInMB >= 1024)
                             {
@@ -2543,7 +2780,7 @@ namespace AndroidSideloader
 
             progressBar.IsIndeterminate = false;
 
-            if (either && !updatesNotified && !noAppCheck)
+            if (either && !updatesNotified && !noAppCheck && hasUploadConfig)
             {
                 changeTitle("");
                 DonorsListViewForm donorForm = new DonorsListViewForm();
@@ -2663,7 +2900,7 @@ namespace AndroidSideloader
                             string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
                             Logger.Log($"Release name obtained: {RlsName}", LogLevel.INFO);
 
-                            if (!updatesNotified && !onapplist && newint < 6)
+                            if (!updatesNotified && !onapplist && newint < 6 && hasUploadConfig)
                             {
                                 changeTitle("Unrecognized App found. Downloading APK to take a closer look. (This may take a minute)");
 
@@ -3302,13 +3539,9 @@ Additional Thanks & Resources
             if (quotaTries > remotesList.Items.Count)
             {
                 ShowError_QuotaExceeded();
-
-                if (Application.MessageLoop)
-                {
-                    isOffline = true;
-                    success = false;
-                    return success;
-                }
+                isOffline = true;
+                success = false;
+                return success;
             }
 
             return success;
@@ -3326,7 +3559,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
             FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to remote server");
 
             // Close application after showing the message
-            Application.Exit();
+            // Application.Exit();
         }
 
         public async void cleanupActiveDownloadStatus()
@@ -3443,7 +3676,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                         {
                             double sizeMB = 0;
                             if (gameData.Length > 5)
-                                double.TryParse(gameData[5], out sizeMB);
+                                StringUtilities.TryParseDouble(gameData[5], out sizeMB);
                             _queueEffectiveSizes[releaseName] = sizeMB;
                             _effectiveQueueSizeMB += sizeMB;
                             _totalQueueSizeMB += sizeMB;
@@ -3483,7 +3716,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                     if (gameData.Length > SideloaderRCLONE.ReleaseNameIndex &&
                         gameData[SideloaderRCLONE.ReleaseNameIndex].Equals(queuedGame, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (gameData.Length > 5 && double.TryParse(gameData[5], out double sizeMB))
+                        if (gameData.Length > 5 && StringUtilities.TryParseDouble(gameData[5], out double sizeMB))
                             maxQueuedGameSizeMB = Math.Max(maxQueuedGameSizeMB, sizeMB);
                         break;
                     }
@@ -3510,7 +3743,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                         gameData[SideloaderRCLONE.ReleaseNameIndex].Equals(releaseName, StringComparison.OrdinalIgnoreCase))
                     {
                         if (gameData.Length > 5)
-                            double.TryParse(gameData[5], out gameSizeMB);
+                            StringUtilities.TryParseDouble(gameData[5], out gameSizeMB);
                         if (gameData.Length > SideloaderRCLONE.PackageNameIndex)
                             packagename = gameData[SideloaderRCLONE.PackageNameIndex];
                         break;
@@ -3704,7 +3937,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
                         gameData[SideloaderRCLONE.ReleaseNameIndex].Equals(gameName, StringComparison.OrdinalIgnoreCase))
                     {
                         if (gameData.Length > 5)
-                            double.TryParse(gameData[5], out currentGameSizeMB);
+                            StringUtilities.TryParseDouble(gameData[5], out currentGameSizeMB);
                         break;
                     }
                 }
@@ -5846,18 +6079,17 @@ function onYouTubeIframeAPIReady() {
                 return simpleMatch.Success ? simpleMatch.Groups[1].Value : string.Empty;
             }
 
-            // Prepare game name words for matching
-            string lowerGameName = cleanedGameName.ToLowerInvariant();
+            // Normalize: remove apostrophes and convert to lowercase
+            string lowerGameName = cleanedGameName.ToLowerInvariant().Replace("'", "");
             var gameWords = lowerGameName
                 .Split(new[] { ' ', '-', ':', '&' }, StringSplitOptions.RemoveEmptyEntries)
                 .ToList();
 
-            int requiredMatches = Math.Max(1, gameWords.Count / 2);
+            int requiredMatches = gameWords.Count;
             string bestVideoId = null;
             int bestScore = 0;
             int position = 0;
 
-            // Score each match
             foreach (Match match in videoMatches)
             {
                 string videoId = match.Groups[1].Value;
@@ -5866,18 +6098,20 @@ function onYouTubeIframeAPIReady() {
                 title = UnicodeEscapeRegex.Replace(title, m =>
                     ((char)Convert.ToInt32(m.Groups[1].Value, 16)).ToString());
 
-                // Entry must match at least half the game name
-                int matchedWords = gameWords.Count(w => title.Contains(w));
-                if (matchedWords < requiredMatches)
+                // Normalize title: remove apostrophes for matching
+                string normalizedTitle = title.Replace("'", "");
+
+                // All game words must be present
+                if (!gameWords.All(w => normalizedTitle.Contains(w)))
                     continue;
 
                 position++;
 
-                // Only process first 5 matches
-                if (position > 5)
+                // Only process first 10 matches
+                if (position > 10)
                     break;
 
-                int score = matchedWords * 10;
+                int score = 0;
 
                 // Position bonus
                 if (position == 1) score += 30;
@@ -5885,9 +6119,10 @@ function onYouTubeIframeAPIReady() {
                 else if (position == 3) score += 10;
 
                 // Word bonus
-                if (title.Contains("trailer")) score += 20;
-                if (title.Contains("official") || title.Contains("launch") || title.Contains("release")) score += 15;
-                if (title.Contains("announce")) score += 12; // also includes "announcement"
+                if (title.Contains("trailer") || title.Contains("teaser")) score += 25;
+                if (title.Contains("official")) score += 20;
+                if (title.Contains("launch") || title.Contains("release")) score += 15;
+                if (title.Contains("announce") || title.Contains("reveal")) score += 12; // also includes "announcement"
                 if (title.Contains("gameplay") || title.Contains("vr")) score += 5;
 
                 // Noise penalty for extra words
@@ -5900,6 +6135,9 @@ function onYouTubeIframeAPIReady() {
                 if (title.Contains("review") ||
                     title.Contains("tutorial") ||
                     title.Contains("how to") ||
+                    title.Contains("install") ||
+                    title.Contains("guide") ||
+                    title.Contains("setup") ||
                     title.Contains("reaction"))
                     score -= 30;
 
@@ -5940,27 +6178,6 @@ function onYouTubeIframeAPIReady() {
 
             // Update the selected game label in the sidebar
             selectedGameLabel.Text = CurrentGameName;
-
-            // Show uninstall button only for installed games
-            bool isInstalled = selectedItem.ForeColor.ToArgb() == ColorInstalled.ToArgb() ||
-                               selectedItem.ForeColor.ToArgb() == ColorUpdateAvailable.ToArgb() ||
-                               selectedItem.ForeColor.ToArgb() == ColorDonateGame.ToArgb();
-
-            if (isInstalled && _listViewUninstallButton != null)
-            {
-                // Position the button at the right side of the selected item
-                Rectangle itemBounds = selectedItem.Bounds;
-                int buttonX = gamesListView.ClientSize.Width - _listViewUninstallButton.Width - 5;
-                int buttonY = itemBounds.Top + (itemBounds.Height - _listViewUninstallButton.Height) / 2;
-
-                // Ensure the button stays within visible bounds
-                if (buttonY >= 0 && buttonY + _listViewUninstallButton.Height <= gamesListView.ClientSize.Height)
-                {
-                    _listViewUninstallButton.Location = new Point(buttonX, buttonY);
-                    _listViewUninstallButton.Tag = selectedItem; // Store reference to the item
-                    _listViewUninstallButton.Visible = true;
-                }
-            }
 
             // Thumbnail
             if (!keyheld)
@@ -6014,7 +6231,7 @@ function onYouTubeIframeAPIReady() {
                     var videoId = await ResolveVideoIdAsync(CurrentGameName);
                     if (string.IsNullOrEmpty(videoId))
                     {
-                        changeTitle("No Trailer found");
+                        changeTitle("No Trailer found", true);
                         ShowVideoPlaceholder();
                     }
                     else
@@ -6547,6 +6764,29 @@ function onYouTubeIframeAPIReady() {
                 settings.AddFavoriteGame(packageName);
 
             UpdateFavoriteMenuItemText();
+
+            // If currently viewing favorites, refresh the list to reflect the change
+            bool isViewingFavorites = favoriteSwitcher.Text == "ALL";
+            if (isViewingFavorites)
+            {
+                var favSet = new HashSet<string>(settings.FavoritedGames, StringComparer.OrdinalIgnoreCase);
+
+                var favoriteItems = _allItems
+                    .Where(item => item.SubItems.Count > 1 && favSet.Contains(item.SubItems[1].Text))
+                    .ToList();
+
+                gamesListView.BeginUpdate();
+                gamesListView.Items.Clear();
+                gamesListView.Items.AddRange(favoriteItems.ToArray());
+                gamesListView.EndUpdate();
+
+                _galleryDataSource = favoriteItems;
+                if (isGalleryView && _fastGallery != null)
+                {
+                    _fastGallery.RefreshFavoritesCache();
+                    _fastGallery.UpdateItems(favoriteItems);
+                }
+            }
         }
 
         private void UpdateFavoriteMenuItemText()
@@ -7055,6 +7295,7 @@ function onYouTubeIframeAPIReady() {
             _fastGallery.TileDoubleClicked += FastGallery_TileDoubleClicked;
             _fastGallery.TileDeleteClicked += FastGallery_TileDeleteClicked;
             _fastGallery.SortChanged += FastGallery_SortChanged;
+            _fastGallery.TileHovered += FastGallery_TileHovered;
 
             // Apply current shared sort state to gallery
             _fastGallery.SetSortState(_sharedSortField, _sharedSortDirection);
@@ -7086,6 +7327,14 @@ function onYouTubeIframeAPIReady() {
 
             // Save sort state
             SaveWindowState();
+        }
+
+        private void FastGallery_TileHovered(object sender, string releaseName)
+        {
+            if (string.IsNullOrEmpty(releaseName)) return;
+
+            string notePath = Path.Combine(SideloaderRCLONE.NotesFolder, $"{releaseName}.txt");
+            UpdateReleaseNotes(notePath);
         }
 
         private void GamesGalleryView_Resize(object sender, EventArgs e)
@@ -7979,7 +8228,7 @@ function onYouTubeIframeAPIReady() {
                     if (game.Length > SideloaderRCLONE.ReleaseNameIndex &&
                         game[SideloaderRCLONE.ReleaseNameIndex].Equals(releaseName, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (game.Length > 5 && double.TryParse(game[5], out double sizeMB))
+                        if (game.Length > 5 && StringUtilities.TryParseDouble(game[5], out double sizeMB))
                         {
                             _totalQueueSizeMB += sizeMB;
                         }
@@ -8500,7 +8749,7 @@ function onYouTubeIframeAPIReady() {
             UpdateSideloadingUI();
         }
 
-        public void UpdateSideloadingUI()
+        public void UpdateSideloadingUI(bool isNoDeviceDialogShown = false)
         {
             // Update the sideload button text
             if (settings.NodeviceMode)
@@ -8517,11 +8766,19 @@ function onYouTubeIframeAPIReady() {
             {
                 sideloadingStatusLabel.Text = "Sideloading: Disabled";
                 sideloadingStatusLabel.ForeColor = Color.FromArgb(255, 100, 100); // Red-ish for disabled
+                downloadInstallGameButton.Text = "DOWNLOAD";
+            }
+            else if (isNoDeviceDialogShown || (!DeviceConnected && !isLoading))
+            {
+                sideloadingStatusLabel.Text = "Sideloading: No Device Connected";
+                sideloadingStatusLabel.ForeColor = Color.FromArgb(240, 150, 50); // Orange for no device
+                downloadInstallGameButton.Text = "DOWNLOAD";
             }
             else
             {
                 sideloadingStatusLabel.Text = "Sideloading: Enabled";
                 sideloadingStatusLabel.ForeColor = Color.FromArgb(93, 203, 173); // Accent green for enabled
+                downloadInstallGameButton.Text = "DOWNLOAD AND INSTALL";
             }
         }
 

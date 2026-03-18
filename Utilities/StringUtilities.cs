@@ -61,5 +61,13 @@ namespace AndroidSideloader.Utilities
 
             return s;
         }
+
+        public static bool TryParseDouble(string value, out double result)
+        {
+            return double.TryParse(value,
+                System.Globalization.NumberStyles.Any,
+                System.Globalization.CultureInfo.InvariantCulture,
+                out result);
+        }
     }
 }

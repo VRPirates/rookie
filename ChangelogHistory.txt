@@ -1,4 +1,21 @@
-﻿RSL 2.34
+﻿RSL 3.0
+
+Major Rookie overhaul with modernized UI, significant performance improvements and upgraded UX.
+
+- Added high-performance Gallery View with search, filters, sorting, favorites, hover animations, smooth scrolling and uninstall buttons
+- Toggle seamlessly between List and Gallery views with your preference remembered across launches
+- Complete UI redesign with new dark theme, modernized components and subtle animations throughout
+- Refined navigation, layouts, sizing and color consistency across the entire application
+- Added uninstall buttons directly in List and Gallery views for quicker app management
+- Improved startup performance through overhaul of initialization logic, removal of splash screen, parallelized async loading, batched version retrieval, optimized metadata extraction and game list initialization
+- Instant list filtering through caching and streamlined filter logic (INSTALLED / UPDATE AVAILABLE / NEWER THAN LIST)
+- Improved search speed and responsiveness
+- Fixed and improved trailer handling with faster trailer loading
+- Fixed multiple startup issues including connection errors and zombie ADB instances
+- Added local blacklist support allowing users to permanently suppress donation prompts for specific apps
+- Reduced application size by removal of now unused assets
+
+RSL 2.34
 
 - Feature: Allow users to favorite games (right click on game)
 - Fix: Release Notes not showing with trailers enabled

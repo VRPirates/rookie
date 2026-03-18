@@ -1,13 +1,14 @@
-﻿using JR.Utils.GUI.Forms;
+﻿using AndroidSideloader.Utilities;
+using JR.Utils.GUI.Forms;
 using System;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Management;
 using System.Net;
 using System.Text.RegularExpressions;
-using System.Drawing;
+using System.Threading.Tasks;
 using System.Windows.Forms;
-using AndroidSideloader.Utilities;
 
 namespace AndroidSideloader
 {
@@ -84,9 +85,12 @@ namespace AndroidSideloader
             return output;
         }
 
-        //Recursive sideload any apk fileD
+        //Recursive sideload any apk file
         public static ProcessOutput RecursiveOutput = new ProcessOutput();
-        public static void RecursiveSideload(string FolderPath)
+        public static async Task RecursiveSideloadAsync(
+            string FolderPath,
+            Action<float, TimeSpan?> progressCallback = null,
+            Action<string> statusCallback = null)
         {
             try
             {
@@ -94,31 +98,40 @@ namespace AndroidSideloader
                 {
                     if (Path.GetExtension(f) == ".apk")
                     {
-                        RecursiveOutput += ADB.Sideload(f);
+                        string gameName = Path.GetFileNameWithoutExtension(f);
+                        statusCallback?.Invoke(gameName);
+                        RecursiveOutput += await ADB.SideloadWithProgressAsync(f, progressCallback, statusCallback, "", gameName);
                     }
                 }
 
                 foreach (string d in Directory.GetDirectories(FolderPath))
                 {
-                    RecursiveSideload(d);
+                    await RecursiveSideloadAsync(d, progressCallback, statusCallback);
                 }
             }
             catch (Exception ex) { _ = Logger.Log(ex.Message, LogLevel.ERROR); }
         }
 
         //Recursive copy any obb folder
-        public static void RecursiveCopyOBB(string FolderPath)
+        public static async Task RecursiveCopyOBBAsync(
+            string FolderPath,
+            Action<float, TimeSpan?> progressCallback = null,
+            Action<string> statusCallback = null)
         {
             try
             {
-                foreach (string f in Directory.GetFiles(FolderPath))
-                {
-                    RecursiveOutput += ADB.CopyOBB(f);
-                }
-
                 foreach (string d in Directory.GetDirectories(FolderPath))
                 {
-                    RecursiveCopyOBB(d);
+                    string folderName = Path.GetFileName(d);
+                    if (folderName.Contains("."))
+                    {
+                        statusCallback?.Invoke(folderName);
+                        RecursiveOutput += await ADB.CopyOBBWithProgressAsync(d, progressCallback, statusCallback, folderName);
+                    }
+                    else
+                    {
+                        await RecursiveCopyOBBAsync(d, progressCallback, statusCallback);
+                    }
                 }
             }
             catch (Exception ex) { _ = Logger.Log(ex.Message, LogLevel.ERROR); }
