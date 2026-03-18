@@ -92,6 +92,7 @@ namespace AndroidSideloader
         public static bool noRcloneUpdating;
         public static bool noAppCheck = false;
         public static bool hasPublicConfig = false;
+        public static bool hasUploadConfig = false;
         public static bool UsingPublicConfig = false;
         public static bool enviromentCreated = false;
         public static PublicConfig PublicConfigFile;
@@ -529,13 +530,15 @@ namespace AndroidSideloader
                         // Upload in background
                         _ = Task.Run(() =>
                         {
-                            _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
-                            this.Invoke(() =>
-                            {
-                                _ = FlexibleMessageBox.Show(Program.form,
-                                    $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
-                                Clipboard.SetText(settings.CurrentCrashName);
-                            });
+                            if (hasUploadConfig) {
+                                _ = RCLONE.runRcloneCommand_UploadConfig($"copy \"{settings.CurrentCrashPath}\" RSL-gameuploads:CrashLogs");
+                                this.Invoke(() =>
+                                {
+                                    _ = FlexibleMessageBox.Show(Program.form,
+                                        $"Your CrashLog has been copied to the server.\nPlease mention your CrashLogID ({settings.CurrentCrashName}) to the Mods.\nIt has been automatically copied to your clipboard.");
+                                    Clipboard.SetText(settings.CurrentCrashName);
+                                });
+                            }
                         });
                     }
                 }
@@ -574,7 +577,7 @@ namespace AndroidSideloader
                 string configFilePath = Path.Combine(Environment.CurrentDirectory, "vrp-public.json");
 
                 // Public config check
-                if (File.Exists(configFilePath))
+                if (File.Exists(configFilePath) && settings.AutoUpdateConfig)
                 {
                     await GetPublicConfigAsync();
                     if (!hasPublicConfig)
@@ -638,6 +641,12 @@ namespace AndroidSideloader
             {
                 changeTitle("Getting Upload Config...");
                 await Task.Run(() => SideloaderRCLONE.updateUploadConfig());
+
+                string uploadConfigPath = Path.Combine(Environment.CurrentDirectory, "rclone", "vrp.upload.config");
+                if (File.Exists(uploadConfigPath))
+                {
+                    hasUploadConfig = true;
+                }
 
                 _ = Logger.Log("Initializing Servers");
                 changeTitle("Initializing Servers...");
@@ -2771,7 +2780,7 @@ namespace AndroidSideloader
 
             progressBar.IsIndeterminate = false;
 
-            if (either && !updatesNotified && !noAppCheck)
+            if (either && !updatesNotified && !noAppCheck && hasUploadConfig)
             {
                 changeTitle("");
                 DonorsListViewForm donorForm = new DonorsListViewForm();
@@ -2891,7 +2900,7 @@ namespace AndroidSideloader
                             string RlsName = Sideloader.PackageNametoGameName(newGamesToUpload);
                             Logger.Log($"Release name obtained: {RlsName}", LogLevel.INFO);
 
-                            if (!updatesNotified && !onapplist && newint < 6)
+                            if (!updatesNotified && !onapplist && newint < 6 && hasUploadConfig)
                             {
                                 changeTitle("Unrecognized App found. Downloading APK to take a closer look. (This may take a minute)");
 
@@ -3530,13 +3539,9 @@ Additional Thanks & Resources
             if (quotaTries > remotesList.Items.Count)
             {
                 ShowError_QuotaExceeded();
-
-                if (Application.MessageLoop)
-                {
-                    isOffline = true;
-                    success = false;
-                    return success;
-                }
+                isOffline = true;
+                success = false;
+                return success;
             }
 
             return success;
@@ -3554,7 +3559,7 @@ If the problem persists, visit our Telegram (https://t.me/VRPirates) or Discord 
             FlexibleMessageBox.Show(Program.form, errorMessage, "Unable to connect to remote server");
 
             // Close application after showing the message
-            Application.Exit();
+            // Application.Exit();
         }
 
         public async void cleanupActiveDownloadStatus()
