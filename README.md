@@ -1,3 +1,8 @@
+# REPO MOVED
+
+This repo has been moved back to its original home and is no longer maintained by VRP.
+https://github.com/nerdunit/androidsideloader
+
 # AndroidSideloader
 
 ![GitHub last commit](https://img.shields.io/github/last-commit/VRPirates/rookie)
